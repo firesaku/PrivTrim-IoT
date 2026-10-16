@@ -1,0 +1,55 @@
+HOST=gpu-0912-02.hpc.naitive.ai DATE=2026-10-15T11:02:53+04:00
+NVIDIA H200, 143771 MiB, 0 MiB
+[11:03:11] device cuda cuda_count 1
+[11:03:11] gpu NVIDIA H200
+[11:03:11] loading encoder: /dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/models/models--microsoft--llmlingua-2-xlm-roberta-large-meetingbank/snapshots/ebaba9b0e874dadd3003ffcff828e4397e568089
+[11:03:14] progress 25/581  1.2s
+[11:03:16] progress 50/581  2.4s
+[11:03:17] progress 75/581  3.7s
+[11:03:18] progress 100/581  5.0s
+[11:03:19] progress 125/581  6.2s
+[11:03:24] progress 150/581  11.0s
+[11:03:29] progress 175/581  16.1s
+[11:03:34] progress 200/581  21.2s
+[11:03:40] progress 225/581  26.6s
+[11:03:42] progress 250/581  28.6s
+[11:03:44] progress 275/581  30.8s
+[11:03:46] progress 300/581  33.0s
+[11:03:49] progress 325/581  35.4s
+[11:03:50] progress 350/581  37.1s
+[11:03:52] progress 375/581  39.2s
+[11:03:54] progress 400/581  41.2s
+[11:03:56] progress 425/581  42.6s
+[11:03:56] progress 450/581  43.0s
+[11:03:57] progress 475/581  43.4s
+[11:03:57] wrote /dpc/kuex0095/100065732/privtrim_v2c_20261015/v2d_report.txt
+V2d GPU FEASIBILITY — real semantic embeddings vs char-3gram vs random
+samples=frozen_samples.jsonl records=494 cap=200 ratios=[0.125, 0.25, 0.5] model=ebaba9b0e874dadd3003ffcff828e4397e568089 device=cuda
+
+mode         ratio    clusters  hit_answer    mix_sens   fuse_2sec
+sim_emb      0.125         818        6.2%        0.0%        0.1%
+sim_emb      0.250        1251        4.8%        0.0%        0.1%
+sim_emb      0.500        1939        4.4%        0.1%        0.2%
+
+sim_char3    0.125         884        4.5%        1.8%        0.0%
+sim_char3    0.250        1376        3.8%        1.7%        0.0%
+sim_char3    0.500        2144        3.4%        2.6%        0.0%
+
+cons_emb     0.125         818        6.2%        0.0%        0.1%
+cons_emb     0.250        1251        4.8%        0.0%        0.1%
+cons_emb     0.500        1939        4.4%        0.0%        0.2%
+
+random_adj   0.125        1011        3.8%       17.0%        1.5%
+random_adj   0.250        1950        3.0%       15.3%        0.9%
+random_adj   0.500        3926        3.4%       16.3%        1.2%
+
+random_far   0.125        1006        3.7%       18.8%        0.0%
+random_far   0.250        1950        3.2%       18.3%        0.0%
+random_far   0.500        3883        3.2%       18.1%        0.0%
+
+### VERDICT
+ratio=0.125 | sim_emb: hit=6.2% mix=0.0% fuse=0.1% || sim_char3: hit=4.5% mix=1.8% fuse=0.0% || cons_emb: hit=6.2% mix=0.0% fuse=0.1% || random_adj: hit=3.8% mix=17.0% fuse=1.5% || random_far: hit=3.7% mix=18.8% fuse=0.0%
+ratio=0.250 | sim_emb: hit=4.8% mix=0.0% fuse=0.1% || sim_char3: hit=3.8% mix=1.7% fuse=0.0% || cons_emb: hit=4.8% mix=0.0% fuse=0.1% || random_adj: hit=3.0% mix=15.3% fuse=0.9% || random_far: hit=3.2% mix=18.3% fuse=0.0%
+ratio=0.500 | sim_emb: hit=4.4% mix=0.1% fuse=0.2% || sim_char3: hit=3.4% mix=2.6% fuse=0.0% || cons_emb: hit=4.4% mix=0.0% fuse=0.2% || random_adj: hit=3.4% mix=16.3% fuse=1.2% || random_far: hit=3.2% mix=18.1% fuse=0.0%
+V2D_RC=0
+V2D_DONE

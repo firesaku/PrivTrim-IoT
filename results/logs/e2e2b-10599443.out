@@ -1,0 +1,94 @@
+HOST=gpu-11-2 DATE=2026-10-15T20:16:53+04:00
+Tesla V100-PCIE-32GB, 32768 MiB
+Tesla V100-PCIE-32GB, 32768 MiB
+Tesla V100-PCIE-32GB, 32768 MiB
+Tesla V100-PCIE-32GB, 32768 MiB
+[20:17:19] gpu Tesla V100-PCIE-32GB
+[20:17:21] dataset hotpotqa: pool=7405 use=500
+[20:17:21] dataset squad: pool=10570 use=500
+[20:17:21] total cases 1000
+[20:17:22] loading LM fp16
+[20:17:31] loading embedder
+[20:18:47] prepared 100/1000  73.2s
+[20:20:00] prepared 200/1000  146.1s
+[20:21:10] prepared 300/1000  216.0s
+[20:22:27] prepared 400/1000  293.4s
+[20:23:42] prepared 500/1000  368.5s
+[20:23:54] prepared 600/1000  380.3s
+[20:24:07] prepared 700/1000  392.9s
+[20:24:19] prepared 800/1000  404.9s
+[20:24:30] prepared 900/1000  416.3s
+[20:24:41] prepared 1000/1000  427.4s
+[20:24:41] generating 6000 prompts
+[20:24:44] gen 8/6000  430.6s
+[20:26:36] gen 328/6000  542.4s
+[20:28:33] gen 648/6000  658.9s
+[20:30:35] gen 968/6000  781.3s
+[20:32:35] gen 1288/6000  900.9s
+[20:34:29] gen 1608/6000  1015.0s
+[20:36:28] gen 1928/6000  1134.5s
+[20:38:25] gen 2248/6000  1251.3s
+[20:40:28] gen 2568/6000  1374.0s
+[20:42:24] gen 2888/6000  1490.8s
+[20:43:25] gen 3208/6000  1551.3s
+[20:43:55] gen 3528/6000  1580.9s
+[20:44:29] gen 3848/6000  1615.1s
+[20:44:58] gen 4168/6000  1644.0s
+[20:45:28] gen 4488/6000  1674.8s
+[20:46:00] gen 4808/6000  1706.4s
+[20:46:31] gen 5128/6000  1737.6s
+[20:47:01] gen 5448/6000  1767.2s
+[20:47:30] gen 5768/6000  1796.5s
+[20:47:53] wrote /dpc/kuex0095/100065732/privtrim_v2c_20261015/e2eout/e2e2_report.txt /dpc/kuex0095/100065732/privtrim_v2c_20261015/e2eout/e2e2_cells.json /dpc/kuex0095/100065732/privtrim_v2c_20261015/e2eout/e2e2_percase.jsonl
+E2E v2 — token-level vs sentence-level, deterministic case selection
+cases=1000  arms=['full', 'filtered_full', 'mask_extractive', 'mask_cluster', 'win_extractive', 'win_cluster']  win=16  budget_frac=0.50  dtype=fp16
+
+dataset    arm                   n        EM        F1
+hotpotqa   full                500    44.00%    55.30%
+hotpotqa   filtered_full       500    44.40%    55.07%
+hotpotqa   mask_extractive     500    28.00%    33.02%
+hotpotqa   mask_cluster        500    33.60%    41.00%
+hotpotqa   win_extractive      500    23.00%    29.59%
+hotpotqa   win_cluster         500    26.80%    32.61%
+
+squad      full                500    79.80%    89.53%
+squad      filtered_full       500    79.40%    89.14%
+squad      mask_extractive     500    46.80%    53.26%
+squad      mask_cluster        500    53.40%    60.63%
+squad      win_extractive      500    45.20%    55.24%
+squad      win_cluster         500    50.60%    59.09%
+
+=== ALL ===
+full               1000    61.90%    72.42%
+filtered_full      1000    61.90%    72.10%
+mask_extractive    1000    37.40%    43.14%
+mask_cluster       1000    43.50%    50.81%
+win_extractive     1000    34.10%    42.41%
+win_cluster        1000    38.70%    45.85%
+E2E2_RC=0
+===== REPORT =====
+E2E v2 — token-level vs sentence-level, deterministic case selection
+cases=1000  arms=['full', 'filtered_full', 'mask_extractive', 'mask_cluster', 'win_extractive', 'win_cluster']  win=16  budget_frac=0.50  dtype=fp16
+
+dataset    arm                   n        EM        F1
+hotpotqa   full                500    44.00%    55.30%
+hotpotqa   filtered_full       500    44.40%    55.07%
+hotpotqa   mask_extractive     500    28.00%    33.02%
+hotpotqa   mask_cluster        500    33.60%    41.00%
+hotpotqa   win_extractive      500    23.00%    29.59%
+hotpotqa   win_cluster         500    26.80%    32.61%
+
+squad      full                500    79.80%    89.53%
+squad      filtered_full       500    79.40%    89.14%
+squad      mask_extractive     500    46.80%    53.26%
+squad      mask_cluster        500    53.40%    60.63%
+squad      win_extractive      500    45.20%    55.24%
+squad      win_cluster         500    50.60%    59.09%
+
+=== ALL ===
+full               1000    61.90%    72.42%
+filtered_full      1000    61.90%    72.10%
+mask_extractive    1000    37.40%    43.14%
+mask_cluster       1000    43.50%    50.81%
+win_extractive     1000    34.10%    42.41%
+win_cluster        1000    38.70%    45.85%E2E2B_DONE

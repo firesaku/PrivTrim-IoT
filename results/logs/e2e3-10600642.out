@@ -1,0 +1,79 @@
+HOST=gpu-11-1 DATE=2026-10-15T23:58:44+04:00
+Tesla V100-PCIE-32GB, 32768 MiB
+Tesla V100-PCIE-32GB, 32768 MiB
+Tesla V100-PCIE-32GB, 32768 MiB
+Tesla V100-PCIE-32GB, 32768 MiB
+[23:59:06] gpu Tesla V100-PCIE-32GB
+[23:59:08] dataset hotpotqa use=500
+[23:59:08] dataset squad use=500
+[23:59:08] total cases 1000
+[23:59:08] reading mask_quito_x payloads from DB ...
+[23:59:18] qtx rows=1000 unzipped=1000 failed=0
+[23:59:18] cases with qtx text: 1000
+[23:59:18] loading LM fp16
+[23:59:28] loading embedder
+[23:59:44] prepared 100/1000  13.3s
+[23:59:57] prepared 200/1000  26.2s
+[00:00:09] prepared 300/1000  38.2s
+[00:00:22] prepared 400/1000  51.4s
+[00:00:36] prepared 500/1000  64.9s
+[00:00:38] prepared 600/1000  67.0s
+[00:00:40] prepared 700/1000  69.4s
+[00:00:42] prepared 800/1000  71.5s
+[00:00:44] prepared 900/1000  73.5s
+[00:00:46] prepared 1000/1000  75.6s
+[00:00:46] generating 4000 prompts
+[00:00:49] gen 8/4000  78.7s
+[00:02:48] gen 328/4000  197.3s
+[00:05:01] gen 648/4000  330.0s
+[00:07:12] gen 968/4000  461.1s
+[00:09:18] gen 1288/4000  587.3s
+[00:11:24] gen 1608/4000  713.4s
+[00:13:34] gen 1928/4000  843.2s
+[00:14:27] gen 2248/4000  896.1s
+[00:15:02] gen 2568/4000  931.0s
+[00:15:33] gen 2888/4000  962.5s
+[00:16:06] gen 3208/4000  994.9s
+[00:16:36] gen 3528/4000  1025.2s
+[00:17:07] gen 3848/4000  1056.1s
+[00:17:23] wrote /dpc/kuex0095/100065732/privtrim_v2c_20261015/e2eout/e2e3_report.txt
+E2E v3 — dual-constrained clustering stacked on mask_quito_x's PUBLISHED output
+cases=1000  reduce_frac=0.25  max_new=64  dtype=fp16
+
+dataset    arm                 n        EM        F1   ctx_tokens
+hotpotqa   full              500    43.80%    55.17%       1405.9
+hotpotqa   qtx               500    44.60%    55.66%        702.7
+hotpotqa   qtx_cluster       500    39.40%    49.63%        593.8
+hotpotqa   qtx_random        500    42.40%    52.46%        644.0
+
+squad      full              500    79.80%    89.53%        229.0
+squad      qtx               500    77.60%    87.54%        114.2
+squad      qtx_cluster       500    76.80%    86.58%         97.4
+squad      qtx_random        500    72.80%    81.15%         99.4
+
+=== ALL ===
+full             1000    61.80%    72.35%        817.4
+qtx              1000    61.10%    71.60%        408.5
+qtx_cluster      1000    58.10%    68.10%        345.6
+qtx_random       1000    57.60%    66.80%        371.7
+E2E3_RC=0
+===== REPORT =====
+E2E v3 — dual-constrained clustering stacked on mask_quito_x's PUBLISHED output
+cases=1000  reduce_frac=0.25  max_new=64  dtype=fp16
+
+dataset    arm                 n        EM        F1   ctx_tokens
+hotpotqa   full              500    43.80%    55.17%       1405.9
+hotpotqa   qtx               500    44.60%    55.66%        702.7
+hotpotqa   qtx_cluster       500    39.40%    49.63%        593.8
+hotpotqa   qtx_random        500    42.40%    52.46%        644.0
+
+squad      full              500    79.80%    89.53%        229.0
+squad      qtx               500    77.60%    87.54%        114.2
+squad      qtx_cluster       500    76.80%    86.58%         97.4
+squad      qtx_random        500    72.80%    81.15%         99.4
+
+=== ALL ===
+full             1000    61.80%    72.35%        817.4
+qtx              1000    61.10%    71.60%        408.5
+qtx_cluster      1000    58.10%    68.10%        345.6
+qtx_random       1000    57.60%    66.80%        371.7E2E3_DONE

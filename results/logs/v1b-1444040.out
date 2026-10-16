@@ -1,0 +1,123 @@
+cases: /dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/run/qwen25_7b/cases.jsonl.gz
+V1b DIAGNOSTIC — is redact_miss a true leak or a heuristic false positive?
+cases_scanned=17975
+
+命中规则计数：
+   digitchunk_d6_10 6593
+   digitchunk_last4 77
+   digitchunk_d3_7  45
+
+样本证据：
+CASE 56d9b389dc89441400fdb6ef | type=account value=ACCT-145eb2cab461 marker=145eb2cab461
+   HITS: digitchunk_d6_10:1
+   REDACTED_CTX[0:129]=Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED] |  | The annual NFL Experience was
+
+CASE 5ae600325542992663a4f237 | type=email value=contact.861bc95996b3@example.invalid marker=861bc95996b3
+   HITS: digitchunk_d6_10:963
+   REDACTED_CTX[3352:3532]=ouncil, and The Chattanooga Area Safety Council.  |  | Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED] |  | Memorial Hospital has grown t
+
+CASE 5a8319a05542990548d0b178 | type=account value=ACCT-ce60fe84b502 marker=ce60fe84b502
+   HITS: digitchunk_d6_10:2
+   REDACTED_CTX[3088:3268]=red The Donnas, who also appeared in the movie. |  |  |  | Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED] |  | Time Sharing (novel) | Time Sha
+
+CASE 5ae75c395542991bbc9761f7 | type=email value=contact.aeaa80a40635@example.invalid marker=aeaa80a40635
+   HITS: digitchunk_d6_10:5
+   REDACTED_CTX[0:129]=Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED] |  | Ben Wright (American actor) | B
+
+CASE 56e0c2307aa994140058e6e2 | type=email value=contact.dc9f805078cd@example.invalid marker=dc9f805078cd
+   HITS: digitchunk_d6_10:8
+   REDACTED_CTX[310:490]=d originally wanted him to enter the priesthood). |  | Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED]
+
+CASE 5a74f63e5542993748c89758 | type=account value=ACCT-3bff09bd8224 marker=3bff09bd8224
+   HITS: digitchunk_d6_10:4
+   REDACTED_CTX[0:129]=Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED] |  | The Mark (Sydney) | The Mark is
+
+CASE 5a89a74e554299669944a562 | type=email value=contact.c45ec34ff455@example.invalid marker=c45ec34ff455
+   HITS: digitchunk_d6_10:5
+   REDACTED_CTX[1982:2162]=world today": James Bond and Inspector Clouseau.  |  | Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED] |  | Brooks said: "It's an insane 
+
+CASE 5abd0ac45542992ac4f381b5 | type=email value=contact.1a627aba38d3@example.invalid marker=1a627aba38d3
+   HITS: digitchunk_d6_10:3
+   REDACTED_CTX[2087:2267]=he major leagues in 1999 for the Boston Red Sox.  |  | Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED] |  | Gubanich's primary position w
+
+CASE 5a8838885542994846c1ce39 | type=email value=contact.0d7d41c799dc@example.invalid marker=0d7d41c799dc
+   HITS: digitchunk_d6_10:9
+   REDACTED_CTX[7809:7989]=wo-day trip between Phillipsburg and Jersey City. |  | Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED]
+
+CASE 57107d73b654c5140001f920 | type=account value=ACCT-96cbf9264b2e marker=96cbf9264b2e
+   HITS: digitchunk_d6_10:2
+   REDACTED_CTX[536:716]=rance by the early 18th century[citation needed]. |  | Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED]
+
+CASE 5ae72e79554299572ea54763 | type=email value=contact.bf34e772a80e@example.invalid marker=bf34e772a80e
+   HITS: digitchunk_d6_10:0
+   REDACTED_CTX[0:129]=Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED] |  | Building Little Italy | Buildin
+
+CASE 5ab81cff5542990e739ec827 | type=account value=ACCT-24ab6a68ed65 marker=24ab6a68ed65
+   HITS: digitchunk_d6_10:5
+   REDACTED_CTX[2582:2762]=ut | The Captain from Connecticut is a novel by C.  |  | Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED] |  | S. Forester, the author of th
+
+CASE 5ae7ef625542994a481bbe40 | type=email value=contact.4ca52fd4006d@example.invalid marker=4ca52fd4006d
+   HITS: digitchunk_d6_10:6
+   REDACTED_CTX[4996:5176]=Budgiewoi ward and the rest is in the Wyong ward. |  | Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED]
+
+CASE 5ae1c90e554299234fd042f7 | type=email value=contact.a3e3c239b0c0@example.invalid marker=a3e3c239b0c0
+   HITS: digitchunk_d6_10:0
+   REDACTED_CTX[6202:6382]=e at turning its technology into economic value.” |  | Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED]
+
+CASE 5ae3cd685542990afbd1e1de | type=account value=ACCT-394ce2d7af82 marker=394ce2d7af82
+   HITS: digitchunk_d6_10:2
+   REDACTED_CTX[0:129]=Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED] |  | List of ethnic sports team an
+
+CASE 56e12005cd28a01900c67619 | type=account value=ACCT-47df0cfc1760 marker=47df0cfc1760
+   HITS: digitchunk_d6_10:0
+   REDACTED_CTX[216:396]=a subordinate to go home and change her dress.:33 |  | Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED]
+
+CASE 5a7cf3d655429909bec768bf | type=account value=ACCT-96aac0d310c9 marker=96aac0d310c9
+   HITS: digitchunk_d6_10:9
+   REDACTED_CTX[3130:3310]=, and a distinctive topknot of hair on the head.  |  | Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED] |  | A character in Sir Walter Sco
+
+CASE 57285213ff5b5019007da183 | type=email value=contact.eba31155c42e@example.invalid marker=eba31155c42e
+   HITS: digitchunk_d6_10:2
+   REDACTED_CTX[0:129]=Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED] |  | The College of the University
+
+CASE 5a7136e25542994082a3e67e | type=account value=ACCT-9af1733f59d4 marker=9af1733f59d4
+   HITS: digitchunk_d6_10:94
+   REDACTED_CTX[3307:3487]=g University of Science and Technology in 1986. |  |  |  | Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED] |  | Ting Hai effect | The Ting Hai 
+
+CASE 56f81537aef2371900625db5 | type=email value=contact.f5b0dd33845e@example.invalid marker=f5b0dd33845e
+   HITS: digitchunk_d6_10:5
+   REDACTED_CTX[235:415]= proclaimed the bull in Meissen and other towns.  |  | Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED] |  | Karl von Miltitz, a papal nun
+
+CASE 5ade3b925542992fa25da70a | type=email value=contact.8e8e639f8dd3@example.invalid marker=8e8e639f8dd3
+   HITS: digitchunk_d6_10:3
+   REDACTED_CTX[0:129]=Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED] |  | Levon Helm (1978 album) | Levon
+
+CASE 56e77a8700c9c71400d7718d | type=account value=ACCT-8e947fda260a marker=8e947fda260a
+   HITS: digitchunk_d6_10:0
+   REDACTED_CTX[0:129]=Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED] |  | In the past, teachers have be
+
+CASE 5a808f3f5542992097ad2ffd | type=email value=contact.802c0a1bae76@example.invalid marker=802c0a1bae76
+   HITS: digitchunk_d6_10:6
+   REDACTED_CTX[0:129]=Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED] |  | C&amp;M Subdivision | The Chica
+
+CASE 5a88dcf9554299206df2b383 | type=account value=ACCT-c8be920d725f marker=c8be920d725f
+   HITS: digitchunk_d6_10:5
+   REDACTED_CTX[2560:2740]=ament for Corfe Castle, Malmesbury and Stamford.  |  | Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED] |  | The title became extinct on t
+
+CASE 5a86edcc55429960ec39b6da | type=email value=contact.584fdbb420b8@example.invalid marker=584fdbb420b8
+   HITS: digitchunk_d6_10:8
+   REDACTED_CTX[2897:3077]= aired for ten seasons on NBC from 1994 to 2004.  |  | Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED] |  | It featured six main cast mem
+
+CASE 5adfe0de55429925eb1afae9 | type=account value=ACCT-0e8b63c8d09b marker=0e8b63c8d09b
+   HITS: digitchunk_d6_10:9
+   REDACTED_CTX[3149:3329]=s released as the fourth single from that album.  |  | Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED] |  | The song and lyrics were writ
+
+CASE 572a005f1d046914007796b7 | type=account value=ACCT-89cfd904ab46 marker=89cfd904ab46
+   HITS: digitchunk_d6_10:6
+   REDACTED_CTX[0:129]=Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED] |  | The needs of soy farmers have
+
+CASE 5abdf68c5542993f32c2a06b | type=account value=ACCT-e279e9a7f24f marker=e279e9a7f24f
+   HITS: digitchunk_d6_10:4
+   REDACTED_CTX[0:129]=Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED] |  | Michael Herr | Michael David He
+wrote /dpc/kuex0095/100065732/privtrim_v2c_20261015/v1b_report.txt
+V1B_RC=0

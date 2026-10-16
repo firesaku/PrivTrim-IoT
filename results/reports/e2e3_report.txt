@@ -1,0 +1,19 @@
+E2E v3 — dual-constrained clustering stacked on mask_quito_x's PUBLISHED output
+cases=1000  reduce_frac=0.25  max_new=64  dtype=fp16
+
+dataset    arm                 n        EM        F1   ctx_tokens
+hotpotqa   full              500    43.80%    55.17%       1405.9
+hotpotqa   qtx               500    44.60%    55.66%        702.7
+hotpotqa   qtx_cluster       500    39.40%    49.63%        593.8
+hotpotqa   qtx_random        500    42.40%    52.46%        644.0
+
+squad      full              500    79.80%    89.53%        229.0
+squad      qtx               500    77.60%    87.54%        114.2
+squad      qtx_cluster       500    76.80%    86.58%         97.4
+squad      qtx_random        500    72.80%    81.15%         99.4
+
+=== ALL ===
+full             1000    61.80%    72.35%        817.4
+qtx              1000    61.10%    71.60%        408.5
+qtx_cluster      1000    58.10%    68.10%        345.6
+qtx_random       1000    57.60%    66.80%        371.7

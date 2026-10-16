@@ -1,0 +1,18 @@
+V3 CONFIG=gran  samples=frozen_samples.jsonl  granularity=charwin  records=455  cap=200  seed=20261015  dev=cuda
+
+mode           ratio     clusters  hit_answer    mix_sens   fuse_2sec
+sim_emb        0.125          962        2.7%        0.6%        0.2%
+sim_emb        0.250         1684        2.1%        0.7%        0.1%
+sim_emb        0.500         3374        2.5%        1.2%        0.5%
+
+imp_emb        0.125          962        0.0%        0.7%        0.2%
+imp_emb        0.250         1684        0.0%        0.7%        0.2%
+imp_emb        0.500         3374        0.0%        1.3%        0.6%
+
+cons_imp_emb   0.125          962        0.0%        0.0%        0.0%
+cons_imp_emb   0.250         1684        0.0%        0.0%        0.1%
+cons_imp_emb   0.500         3374        0.0%        0.0%        0.2%
+
+random_adj     0.125          962        2.5%        9.5%        8.5%
+random_adj     0.250         1684        2.1%        6.9%        6.1%
+random_adj     0.500         3374        2.4%        8.2%        7.0%

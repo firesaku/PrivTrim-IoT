@@ -1,0 +1,42 @@
+JOIN REPORT — my arms vs published baselines on the SAME cases
+my rows=6000  keys=1000  baseline matched rows=4000 (method@rate0.5) + 1000 (full@1.0)
+
+dataset    arm                      n        EM        F1
+hotpotqa   full                   500    44.00%    55.30%
+hotpotqa   filtered_full          500    44.40%    55.07%
+hotpotqa   win_extractive         500    23.00%    29.59%
+hotpotqa   win_cluster            500    26.80%    32.61%
+hotpotqa   mask_extractive        500    28.00%    33.02%
+hotpotqa   mask_cluster           500    33.60%    41.00%
+
+squad      full                   500    79.80%    89.53%
+squad      filtered_full          500    79.40%    89.14%
+squad      win_extractive         500    45.20%    55.24%
+squad      win_cluster            500    50.60%    59.09%
+squad      mask_extractive        500    46.80%    53.26%
+squad      mask_cluster           500    53.40%    60.63%
+
+=== 已发布基线（同一批 case 上重算）===
+dataset    baseline                 n        EM        F1
+hotpotqa   full                   500    44.60%    54.61%
+hotpotqa   mask_quito_x           500    45.80%    56.62%
+hotpotqa   mask_cpc               500    36.20%    43.51%
+hotpotqa   cpc                    500    35.80%    42.86%
+hotpotqa   quito_x                500    44.80%    54.89%
+
+squad      full                   500    79.60%    89.39%
+squad      mask_quito_x           500    78.20%    87.94%
+squad      mask_cpc               500    76.40%    86.63%
+squad      cpc                    500    76.00%    86.25%
+squad      quito_x                500    72.80%    83.10%
+
+=== 逐例配对差（我的臂 − mask_quito_x），仅取两边都有的 case ===
+dataset    arm                      n     dEM(pp)     dF1(pp)
+hotpotqa   win_extractive         500     -22.80     -27.04
+hotpotqa   win_cluster            500     -19.00     -24.01
+hotpotqa   mask_extractive        500     -17.80     -23.60
+hotpotqa   mask_cluster           500     -12.20     -15.62
+squad      win_extractive         500     -33.00     -32.70
+squad      win_cluster            500     -27.60     -28.85
+squad      mask_extractive        500     -31.40     -34.69
+squad      mask_cluster           500     -24.80     -27.31
