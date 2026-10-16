@@ -102,19 +102,43 @@ def split_units(text):
 
 
 def drop_to_budget(units, budget, nt, order):
-    """按 order 丢单元，直到"逐单元 token 数之和"<= budget。
+    """按 order 丢单元，直到**发射文本本身**的 token 数 <= budget。
 
-    用**逐单元 token 数之和**当记账量：对空格拼接的文本这个和是拼接后 token 数的上界，
-    所以降到 budget 就保证发射文本 <= budget。与 e2e4.py 完全同一口径。
+    记账量必须是"被断言的那个量"。早期版本用"逐单元 token 数之和"当记账量并声称它
+    是空格拼接文本的上界——**这个说法是错的**：拼接会插入分隔空格，每个分隔符自身
+    可能占一个 token，所以 nt(" ".join(sel)) 可以比 sum(nt(u) for u in sel) 大，
+    实测在 longctx-toolmem-needle-0003 上正好超 1 个 token（got=5378 B=5377）。
+
+    因此先用和做一次预剪（便宜，且必然多剪一点），再用**真实拼接文本**做精确修剪。
+    调用方 check_budget 仍然硬断言，不允许静默超标。
     """
     utok = [nt(u) for u in units]
     total = sum(utok)
     keep = [True] * len(units)
+    cursor = 0
     for i in order:
         if total <= budget:
             break
         keep[i] = False
         total -= utok[i]
+        cursor += 1
+
+    # 精确修剪：以真实拼接文本为准。**继续沿 order 往下丢**，而不是从 order 尾部
+    # 往前丢。order 已把含答案的单元排在最后，从尾部丢等于先把答案单元删掉，并且会
+    # 破坏"预算越大保留越多"的单调性。实测 longctx-toolmem_raw-needle-0002：
+    # 三个预算的记账间隙都是 +5，只有 ratio=0.50 时 joined(5221) > B(5218) 触发修剪，
+    # 尾部修剪删掉了唯一的答案单元 —— gold_kept 从 0.25 的 True 变成 False、0.75 又
+    # 变回 True。沿 order 丢则保持"丢弃集合是 order 前缀"的嵌套性，单调性不被破坏。
+    for _ in range(len(units) + 1):
+        sel = [u for k, u in enumerate(units) if keep[k]]
+        if len(sel) <= 1 or nt(" ".join(sel)) <= budget:
+            break
+        while cursor < len(order) and not keep[order[cursor]]:
+            cursor += 1
+        if cursor >= len(order):
+            break
+        keep[order[cursor]] = False
+        cursor += 1
     return " ".join(u for k, u in enumerate(units) if keep[k])
 
 
