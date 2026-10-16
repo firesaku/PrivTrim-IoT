@@ -862,11 +862,12 @@ def main():
                 'sources (PrivTrim-IoT); gold answers are fields the source simulator/log '
                 'itself emitted, never written by a model',
         build_command='python build_longctx_cases.py --out %s --manifest %s --min-words %d '
-                      '--max-words %d --min-distractors %d --multi-entities %d '
-                      '--n-needle-per-source %d --n-multi-per-source %d --sources %s --seed %d'
-                      % (a.out, a.manifest, a.min_words, a.max_words, a.min_distractors,
-                         a.multi_entities, a.n_needle_per_source, a.n_multi_per_source,
-                         a.sources, a.seed),
+                      '--max-words %d --max-needle-words %d --min-distractors %d '
+                      '--multi-entities %d --n-needle-per-source %d --n-multi-per-source %d '
+                      '--sources %s --seed %d'
+                      % (a.out, a.manifest, a.min_words, a.max_words, a.max_needle_words,
+                         a.min_distractors, a.multi_entities, a.n_needle_per_source,
+                         a.n_multi_per_source, a.sources, a.seed),
         seed=a.seed, min_words=a.min_words, max_words=a.max_words,
         min_distractors=a.min_distractors, multi_entities=a.multi_entities,
         n_cases=len(cases),

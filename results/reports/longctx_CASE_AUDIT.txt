@@ -1,0 +1,82 @@
+### 1. 案例总览（前 3 针 + 前 3 多实体）
+key                                kind         source              words entries region_chars
+longctx-pec_home-needle-0000       needle       pec_home              954       5     1327
+    Q: In the log above, what is the task name recorded for the record with id pec_home_multi_0266_02?
+    A: 'multi_user_preferences'   (answer_value_offset=6521, answer_char_offset=6073)
+    ctx.count(answer)=1   首 90 字符: '----- entry 0 -----\nPrivate contact record:\nContact email: contact.caf8643d50fa@example.in'
+longctx-pec_home-needle-0001       needle       pec_home              891       5     1511
+    Q: In the log above, what is the task name recorded for the record with id pec_home_dynam_0094_00?
+    A: 'dynamic_user_preferences'   (answer_value_offset=2218, answer_char_offset=1483)
+    ctx.count(answer)=1   首 90 字符: '----- entry 0 -----\n{"device": "fan", "id": "pec_home_multi_0142_01", "persona": "i want t'
+longctx-pec_home-needle-0002       needle       pec_home              894       5     1465
+    Q: In the log above, what is the task name recorded for the record with id pec_home_dynam_0098_01?
+    A: 'dynamic_user_preferences'   (answer_value_offset=6127, answer_char_offset=5434)
+    ctx.count(answer)=1   首 90 字符: '----- entry 0 -----\n{"device": "fan", "id": "pec_home_multi_0142_01", "persona": "i want t'
+longctx-pec_home-multi-0000        multi_entity pec_home              953       6     1329
+    Q: In the log above, which persona id is recorded for the account ACCT-5ee052b431dc?
+    A: 'multi_0212_00'   (answer_value_offset=6339, answer_char_offset=6296)
+    ctx.count(answer)=2   首 90 字符: '----- entry 0 -----\n{"device": "humidifier", "id": "pec_home_multi_0046_00", "persona": "i'
+    n_entities=6 target_entity=ACCT-5ee052b431dc attr_key=persona_id
+    attribute_values=['multi_0046_00', 'multi_0080_02', 'multi_0267_02', 'multi_0328_00', 'multi_0226_00', 'multi_0212_00']
+longctx-pec_home-multi-0001        multi_entity pec_home              842       5     1310
+    Q: In the log above, which persona id is recorded for the account ACCT-5be08d44f1fd?
+    A: 'multi_0104_02'   (answer_value_offset=58, answer_char_offset=20)
+    ctx.count(answer)=2   首 90 字符: '----- entry 0 -----\n{"device": "heating", "id": "pec_home_multi_0104_02", "persona": "i li'
+    n_entities=5 target_entity=ACCT-5be08d44f1fd attr_key=persona_id
+    attribute_values=['multi_0104_02', 'multi_0146_00', 'multi_0303_01', 'multi_0212_00', 'dynam_0213_01']
+longctx-pec_home-multi-0002        multi_entity pec_home              863       5     1411
+    Q: In the log above, which persona id is recorded for the account ACCT-7358fe654211?
+    A: 'dynam_0053_01'   (answer_value_offset=2939, answer_char_offset=2743)
+    ctx.count(answer)=2   首 90 字符: '----- entry 0 -----\n{"device": "humidifier", "id": "pec_home_multi_0266_02", "persona": "i'
+    n_entities=5 target_entity=ACCT-7358fe654211 attr_key=persona_id
+    attribute_values=['multi_0266_02', 'multi_0057_01', 'dynam_0053_01', 'multi_0137_01', 'dynam_0065_00']
+
+### 2. 区域定位复核（答案所在位置 = 第几个 entry；区域内/外各出现几次）
+longctx-pec_home-needle-0000       answer_region_index=4  regions_containing_answer=[4]  ok=True
+longctx-pec_home-needle-0001       answer_region_index=1  regions_containing_answer=[1]  ok=True
+longctx-pec_home-needle-0002       answer_region_index=4  regions_containing_answer=[4]  ok=True
+longctx-pec_home-multi-0000        answer_region_index=5  regions_containing_answer=[5]  ok=True
+                                   regions_containing_target_entity=[5]  ok=True
+longctx-pec_home-multi-0001        answer_region_index=0  regions_containing_answer=[0]  ok=True
+                                   regions_containing_target_entity=[0]  ok=True
+longctx-pec_home-multi-0002        answer_region_index=2  regions_containing_answer=[2]  ok=True
+                                   regions_containing_target_entity=[2]  ok=True
+
+### 3. model-free 臂预览（来自 dry-run percase；不是模型结果）
+kind          arm             budget     n   gold_in_ctx tgt_entity_ok   collision  leak_value
+multi_entity  full               ref    40        100.0%        100.0%        0.0%     1387.5%
+multi_entity  delete             ref    40        100.0%        100.0%      100.0%        0.0%
+multi_entity  alias              ref    40        100.0%        100.0%        0.0%        0.0%
+multi_entity  budget_cluster    0.25    40         87.5%          0.0%        0.0%        0.0%
+multi_entity  budget_cluster    0.50    40        100.0%          0.0%        0.0%        0.0%
+multi_entity  budget_cluster    0.75    40        100.0%          5.0%        0.0%       62.5%
+multi_entity  budget_cluster_link   0.25    40         87.5%         87.5%        0.0%       87.5%
+multi_entity  budget_cluster_link   0.50    40        100.0%        100.0%        0.0%      100.0%
+multi_entity  budget_cluster_link   0.75    40        100.0%        100.0%        0.0%      157.5%
+multi_entity  budget_random     0.25    40         30.0%         17.5%        0.0%      362.5%
+multi_entity  budget_random     0.50    40         60.0%         50.0%        0.0%      710.0%
+multi_entity  budget_random     0.75    40         77.5%         75.0%        0.0%      997.5%
+multi_entity  delete_budget     0.25    40         87.5%         25.0%      100.0%        0.0%
+multi_entity  delete_budget     0.50    40        100.0%         30.0%      100.0%        0.0%
+multi_entity  delete_budget     0.75    40        100.0%         35.0%      100.0%        0.0%
+multi_entity  alias_budget      0.25    40         87.5%          0.0%        0.0%        0.0%
+multi_entity  alias_budget      0.50    40        100.0%          5.0%        0.0%        0.0%
+multi_entity  alias_budget      0.75    40        100.0%         42.5%        0.0%        0.0%
+needle        full               ref    72        100.0%        100.0%        0.0%     1187.5%
+needle        delete             ref    72         97.2%        100.0%        0.0%        0.0%
+needle        alias              ref    72        100.0%        100.0%        0.0%        0.0%
+needle        budget_cluster    0.25    72         95.8%        100.0%        0.0%        0.0%
+needle        budget_cluster    0.50    72        100.0%        100.0%        0.0%       18.1%
+needle        budget_cluster    0.75    72        100.0%        100.0%        0.0%       98.6%
+needle        budget_cluster_link   0.25    72         95.8%        100.0%        0.0%        0.0%
+needle        budget_cluster_link   0.50    72        100.0%        100.0%        0.0%       18.1%
+needle        budget_cluster_link   0.75    72        100.0%        100.0%        0.0%       98.6%
+needle        budget_random     0.25    72         19.4%        100.0%        0.0%      286.1%
+needle        budget_random     0.50    72         37.5%        100.0%        0.0%      572.2%
+needle        budget_random     0.75    72         66.7%        100.0%        0.0%      852.8%
+needle        delete_budget     0.25    72         93.1%        100.0%        0.0%        0.0%
+needle        delete_budget     0.50    72         97.2%        100.0%        0.0%        0.0%
+needle        delete_budget     0.75    72         97.2%        100.0%        0.0%        0.0%
+needle        alias_budget      0.25    72         95.8%        100.0%        0.0%        0.0%
+needle        alias_budget      0.50    72        100.0%        100.0%        0.0%        0.0%
+needle        alias_budget      0.75    72        100.0%        100.0%        0.0%        0.0%

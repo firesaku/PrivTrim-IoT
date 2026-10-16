@@ -1,0 +1,20 @@
+预算对账（dry-run / est tokens）：预算臂 achieved 必须 <= target
+arm|ratio                  n target_mean achieved_mean   dev_mean   |dev|_max   dev_max%
+full|None                112     3433.9       3433.9       0.00         0.0      0.00%
+delete|None              112     3433.9       3433.9       0.00         0.0      0.00%
+alias|None               112     3433.9       3433.9       0.00         0.0      0.00%
+budget_cluster|0.25      112      858.4        757.5    -100.88       646.0      0.00%
+budget_cluster|0.5       112     1716.9       1628.7     -88.15       576.0      0.00%
+budget_cluster|0.75      112     2575.5       2428.3    -147.21       630.0      0.00%
+budget_cluster_link|0.25 112      858.4        747.3    -111.06       646.0      0.00%
+budget_cluster_link|0.5  112     1716.9       1612.9    -103.96       572.0      0.00%
+budget_cluster_link|0.75 112     2575.5       2441.0    -134.55       626.0      0.00%
+budget_random|0.25       112      858.4        742.9    -115.52       629.0      0.00%
+budget_random|0.5        112     1716.9       1610.0    -106.86       627.0      0.00%
+budget_random|0.75       112     2575.5       2453.8    -121.70       563.0      0.00%
+delete_budget|0.25       112      858.4        757.1    -101.35       646.0      0.00%
+delete_budget|0.5        112     1716.9       1629.0     -87.91       576.0      0.00%
+delete_budget|0.75       112     2575.5       2440.4    -135.15       630.0      0.00%
+alias_budget|0.25        112      858.4        757.6    -100.82       646.0      0.00%
+alias_budget|0.5         112     1716.9       1623.1     -93.78       576.0      0.00%
+alias_budget|0.75        112     2575.5       2390.8    -184.69       630.0      0.00%

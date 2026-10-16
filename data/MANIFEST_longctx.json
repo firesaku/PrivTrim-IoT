@@ -5,7 +5,7 @@
   "file_sha256": "7d37588016b4cb75bb267317ad75476fc75a1d280d01c6aab29fa65231531183",
   "bytes": 3261456,
   "purpose": "long-context deterministically-scored QA built from the real IoT/agent sources (PrivTrim-IoT); gold answers are fields the source simulator/log itself emitted, never written by a model",
-  "build_command": "python build_longctx_cases.py --out D:\\CodexData\\tmp\\privtrim-review-20261015\\longctx\\longctx_cases.jsonl --manifest D:\\CodexData\\tmp\\privtrim-review-20261015\\longctx\\MANIFEST_longctx.json --min-words 800 --max-words 4800 --min-distractors 3 --multi-entities 5 --n-needle-per-source 12 --n-multi-per-source 8 --sources pec_home,privacylens,simuhome,smartbench_tdcs,toolmem,toolmem_raw --seed 20261016",
+  "build_command": "python build_longctx_cases.py --out D:\\CodexData\\tmp\\privtrim-review-20261015\\longctx\\longctx_cases.jsonl --manifest D:\\CodexData\\tmp\\privtrim-review-20261015\\longctx\\MANIFEST_longctx.json --min-words 800 --max-words 4800 --max-needle-words 1400 --min-distractors 3 --multi-entities 5 --n-needle-per-source 12 --n-multi-per-source 8 --sources pec_home,privacylens,simuhome,smartbench_tdcs,toolmem,toolmem_raw --seed 20261016",
   "seed": 20261016,
   "min_words": 800,
   "max_words": 4800,
