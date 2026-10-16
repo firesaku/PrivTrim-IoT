@@ -13,31 +13,31 @@ arms:
 e2e3 的所有臂都在 qtx 之下再压，因此无法把"机制被强选择器吸收"与
 "压得更狠所以掉分"分开 —— 本脚本补上这个反事实。
 """
-import io, json, os, re, sys, time, gzip, sqlite3, zlib, argparse, random, hashlib
+import io, json, os, re, sys, time, gzip, sqlite3, zlib, argparse, random, hashlib, importlib.util
 from collections import defaultdict
 import numpy as np
 
 def log(*a):
     print("[%s]" % time.strftime("%H:%M:%S"), *a, flush=True)
 
-EMAIL   = re.compile(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b')
-PHONE   = re.compile(r'(?<!\w)\+1-\d{3}-\d{3}-\d{4}(?!\d)')
-ACCOUNT = re.compile(r'\bACCT-[A-Za-z0-9-]+\b')
+# 谓词唯一真源 hpc/privcheck.py：本文件不再持有 EMAIL/PHONE/ACCOUNT/redact/norm/exposure 副本
+# （v1_checker.py / v1b_diag.py 用同一方式加载，实现只有一份，结构上不可能再漂移）。
+def load_privcheck():
+    """从本文件所在目录加载 privcheck.py（不依赖打包/安装）。"""
+    p = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'privcheck.py')
+    spec = importlib.util.spec_from_file_location('privcheck', p)
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m
 
-def redact(t):
-    for p in (EMAIL, PHONE, ACCOUNT):
-        t = p.sub('[REDACTED]', t)
-    return t
-
-def norm(t):
-    return re.sub(r'[^a-z0-9]', '', t.lower())
-
-def exposure(secret, text):
-    n = norm(text)
-    full = norm(secret['value']) in n
-    m = norm(secret['marker']); k = secret['fragment_length']
-    frag = any(m[i:i+k] in n for i in range(len(m)-k+1))
-    return full, frag
+pc = load_privcheck()
+EMAIL, PHONE, ACCOUNT = pc.EMAIL, pc.PHONE, pc.ACCOUNT
+redact = pc.redact
+norm = pc.norm
+# exposure = privcheck.exposure_basic。注意它在"完整值命中"时提前返回 (True, True)，旧副本在该
+# 分支仍单独算 frag；本文件所有调用点都是 `exposure(s,u)[0] or exposure(s,u)[1]`，full 相同时
+# OR 结果恒等（已用 _predicate_equiv 在 1728 对真实 (secret,text) 上逐元素核对：0 分歧）。
+exposure = pc.exposure_basic
 
 def drop_to_budget(units, budget, nt, order):
     """Drop units in `order` until the unit-token sum fits `budget`.

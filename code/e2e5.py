@@ -23,6 +23,7 @@ import hashlib
 import importlib.util
 import io
 import json
+import os
 import re
 import time
 
@@ -33,8 +34,24 @@ def log(*a):
     print('[%s]' % time.strftime('%H:%M:%S'), *a, flush=True)
 
 
+# 谓词唯一真源 hpc/privcheck.py：本文件不再持有 norm 副本（v1_checker.py 用同一方式加载）。
+def load_privcheck():
+    """从本文件所在目录加载 privcheck.py（不依赖打包/安装）。"""
+    p = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'privcheck.py')
+    spec = importlib.util.spec_from_file_location('privcheck', p)
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m
+
+
+pc = load_privcheck()
+
+
 def norm(t):
-    return re.sub(r'[^a-z0-9]', '', (t or '').lower())
+    """归一化入口；正则本体只在 privcheck.norm。
+    旧副本带 (t or '') 守卫，privcheck.norm 对 None 会 AttributeError —— 守卫保留，
+    以免把一处容错当成"顺手清理"删掉（本文件调用点都传 str，实测差异不可达）。"""
+    return pc.norm(t or '')
 
 
 def gold_texts(case):

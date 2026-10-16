@@ -8,31 +8,31 @@ E2E：端到端 F1 对比（同案例 / 同 50% 预算 / 同模型 / 同隐私�
   mask_cluster    : 脱敏 + 相似度聚类合并（d_imp + d_sens 双约束）到 50%
 评分：官方 SQuAD v2 EM/F1；隐私：原版 exposure() 的完整值/片段移除率
 """
-import io, json, os, re, sys, time, math, gzip, argparse, random
+import io, json, os, re, sys, time, math, gzip, argparse, random, importlib.util
 from collections import defaultdict, Counter
 import numpy as np
 
 def log(*a):
     print("[%s]" % time.strftime("%H:%M:%S"), *a, flush=True)
 
-EMAIL   = re.compile(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b')
-PHONE   = re.compile(r'(?<!\w)\+1-\d{3}-\d{3}-\d{4}(?!\d)')
-ACCOUNT = re.compile(r'\bACCT-[A-Za-z0-9-]+\b')
+# 谓词唯一真源 hpc/privcheck.py：本文件不再持有 EMAIL/PHONE/ACCOUNT/redact/norm/exposure 副本
+# （v1_checker.py / v1b_diag.py 用同一方式加载，实现只有一份，结构上不可能再漂移）。
+def load_privcheck():
+    """从本文件所在目录加载 privcheck.py（不依赖打包/安装）。"""
+    p = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'privcheck.py')
+    spec = importlib.util.spec_from_file_location('privcheck', p)
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m
 
-def redact(t):
-    for p in (EMAIL, PHONE, ACCOUNT):
-        t = p.sub('[REDACTED]', t)
-    return t
-
-def norm(t):
-    return re.sub(r'[^a-z0-9]', '', t.lower())
-
-def exposure(secret, text):
-    n = norm(text)
-    full = norm(secret['value']) in n
-    m = norm(secret['marker']); k = secret['fragment_length']
-    frag = any(m[i:i+k] in n for i in range(len(m)-k+1))
-    return full, frag
+pc = load_privcheck()
+EMAIL, PHONE, ACCOUNT = pc.EMAIL, pc.PHONE, pc.ACCOUNT
+redact = pc.redact
+norm = pc.norm
+# exposure = privcheck.exposure_basic。注意它在"完整值命中"时提前返回 (True, True)，旧副本在该
+# 分支仍单独算 frag；本文件所有调用点都是 `exposure(s,u)[0] or exposure(s,u)[1]`，full 相同时
+# OR 结果恒等（已用 _predicate_equiv 在 1728 对真实 (secret,text) 上逐元素核对：0 分歧）。
+exposure = pc.exposure_basic
 
 def split_units(text):
     parts = re.split(r'(?<=[.!?])\s+|\n+', text)

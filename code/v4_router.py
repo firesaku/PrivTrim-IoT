@@ -37,8 +37,10 @@ Usage:
 """
 import argparse
 import collections
+import importlib.util
 import io
 import json
+import os
 import re
 import time
 
@@ -46,12 +48,29 @@ TYPE_TOKEN = {'account': 'ACCOUNT', 'email': 'EMAIL', 'phone': 'PHONE'}
 LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 
+# 谓词唯一真源 hpc/privcheck.py：本文件不再持有 norm/exposure 副本
+# （v1_checker.py / v1b_diag.py 用同一方式加载，实现只有一份，结构上不可能再漂移）。
+def load_privcheck():
+    """从本文件所在目录加载 privcheck.py（不依赖打包/安装）。"""
+    p = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'privcheck.py')
+    spec = importlib.util.spec_from_file_location('privcheck', p)
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m
+
+
+pc = load_privcheck()
+
+
 def log(*a):
     print('[%s]' % time.strftime('%H:%M:%S'), *a, flush=True)
 
 
 def norm(t):
-    return re.sub(r'[^a-z0-9]', '', (t or '').lower())
+    """归一化入口；正则本体只在 privcheck.norm。
+    旧副本带 (t or '') 守卫，privcheck.norm 对 None 会 AttributeError —— 守卫保留，
+    以免把一处容错当成"顺手清理"删掉（本文件调用点都传 str，实测差异不可达）。"""
+    return pc.norm(t or '')
 
 
 def split_units(text):
@@ -115,12 +134,10 @@ def apply_replacements(text, canaries, aliaser):
     return text
 
 
-def exposure(secret, text):
-    n = norm(text)
-    full = norm(secret['value']) in n
-    m, k = norm(secret.get('marker') or ''), secret.get('fragment_length') or 0
-    frag = bool(m) and k and any(m[i:i + k] in n for i in range(len(m) - k + 1))
-    return full, frag
+# exposure = privcheck.exposure_basic。旧副本额外容忍"缺 marker/fragment_length"、且完整值命中时
+# 不提前返回 frag；_predicate_equiv 在 1728 对真实 (secret,text)（含全部 480 个 conflict canary，
+# 都带 marker/fragment_length 且 marker ⊆ value）上逐元素核对：full/frag 均 0 分歧，故统一到真源。
+exposure = pc.exposure_basic
 
 
 # --------------------------------------------------------------------------
