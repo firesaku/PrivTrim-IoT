@@ -103,10 +103,11 @@ check('旧 rand4_emb 路径恒为 size 2（无法构成 size-4 簇）',
       len(legacy) > 0 and all(len(c) == 2 for c in legacy),
       '簇数=%d 最大簇=%d' % (len(legacy), max(len(c) for c in legacy)))
 
-# tau 挡住相似度时：bound 臂 0 次合并，随机对照仍按预算出簇（对照不看相似度，这是它的定义）
+# tau 挡住相似度时：bound 臂 0 次合并，随机对照仍按预算出簇（对照不看相似度，这是它的定义）。
+# 注意：这是 budget 模式（--rand-stop budget / stop_unions=None）的行为；matched 模式见下方 #4。
 S_low = np.full((n, n), 0.5); np.fill_diagonal(S_low, -1.0)
 cl_b_low = v3.pairs_similarity(S_low, target, None, ms, tau=0.75)
-check('tau 全线不满足 -> bound 臂 0 簇；随机对照仍消耗预算',
+check('tau 全线不满足 -> bound 臂 0 簇；budget 模式随机对照仍消耗预算',
       merges(cl_b_low) == 0 and merges(cl_r) == math.ceil(target / 2),
       'bound=%d rand=%d' % (merges(cl_b_low), merges(cl_r)))
 
@@ -120,5 +121,71 @@ cl3 = v3.pairs_similarity(S3, 4, None, 4, tau=tau)   # target=4 -> 允许两次 
 check('构造用例：{0,1,2} 同簇，但 sim(0,2)=0.10 < tau', cl3 == [[0, 1, 2]], str(cl3))
 check('簇内最小成对相似度 < tau -> tau 不是簇直径下界',
       min(S3[i, j] for c in cl3 for i in c for j in c if i < j) < tau)
+
+# ---------------- #4 合并匹配：stop_unions ----------------
+print('#4 合并匹配：随机臂恰好做 bound 臂同样多的 union（真实计数，不用 target 估算）')
+
+# 停止条件精确性：stop_unions=k -> 恰好 k 次 union（不差一，且 0 也不多跑）
+exact = True
+for k in range(0, 9):
+    st = {}
+    cl_k = v3.clusters_random_sized(200, 50, random.Random(100 + k), 4, stop_unions=k, stats=st)
+    exact &= (st['unions'] == k == merges(cl_k) == v3.unions_of(cl_k) and st['clusters'] == len(cl_k))
+check('stop_unions=k 精确执行 k 次 union（k=0..8，不差一）', exact)
+
+def mk_case(n, blocks, base=0.1):
+    """blocks: [(start, end, sim)] 块内相似度；块间 base。用于构造不同受限结构。"""
+    S = np.full((n, n), base)
+    for a, b, s in blocks:
+        S[a:b, a:b] = s
+    np.fill_diagonal(S, -1.0)
+    return S
+
+CASES = [
+    ('全同高相似(预算受限)', mk_case(80, [(0, 80, 0.99)]), 20, 4),
+    ('tau 全线不满足', mk_case(80, [], 0.5), 20, 4),
+    ('只有 6 个 unit 相似', mk_case(40, [(0, 6, 0.90)]), 20, 4),
+    ('分块 + max_size=2', mk_case(60, [(0, 20, 0.95)]), 30, 2),
+    ('小预算 ratio=0.125', mk_case(100, [(0, 40, 0.90)]), 12, 4),
+]
+all_match = True
+for name, S, target, ms in CASES:
+    sb = {}; cl_b = v3.pairs_similarity(S, target, None, ms, tau=0.75, stats=sb)
+    sr = {}; cl_r = v3.clusters_random_sized(S.shape[0], target, random.Random(9), ms,
+                                            stop_unions=sb['unions'], stats=sr)
+    ok = (sr['unions'] == sb['unions']                       # 两臂真实 union 数完全相同
+          and merges(cl_b) == sb['unions'] == merges(cl_r) == sr['unions'])   # 报告口径 = 簇结构
+    all_match &= ok
+    print('       %-20s bound unions=%2d  rand(matched) unions=%2d  budget 模式会做=%2d  '
+          '簇数 bound=%3d rand=%3d' % (name, sb['unions'], sr['unions'], math.ceil(target / 2),
+                                       len(cl_b), len(cl_r)))
+check('matched：5 种受限结构下两臂 union 数逐 case 完全相同', all_match)
+
+# GPU 上 1370 vs 888 的成因：tau 是约束 -> bound 臂提前停，而默认（matched）随机臂不再超支
+sb2 = {}; v3.pairs_similarity(S_low, target, None, ms, tau=0.75, stats=sb2)
+sr2 = {}; cl_r_b = v3.clusters_random_sized(n, target, random.Random(3), ms,
+                                           stop_unions=sb2['unions'], stats=sr2)
+sr3 = {}; v3.clusters_random_sized(n, target, random.Random(3), ms, stats=sr3)
+check('tau 全线不满足：matched 随机臂 0 union（= bound 臂），budget 模式仍超支',
+      sb2['unions'] == 0 and sr2['unions'] == 0 and len(cl_r_b) == 0
+      and sr3['unions'] == math.ceil(target / 2),
+      'bound=%d matched=%d budget=%d' % (sb2['unions'], sr2['unions'], sr3['unions']))
+
+# unit 不够时只做得到的次数、绝不超发（差额会在报告的 merge_parity 里显示为不等）
+sr4 = {}; cl_r4 = v3.clusters_random_sized(4, 100, random.Random(1), 4, stop_unions=10, stats=sr4)
+check('unit 不足时不超发（4 个 unit 最多 3 次 union，达不到 10 就少做）',
+      sr4['unions'] == 3 == merges(cl_r4) and sr4['unions'] <= 10)
+
+# budget 模式 = 上一版行为，未被改动
+sr5 = {}; v3.clusters_random_sized(200, 50, random.Random(2), 4, stats=sr5)
+check('budget 模式仍 = ceil(target/2)（上一版行为未改动）', sr5['unions'] == math.ceil(50 / 2) == 25)
+
+# stats 交叉校验：内部计数器 == 森林恒等式 Σ(|c|-1)（报告列用前者，两者必须一致）
+sb6 = {}; cl_b6 = v3.pairs_similarity(mk_case(60, [(0, 30, 0.95)]), 20, None, 4, tau=0.75, stats=sb6)
+sr6 = {}; cl_r6 = v3.clusters_random_sized(60, 20, random.Random(4), 4, stop_unions=sb6['unions'], stats=sr6)
+check('stats[unions] 与 Σ(|c|-1)（unions_of）一致，两臂都校验',
+      sb6['unions'] == merges(cl_b6) == v3.unions_of(cl_b6)
+      and sr6['unions'] == merges(cl_r6) == v3.unions_of(cl_r6) and sb6['unions'] == sr6['unions'],
+      'bound=%d rand=%d' % (sb6['unions'], sr6['unions']))
 
 print('\nALL %d CHECKS PASSED' % n_ok)

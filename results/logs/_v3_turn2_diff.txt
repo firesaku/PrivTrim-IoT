@@ -1,0 +1,259 @@
+--- OLD 上一轮状态(我的 turn-1 补丁 + 上游 --rand-min-gap)
++++ NEW 本轮(审计 #4 合并匹配)
+@@ -27,4 +27,14 @@
+    相似度低于 tau 的两个 unit 进入同一簇，因此 tau 不是簇直径上界，
+    「同簇成员两两相似度 >= tau」这类表述是错的。
++#4 合并匹配（2026-10-16 第二轮修正）：上一轮只匹配了簇大小上限，没匹配**合并次数**。GPU 实测
++   bound 配置 bound_emb 1370 簇 / rand4_emb 888 簇 —— 随机臂合并得更多，因为 tau 本身是约束
++   （找不到 sim >= tau 的边就提前停），于是「混得少」可能只是「合并得少」，与已修的
++   pairs_similarity 欠合并问题同类。现默认让随机臂逐记录×ratio 停在与 bound 臂**完全相同的
++   union 数**上：bound 臂经 stats 回报真实 union 数，随机臂用 stop_unions= 精确对齐（两侧都数
++   真实 union，不用 target 估算）。--rand-stop matched（默认）/ budget（上一版：按 target 预算，
++   簇大小匹配但合并次数可能多于 bound 臂）；--rand-legacy 仍是已发布数字的复现路径。
++   报告增 unions 列（--rand-legacy 下不加该列，以保持已发布表格逐字不变）、每臂 clusters/unions
++   汇总行、merge_parity 行（逐记录×ratio 的 union 相等计数；不等则逐条列出，不平均掉），
++   JSON 增 arm_unions / merge_parity / merge_parity_mismatch / rand_stop / rand_min_gap。
+ —— 复现已发布数字：--layer last --rand-legacy（其余参数不变）
+ """
+@@ -83,9 +93,11 @@
+ 
+ # ---------------- 配对策略 ----------------
+-def pairs_similarity(S, target, rules=None, max_size=2, tau=None):
++def pairs_similarity(S, target, rules=None, max_size=2, tau=None, stats=None):
+     """rules: list of boolean arrays; 若任一 rule 上 i,j 取值不同则禁止合并。
+        max_size: 簇大小上限（2 = 纯两两配对）; tau: 相似度下界。
+        target: 合并预算；每接受一次 union 记 2（merged += 2），merged >= target 即停
+-       （故未受限时 union 次数 = ceil(target/2)）。
++       （故未受限时 union 次数 = ceil(target/2)；tau/上限受限时会更少）。
++       stats: 可选 dict，回填真实计数 {'unions': 接受的 union 数, 'clusters', 'units_used', 'budget'}；
++              审计 #4 的合并匹配就是靠它把 bound 臂的真实 union 数传给随机臂。
+ 
+        tau 语义（重要，勿过度解读）：tau 只在「当前这条合并边」上检查
+@@ -126,5 +138,13 @@
+     for i in range(n):
+         g[find(i)].append(i)
+-    return [v for v in g.values() if len(v) >= 2]
++    cl = [v for v in g.values() if len(v) >= 2]
++    if stats is not None:
++        # 审计 #4：回报**真实**接受的 union 数（每次 union 记 2 → unions = merged // 2），
++        # 供合并匹配的随机臂与报告/JSON 使用；不是用 target 估算出来的值
++        stats['unions'] = merged // 2
++        stats['clusters'] = len(cl)
++        stats['units_used'] = sum(len(c) for c in cl)
++        stats['budget'] = target
++    return cl
+ 
+ def pairs_random(n, target, rng, min_gap=0):
+@@ -143,19 +163,21 @@
+     return out
+ 
+-def clusters_random_sized(n, target, rng, max_size=4, min_gap=0):
+-    """大小匹配的随机对照（bound 配置的 rand4_emb 默认走这里，审计 #2）：
++def clusters_random_sized(n, target, rng, max_size=4, min_gap=0, stop_unions=None, stats=None):
++    """大小匹配 + 合并匹配的随机对照（bound 配置的 rand4_emb 默认走这里，审计 #2/#4）：
+        打乱 unit 顺序后，贪心地把至多 max_size 个「尚未被前面各簇取走」的 unit 组成一簇。
+-       合并记账与 pairs_similarity 完全一致：每并入一个 unit 视为一次 union，merged += 2，
+-       merged >= target 即停（外层按簇检查、内层逐 union 检查，故受限条件下 union 次数
+-       同样 = ceil(target/2)，与 bound 臂请求的预算一致）；被选中的 unit 互不重复。
+-       于是 {bound_emb, rand4_emb} 的唯一差别是选择准则（相似度下界 vs 随机），
+-       簇大小上限同为 max_size —— 这正是旧 pairs_random（恒 size 2）做不到的。
+-       min_gap>0 时不并入与簇内已有 unit 原始下标相距 <= min_gap 的 unit（默认 0 不限制；
+-       旧的 size-2 版用 min_gap=2，此处默认不启用，如需敏感性对照可显式传入）。"""
++       合并记账与 pairs_similarity 完全一致：每并入一个 unit 视为一次 union，merged += 2；
++       inner/outer 都在每次 union **之前**检查停止条件，故既不会少做也不会超做。
++       停止条件：stop_unions 给出时恰好做 stop_unions 次 union（审计 #4 合并匹配：用 bound 臂
++       同一记录同一个 ratio 的真实 union 数）；否则按 target 预算（merged >= target 即停，
++       未受限时 union 次数 = ceil(target/2)，即上一版行为）。
++       stats: 可选 dict，回填真实计数 {'unions', 'clusters', 'units_used', 'stop'}。
++       min_gap>0 时不并入与簇内已有 unit 原始下标相距 <= min_gap 的 unit（CLI 默认 --rand-min-gap 2，
++       与旧 random_far 同口径；函数默认 0 = 不限制，便于单测与敏感性对照）。"""
++    limit = 2 * int(stop_unions) if stop_unions is not None else int(target)
+     order = list(range(n)); rng.shuffle(order)
+     out = []; merged = 0; k = 0
+-    while merged < target and k < n:
++    while merged < limit and k < n:
+         grp = [order[k]]; k += 1
+-        while len(grp) < max_size and merged < target and k < n:
++        while len(grp) < max_size and merged < limit and k < n:
+             i = order[k]; k += 1
+             if min_gap and any(abs(i - j) <= min_gap for j in grp):
+@@ -164,5 +186,16 @@
+         if len(grp) >= 2:
+             out.append(grp)
++    if stats is not None:
++        stats['unions'] = merged // 2
++        stats['clusters'] = len(out)
++        stats['units_used'] = sum(len(g) for g in out)
++        stats['stop'] = ('stop_unions=%d' % stop_unions) if stop_unions is not None else ('target=%d' % target)
+     return out
++
++def unions_of(cl):
++    """簇列表对应的真实 union 次数（森林恒等式：Σ(|c|-1)）。pairs_similarity 与
++       clusters_random_sized 用自己的内部计数器（stats['unions']），这里只给
++       clusters_from_pairs/pairs_random 那条旧随机路径兜底；单测已交叉验证两者相等。"""
++    return sum(len(c) - 1 for c in cl)
+ 
+ def clusters_from_pairs(n, pairs):
+@@ -266,6 +299,11 @@
+                     help="显式层下标（0 = 词嵌入输出，n_layers-1 = 末层）；给出时优先于 --layer")
+     ap.add_argument('--rand-legacy', action='store_true',
+-                    help="rand4_emb 用旧的 size-2 随机配对（复现已发布数字；"
+-                         "默认用与 bound_emb 大小匹配的 clusters_random_sized）")
++                    help="rand4_emb 用旧的 size-2 随机配对（复现已发布数字；此时 --rand-stop/"
++                         "--rand-min-gap 均不生效，报告表格式也冻结为已发布列集合）")
++    ap.add_argument('--rand-stop', choices=['matched', 'budget'], default='matched',
++                    help="rand4_emb 的停止条件（审计 #4）：matched = 与该记录、该 ratio 下 "
++                         "bound_emb 的**真实 union 数**精确对齐（默认；两侧都数真实 union，"
++                         "不用 target 估算，消除「合并次数」混淆）；budget = 上一版行为"
++                         "（按 target 预算停，簇大小匹配但合并次数可能多于 bound 臂）")
+     ap.add_argument('--rand-min-gap', type=int, default=2,
+                     help="clusters_random_sized 的最小索引间隔：2 = 沿用旧 random_far 的结构"
+@@ -316,7 +354,10 @@
+     recs = [json.loads(l) for l in io.open(sp, encoding='utf-8') if l.strip()]
+     cells = defaultdict(lambda: [0, 0, 0, 0])
++    arm_u = defaultdict(int)          # 审计 #4：每臂每 ratio 的真实 union 数（跨记录累加）
++    parity_n = parity_eq = 0          # 合并配平检查：逐记录×ratio 比较 rand4_emb 与 bound_emb
++    mismatch = []
+     n_used = 0
+     t0 = time.time()
+-    for r in recs:
++    for line_idx, r in enumerate(recs):
+         units = split_units(r['context'], a.cap, C['granularity'])
+         if len(units) < 8:
+@@ -345,28 +386,60 @@
+         for ratio in C['ratios']:
+             target = max(int(ratio * n), 2)
++            # 审计 #4：合并匹配需要 bound 臂在**同一条记录、同一个 ratio** 下的真实 union 数。
++            # 与 modes 的排列顺序无关地先算一次并缓存，循环里命中 bound_emb 时复用（不重复计算）。
++            bound_ref = None
++            if (not a.rand_legacy) and 'bound_emb' in C['modes'] and 'rand4_emb' in C['modes']:
++                _bst = {}
++                bound_ref = (pairs_similarity(S, target, None, C.get('max_size', 4),
++                                              tau=C.get('tau', 0.75), stats=_bst), _bst)
+             for mode in C['modes']:
++                st = None
+                 if mode == 'sim_emb':
+-                    cl = pairs_similarity(S, target, None, 2)
++                    st = {}; cl = pairs_similarity(S, target, None, 2, stats=st)
+                 elif mode == 'cons_emb':
+-                    cl = pairs_similarity(S, target, [sens_flag], 2)
++                    st = {}; cl = pairs_similarity(S, target, [sens_flag], 2, stats=st)
+                 elif mode == 'imp_emb':
+-                    cl = pairs_similarity(S, target, [ans_flag], 2)
++                    st = {}; cl = pairs_similarity(S, target, [ans_flag], 2, stats=st)
+                 elif mode == 'cons_imp_emb':
+-                    cl = pairs_similarity(S, target, [sens_flag, ans_flag], 2)
++                    st = {}; cl = pairs_similarity(S, target, [sens_flag, ans_flag], 2, stats=st)
+                 elif mode == 'bound_emb':
+                     # tau / max_size 取自配置（见 cfg_bound），并写入报告头与 JSON（审计 #3）；
+                     # tau 是 edge-level 下界（见 pairs_similarity 注释），不是簇直径上界
+-                    cl = pairs_similarity(S, target, None, C.get('max_size', 4), tau=C.get('tau', 0.75))
++                    if bound_ref is not None:
++                        cl, st = bound_ref
++                    else:
++                        st = {}
++                        cl = pairs_similarity(S, target, None, C.get('max_size', 4),
++                                              tau=C.get('tau', 0.75), stats=st)
+                 elif mode == 'rand4_emb':
+                     if a.rand_legacy:
+-                        # 旧行为：size-2 随机配对（仅用于复现已发布数字）
++                        # 旧行为：size-2 随机配对（仅用于复现已发布数字，无 union 计数器）
+                         cl = clusters_from_pairs(n, pairs_random(n, target, rng, min_gap=2))
+                     else:
+-                        # 大小匹配随机对照：同 max_size、同合并预算，只有选择准则不同（审计 #2）
++                        # 审计 #2/#4：同 max_size、同 min_gap；matched 模式再用 bound 臂的真实
++                        # union 数收口，使两臂请求/消耗的合并数完全一致（选择准则 = 唯一变量）
++                        st = {}
+                         cl = clusters_random_sized(n, target, rng, C.get('max_size', 4),
+-                                                   min_gap=a.rand_min_gap)
++                                                   min_gap=a.rand_min_gap,
++                                                   stop_unions=(bound_ref[1]['unions']
++                                                                if (bound_ref and a.rand_stop == 'matched') else None),
++                                                   stats=st)
+                 else:
+                     cl = clusters_from_pairs(n, pairs_random(n, target, rng,
+                                                              min_gap=(2 if mode == 'random_far' else 0)))
++                # 真实 union 数：pairs_similarity / clusters_random_sized 用内部计数器，
++                # random_adj/random_far（旧路径）用森林恒等式兜底
++                u = st['unions'] if (st is not None and 'unions' in st) else unions_of(cl)
++                arm_u[(mode, ratio)] += u
++                # 合并配平：逐记录×ratio 记录两臂 union 是否相等；不等则逐条留痕，不平均掉
++                if mode == 'rand4_emb' and bound_ref is not None:
++                    parity_n += 1
++                    if u == bound_ref[1]['unions']:
++                        parity_eq += 1
++                    else:
++                        mismatch.append({'line': line_idx, 'used': n_used, 'ratio': ratio,
++                                         'bound_unions': bound_ref[1]['unions'], 'rand_unions': u})
++                        log("merge-parity mismatch line=%d used#%d ratio=%.3f bound_unions=%d rand_unions=%d"
++                            % (line_idx, n_used, ratio, bound_ref[1]['unions'], u))
+                 b = cells[(mode, ratio)]
+                 for cu in cl:
+@@ -385,23 +458,45 @@
+     L = []
+     w = L.append
++    rand_mode = ("legacy_size2" if a.rand_legacy else
++                 ("sized_matched_unions" if a.rand_stop == 'matched' else "sized_target_budget"))
+     w("V3 CONFIG=%s  samples=%s  granularity=%s  records=%d  cap=%d  seed=%d  dev=%s" % (
+         a.config, C['samples'], C['granularity'], n_used, a.cap, a.seed, dev))
+     # 审计 #3：tau / max_size / 编码器 / 所选层必须随结果落盘，否则表格无法复核
+     # max_size 取配置值；非 bound 配置各臂都是两两配对，故回落值 2 即其真实簇大小上限
+-    w("model=%s  layer_idx=%d  n_layers=%d  layer=%s  tau=%s  max_size=%s  rand=%s" % (
++    w("model=%s  layer_idx=%d  n_layers=%d  layer=%s  tau=%s  max_size=%s  rand=%s  rand_stop=%s  rand_min_gap=%s" % (
+         a.model, layer_idx, n_layers, layer_src,
+         ("%.3f" % C['tau']) if C.get('tau') is not None else "-",
+-        C.get('max_size', 2),
+-        "legacy_size2" if a.rand_legacy else "sized_random"))
++        C.get('max_size', 2), rand_mode, a.rand_stop, a.rand_min_gap))
+     w("note: tau 只约束合并边(edge-level)，链式合并可使同簇成员对的相似度 < tau，故 tau 不是簇直径上界；tau=- 表示该配置不设下界")
+     w("note: max_size 为该配置声明的簇大小上限（bound=4，作用于 bound_emb/rand4_emb；sim_emb 等两两配对臂恒为 2；其余配置也全是两两配对）")
++    # 审计 #4：每臂的簇数与真实 union 数必须落盘；合并配平检查逐记录×ratio 报告，不等要逐条可见
++    for m in C['modes']:
++        w("arm %-14s %s" % (m, "  ".join("ratio=%.3f clusters=%d unions=%d" % (
++            r, cells[(m, r)][0], arm_u[(m, r)]) for r in C['ratios'])))
++    if parity_n:
++        w("merge_parity(rand4_emb vs bound_emb, 逐记录×ratio): equal=%d/%d (%.1f%%)  unequal=%d  rand_stop=%s  rand_min_gap=%s"
++          % (parity_eq, parity_n, 100.0 * parity_eq / parity_n, parity_n - parity_eq,
++             a.rand_stop, a.rand_min_gap))
++        for mm in mismatch[:10]:
++            w("  mismatch: line=%d used#%d ratio=%.3f bound_unions=%d rand_unions=%d"
++              % (mm['line'], mm['used'], mm['ratio'], mm['bound_unions'], mm['rand_unions']))
++        if len(mismatch) > 10:
++            w("  ...(+%d more，全量见 JSON merge_parity_mismatch)" % (len(mismatch) - 10))
++    else:
++        w("merge_parity: n/a%s" % ("（--rand-legacy：冻结的已发布行为，不对齐合并数）" if a.rand_legacy
++                                   else "（本配置没有 bound_emb/rand4_emb 对照）"))
+     w("")
+-    w("%-14s %-8s %9s %11s %11s %11s" % ("mode", "ratio", "clusters", "hit_answer", "mix_sens", "fuse_2sec"))
++    # --rand-legacy 冻结已发布表格的列集合；unions 列只在修正后的模式里加（数值仍在 arm 行与 JSON）
++    hdr = "%-14s %-8s %9s %11s %11s %11s"; row = "%-14s %-8.3f %9d %10.1f%% %10.1f%% %10.1f%%"
++    cols = ("mode", "ratio", "clusters", "hit_answer", "mix_sens", "fuse_2sec")
++    if not a.rand_legacy:
++        hdr += " %9s"; row += " %9d"; cols = cols + ("unions",)
++    w(hdr % cols)
+     for mode in C['modes']:
+         for ratio in C['ratios']:
+             b = cells[(mode, ratio)]
+             if b[0]:
+-                w("%-14s %-8.3f %9d %10.1f%% %10.1f%% %10.1f%%" % (
+-                    mode, ratio, b[0], 100*b[1]/b[0], 100*b[2]/b[0], 100*b[3]/b[0]))
++                vals = (mode, ratio, b[0], 100*b[1]/b[0], 100*b[2]/b[0], 100*b[3]/b[0])
++                w(row % (vals if a.rand_legacy else vals + (arm_u[(mode, ratio)],)))
+         w("")
+     outp = os.path.join(a.outdir, 'v3_%s_report.txt' % a.config)
+@@ -413,7 +508,14 @@
+          "model": a.model, "layer_idx": layer_idx, "n_layers": n_layers, "layer": layer_src,
+          "tau": C.get('tau'), "max_size": C.get('max_size', 2),
+-         "rand_mode": "legacy_size2" if a.rand_legacy else "sized_random",
++         "rand_mode": rand_mode, "rand_stop": a.rand_stop, "rand_min_gap": a.rand_min_gap,
+          "tau_semantics": "edge-level：tau 只在下一条合并边上检查，链式合并可使同簇成员对的相似度 < tau；tau 不是簇直径上界（tau=null 表示该配置不设下界）",
+          "max_size_semantics": "配置声明的簇大小上限：bound=4（作用于 bound_emb/rand4_emb；sim_emb 等两两配对臂恒为 2）；其余配置也全是两两配对=2",
++         "arm_unions": {"%s|%s" % k: v for k, v in arm_u.items()},
++         "merge_parity": {"unit": "record×ratio", "mode_pair": ["rand4_emb", "bound_emb"],
++                          "total": parity_n, "equal": parity_eq, "unequal": parity_n - parity_eq,
++                          "equal_pct": (100.0 * parity_eq / parity_n) if parity_n else None,
++                          "rand_stop": a.rand_stop, "rand_min_gap": a.rand_min_gap,
++                          "note": "matched 模式下应 100% 相等；unequal>0 时逐条见 merge_parity_mismatch"},
++         "merge_parity_mismatch": mismatch,
+          "cells": {"%s|%s" % k: v for k, v in cells.items()}}, ensure_ascii=False, indent=1))
+     log("wrote", outp)
