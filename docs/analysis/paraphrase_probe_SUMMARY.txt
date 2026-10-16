@@ -1,0 +1,47 @@
+MOTIVATION 摘要（24 案例 / 72 标识符 / 600 个变体样本）
+
+A. 正则真正删除率（完整值），canonical vs 变体
+类型         canonical                  variants                   落差
+email      24/24 = 100.0%             48/192 = 25.0%             75.0 pp
+phone      24/24 = 100.0%             0/168 = 0.0%               100.0 pp
+account    24/24 = 100.0%             0/168 = 0.0%               100.0 pp
+合计         72/72 = 100.0%             48/528 = 9.1%              90.9 pp
+
+B. 指标盲区：检查器看不见、因此'无法判定'的样本
+类型         不可判定数 / 该类型变体数
+email      120 / 216 = 55.6%
+phone      48 / 192 = 25.0%
+account    72 / 192 = 37.5%
+合计         240 / 600 = 40.0%
+
+（说明：exposure() 对小写去非字母数字后的字符串做子串匹配。当改述把原值打散后，
+  匹配失败 → 指标把该条记成'未检出'，而 pin_full/pin_fragment 的分母是'可检出的标识符'，
+  所以这些样本既不进泄漏计数、也不进移除计数，等于对指标隐形。）
+
+C. 逐变体明细（真删=检查器看见且删掉；盲=检查器看不见）
+类型        变体                          n      真删%       盲%
+account   0_canonical                24    100.0      0.0
+account   1_lower                    24      0.0      0.0
+account   2_space                    24      0.0      0.0
+account   3_no_prefix                24      0.0    100.0
+account   4_prefix_space             24      0.0      0.0
+account   5_paraphrase               24      0.0    100.0
+account   6_hash_style               24      0.0    100.0
+account   7_reversed_pfx             24      0.0      0.0
+email     0_canonical                24    100.0      0.0
+email     1_case_upper               24    100.0      0.0
+email     2_space_around_at          24      0.0      0.0
+email     3_at_dot_words             24      0.0    100.0
+email     4_local_part_only          24      0.0    100.0
+email     5_domain_only              24      0.0    100.0
+email     6_paraphrase               24      0.0    100.0
+email     7_paraphrase_w_local       24      0.0    100.0
+email     8_mixed_case               24    100.0      0.0
+phone     0_canonical                24    100.0      0.0
+phone     1_no_plus                  24      0.0      0.0
+phone     2_dots                     24      0.0      0.0
+phone     3_parens                   24      0.0      0.0
+phone     4_spaces                   24      0.0      0.0
+phone     5_digits_only              24      0.0      0.0
+phone     6_spoken                   24      0.0    100.0
+phone     7_paraphrase               24      0.0    100.0
