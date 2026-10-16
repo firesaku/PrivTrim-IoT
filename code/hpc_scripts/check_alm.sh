@@ -1,13 +1,12 @@
-#!/bin/bash
 RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
-JID=${1:-10598862}
-echo "===== 状态 ====="
-squeue -j "$JID" -o '%.12i %.10P %.10j %.9T %.11M %.8b %.16R' 2>&1
-sacct -j "$JID" -o JobID,JobName%10,Partition,State,ExitCode,Elapsed,AllocCPUS -X 2>&1
-echo "===== out 尾部 ====="
-tail -22 "$RD/logs/e2ea-$JID.out" 2>&1
-echo "===== err 尾部 ====="
-tail -12 "$RD/logs/e2ea-$JID.err" 2>&1
-echo "===== 报告 ====="
-[ -f "$RD/e2eout/e2e_alm_report.txt" ] && cat "$RD/e2eout/e2e_alm_report.txt" || echo "(尚未生成)"
-echo "ALM_CHECK_DONE"
+echo '=== queue ==='
+squeue -u "$(id -un)" -o '%.12i %.10P %.14j %.9T %.11M %.8b %R' 2>&1
+echo '=== job 10601686 ==='
+sacct -j 10601686 -o JobID,JobName%14,Partition,State,Elapsed,ExitCode 2>&1 | head -6
+echo '=== v2dalm out tail ==='
+for f in "$RD"/logs/v2dalm-*.out; do [ -f "$f" ] && echo "--- $f ---" && tail -25 "$f"; done
+echo '=== v2dalm err tail ==='
+for f in "$RD"/logs/v2dalm-*.err; do [ -f "$f" ] && echo "--- $f ---" && tail -15 "$f"; done
+echo '=== result files ==='
+ls -l "$RD"/v2d_alm_* 2>&1
+echo '=== ALM_STATUS_DONE ==='
