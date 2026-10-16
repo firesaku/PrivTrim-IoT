@@ -1,0 +1,49 @@
+HOST=cn-0901-04.hpc.naitive.ai DATE=2026-10-15T11:21:41+04:00
+cases file: /dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/run/qwen25_7b/cases.jsonl.gz
+  cases 2000
+  cases 4000
+  cases 6000
+  cases 8000
+  cases 10000
+  cases 12000
+  cases 14000
+  cases 16000
+variant-level sweep ...
+V1 PARAPHRASE-AWARE LEAK CHECKER — full-corpus coverage
+cases_file=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/run/qwen25_7b/cases.jsonl.gz
+cases=17975  secrets=53925
+
+bucket                    n     hit_rate
+blind_spot            53925        0.00%
+raw_basic             53925      100.00%
+raw_var_tok           53925      100.00%
+raw_variants          53925      100.00%
+red_basic             53925        0.00%
+red_var_tok           53925       12.35%
+redact_miss           53925       12.35%
+
+读法：
+  raw_basic   = 原版检查器在原始上下文上判定'看得见'的比例（= 项目现有隐私指标的分母逻辑）
+  raw_var_tok = 变体枚举 + token 集合检查器的检出率（更严格）
+  blind_spot  = 原版看不见、但更严格检查器看得见 -> 指标盲区
+  redact_miss = 正则脱敏后，更严格检查器仍看得见 -> 正则漏删率
+wrote /dpc/kuex0095/100065732/privtrim_v2c_20261015/v1_report.txt
+V1_RC=0
+V1 PARAPHRASE-AWARE LEAK CHECKER — full-corpus coverage
+cases_file=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/run/qwen25_7b/cases.jsonl.gz
+cases=17975  secrets=53925
+
+bucket                    n     hit_rate
+blind_spot            53925        0.00%
+raw_basic             53925      100.00%
+raw_var_tok           53925      100.00%
+raw_variants          53925      100.00%
+red_basic             53925        0.00%
+red_var_tok           53925       12.35%
+redact_miss           53925       12.35%
+
+读法：
+  raw_basic   = 原版检查器在原始上下文上判定'看得见'的比例（= 项目现有隐私指标的分母逻辑）
+  raw_var_tok = 变体枚举 + token 集合检查器的检出率（更严格）
+  blind_spot  = 原版看不见、但更严格检查器看得见 -> 指标盲区
+  redact_miss = 正则脱敏后，更严格检查器仍看得见 -> 正则漏删率V1_DONE

@@ -1,0 +1,12 @@
+HOST=gpu-0913-01.hpc.naitive.ai TASK=2 CFG=gran DATE=2026-10-15T11:25:32+04:00
+NVIDIA H200, 143771 MiB, 0 MiB
+[11:25:39] config gran device cuda modes ['sim_emb', 'cons_emb', 'imp_emb', 'random_adj'] ratios [0.125, 0.25, 0.5]
+[11:25:40] wrote /dpc/kuex0095/100065732/privtrim_v2c_20261015/v3out/v3_gran_report.txt
+V3 CONFIG=gran  samples=frozen_samples.jsonl  granularity=line  records=0  cap=200  seed=20261015  dev=cuda
+
+mode           ratio     clusters  hit_answer    mix_sens   fuse_2sec
+
+
+
+
+V3_RC=0 CFG=gran

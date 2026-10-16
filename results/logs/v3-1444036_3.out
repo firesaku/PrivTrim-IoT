@@ -1,0 +1,25 @@
+HOST=gpu-0913-01.hpc.naitive.ai TASK=3 CFG=bound DATE=2026-10-15T11:25:41+04:00
+NVIDIA H200, 143771 MiB, 0 MiB
+[11:25:47] config bound device cuda modes ['sim_emb', 'bound_emb', 'rand4_emb'] ratios [0.25]
+[11:25:50] progress 50  1.9s
+[11:25:52] progress 100  3.7s
+[11:25:54] progress 150  5.7s
+[11:25:57] progress 200  8.9s
+[11:26:08] progress 250  19.2s
+[11:26:16] progress 300  27.7s
+[11:26:20] progress 350  32.0s
+[11:26:25] progress 400  36.2s
+[11:26:28] progress 450  39.8s
+[11:26:31] progress 500  42.2s
+[11:26:31] progress 550  43.0s
+[11:26:31] wrote /dpc/kuex0095/100065732/privtrim_v2c_20261015/v3out/v3_bound_report.txt
+V3 CONFIG=bound  samples=frozen_samples_scattered.jsonl  granularity=sentence  records=550  cap=200  seed=20261015  dev=cuda
+
+mode           ratio     clusters  hit_answer    mix_sens   fuse_2sec
+sim_emb        0.250         1988        4.0%        0.0%        0.1%
+
+bound_emb      0.250         1347        5.1%        0.0%        0.1%
+
+rand4_emb      0.250         1979        3.2%       17.6%        1.6%
+
+V3_RC=0 CFG=bound

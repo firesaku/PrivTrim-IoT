@@ -1,0 +1,37 @@
+HOST=gpu-0913-01.hpc.naitive.ai TASK=1 CFG=guard DATE=2026-10-15T11:24:38+04:00
+NVIDIA H200, 143771 MiB, 0 MiB
+[11:24:46] config guard device cuda modes ['sim_emb', 'cons_emb', 'imp_emb', 'cons_imp_emb', 'random_adj'] ratios [0.125, 0.25, 0.5]
+[11:24:50] progress 50  2.2s
+[11:24:53] progress 100  4.7s
+[11:24:59] progress 150  10.6s
+[11:25:09] progress 200  20.7s
+[11:25:16] progress 250  28.0s
+[11:25:20] progress 300  32.3s
+[11:25:24] progress 350  36.3s
+[11:25:28] progress 400  40.2s
+[11:25:30] progress 450  41.9s
+[11:25:31] wrote /dpc/kuex0095/100065732/privtrim_v2c_20261015/v3out/v3_guard_report.txt
+V3 CONFIG=guard  samples=frozen_samples.jsonl  granularity=sentence  records=494  cap=200  seed=20261015  dev=cuda
+
+mode           ratio     clusters  hit_answer    mix_sens   fuse_2sec
+sim_emb        0.125         1011        5.7%        0.0%        0.1%
+sim_emb        0.250         1950        4.3%        0.0%        0.2%
+sim_emb        0.500         3926        4.2%        0.7%        0.4%
+
+cons_emb       0.125         1011        5.7%        0.0%        0.1%
+cons_emb       0.250         1950        4.3%        0.0%        0.2%
+cons_emb       0.500         3926        4.2%        0.0%        0.5%
+
+imp_emb        0.125         1011        0.0%        0.0%        0.2%
+imp_emb        0.250         1950        0.0%        0.0%        0.2%
+imp_emb        0.500         3926        0.0%        1.0%        0.5%
+
+cons_imp_emb   0.125         1011        0.0%        0.0%        0.2%
+cons_imp_emb   0.250         1950        0.0%        0.0%        0.2%
+cons_imp_emb   0.500         3926        0.0%        0.0%        0.9%
+
+random_adj     0.125         1011        2.8%       17.3%        1.7%
+random_adj     0.250         1950        2.7%       15.8%        1.4%
+random_adj     0.500         3926        3.5%       16.8%        1.2%
+
+V3_RC=0 CFG=guard

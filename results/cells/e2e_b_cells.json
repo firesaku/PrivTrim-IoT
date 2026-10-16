@@ -1,0 +1,104 @@
+{
+ "cases": 1000,
+ "arms": [
+  "full",
+  "filtered_full",
+  "random_drop",
+  "mask_extractive",
+  "mask_cluster"
+ ],
+ "agg": {
+  "hotpotqa|full": [
+   500,
+   233.0,
+   291.52941225441236,
+   0,
+   0
+  ],
+  "hotpotqa|filtered_full": [
+   500,
+   232.0,
+   295.05877733377747,
+   0,
+   0
+  ],
+  "hotpotqa|random_drop": [
+   500,
+   127.0,
+   161.59841269841274,
+   0,
+   0
+  ],
+  "hotpotqa|mask_extractive": [
+   500,
+   141.0,
+   180.33178079230717,
+   0,
+   0
+  ],
+  "hotpotqa|mask_cluster": [
+   500,
+   173.0,
+   217.4045194485598,
+   0,
+   0
+  ],
+  "squad|full": [
+   500,
+   382.0,
+   428.294571470778,
+   0,
+   0
+  ],
+  "squad|filtered_full": [
+   500,
+   381.0,
+   426.5649550088085,
+   0,
+   0
+  ],
+  "squad|random_drop": [
+   500,
+   182.0,
+   205.71461402374712,
+   0,
+   0
+  ],
+  "squad|mask_extractive": [
+   500,
+   240.0,
+   266.47882128191725,
+   0,
+   0
+  ],
+  "squad|mask_cluster": [
+   500,
+   265.0,
+   294.25430164950285,
+   0,
+   0
+  ]
+ },
+ "answers_sample": [
+  "3,384,569",
+  "3,384,569",
+  "UNKNOWN",
+  "UNKNOWN",
+  "UNKNOWN",
+  "UNKNOWN",
+  "UNKNOWN",
+  "UNKNOWN",
+  "UNKNOWN",
+  "UNKNOWN",
+  "eighteenth century",
+  "eighteenth century",
+  "eighteenth century",
+  "eighteenth",
+  "eighteenth",
+  "Captain Beefheart & His Magic Band",
+  "Captain Beefheart & His Magic Band",
+  "UNKNOWN",
+  "Captain Beefheart & His Magic Band",
+  "Captain Beefheart & His Magic Band"
+ ]
+}

@@ -1,0 +1,22 @@
+E2E RESULT — same cases / same 50%% budget / same model / same privacy frontend
+cases=1000  arms=['full', 'filtered_full', 'random_drop', 'mask_extractive', 'mask_cluster']  max_new=64  budget_frac=0.50
+
+dataset    arm                  n        EM        F1
+hotpotqa   full               500     0.00%    45.73%
+hotpotqa   filtered_full      500     0.00%    46.33%
+hotpotqa   random_drop        500     0.00%    25.36%
+hotpotqa   mask_extractive     500     0.00%    28.46%
+hotpotqa   mask_cluster       500     0.00%    27.60%
+
+squad      full               500     0.00%    49.75%
+squad      filtered_full      500     0.00%    49.60%
+squad      random_drop        500     0.00%    23.48%
+squad      mask_extractive     500     0.00%    30.50%
+squad      mask_cluster       500     0.00%    31.69%
+
+=== ALL datasets ===
+full              1000     0.00%    47.74%
+filtered_full     1000     0.00%    47.96%
+random_drop       1000     0.00%    24.42%
+mask_extractive    1000     0.00%    29.48%
+mask_cluster      1000     0.00%    29.65%

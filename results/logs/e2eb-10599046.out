@@ -1,0 +1,101 @@
+HOST=gpu-11-2 DATE=2026-10-15T17:40:30+04:00
+Tesla V100-PCIE-32GB, 32768 MiB
+Tesla V100-PCIE-32GB, 32768 MiB
+Tesla V100-PCIE-32GB, 32768 MiB
+Tesla V100-PCIE-32GB, 32768 MiB
+[17:40:45] gpu Tesla V100-PCIE-32GB
+[17:40:47] dataset hotpotqa: pool=7405 use=500
+[17:40:47] dataset squad: pool=10570 use=500
+[17:40:47] total cases 1000
+[17:40:47] loading LM a09a35458c702b33eeacc393d103063234e8bc28 fp16
+[17:40:56] loading embedder
+[17:41:48] prepared 100/1000  49.2s
+[17:42:38] prepared 200/1000  99.1s
+[17:43:25] prepared 300/1000  146.0s
+[17:44:15] prepared 400/1000  196.3s
+[17:45:04] prepared 500/1000  245.4s
+[17:45:11] prepared 600/1000  252.4s
+[17:45:18] prepared 700/1000  259.3s
+[17:45:25] prepared 800/1000  266.6s
+[17:45:32] prepared 900/1000  273.8s
+[17:45:39] prepared 1000/1000  280.7s
+[17:45:39] generating 5000 prompts
+[17:45:43] gen 8/5000  284.6s
+[17:46:46] gen 168/5000  347.3s
+[17:47:45] gen 328/5000  406.2s
+[17:48:48] gen 488/5000  469.1s
+[17:49:47] gen 648/5000  528.0s
+[17:50:54] gen 808/5000  595.6s
+[17:52:03] gen 968/5000  664.1s
+[17:53:02] gen 1128/5000  723.0s
+[17:53:58] gen 1288/5000  779.2s
+[17:55:02] gen 1448/5000  843.6s
+[17:56:10] gen 1608/5000  911.0s
+[17:57:14] gen 1768/5000  975.7s
+[17:58:13] gen 1928/5000  1034.6s
+[17:59:18] gen 2088/5000  1099.3s
+[18:00:15] gen 2248/5000  1156.7s
+[18:01:18] gen 2408/5000  1219.7s
+[18:02:05] gen 2568/5000  1266.4s
+[18:02:21] gen 2728/5000  1282.4s
+[18:02:36] gen 2888/5000  1297.6s
+[18:02:50] gen 3048/5000  1311.6s
+[18:03:05] gen 3208/5000  1326.7s
+[18:03:21] gen 3368/5000  1341.8s
+[18:03:36] gen 3528/5000  1357.2s
+[18:03:53] gen 3688/5000  1374.5s
+[18:04:09] gen 3848/5000  1390.6s
+[18:04:27] gen 4008/5000  1408.7s
+[18:04:44] gen 4168/5000  1424.9s
+[18:05:00] gen 4328/5000  1441.0s
+[18:05:16] gen 4488/5000  1457.4s
+[18:05:31] gen 4648/5000  1472.5s
+[18:05:47] gen 4808/5000  1487.9s
+[18:06:04] gen 4968/5000  1505.7s
+[18:06:09] wrote /dpc/kuex0095/100065732/privtrim_v2c_20261015/e2eout/e2e_b_report.txt
+E2E RESULT — same cases / same 50%% budget / same model / same privacy frontend
+cases=1000  arms=['full', 'filtered_full', 'random_drop', 'mask_extractive', 'mask_cluster']  max_new=64  budget_frac=0.50
+
+dataset    arm                  n        EM        F1
+hotpotqa   full               500    46.60%    58.31%
+hotpotqa   filtered_full      500    46.40%    59.01%
+hotpotqa   random_drop        500    25.40%    32.32%
+hotpotqa   mask_extractive     500    28.20%    36.07%
+hotpotqa   mask_cluster       500    34.60%    43.48%
+
+squad      full               500    76.40%    85.66%
+squad      filtered_full      500    76.20%    85.31%
+squad      random_drop        500    36.40%    41.14%
+squad      mask_extractive     500    48.00%    53.30%
+squad      mask_cluster       500    53.00%    58.85%
+
+=== ALL datasets ===
+full              1000    61.50%    71.98%
+filtered_full     1000    61.30%    72.16%
+random_drop       1000    30.90%    36.73%
+mask_extractive    1000    38.10%    44.68%
+mask_cluster      1000    43.80%    51.17%
+E2EB_RC=0
+===== REPORT =====
+E2E RESULT — same cases / same 50%% budget / same model / same privacy frontend
+cases=1000  arms=['full', 'filtered_full', 'random_drop', 'mask_extractive', 'mask_cluster']  max_new=64  budget_frac=0.50
+
+dataset    arm                  n        EM        F1
+hotpotqa   full               500    46.60%    58.31%
+hotpotqa   filtered_full      500    46.40%    59.01%
+hotpotqa   random_drop        500    25.40%    32.32%
+hotpotqa   mask_extractive     500    28.20%    36.07%
+hotpotqa   mask_cluster       500    34.60%    43.48%
+
+squad      full               500    76.40%    85.66%
+squad      filtered_full      500    76.20%    85.31%
+squad      random_drop        500    36.40%    41.14%
+squad      mask_extractive     500    48.00%    53.30%
+squad      mask_cluster       500    53.00%    58.85%
+
+=== ALL datasets ===
+full              1000    61.50%    71.98%
+filtered_full     1000    61.30%    72.16%
+random_drop       1000    30.90%    36.73%
+mask_extractive    1000    38.10%    44.68%
+mask_cluster      1000    43.80%    51.17%E2EB_DONE

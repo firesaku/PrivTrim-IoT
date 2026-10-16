@@ -1,0 +1,336 @@
+{
+ "records_scored": 494,
+ "cap": 200,
+ "ratios": [
+  0.125,
+  0.25,
+  0.5
+ ],
+ "seed": 20261015,
+ "cells": {
+  "similarity|0.125|smartbench_tdcs": [
+   32,
+   0,
+   0,
+   0
+  ],
+  "random_adjacent|0.125|smartbench_tdcs": [
+   32,
+   0,
+   16,
+   6
+  ],
+  "random_far|0.125|smartbench_tdcs": [
+   30,
+   0,
+   15,
+   0
+  ],
+  "similarity|0.25|smartbench_tdcs": [
+   32,
+   0,
+   0,
+   0
+  ],
+  "random_adjacent|0.25|smartbench_tdcs": [
+   32,
+   0,
+   18,
+   3
+  ],
+  "random_far|0.25|smartbench_tdcs": [
+   32,
+   0,
+   16,
+   0
+  ],
+  "similarity|0.5|smartbench_tdcs": [
+   32,
+   0,
+   0,
+   0
+  ],
+  "random_adjacent|0.5|smartbench_tdcs": [
+   64,
+   0,
+   30,
+   9
+  ],
+  "random_far|0.5|smartbench_tdcs": [
+   45,
+   0,
+   25,
+   0
+  ],
+  "similarity|0.125|pec_home": [
+   96,
+   0,
+   0,
+   0
+  ],
+  "random_adjacent|0.125|pec_home": [
+   96,
+   0,
+   40,
+   3
+  ],
+  "random_far|0.125|pec_home": [
+   96,
+   0,
+   35,
+   0
+  ],
+  "similarity|0.25|pec_home": [
+   112,
+   0,
+   0,
+   0
+  ],
+  "random_adjacent|0.25|pec_home": [
+   192,
+   0,
+   54,
+   7
+  ],
+  "random_far|0.25|pec_home": [
+   192,
+   0,
+   76,
+   0
+  ],
+  "similarity|0.5|pec_home": [
+   160,
+   0,
+   1,
+   0
+  ],
+  "random_adjacent|0.5|pec_home": [
+   383,
+   0,
+   110,
+   11
+  ],
+  "random_far|0.5|pec_home": [
+   379,
+   0,
+   139,
+   0
+  ],
+  "similarity|0.125|toolmem": [
+   352,
+   0,
+   0,
+   0
+  ],
+  "random_adjacent|0.125|toolmem": [
+   407,
+   0,
+   25,
+   1
+  ],
+  "random_far|0.125|toolmem": [
+   407,
+   0,
+   31,
+   0
+  ],
+  "similarity|0.25|toolmem": [
+   587,
+   0,
+   0,
+   0
+  ],
+  "random_adjacent|0.25|toolmem": [
+   814,
+   0,
+   68,
+   2
+  ],
+  "random_far|0.25|toolmem": [
+   814,
+   0,
+   81,
+   0
+  ],
+  "similarity|0.5|toolmem": [
+   948,
+   0,
+   0,
+   0
+  ],
+  "random_adjacent|0.5|toolmem": [
+   1638,
+   0,
+   136,
+   1
+  ],
+  "random_far|0.5|toolmem": [
+   1638,
+   0,
+   162,
+   0
+  ],
+  "similarity|0.125|privacylens": [
+   113,
+   0,
+   0,
+   0
+  ],
+  "random_adjacent|0.125|privacylens": [
+   122,
+   0,
+   26,
+   0
+  ],
+  "random_far|0.125|privacylens": [
+   122,
+   0,
+   34,
+   0
+  ],
+  "similarity|0.25|privacylens": [
+   196,
+   0,
+   0,
+   0
+  ],
+  "random_adjacent|0.25|privacylens": [
+   265,
+   0,
+   64,
+   1
+  ],
+  "random_far|0.25|privacylens": [
+   265,
+   0,
+   69,
+   0
+  ],
+  "similarity|0.5|privacylens": [
+   286,
+   0,
+   0,
+   0
+  ],
+  "random_adjacent|0.5|privacylens": [
+   529,
+   0,
+   126,
+   10
+  ],
+  "random_far|0.5|privacylens": [
+   528,
+   0,
+   137,
+   0
+  ],
+  "similarity|0.125|hotpotqa": [
+   214,
+   10,
+   0,
+   0
+  ],
+  "random_adjacent|0.125|hotpotqa": [
+   276,
+   20,
+   26,
+   1
+  ],
+  "random_far|0.125|hotpotqa": [
+   276,
+   20,
+   37,
+   0
+  ],
+  "similarity|0.25|hotpotqa": [
+   359,
+   19,
+   5,
+   0
+  ],
+  "random_adjacent|0.25|hotpotqa": [
+   553,
+   41,
+   58,
+   1
+  ],
+  "random_far|0.25|hotpotqa": [
+   553,
+   43,
+   58,
+   0
+  ],
+  "similarity|0.5|hotpotqa": [
+   591,
+   35,
+   18,
+   0
+  ],
+  "random_adjacent|0.5|hotpotqa": [
+   1121,
+   96,
+   141,
+   5
+  ],
+  "random_far|0.5|hotpotqa": [
+   1121,
+   89,
+   142,
+   0
+  ],
+  "similarity|0.125|squad": [
+   78,
+   30,
+   16,
+   0
+  ],
+  "random_adjacent|0.125|squad": [
+   78,
+   18,
+   39,
+   4
+  ],
+  "random_far|0.125|squad": [
+   75,
+   17,
+   37,
+   0
+  ],
+  "similarity|0.25|squad": [
+   90,
+   33,
+   19,
+   0
+  ],
+  "random_adjacent|0.25|squad": [
+   94,
+   18,
+   36,
+   4
+  ],
+  "random_far|0.25|squad": [
+   94,
+   19,
+   57,
+   0
+  ],
+  "similarity|0.5|squad": [
+   126,
+   38,
+   36,
+   0
+  ],
+  "random_adjacent|0.5|squad": [
+   191,
+   38,
+   95,
+   10
+  ],
+  "random_far|0.5|squad": [
+   172,
+   35,
+   99,
+   0
+  ]
+ }
+}

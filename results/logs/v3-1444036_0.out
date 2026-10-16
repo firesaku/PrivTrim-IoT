@@ -1,0 +1,43 @@
+HOST=gpu-0913-01.hpc.naitive.ai TASK=0 CFG=scatter DATE=2026-10-15T11:23:33+04:00
+NVIDIA H200, 143771 MiB, 0 MiB
+[11:23:51] config scatter device cuda modes ['sim_emb', 'cons_emb', 'imp_emb', 'cons_imp_emb', 'random_adj', 'random_far'] ratios [0.125, 0.25, 0.5]
+[11:23:56] progress 50  2.0s
+[11:23:57] progress 100  3.9s
+[11:24:00] progress 150  5.9s
+[11:24:03] progress 200  9.2s
+[11:24:13] progress 250  19.5s
+[11:24:22] progress 300  28.0s
+[11:24:26] progress 350  32.4s
+[11:24:30] progress 400  36.6s
+[11:24:34] progress 450  40.3s
+[11:24:36] progress 500  42.8s
+[11:24:37] progress 550  43.5s
+[11:24:37] wrote /dpc/kuex0095/100065732/privtrim_v2c_20261015/v3out/v3_scatter_report.txt
+V3 CONFIG=scatter  samples=frozen_samples_scattered.jsonl  granularity=sentence  records=550  cap=200  seed=20261015  dev=cuda
+
+mode           ratio     clusters  hit_answer    mix_sens   fuse_2sec
+sim_emb        0.125         1066        5.3%        0.0%        0.1%
+sim_emb        0.250         1988        4.0%        0.0%        0.1%
+sim_emb        0.500         3997        3.7%        0.2%        0.3%
+
+cons_emb       0.125         1066        5.3%        0.0%        0.1%
+cons_emb       0.250         1988        4.0%        0.0%        0.1%
+cons_emb       0.500         3997        3.8%        0.0%        0.4%
+
+imp_emb        0.125         1066        0.0%        0.1%        0.2%
+imp_emb        0.250         1988        0.0%        0.1%        0.2%
+imp_emb        0.500         3997        0.0%        0.4%        0.4%
+
+cons_imp_emb   0.125         1066        0.0%        0.0%        0.2%
+cons_imp_emb   0.250         1988        0.0%        0.0%        0.2%
+cons_imp_emb   0.500         3997        0.0%        0.0%        0.6%
+
+random_adj     0.125         1066        3.5%       20.0%        1.9%
+random_adj     0.250         1988        2.7%       18.4%        1.1%
+random_adj     0.500         3997        2.7%       18.1%        1.6%
+
+random_far     0.125         1062        3.1%       20.7%        2.2%
+random_far     0.250         1982        3.1%       17.9%        1.7%
+random_far     0.500         3940        2.8%       17.2%        1.5%
+
+V3_RC=0 CFG=scatter

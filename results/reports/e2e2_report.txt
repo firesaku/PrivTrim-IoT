@@ -1,0 +1,25 @@
+E2E v2 — token-level vs sentence-level, deterministic case selection
+cases=1000  arms=['full', 'filtered_full', 'mask_extractive', 'mask_cluster', 'win_extractive', 'win_cluster']  win=16  budget_frac=0.50  dtype=fp16
+
+dataset    arm                   n        EM        F1
+hotpotqa   full                500    44.00%    55.30%
+hotpotqa   filtered_full       500    44.40%    55.07%
+hotpotqa   mask_extractive     500    28.00%    33.02%
+hotpotqa   mask_cluster        500    33.60%    41.00%
+hotpotqa   win_extractive      500    23.00%    29.59%
+hotpotqa   win_cluster         500    26.80%    32.61%
+
+squad      full                500    79.80%    89.53%
+squad      filtered_full       500    79.40%    89.14%
+squad      mask_extractive     500    46.80%    53.26%
+squad      mask_cluster        500    53.40%    60.63%
+squad      win_extractive      500    45.20%    55.24%
+squad      win_cluster         500    50.60%    59.09%
+
+=== ALL ===
+full               1000    61.90%    72.42%
+filtered_full      1000    61.90%    72.10%
+mask_extractive    1000    37.40%    43.14%
+mask_cluster       1000    43.50%    50.81%
+win_extractive     1000    34.10%    42.41%
+win_cluster        1000    38.70%    45.85%

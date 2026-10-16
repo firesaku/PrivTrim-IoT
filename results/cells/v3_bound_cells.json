@@ -1,0 +1,34 @@
+{
+ "config": "bound",
+ "granularity": "sentence",
+ "records": 550,
+ "cap": 200,
+ "modes": [
+  "sim_emb",
+  "bound_emb",
+  "rand4_emb"
+ ],
+ "ratios": [
+  0.25
+ ],
+ "cells": {
+  "sim_emb|0.25": [
+   1988,
+   80,
+   0,
+   2
+  ],
+  "bound_emb|0.25": [
+   1347,
+   69,
+   0,
+   1
+  ],
+  "rand4_emb|0.25": [
+   1979,
+   63,
+   349,
+   32
+  ]
+ }
+}
