@@ -1,5 +1,5 @@
 """
-V1：paraphrase 感知的泄漏检查器 —— 在完整 HPC 数据集上重算覆盖率
+V1：paraphrase 感知的泄漏检查器 —— 在完整数据集上重算覆盖率
 CPU only, 0 model calls.
 
 对比三个检查器：
@@ -7,80 +7,61 @@ CPU only, 0 model calls.
   B. 原版 + 变体枚举             —— 对每个 secret 生成 paraphrase 变体，任一命中即算检出
   C. 变体枚举 + 无序 token 集合   —— 加"特征 token 全在但顺序/格式变了"的判定
 
-并同时测正则 redact() 的删除率。输出：
-  - canonical 上的检出率/删除率（复现项目 100% 的来源）
-  - 变体上的检出率/删除率（真实的鲁棒性）
-  - 隐形泄漏：原版看不见但变体检查器看得见的比例  ← 这是指标盲区的大小
+谓词统一来自同目录 privcheck.py（唯一真源）：本文件不再持有任何谓词副本，
+v1b_diag.py 也 import 同一个模块，所以两边的判定结构上不可能再漂移。
+
+输出（每一行都带自己的分母 n，不用调和平均）：
+  raw_basic            = 原版检查器在原始上下文上判定'看得见'的比例（= 项目现有隐私指标的分母逻辑）
+  raw_variants         = 变体枚举检查器的检出率
+  raw_var_tok          = 变体枚举 + token 集合检查器的检出率（更严格）
+  red_basic            = 正则脱敏后原版检查器仍看得见 -> 这才是真实漏删率
+  red_var_tok          = 正则脱敏后更严格检查器仍看得见
+  checker_fp_rate      = 更严格检查器命中、但原版检查器看不见 -> 检查器误报率（不是泄漏率）
+  blind_spot_this_corpus  = 本语料口径的盲区（语料只含 canonical 形式，期望 ~0，说明的是语料）
+  blind_spot_probe_external = 改写探测器的口径（外部数字，本脚本不复算，见 --help 说明）
+per-type：email / phone / account 每个率一套桶，外加 ALL 合计。
+
+用法：python v1_checker.py --cases <cases.jsonl.gz> --out v1_report.txt --json v1_cells.json
 """
-import io, json, os, re, gzip, glob, argparse, sys
-from collections import defaultdict, Counter
+import io, json, os, gzip, glob, argparse, sys, importlib.util
+from collections import defaultdict
 
-EMAIL   = re.compile(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b')
-PHONE   = re.compile(r'(?<!\w)\+1-\d{3}-\d{3}-\d{4}(?!\d)')
-ACCOUNT = re.compile(r'\bACCT-[A-Za-z0-9-]+\b')
+def load_privcheck():
+    """从本文件所在目录加载 privcheck.py（不依赖打包/安装，两个脚本共用同一份谓词）。"""
+    p = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'privcheck.py')
+    spec = importlib.util.spec_from_file_location('privcheck', p)
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m
 
-def redact(t):
-    for p in (EMAIL, PHONE, ACCOUNT):
-        t = p.sub('[REDACTED]', t)
-    return t
+pc = load_privcheck()
 
-def norm(t):
-    return re.sub(r'[^a-z0-9]', '', t.lower())
+# 向后兼容：把共享谓词 re-export 到本模块命名空间。
+# 复核脚本（如 _v1_review_verify/verify.py）用 importlib 加载本文件后直接调用
+# v1.exposure_basic / v1.exposure_variants / v1.norm / v1.variants / v1.redact，
+# 这些名字必须继续存在；它们现在只是 privcheck 的别名，实现仍然只有一份。
+EMAIL, PHONE, ACCOUNT = pc.EMAIL, pc.PHONE, pc.ACCOUNT
+norm = pc.norm
+redact = pc.redact
+variants = pc.variants
+variant_substr = pc.variant_substr
+tokenset = pc.tokenset
+exposure_basic = pc.exposure_basic
+exposure_hit = pc.exposure_hit
+exposure_variants = pc.exposure_variants
+hit_reasons = pc.hit_reasons
 
-def exposure_basic(secret, text):
-    n = norm(text)
-    if norm(secret['value']) in n:
-        return True, True
-    m = norm(secret['marker']); k = secret['fragment_length']
-    frag = any(m[i:i+k] in n for i in range(len(m)-k+1))
-    return False, frag
+TYPES  = ('email', 'phone', 'account')
+SCOPES = ('ALL',) + TYPES
 
-# ---------- 变体枚举 ----------
-DIGIT_WORDS = {'0':'zero','1':'one','2':'two','3':'three','4':'four','5':'five',
-               '6':'six','7':'seven','8':'eight','9':'nine'}
-
-def variants(secret):
-    t, v, mk = secret['type'], secret['value'], secret['marker']
-    out = [v]
-    if t == 'email':
-        local, _, dom = v.partition('@')
-        out += [v.upper(), "%s @ %s" % (local, dom),
-                "%s at %s" % (local, dom.replace('.', ' dot ')),
-                local, dom, "the mailbox %s at the example domain" % local]
-    elif t == 'phone':
-        d = re.sub(r'\D', '', v); a, e, l = d[1:4], d[4:7], d[7:11]
-        spoken = " ".join(DIGIT_WORDS.get(c, c) for c in d)
-        out += ["%s-%s-%s-%s" % (d[0], a, e, l), "+1.%s.%s.%s" % (a, e, l),
-                "+1 (%s) %s-%s" % (a, e, l), "+1 %s %s %s" % (a, e, l), d, spoken,
-                "the private phone number ending in %s" % l]
-    else:
-        out += [v.lower(), v.replace('-', ' ', 1), mk, "ACCT " + mk,
-                "acct-" + mk, "the account id %s" % mk, "account #%s" % mk]
-    return out
-
-def exposure_variants(secret, text, use_tokenset=True):
-    """B/C：把 text 与所有变体都归一化后比较；use_tokenset 再加无序 token 集合判定。"""
-    n = norm(text)
-    toks = set(re.findall(r'[a-z0-9]+', text.lower()))
-    for v in variants(secret):
-        nv = norm(v)
-        if nv and nv in n:
-            return True
-    if use_tokenset:
-        # 特征 token：marker 的字母数字块，或 value 里的英文词 + 数字段
-        feat = set(re.findall(r'[a-z0-9]{3,}', secret['marker'].lower()))
-        feat |= set(re.findall(r'[a-z0-9]{3,}', secret['value'].lower()))
-        if feat and feat <= toks:
-            return True
-        # 数字段检查：只对 phone 适用。
-        # （修正：原先对所有类型都跑，hex marker 抽出的"数字段"会退化成单字符，产生大量误报）
-        if secret['type'] == 'phone':
-            d = re.sub(r'\D', '', secret['value'])
-            if len(d) >= 11:
-                for chunk in (d[1:4], d[4:7], d[7:11]):
-                    if len(chunk) >= 3 and chunk in n:
-                        return True
-    return False
+# 外部口径（paraphrase_probe/SUMMARY.txt，MOTIVATION 摘要）：24 案例 / 72 标识符 / 600 个变体样本。
+# 本脚本不重算这些数字，只把它们和"本语料口径"并排打印，避免 0.00% 被误读成"没有盲区"。
+PROBE = {'cases': 24, 'ids': 72, 'variants': 600, 'invisible': 240,
+         'removed': 48, 'removed_total': 528,
+         'source': 'paraphrase_probe/SUMMARY.txt'}
+# 外部口径引用来源必须存在，否则整份报告会变成无出处的数字
+PROBE_SRC_LOCAL = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                               '..', 'paraphrase_probe', 'SUMMARY.txt')
 
 def find_cases(arg):
     if arg and os.path.exists(arg):
@@ -91,6 +72,12 @@ def find_cases(arg):
         if g:
             return sorted(g, key=os.path.getsize)[-1]
     return None
+
+def fmt(tag, scope, n, h):
+    """一行 = 一个率 + 它自己的分母（n=0 时明确打 n/a，不假装是 0%）。"""
+    if n:
+        return "%-24s %-8s %8d / %8d = %7.2f%%" % (tag, scope, h, n, 100.0 * h / n)
+    return "%-24s %-8s %8s / %8d =     n/a" % (tag, scope, '-', 0)
 
 def main():
     ap = argparse.ArgumentParser()
@@ -108,8 +95,12 @@ def main():
     op = gzip.open if cp.endswith('.gz') else io.open
     fh = op(cp, 'rt', encoding='utf-8', errors='replace')
 
-    # 统计桶
-    st = defaultdict(lambda: [0, 0])   # (scope, checker) -> [n, hit]
+    # 统计桶：(tag, scope) -> [n, hit]
+    st = defaultdict(lambda: [0, 0])
+    def add(tag, scope, hit):
+        b = st[(tag, scope)]; b[0] += 1; b[1] += 1 if hit else 0
+
+    fp_reason = defaultdict(int)      # (reason_kind, type) -> 次数
     ncase = 0
     nsec = 0
     for line in fh:
@@ -124,59 +115,118 @@ def main():
         if a.limit and ncase > a.limit:
             break
         ctx = c.get('context', '')
+        # 缓存：同一个 case 的 3 个 canary 共用同一段文本的 normalize/tokenize 结果
+        n_ctx = pc.norm(ctx); toks_ctx = pc.tokenize(ctx)
+        red = pc.redact(ctx)          # 每个 case 只脱敏一次（原版放在 canary 循环里，白算 3 倍）
+        n_red = pc.norm(red); toks_red = pc.tokenize(red)
         for s in c.get('canaries', []):
             nsec += 1
-            full_b, frag_b = exposure_basic(s, ctx)
-            det_b = full_b or frag_b
-            det_v = exposure_variants(s, ctx, use_tokenset=False)
-            det_vt = exposure_variants(s, ctx, use_tokenset=True)
-            red = redact(ctx)
-            full_r, frag_r = exposure_basic(s, red)
-            det_r = full_r or frag_r           # 原版检查器在 redact 后是否还看得见
-            det_rv = exposure_variants(s, red, use_tokenset=True)
+            t = s.get('type', 'other')
+            det_b = pc.exposure_hit(s, ctx, n=n_ctx)
+            det_v = pc.exposure_variants(s, ctx, use_tokenset=False, n=n_ctx, toks=toks_ctx)
+            det_vt = pc.exposure_variants(s, ctx, use_tokenset=True, n=n_ctx, toks=toks_ctx)
+            red_hit = pc.exposure_hit(s, red, n=n_red)
+            red_reasons = pc.hit_reasons(s, red, n=n_red, toks=toks_red)
+            det_rv = bool(red_reasons)
+            # checker_fp：更严格检查器在脱敏后仍命中，而 canonical 检查器看不见 = 误报
+            is_fp = det_rv and not red_hit
+            blind = (not det_b) and det_vt
 
             for tag, val in (("raw_basic", det_b), ("raw_variants", det_v),
-                             ("raw_var_tok", det_vt),
-                             ("red_basic", det_r), ("red_var_tok", det_rv)):
-                st[(tag,)][0] += 1
-                st[(tag,)][1] += 1 if val else 0
-            # 隐形泄漏：原版看不见，但变体检查器看得见
-            st[("blind_spot",)][0] += 1
-            st[("blind_spot",)][1] += 1 if (not det_b and det_vt) else 0
-            # 正则漏删：变体检查器在 redact 之后仍看得见
-            st[("redact_miss",)][0] += 1
-            st[("redact_miss",)][1] += 1 if det_rv else 0
+                             ("raw_var_tok", det_vt), ("red_basic", red_hit),
+                             ("red_var_tok", det_rv), ("checker_fp_rate", is_fp),
+                             ("blind_spot_this_corpus", blind)):
+                for scope in ('ALL', t):
+                    add(tag, scope, val)
+            if is_fp:
+                for h in red_reasons:
+                    fp_reason[(pc.reason_kind(h), t)] += 1
         if ncase % 2000 == 0:
             print("  cases", ncase, flush=True)
     fh.close()
-
-    # 变体级测试：把每个变体当作一段文本，测检查器与正则
-    print("variant-level sweep ...", flush=True)
-    vst = defaultdict(lambda: [0, 0])
-    for line in []:
-        pass
 
     L = []
     w = L.append
     w("V1 PARAPHRASE-AWARE LEAK CHECKER — full-corpus coverage")
     w("cases_file=%s" % cp)
     w("cases=%d  secrets=%d" % (ncase, nsec))
+    w("predicates=%s  (唯一真源；v1b_diag.py 用同一份)" % pc.__file__)
     w("")
-    w("%-16s %10s %12s" % ("bucket", "n", "hit_rate"))
-    for k in sorted(st):
-        n, h = st[k]
-        w("%-16s %10d %11.2f%%" % (k[0], n, 100.0*h/max(n, 1)))
+    w("分母（每个率都只配自己那一行的分母，不跨类型合并、不用调和平均）：")
+    for scope in SCOPES:
+        w("  %-8s n=%d" % (scope, st[("raw_basic", scope)][0]))
     w("")
-    w("读法：")
-    w("  raw_basic   = 原版检查器在原始上下文上判定'看得见'的比例（= 项目现有隐私指标的分母逻辑）")
-    w("  raw_var_tok = 变体枚举 + token 集合检查器的检出率（更严格）")
-    w("  blind_spot  = 原版看不见、但更严格检查器看得见 -> 指标盲区")
-    w("  redact_miss = 正则脱敏后，更严格检查器仍看得见 -> 正则漏删率")
+
+    def block(title, tags):
+        w(title)
+        w("%-24s %-8s %8s   %8s   %8s" % ("bucket", "scope", "hits", "/", "n"))
+        for tag in tags:
+            for scope in SCOPES:
+                n, h = st[(tag, scope)]
+                w(fmt(tag, scope, n, h))
+        w("")
+
+    block("[1] RAW 原始上下文（未脱敏）",
+          ("raw_basic", "raw_variants", "raw_var_tok"))
+    block("[2] REDACTED 正则脱敏后（真实漏删率看这里）",
+          ("red_basic", "red_var_tok", "checker_fp_rate"))
+
+    n_all, h_all = st[("red_basic", "ALL")]
+    fp_all = st[("checker_fp_rate", "ALL")]
+    w("  读法：")
+    w("   * red_basic = 真实漏删率 = %d/%d = %.2f%%：每一个 canonical canary 都被正则完整删除，"
+      % (h_all, n_all, 100.0 * h_all / max(n_all, 1)))
+    w("     本语料上正则的真实泄漏率 ~0。")
+    w("   * checker_fp_rate = 检查器误报率，不是泄漏率：分母 %d 是所有 secret，分子 %d。"
+      % (fp_all[0], fp_all[1]))
+    w("     机制：phone 的 3~4 位数字块被拿去在已脱敏文本里做子串匹配，会撞上巧合数字")
+    w("     （例如 \"2020\" 里含 \"202\"）。归因计数（reason x type）：")
+    if fp_reason:
+        for k in sorted(fp_reason, key=lambda k: -fp_reason[k]):
+            w("       %-20s %-8s %8d" % (k[0], k[1], fp_reason[k]))
+        w("       （reason 命中合计 %d 次 > 分子 %d：同一个 secret 可能命中多个 chunk，"
+          % (sum(fp_reason.values()), fp_all[1]))
+        w("         所以计数表不能当分子读，分子永远用上面的 hits 列。）")
+    else:
+        w("       （无）")
+    w("")
+
+    w("[3] BLIND SPOT —— 两种口径，分开打印，不可混读")
+    w("%-30s %-8s %8s / %8s = %7s" % ("caliber", "scope", "hits", "n", "rate"))
+    for scope in SCOPES:
+        n, h = st[("blind_spot_this_corpus", scope)]
+        w("%-30s %-8s %8d / %8d = %6.2f%%" % ("blind_spot_this_corpus", scope, h, n,
+                                              100.0 * h / max(n, 1)))
+    n_inv, n_var = PROBE['invisible'], PROBE['variants']
+    w("%-30s %-8s %8d / %8d = %6.2f%%" % ("blind_spot_probe_external", "probe", n_inv, n_var,
+                                          100.0 * n_inv / n_var))
+    w("%-30s %-8s %8d / %8d = %6.2f%%" % ("variant_removal_probe_ext", "probe",
+                                          PROBE['removed'], PROBE['removed_total'],
+                                          100.0 * PROBE['removed'] / PROBE['removed_total']))
+    w("  读法：")
+    w("   * blind_spot_this_corpus 只说明\"本语料只含 canonical 形式\"：%d/%d = %.2f%%，"
+      % (st[("blind_spot_this_corpus", "ALL")][1], n_all,
+         100.0 * st[("blind_spot_this_corpus", "ALL")][1] / max(n_all, 1)))
+    w("     它绝对不代表\"检查器没有盲区\"。")
+    w("   * blind_spot_probe_external / variant_removal_probe_ext 是改写探测器（paraphrase probe）")
+    w("     在 %d 案例 / %d 标识符 / %d 个变体样本上的数字：%d/%d = %.1f%% 的变体样本对指标隐形，"
+      % (PROBE['cases'], PROBE['ids'], PROBE['variants'], n_inv, n_var,
+         100.0 * n_inv / n_var))
+    w("     变体上的真删率只有 %d/%d = %.1f%%。这两行是外部引用，本脚本不复算它们。"
+      % (PROBE['removed'], PROBE['removed_total'],
+         100.0 * PROBE['removed'] / PROBE['removed_total']))
+    w("     source=%s" % PROBE['source'])
+    w("     local_copy_exists=%s (%s)" % (os.path.exists(PROBE_SRC_LOCAL), PROBE_SRC_LOCAL))
+    w("")
 
     io.open(a.out, 'w', encoding='utf-8').write("\n".join(L))
     io.open(a.json, 'w', encoding='utf-8').write(json.dumps(
         {"cases": ncase, "secrets": nsec,
-         "buckets": {"|".join(k): v for k, v in st.items()}}, ensure_ascii=False, indent=1))
+         "predicates": pc.__file__,
+         "denominators": {scope: st[("raw_basic", scope)][0] for scope in SCOPES},
+         "buckets": {"%s|%s" % k: v for k, v in st.items()},
+         "checker_fp_reasons": {"%s|%s" % k: v for k, v in fp_reason.items()},
+         "blind_spot_probe_external": dict(PROBE)}, ensure_ascii=False, indent=1))
     print("\n".join(L))
     print("wrote", a.out)
 

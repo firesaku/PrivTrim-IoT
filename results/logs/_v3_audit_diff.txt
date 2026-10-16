@@ -1,0 +1,205 @@
+--- OLD remote_probe/code/v3_batch.py
++++ NEW hpc/v3_batch.py
+@@ -7,4 +7,25 @@
+   bound     : 距离有界聚类（tau 扫描）+ 簇大小上限
+ 每个配置独立输出报告与 cells.json
++
++—— 审计修订（2026-10-16，findings #1–#3；旧数字必须仍可复现，故一律保留开关）——
++#1 表示层：旧版 embed() 取 enc(**t).last_hidden_state（末层）。本项目声称本实验是 PACT 的
++   距离有界聚类迁移，而 PACT 用早期层隐状态；两层的簇结构不同，所以旧数字是在「表示层与
++   PACT 不一致」的前提下得到的，不能当作 PACT 迁移证据。现默认改为早期层
++   max(1, n_layers // 6)（--layer early，层数由 model.config 推出，随编码器自适应；
++   层号按 hidden_states 下标计：0 = 词嵌入输出，k = 第 k 层输出，n_layers-1 = 末层）。
++   --layer last 仍走 last_hidden_state 且不请求 hidden_states（调用参数与旧实现逐字相同），
++   用于逐位复现已发布数字。
++#2 随机对照：旧 rand4_emb 用 pairs_random（只连 idx[k] 与 idx[k+1]，簇结构恒为 size 2），
++   而 bound_emb 允许 max_size=4，于是「选择准则」与「簇大小」两个因素被混在一起，
++   无法支撑「是距离界而不是簇太小压住了 mixing」这一归因。现默认改用
++   clusters_random_sized（打乱后贪心地把至多 max_size 个未使用 unit 组成一簇，
++   合并记账与 pairs_similarity 完全一致 → 两臂请求的预算相同，唯一差别是选择准则）；
++   --rand-legacy 恢复旧 size-2 配对，用于复现已发布数字。
++#3 可审计性：tau / max_size / 编码器名 / 所选层 全部写入报告头与 JSON（旧版只有
++   config/samples/granularity/records/cap/seed/dev/modes/ratios，表格无法复核）。
++   同时明确 tau 只约束合并边（edge-level，见 pairs_similarity 注释）：链式合并可以让
++   相似度低于 tau 的两个 unit 进入同一簇，因此 tau 不是簇直径上界，
++   「同簇成员两两相似度 >= tau」这类表述是错的。
++—— 复现已发布数字：--layer last --rand-legacy（其余参数不变）
+ """
+ import io, json, os, re, sys, time, argparse, random
+@@ -64,5 +85,15 @@
+ def pairs_similarity(S, target, rules=None, max_size=2, tau=None):
+     """rules: list of boolean arrays; 若任一 rule 上 i,j 取值不同则禁止合并。
+-       max_size: 簇大小上限（2 = 纯两两配对）; tau: 相似度下界。"""
++       max_size: 簇大小上限（2 = 纯两两配对）; tau: 相似度下界。
++       target: 合并预算；每接受一次 union 记 2（merged += 2），merged >= target 即停
++       （故未受限时 union 次数 = ceil(target/2)）。
++
++       tau 语义（重要，勿过度解读）：tau 只在「当前这条合并边」上检查
++       （sims[k] < tau 即 break；order 按相似度降序，所以 break 不会漏掉更高的边）。
++       它保证每条被采用的边 sim >= tau，但**不保证簇内任意两成员** sim >= tau：
++       A-B、B-C 两条边各自 >= tau 时，链式合并会把 A、B、C 放进同一簇，
++       而 sim(A,C) 可以远低于 tau（见 verify/test_v3_controls.py 的构造用例）。
++       即 tau 是 edge-level（单条合并边）保证，不是簇直径 / 全对相似度下界。
++       任何「同簇成员两两相似度 >= tau」的说法都是错的。"""
+     n = S.shape[0]
+     iu = np.triu_indices(n, k=1)
+@@ -98,4 +129,7 @@
+ 
+ def pairs_random(n, target, rng, min_gap=0):
++    # 注意：只连 idx[k] 与 idx[k+1]，配出的对互斥 → 簇结构恒为 size 2。
++    # scatter/guard/gran 的 random_adj / random_far 走这里；
++    # bound 配置的 rand4_emb 旧行为也走这里，需 --rand-legacy 才回到此路径。
+     idx = list(range(n)); rng.shuffle(idx)
+     out = []
+@@ -107,4 +141,27 @@
+         if len(out) * 2 >= target:
+             break
++    return out
++
++def clusters_random_sized(n, target, rng, max_size=4, min_gap=0):
++    """大小匹配的随机对照（bound 配置的 rand4_emb 默认走这里，审计 #2）：
++       打乱 unit 顺序后，贪心地把至多 max_size 个「尚未被前面各簇取走」的 unit 组成一簇。
++       合并记账与 pairs_similarity 完全一致：每并入一个 unit 视为一次 union，merged += 2，
++       merged >= target 即停（外层按簇检查、内层逐 union 检查，故受限条件下 union 次数
++       同样 = ceil(target/2)，与 bound 臂请求的预算一致）；被选中的 unit 互不重复。
++       于是 {bound_emb, rand4_emb} 的唯一差别是选择准则（相似度下界 vs 随机），
++       簇大小上限同为 max_size —— 这正是旧 pairs_random（恒 size 2）做不到的。
++       min_gap>0 时不并入与簇内已有 unit 原始下标相距 <= min_gap 的 unit（默认 0 不限制；
++       旧的 size-2 版用 min_gap=2，此处默认不启用，如需敏感性对照可显式传入）。"""
++    order = list(range(n)); rng.shuffle(order)
++    out = []; merged = 0; k = 0
++    while merged < target and k < n:
++        grp = [order[k]]; k += 1
++        while len(grp) < max_size and merged < target and k < n:
++            i = order[k]; k += 1
++            if min_gap and any(abs(i - j) <= min_gap for j in grp):
++                continue
++            grp.append(i); merged += 2
++        if len(grp) >= 2:
++            out.append(grp)
+     return out
+ 
+@@ -136,4 +193,32 @@
+     return any(m[i:i+k] in n for i in range(len(m) - k + 1))
+ 
++# ---------------- 表示层选择（纯逻辑，可脱离模型单测，审计 #1） ----------------
++def n_layers_of(model, default=12):
++    """从 model.config 读编码器层数，兼容 num_hidden_layers / n_layers / num_layers。"""
++    c = getattr(model, 'config', None)
++    for k in ('num_hidden_layers', 'n_layers', 'num_layers'):
++        v = getattr(c, k, None)
++        if isinstance(v, int) and v > 0:
++            return v
++    return default
++
++def resolve_layer(n_layers, layer='early', layer_idx=None):
++    """返回 (层下标, 来源)。层号按 hidden_states 计：0 = 词嵌入输出，k = 第 k 层输出，
++       n_layers-1 = 末层。'last' = 末层（--layer last，复现已发布数字）；
++       'early' = max(1, n_layers // 6)（默认，贴近 PACT 的早期层，随编码器自适应）；
++       显式 layer_idx 优先（与 --layer 冲突时以它为准），并截断到 [0, n_layers-1]。"""
++    if layer_idx is not None:
++        return max(0, min(int(layer_idx), n_layers - 1)), 'idx'
++    if layer == 'last':
++        return n_layers - 1, 'last'
++    return min(max(1, n_layers // 6), n_layers - 1), 'early'
++
++def pick_hidden_state(out, layer_idx, n_layers):
++    """按层取隐状态：末层直接返回 last_hidden_state（与旧 embed() 取值逐位一致），
++       其余取 hidden_states[layer_idx]（调用方需已传 output_hidden_states=True）。"""
++    if layer_idx >= n_layers - 1:
++        return out.last_hidden_state
++    return out.hidden_states[layer_idx]
++
+ # ---------------- 配置 ----------------
+ def cfg_scatter():
+@@ -155,7 +240,11 @@
+ 
+ def cfg_bound():
++    # max_size: 簇大小上限；tau: 合并边相似度下界，仅 bound_emb 使用（旧版是 dispatch 里的字面量，
++    # 表格因此无法复核 —— 审计 #3）。tau 为 edge-level 保证，见 pairs_similarity 注释：
++    # 链式合并后同簇内可能存在相似度 < tau 的成员对，故 tau 不是簇直径上界。
++    # rand4_emb 与之共用 max_size，两臂只在「按相似度选」还是「随机选」上不同（选择准则 = 唯一变量）。
+     return dict(samples='frozen_samples_scattered.jsonl', granularity='sentence',
+                 ratios=[0.25], modes=['sim_emb', 'bound_emb', 'rand4_emb'],
+-                max_size=4)
++                max_size=4, tau=0.75)
+ 
+ CONFIGS = {'scatter': cfg_scatter, 'guard': cfg_guard, 'gran': cfg_gran, 'bound': cfg_bound}
+@@ -171,4 +260,12 @@
+     ap.add_argument('--maxlen', type=int, default=256)
+     ap.add_argument('--seed', type=int, default=20261015)
++    ap.add_argument('--layer', choices=['early', 'last'], default='early',
++                    help="表示层：early = max(1, n_layers//6) 早期层（默认，PACT 口径）；"
++                         "last = 末层（旧行为，复现已发布数字）")
++    ap.add_argument('--layer-idx', type=int, default=None,
++                    help="显式层下标（0 = 词嵌入输出，n_layers-1 = 末层）；给出时优先于 --layer")
++    ap.add_argument('--rand-legacy', action='store_true',
++                    help="rand4_emb 用旧的 size-2 随机配对（复现已发布数字；"
++                         "默认用与 bound_emb 大小匹配的 clusters_random_sized）")
+     a = ap.parse_args()
+     C = CONFIGS[a.config]()
+@@ -188,4 +285,12 @@
+     enc.eval().to(dev)
+ 
++    # 表示层（审计 #1）：默认早期层（PACT 口径），--layer last 复现旧末层路径
++    n_layers = n_layers_of(enc)
++    if a.layer_idx is not None and a.layer == 'last':
++        log("warn: --layer last 与 --layer-idx 同时给出，采用 --layer-idx=%d" % a.layer_idx)
++    layer_idx, layer_src = resolve_layer(n_layers, a.layer, a.layer_idx)
++    need_hs = (layer_idx < n_layers - 1)   # 末层不需要 hidden_states，保持旧调用参数不变
++    log("model", a.model, "n_layers", n_layers, "layer_idx", layer_idx, "layer_src", layer_src)
++
+     @torch.no_grad()
+     def embed(texts):
+@@ -194,5 +299,9 @@
+             b = texts[i:i + a.batch]
+             t = tok(b, padding=True, truncation=True, max_length=a.maxlen, return_tensors='pt').to(dev)
+-            h = enc(**t).last_hidden_state
++            if need_hs:
++                o = enc(**t, output_hidden_states=True)
++            else:
++                o = enc(**t)               # 旧路径：不请求 hidden_states，逐位复现已发布数字
++            h = pick_hidden_state(o, layer_idx, n_layers)
+             mask = t['attention_mask'].unsqueeze(-1).float()
+             v = (h * mask).sum(1) / mask.sum(1).clamp(min=1e-6)
+@@ -242,7 +351,14 @@
+                     cl = pairs_similarity(S, target, [sens_flag, ans_flag], 2)
+                 elif mode == 'bound_emb':
+-                    cl = pairs_similarity(S, target, None, C.get('max_size', 4), tau=0.75)
++                    # tau / max_size 取自配置（见 cfg_bound），并写入报告头与 JSON（审计 #3）；
++                    # tau 是 edge-level 下界（见 pairs_similarity 注释），不是簇直径上界
++                    cl = pairs_similarity(S, target, None, C.get('max_size', 4), tau=C.get('tau', 0.75))
+                 elif mode == 'rand4_emb':
+-                    cl = clusters_from_pairs(n, pairs_random(n, target, rng, min_gap=2))
++                    if a.rand_legacy:
++                        # 旧行为：size-2 随机配对（仅用于复现已发布数字）
++                        cl = clusters_from_pairs(n, pairs_random(n, target, rng, min_gap=2))
++                    else:
++                        # 大小匹配随机对照：同 max_size、同合并预算，只有选择准则不同（审计 #2）
++                        cl = clusters_random_sized(n, target, rng, C.get('max_size', 4))
+                 else:
+                     cl = clusters_from_pairs(n, pairs_random(n, target, rng,
+@@ -266,4 +382,13 @@
+     w("V3 CONFIG=%s  samples=%s  granularity=%s  records=%d  cap=%d  seed=%d  dev=%s" % (
+         a.config, C['samples'], C['granularity'], n_used, a.cap, a.seed, dev))
++    # 审计 #3：tau / max_size / 编码器 / 所选层必须随结果落盘，否则表格无法复核
++    # max_size 取配置值；非 bound 配置各臂都是两两配对，故回落值 2 即其真实簇大小上限
++    w("model=%s  layer_idx=%d  n_layers=%d  layer=%s  tau=%s  max_size=%s  rand=%s" % (
++        a.model, layer_idx, n_layers, layer_src,
++        ("%.3f" % C['tau']) if C.get('tau') is not None else "-",
++        C.get('max_size', 2),
++        "legacy_size2" if a.rand_legacy else "sized_random"))
++    w("note: tau 只约束合并边(edge-level)，链式合并可使同簇成员对的相似度 < tau，故 tau 不是簇直径上界；tau=- 表示该配置不设下界")
++    w("note: max_size 为该配置声明的簇大小上限（bound=4，作用于 bound_emb/rand4_emb；sim_emb 等两两配对臂恒为 2；其余配置也全是两两配对）")
+     w("")
+     w("%-14s %-8s %9s %11s %11s %11s" % ("mode", "ratio", "clusters", "hit_answer", "mix_sens", "fuse_2sec"))
+@@ -281,4 +406,9 @@
+         {"config": a.config, "granularity": C['granularity'], "records": n_used,
+          "cap": a.cap, "modes": C['modes'], "ratios": C['ratios'],
++         "model": a.model, "layer_idx": layer_idx, "n_layers": n_layers, "layer": layer_src,
++         "tau": C.get('tau'), "max_size": C.get('max_size', 2),
++         "rand_mode": "legacy_size2" if a.rand_legacy else "sized_random",
++         "tau_semantics": "edge-level：tau 只在下一条合并边上检查，链式合并可使同簇成员对的相似度 < tau；tau 不是簇直径上界（tau=null 表示该配置不设下界）",
++         "max_size_semantics": "配置声明的簇大小上限：bound=4（作用于 bound_emb/rand4_emb；sim_emb 等两两配对臂恒为 2）；其余配置也全是两两配对=2",
+          "cells": {"%s|%s" % k: v for k, v in cells.items()}}, ensure_ascii=False, indent=1))
+     log("wrote", outp)

@@ -70,16 +70,36 @@ def make_clusters(n, pairs):
         g[find(i)].append(i)
     return [v for v in g.values() if len(v) >= 2]
 
-def pairs_similarity(S, target):
+def pairs_similarity(S, target, disjoint=True):
+    """Top-similarity greedy pair matching.
+
+    disjoint=True  (FIXED 2026-10-16): skip any candidate whose endpoint is
+    already committed, and KEEP SCANNING the ranking until target/2 *disjoint*
+    pairs are collected or the ranking runs out. This is the standard greedy
+    matching the arm always claimed to do ("merge to the target ratio").
+
+    disjoint=False (LEGACY, reproduces the published v2c/v2d numbers): stop
+    after target/2 *proposals* without checking usage. Top-ranked pairs share
+    hub units, so make_clusters() then discards most of them and the arm
+    silently under-merges -- up to 1.83x fewer merges than the random controls
+    at ratio 0.5, while the reported metrics are per-cluster rates. Kept only
+    so the before/after can be shown in one run.
+    """
     n = S.shape[0]
     iu = np.triu_indices(n, k=1)
     sims = S[iu]
     order = np.argsort(-sims)
     out = []
+    used = set()
     for k in order:
         if len(out) * 2 >= target:
             break
-        out.append((int(iu[0][k]), int(iu[1][k])))
+        i, j = int(iu[0][k]), int(iu[1][k])
+        if disjoint and (i in used or j in used):
+            continue
+        out.append((i, j))
+        if disjoint:
+            used.add(i); used.add(j)
     return out
 
 def pairs_random(n, target, rng, min_gap=0):
@@ -109,6 +129,10 @@ def main():
     ap.add_argument('--samples', required=True)
     ap.add_argument('--out', required=True)
     ap.add_argument('--json', required=True)
+    ap.add_argument('--pair-mode', default='disjoint', choices=['disjoint', 'legacy'],
+                    help='similarity arm: disjoint=standard greedy matching to the '
+                         'requested budget (fixed); legacy=published behaviour that '
+                         'under-merges up to 1.83x vs the random controls')
     ap.add_argument('--ratios', default='0.125,0.25,0.5')
     ap.add_argument('--cap', type=int, default=150)
     ap.add_argument('--limit', type=int, default=0)
@@ -147,7 +171,7 @@ def main():
         for ratio in ratios:
             target = max(int(ratio * n), 2)
             plans = {
-                'similarity':      pairs_similarity(S, target),
+                'similarity':      pairs_similarity(S, target, disjoint=(a.pair_mode == 'disjoint')),
                 'random_adjacent': pairs_random(n, target, rng, min_gap=0),
                 'random_far':      pairs_random(n, target, rng, min_gap=2),
             }
