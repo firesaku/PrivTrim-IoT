@@ -51,17 +51,34 @@ plt.rcParams.update({'font.size': 9, 'axes.linewidth': 0.8,
 fig, axes = plt.subplots(2, 2, figsize=(9.6, 7.0))
 
 # ---------------- A: F1 vs budget, with the flat region shaded --------------
+CI = {}
+_cip = r'D:\CodexData\tmp\privtrim-review-20261015\fixres\ci_f1.json'
+if os.path.exists(_cip):
+    CI = json.load(open(_cip, encoding='utf-8'))
+
 ax = axes[0][0]
 for arm, (lab, c, mk, ls) in ARMS.items():
     ys = [get(arm, b)['f1'] for b in BUD]
     xs = [get(arm, b)['tok'] for b in BUD]
-    ax.plot(xs, ys, marker=mk, color=c, ls=ls, lw=1.6, ms=5, label=lab, zorder=3)
+    err = None
+    if CI:
+        lo = [ys[i] - CI['%s|%s' % (arm, BUD[i])][1] for i in range(len(BUD))]
+        hi = [CI['%s|%s' % (arm, BUD[i])][2] - ys[i] for i in range(len(BUD))]
+        err = [lo, hi]
+    ax.errorbar(xs, ys, yerr=err, marker=mk, color=c, ls=ls, lw=1.6, ms=5,
+                capsize=3, elinewidth=1.0, label=lab, zorder=3)
 ax.axhline(full_f1, color='#b06a5a', ls='--', lw=1.3, zorder=2)
-ax.text(1620, full_f1 - 0.030, 'uncompressed  %.4f' % full_f1,
-        ha='left', va='top', color='#b06a5a', fontsize=8)
+if CI.get('full|None'):
+    f_lo, f_hi = CI['full|None'][1], CI['full|None'][2]
+    ax.axhspan(f_lo, f_hi, color='#b06a5a', alpha=0.10, zorder=1)
+    ax.text(1620, f_lo - 0.004, 'uncompressed  %.4f   95%% CI [%.3f, %.3f]'
+            % (full_f1, f_lo, f_hi), ha='left', va='top', color='#b06a5a', fontsize=7.5)
+else:
+    ax.text(1620, full_f1 - 0.030, 'uncompressed  %.4f' % full_f1,
+            ha='left', va='top', color='#b06a5a', fontsize=8)
 x50, x75 = get('budget_cluster_link', 0.50)['tok'], get('budget_cluster_link', 0.75)['tok']
 ax.axvspan(x50, x75, color='#2f5d7c', alpha=0.07, zorder=1)
-ax.annotate('flat region 50-75%', xy=((x50 + x75) / 2, 0.60), ha='center',
+ax.annotate('flat region 50-75%', xy=((x50 + x75) / 2, 0.115), ha='center',
             fontsize=8, color='#2f5d7c')
 ax.set_xlabel('context tokens  (↓)')
 ax.set_ylabel('F1  (↑)')
