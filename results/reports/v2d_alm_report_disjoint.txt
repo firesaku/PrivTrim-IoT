@@ -1,0 +1,28 @@
+V2d GPU FEASIBILITY — real semantic embeddings vs char-3gram vs random
+samples=frozen_samples.jsonl records=494 cap=200 ratios=[0.125, 0.25, 0.5] model=ebaba9b0e874dadd3003ffcff828e4397e568089 device=cuda
+
+mode         ratio    clusters  hit_answer    mix_sens   fuse_2sec
+sim_emb      0.125        1011        5.7%        0.0%        0.1%
+sim_emb      0.250        1950        4.3%        0.0%        0.2%
+sim_emb      0.500        3926        4.2%        0.7%        0.4%
+
+sim_char3    0.125        1011        4.1%        1.6%        0.0%
+sim_char3    0.250        1950        3.3%        2.2%        0.0%
+sim_char3    0.500        3926        2.9%        6.9%        0.2%
+
+cons_emb     0.125        1011        5.7%        0.0%        0.1%
+cons_emb     0.250        1950        4.3%        0.0%        0.2%
+cons_emb     0.500        3926        4.2%        0.0%        0.5%
+
+random_adj   0.125        1011        3.8%       17.0%        1.5%
+random_adj   0.250        1950        3.0%       15.3%        0.9%
+random_adj   0.500        3926        3.4%       16.3%        1.2%
+
+random_far   0.125        1006        3.7%       18.8%        0.0%
+random_far   0.250        1950        3.2%       18.3%        0.0%
+random_far   0.500        3883        3.2%       18.1%        0.0%
+
+### VERDICT
+ratio=0.125 | sim_emb: hit=5.7% mix=0.0% fuse=0.1% || sim_char3: hit=4.1% mix=1.6% fuse=0.0% || cons_emb: hit=5.7% mix=0.0% fuse=0.1% || random_adj: hit=3.8% mix=17.0% fuse=1.5% || random_far: hit=3.7% mix=18.8% fuse=0.0%
+ratio=0.250 | sim_emb: hit=4.3% mix=0.0% fuse=0.2% || sim_char3: hit=3.3% mix=2.2% fuse=0.0% || cons_emb: hit=4.3% mix=0.0% fuse=0.2% || random_adj: hit=3.0% mix=15.3% fuse=0.9% || random_far: hit=3.2% mix=18.3% fuse=0.0%
+ratio=0.500 | sim_emb: hit=4.2% mix=0.7% fuse=0.4% || sim_char3: hit=2.9% mix=6.9% fuse=0.2% || cons_emb: hit=4.2% mix=0.0% fuse=0.5% || random_adj: hit=3.4% mix=16.3% fuse=1.2% || random_far: hit=3.2% mix=18.1% fuse=0.0%
