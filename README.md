@@ -36,7 +36,14 @@
 │   ├── cells/                     ← 9 份原始计数 JSON
 │   ├── percase/                   ← 逐例预测与分数（jsonl）
 │   └── logs/                      ← 30 份 HPC 作业日志（含失败与诊断）
-├── code/                          ← 全部实验脚本
+├── code/
+│   ├── *.py                       ← 主实验脚本（V1/V2/V3/E2E/join，12 个）
+│   ├── mechanism/                 ← 机制可行性与消融（v2/v2b 探针、mech.py、split*）
+│   ├── data_build/                ← 冻结样本集构建与数据集探测
+│   ├── paraphrase_probe/          ← 动机实验：9.1% 改述覆盖 / 40% 隐形泄漏的来源
+│   ├── hpc_scripts/               ← 40 个 Slurm 提交/环境/巡检脚本（含失败与重试）
+│   ├── tools/                     ← 结果导出与跨集群 SFTP 传输
+│   └── verify/                    ← 独立复核脚本（见下方「复核」一节）
 └── data/                          ← 冻结样本集（带 sha256）
 ```
 
@@ -109,9 +116,26 @@ $PY code/e2e2.py --cases <cases.jsonl.gz> --lm <Qwen2.5-7B> --emb <XLM-R> \
 
 # 5) 与已发布基线逐例 join（CPU，秒级）
 $PY code/join_baseline.py
+
+# 6) 复核：三个臂是否真在同一压缩预算上（CPU，秒级；见下方「复核」一节）
+$PY code/verify/check_merge_budget.py --samples data/frozen_samples.jsonl \
+     --v2c code/v2c_feasibility.py --ratios 0.125,0.25,0.5
 ```
 
 **详细步骤见 `docs/06_数据资产.md`。远端工作目录与结果包见 `docs/05_HPC运行记录.md`。**
+
+---
+
+## 复核
+
+`code/verify/` 存放**独立复核脚本** —— 它们不产生新结果，只回答"已发布的数字站不站得住"。
+
+| 脚本 | 回答什么问题 | 当前结论 |
+|---|---|---|
+| `check_merge_budget.py` | V2 的 similarity / random 三个臂是否真的合并了同样多的内容？ | **FAIL** —— ratio=0.5 时 similarity 只拿到请求合并数的 **45.3%**，而随机臂拿满 100%。三个指标是按簇算的比率，分母不等则对比不成立。详见 `docs/07_代码复核与审计.md` |
+| `audit_driver_diag_e2e.py` | 原样执行 `diag_e2e.py` 并与原始 JSON 对账，验证其算术与契约 | 通过：聚合均值与生产者 `e2e.py` 契约一致 |
+
+`check_merge_budget.py` 刻意用 `importlib` **导入 `v2c_feasibility.py` 自身的函数**而不是重写一份。原因是本项目 `v1b_diag.py` 曾逐行复制 `v1_checker.py` 的判定逻辑，两份拷贝后来静默分叉（一份跑旧规则、一份跑修正规则）—— 重写的副本无法证明"产生已发布数字的那份代码"到底做了什么。脚本在臂未达预算时返回退出码 1，可直接用作重跑前的门禁。
 
 ---
 
