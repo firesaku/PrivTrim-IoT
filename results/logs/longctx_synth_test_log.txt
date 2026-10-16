@@ -1,0 +1,91 @@
+=== longctx 合成自检（CPU-only，无模型） ===
+[ok]   T1.make_prompt 源码逐字一致 
+[ok]   T1.split_units 源码逐字一致 
+[ok]   T1.drop_to_budget 源码逐字一致 
+[ok]   T2 未复制谓词 EMAIL\s*=\s*re\.compile 
+[ok]   T2 未复制谓词 PHONE\s*=\s*re\.compile 
+[ok]   T2 未复制谓词 ACCOUNT\s*=\s*re\.compile 
+[ok]   T2 未复制谓词 r'\\b\[A-Za-z0-9\._%\+-\]\+@ 
+[ok]   T2 import privcheck 
+[ok]   T2 import v4_router 
+[ok]   T2 Aliaser 来自 v4_router 
+[ok]   T2 redact 来自 privcheck 
+[ok]   T3 split_units 产出多单元 
+[ok]   T3 任意预算下发射文本 token <= 预算 
+[ok]   T3 答案承载单元排在丢弃序最后 
+[ok]   T3 选择器确定性 
+[ok]   T4 预算臂超标必须 raise 
+[ok]   T4 长度保持臂不 raise 
+[ok]   T4 刚好等于 B 不 raise 
+[ok]   T5[synth-needle-0000] 8 臂 x 3 预算 + 3 长度臂齐全 
+[ok]   T5[synth-needle-0000] full 不压缩（长度≈full） 
+[ok]   T5[synth-needle-0000] delete 不压缩（长度≈full） 
+[ok]   T5[synth-needle-0000] alias 不压缩（长度≈full） 
+[ok]   T5[synth-needle-0000] budget_cluster@0.25 <= B 
+[ok]   T5[synth-needle-0000] budget_cluster_link@0.25 <= B 
+[ok]   T5[synth-needle-0000] budget_random@0.25 <= B 
+[ok]   T5[synth-needle-0000] delete_budget@0.25 <= B 
+[ok]   T5[synth-needle-0000] alias_budget@0.25 <= B 
+[ok]   T6[synth-needle-0000] 同 ratio 四臂共享同一 B 
+[ok]   T5[synth-needle-0000] budget_cluster@0.50 <= B 
+[ok]   T5[synth-needle-0000] budget_cluster_link@0.50 <= B 
+[ok]   T5[synth-needle-0000] budget_random@0.50 <= B 
+[ok]   T5[synth-needle-0000] delete_budget@0.50 <= B 
+[ok]   T5[synth-needle-0000] alias_budget@0.50 <= B 
+[ok]   T6[synth-needle-0000] 同 ratio 四臂共享同一 B 
+[ok]   T5[synth-needle-0000] budget_cluster@0.75 <= B 
+[ok]   T5[synth-needle-0000] budget_cluster_link@0.75 <= B 
+[ok]   T5[synth-needle-0000] budget_random@0.75 <= B 
+[ok]   T5[synth-needle-0000] delete_budget@0.75 <= B 
+[ok]   T5[synth-needle-0000] alias_budget@0.75 <= B 
+[ok]   T6[synth-needle-0000] 同 ratio 四臂共享同一 B 
+[ok]   T7[synth-needle-0000] delete 臂 canary 整值+片段泄漏=0 
+[ok]   T7[synth-needle-0000] alias 臂整值泄漏=0 
+[ok]   T7[synth-needle-0000] budget_cluster@0.75 gold 仍在上下文 
+[ok]   T7[synth-needle-0000] budget_cluster@0.25 gold 仍在（答案单元最后丢） 
+[ok]   T5[synth-multi-0000] 8 臂 x 3 预算 + 3 长度臂齐全 
+[ok]   T5[synth-multi-0000] full 不压缩（长度≈full） 
+[ok]   T5[synth-multi-0000] delete 不压缩（长度≈full） 
+[ok]   T5[synth-multi-0000] alias 不压缩（长度≈full） 
+[ok]   T5[synth-multi-0000] budget_cluster@0.25 <= B 
+[ok]   T5[synth-multi-0000] budget_cluster_link@0.25 <= B 
+[ok]   T5[synth-multi-0000] budget_random@0.25 <= B 
+[ok]   T5[synth-multi-0000] delete_budget@0.25 <= B 
+[ok]   T5[synth-multi-0000] alias_budget@0.25 <= B 
+[ok]   T6[synth-multi-0000] 同 ratio 四臂共享同一 B 
+[ok]   T5[synth-multi-0000] budget_cluster@0.50 <= B 
+[ok]   T5[synth-multi-0000] budget_cluster_link@0.50 <= B 
+[ok]   T5[synth-multi-0000] budget_random@0.50 <= B 
+[ok]   T5[synth-multi-0000] delete_budget@0.50 <= B 
+[ok]   T5[synth-multi-0000] alias_budget@0.50 <= B 
+[ok]   T6[synth-multi-0000] 同 ratio 四臂共享同一 B 
+[ok]   T5[synth-multi-0000] budget_cluster@0.75 <= B 
+[ok]   T5[synth-multi-0000] budget_cluster_link@0.75 <= B 
+[ok]   T5[synth-multi-0000] budget_random@0.75 <= B 
+[ok]   T5[synth-multi-0000] delete_budget@0.75 <= B 
+[ok]   T5[synth-multi-0000] alias_budget@0.75 <= B 
+[ok]   T6[synth-multi-0000] 同 ratio 四臂共享同一 B 
+[ok]   T7[synth-multi-0000] delete 臂 canary 整值+片段泄漏=0 
+[ok]   T7[synth-multi-0000] alias 臂整值泄漏=0 
+[ok]   T7[synth-multi-0000] delete 臂 collision=1（链接被杀） 
+[ok]   T7[synth-multi-0000] alias 臂 collision=0（链接存活） 
+[ok]   T7[synth-multi-0000] full 臂 collision=0 
+[ok]   T7[synth-multi-0000] budget_cluster@0.25 目标实体仍在 
+[ok]   T8 端到端退出码 0 
+[ok]   T9 cells.json 有 5x3 + 3 = 18 个 (arm,ratio) 桶 
+[ok]   T9 per-case 行数 = 2 案例 x 18 臂 
+[ok]   T9 report 含预算对账块 
+[ok]   T9 report 标明 DRY-RUN 
+[ok]   T8 EM/F1 与官方 compute_* 逐一一致 
+[ok]   T8 delete/delete_budget 臂 ctx_leak 全 0 
+[ok]   T9 长度保持臂 ratio=None 
+[ok]   T9 percase 记录 target 
+[ok]   T8 预算臂 dev_max_signed <= 0 
+[ok]   T10 真案例 dry-run 退出码 0 
+[ok]   T10 percase 行数 = 112 x 18 
+[ok]   T10 无预算超标 
+[ok]   T10 budget_cluster 的 gold_in_ctx 随预算单调不增 
+[ok]   T10 所有案例 >= 800 词 
+[ok]   T10 最长案例的估计 token 数放得进 maxlen=8192 
+
+=== 汇总: 88 通过 / 0 失败 ===
