@@ -1,0 +1,77 @@
+{
+  "created_utc": "2026-10-15",
+  "purpose": "cross-dataset sampling for unsupervised clustering desensitization (PrivTrim-IoT)",
+  "n_per_source_target": 96,
+  "total_records": 581,
+  "per_source": [
+    {
+      "source": "smartbench_tdcs",
+      "n": 96,
+      "note": "ok"
+    },
+    {
+      "source": "simuhome",
+      "n": 5,
+      "note": "ok"
+    },
+    {
+      "source": "pec_home",
+      "n": 96,
+      "note": "ok"
+    },
+    {
+      "source": "toolmem",
+      "n": 96,
+      "note": "ok"
+    },
+    {
+      "source": "privacylens",
+      "n": 96,
+      "note": "ok"
+    },
+    {
+      "source": "hotpotqa",
+      "n": 96,
+      "note": "ok"
+    },
+    {
+      "source": "squad",
+      "n": 96,
+      "note": "ok"
+    }
+  ],
+  "canary_types": [
+    "email",
+    "phone",
+    "account"
+  ],
+  "variant_kinds": [
+    "at_dot_words",
+    "canonical",
+    "case",
+    "digits_only",
+    "local_only",
+    "lower",
+    "no_prefix",
+    "paraphrase",
+    "prefix_space",
+    "spaces"
+  ],
+  "positions": [
+    "prefix",
+    "middle",
+    "suffix"
+  ],
+  "frozen": true,
+  "seed": 20261015,
+  "source_paths": {
+    "squad": "C:\\Users\\ADMIN\\Documents\\ChatGPT\\Cybersec_IoT\\external\\squad_v11\\dev-v1.1.json",
+    "hotpotqa": "C:\\Users\\ADMIN\\Documents\\ChatGPT\\Cybersec_IoT\\external\\hotpotqa\\dev_distractor.parquet",
+    "privacylens": "C:\\Users\\ADMIN\\Documents\\ChatGPT\\Cybersec_IoT\\external\\PrivacyLens\\data\\main_data.json",
+    "pec_home": "C:\\Users\\ADMIN\\Documents\\ChatGPT\\Cybersec_IoT\\external\\PEC-Home\\data\\release",
+    "smartbench": "C:\\Users\\ADMIN\\Documents\\ChatGPT\\Cybersec_IoT\\external\\SmartBench\\context-dependent\\tdcs_rbe",
+    "simuhome": "C:\\Users\\ADMIN\\Documents\\ChatGPT\\Cybersec_IoT\\research\\simuhome_generated_tasks_v1\\tasks",
+    "toolmem": "C:\\Users\\ADMIN\\Documents\\ChatGPT\\Cybersec_IoT\\research\\mem2act_scope_v1\\data\\toolmem_conversation.jsonl"
+  },
+  "file_sha256": "cb44ab1745a9f72f76bb799a2e649541fc6fa79fd9b69717e9abce357cfd42ed"
+}
