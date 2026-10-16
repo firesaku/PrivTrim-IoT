@@ -30,8 +30,15 @@ def variants_email(v, mk):
     return [("0_canonical", v), ("1_case_upper", v.upper()),
             ("2_space_around_at", f"{local} @ {dom}"),
             ("3_at_dot_words", f"{local} at {dom.replace('.', ' dot ')}"),
-            ("4_local_part_only", local), ("5_domain_only", dom),
-            ("6_paraphrase", f"the contact email ending in {dom.split('.')[-1]}"),
+            ("4_local_part_only", local),
+            # 原 5_domain_only = dom：24 例全是 'example.invalid'（distinct=1），不含任何 canary 材料，
+            # 对空壳评估"正则删掉了没有"必然虚假通过。换成 build_crossdata.py::variants_for 的 at_word。
+            ("5_at_word", f"{local} (at) {dom}"),
+            # 原 6_paraphrase = f"the contact email ending in {dom.split('.')[-1]}"：域名固定 example.invalid，
+            # 所以恒为常量串 "the contact email ending in invalid"（distinct=1/24），同样不含 canary 材料。
+            # 换成 build_crossdata.py 的 local_named —— 与 v1_checker.py 的
+            # "the mailbox %s at the example domain" 同族，真正携带 local part（其内含 marker）。
+            ("6_local_named", f"the local part {local} of the address"),
             ("7_paraphrase_w_local", f"the mailbox {local} at the example domain"),
             ("8_mixed_case", local.capitalize() + "@" + dom.title())]
 
@@ -51,6 +58,34 @@ def variants_account(v, mk):
 
 GEN = {'email': variants_email, 'phone': variants_phone, 'account': variants_account}
 
+# ---------------------------------------------------------------- 构建期硬校验
+# 变体必须真的携带 canary 材料，否则"正则删掉了没有"问的是一段本来就没有 PII 的文本，必然虚假通过
+# （v1 的 email paraphrase / domain_only 就栽在这）。规则与 build_crossdata.py::carries_material 对齐；
+# 用显式 raise 而不是 assert —— python -O 下 assert 会被跳过。
+DIGIT_WORDS = {'0':'zero','1':'one','2':'two','3':'three','4':'four','5':'five',
+               '6':'six','7':'seven','8':'eight','9':'nine'}
+
+def _spoken_digits(text):
+    """把变体里的数字词还原成数字再抽数字串（spoken 变体是词形/字形混排）。"""
+    for ch, word in DIGIT_WORDS.items():
+        text = re.sub(r'\b%s\b' % word, ch, text)
+    return re.sub(r'\D', '', text)
+
+def carries_material(kind, secret, text):
+    n = norm(text)
+    mk, val = norm(secret['marker']), norm(secret['value'])
+    if kind.endswith('spoken'):                    # 数字读法：号码可还原即算携带
+        return re.sub(r'\D', '', secret['value']) in _spoken_digits(text)
+    if secret['type'] == 'email':
+        return mk in n or val in n
+    if secret['type'] == 'phone':
+        return mk[-4:] in n or mk in n
+    return mk in n
+
+def need(cond, msg):
+    if not cond:
+        raise RuntimeError("自检失败: " + msg)
+
 cases = json.loads(io.open(CASES, encoding='utf-8').read())
 
 # 每类：canonical 与 variants 分开统计"正则真正删除(完整值)"的比例
@@ -58,11 +93,15 @@ stat = defaultdict(lambda: defaultdict(lambda: [0, 0]))   # type -> group -> [n,
 blind = Counter()
 per_variant = {}
 rows = []
+n_checked = 0
 
 for case in cases:
     for s in case.get('canaries', []):
         t = s['type']
         for name, text in GEN[t](s['value'], s['marker']):
+            need(carries_material(name, s, text),
+                 "变体不含 canary 材料: %s/%s %r" % (t, name, text))
+            n_checked += 1
             det_full, _ = exposure(s, text)          # 变体本身能否被检查器看见
             rm_full, rm_frag = exposure(s, redact(text))
             if det_full:
@@ -118,6 +157,8 @@ w("C. 逐变体明细（真删=检查器看见且删掉；盲=检查器看不见
 w("%-9s %-22s %6s %8s %8s" % ("类型", "变体", "n", "真删%", "盲%"))
 for (t, name), pv in sorted(per_variant.items()):
     w("%-9s %-22s %6d %8.1f %8.1f" % (t, name, pv[0], frac(pv[1], pv[0]), frac(pv[2], pv[0])))
+w("")
+w("D. 构建期校验：%d 个变体全部携带 canary 材料（carries_material，规则同 build_crossdata.py）" % n_checked)
 
 io.open(os.path.join(D, "SUMMARY.txt"), 'w', encoding='utf-8').write("\n".join(L))
 print("ok", len(L), "lines ->", os.path.join(D, "SUMMARY.txt"))
