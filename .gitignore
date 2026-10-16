@@ -1,0 +1,29 @@
+# 忽略：模型权重、大体积数据库、凭据
+*.safetensors
+*.bin
+*.gguf
+*.pt
+*.pth
+*.ckpt
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.zip
+*.tgz
+*.tar.gz
+__pycache__/
+*.py[cod]
+.venv/
+.venv-*/
+.pytest_cache/
+# 凭据（绝不提交）
+*.pem
+*.key
+*credentials*
+*.netrc
+_netrc
+KU_ZSJ*
+Madar.txt
+madar-key-pass.txt
+.env
+.env.*
