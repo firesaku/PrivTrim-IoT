@@ -42,8 +42,14 @@ def variants_email(v, marker):
         ("2_space_around_at",    f"{local} @ {domain}"),
         ("3_at_dot_words",       f"{local} at {domain.replace('.', ' dot ')}"),
         ("4_local_part_only",    local),
-        ("5_domain_only",        domain),
-        ("6_paraphrase",         f"the contact email ending in {domain.split('.')[-1]}"),
+        # 原 5_domain_only = domain：24 例全是 'example.invalid'（distinct=1），不含任何 canary 材料，
+        # 对空壳评估"正则删掉了没有"必然虚假通过。换成 build_crossdata.py::variants_for 的 at_word。
+        ("5_at_word",            f"{local} (at) {domain}"),
+        # 原 6_paraphrase = f"the contact email ending in {domain.split('.')[-1]}"：域名固定 example.invalid，
+        # 所以恒为常量串 "the contact email ending in invalid"（distinct=1/24），同样不含 canary 材料。
+        # 换成 build_crossdata.py 的 local_named —— 与 v1_checker.py 的
+        # "the mailbox %s at the example domain" 同族，真正携带 local part（其内含 marker）。
+        ("6_local_named",        f"the local part {local} of the address"),
         ("7_paraphrase_w_local", f"the mailbox {local} at the example domain"),
         ("8_mixed_case",         local.capitalize() + "@" + domain.title()),
     ]
@@ -77,6 +83,37 @@ def variants_account(v, marker):
 
 GEN = {'email': variants_email, 'phone': variants_phone, 'account': variants_account}
 
+# ---------------------------------------------------------------- 构建期硬校验
+# 变体必须真的携带 canary 材料，否则"正则删掉了没有"这个问题问的是一段本来就没有 PII 的文本，
+# 必然虚假通过（v1 的 email paraphrase / domain_only 就栽在这）。规则与 build_crossdata.py::
+# carries_material 对齐；用显式 raise 而不是 assert —— python -O 下 assert 会被跳过。
+DIGIT_WORDS = {'0':'zero','1':'one','2':'two','3':'three','4':'four','5':'five',
+               '6':'six','7':'seven','8':'eight','9':'nine'}
+
+def _spoken_digits(text):
+    """把变体里的数字词还原成数字再抽数字串（spoken 变体是词形/字形混排）。"""
+    for ch, word in DIGIT_WORDS.items():
+        text = re.sub(r'\b%s\b' % word, ch, text)
+    return re.sub(r'\D', '', text)
+
+def _nrm(t):
+    return normalize_identifier(t)
+
+def carries_material(kind, secret, text):
+    n = _nrm(text)
+    mk, val = _nrm(secret['marker']), _nrm(secret['value'])
+    if kind.endswith('spoken'):                    # 数字读法：号码可还原即算携带
+        return re.sub(r'\D', '', secret['value']) in _spoken_digits(text)
+    if secret['type'] == 'email':
+        return mk in n or val in n
+    if secret['type'] == 'phone':
+        return mk[-4:] in n or mk in n
+    return mk in n
+
+def need(cond, msg):
+    if not cond:
+        raise RuntimeError("自检失败: " + msg)
+
 # ---------------------------------------------------------------- 主流程
 cases = json.loads(io.open(CASES, encoding='utf-8').read())
 print("cases:", len(cases))
@@ -87,6 +124,7 @@ per_type = defaultdict(lambda: [0, 0, 0, 0, 0])
 cell = Counter()   # 端到端分类
 
 n_secrets = 0
+n_checked = 0
 for case in cases:
     for secret in case.get('canaries', []):
         t = secret['type']
@@ -95,6 +133,9 @@ for case in cases:
             continue
         n_secrets += 1
         for name, text in gen(secret['value'], secret['marker']):
+            need(carries_material(name, secret, text),
+                 "变体不含 canary 材料: %s/%s %r" % (t, name, text))
+            n_checked += 1
             det_full, det_frag = exposure(secret, text)
             red = redact(text)
             rm_full, rm_frag = exposure(secret, red)
@@ -163,3 +204,4 @@ print("wrote", OUT)
 print()
 print("端到端:", dict(cell))
 print("按类型:", {t: (p[0], "%.1f%%" % (100.0*p[3]/p[0])) for t, p in per_type.items()})
+print("构建期校验: %d 个变体全部携带 canary 材料" % n_checked)

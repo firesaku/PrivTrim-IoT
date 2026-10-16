@@ -1,0 +1,237 @@
+{
+  "schema_version": 1,
+  "artifact": "longctx_cases.jsonl",
+  "artifact_path": "D:\\CodexData\\tmp\\privtrim-review-20261015\\longctx\\longctx_cases.jsonl",
+  "file_sha256": "7d37588016b4cb75bb267317ad75476fc75a1d280d01c6aab29fa65231531183",
+  "bytes": 3261456,
+  "purpose": "long-context deterministically-scored QA built from the real IoT/agent sources (PrivTrim-IoT); gold answers are fields the source simulator/log itself emitted, never written by a model",
+  "build_command": "python build_longctx_cases.py --out D:\\CodexData\\tmp\\privtrim-review-20261015\\longctx\\longctx_cases.jsonl --manifest D:\\CodexData\\tmp\\privtrim-review-20261015\\longctx\\MANIFEST_longctx.json --min-words 800 --max-words 4800 --min-distractors 3 --multi-entities 5 --n-needle-per-source 12 --n-multi-per-source 8 --sources pec_home,privacylens,simuhome,smartbench_tdcs,toolmem,toolmem_raw --seed 20261016",
+  "seed": 20261016,
+  "min_words": 800,
+  "max_words": 4800,
+  "min_distractors": 3,
+  "multi_entities": 5,
+  "n_cases": 112,
+  "per_source": {
+    "pec_home": 20,
+    "privacylens": 20,
+    "simuhome": 20,
+    "smartbench_tdcs": 20,
+    "toolmem": 12,
+    "toolmem_raw": 20
+  },
+  "per_case_kind": {
+    "multi_entity": 40,
+    "needle": 72
+  },
+  "per_source_case_kind": {
+    "pec_home|multi_entity": 8,
+    "pec_home|needle": 12,
+    "privacylens|multi_entity": 8,
+    "privacylens|needle": 12,
+    "simuhome|multi_entity": 8,
+    "simuhome|needle": 12,
+    "smartbench_tdcs|multi_entity": 8,
+    "smartbench_tdcs|needle": 12,
+    "toolmem|needle": 12,
+    "toolmem_raw|multi_entity": 8,
+    "toolmem_raw|needle": 12
+  },
+  "per_source_detail": [
+    {
+      "source": "pec_home",
+      "pool_records": 96,
+      "facts_total": 671,
+      "needle": 12,
+      "multi_entity": 8,
+      "multi_attribute_key": "persona_id",
+      "multi_entities_effective": 5,
+      "multi_skipped_reason": "",
+      "canary_provenance": "frozen",
+      "mean_pool_words": 187.5
+    },
+    {
+      "source": "privacylens",
+      "pool_records": 96,
+      "facts_total": 898,
+      "needle": 12,
+      "multi_entity": 8,
+      "multi_attribute_key": "data_recipient",
+      "multi_entities_effective": 5,
+      "multi_skipped_reason": "",
+      "canary_provenance": "frozen",
+      "mean_pool_words": 587.9
+    },
+    {
+      "source": "simuhome",
+      "pool_records": 5,
+      "facts_total": 22,
+      "needle": 12,
+      "multi_entity": 8,
+      "multi_attribute_key": "anchor_device",
+      "multi_entities_effective": 3,
+      "multi_skipped_reason": "",
+      "canary_provenance": "frozen",
+      "mean_pool_words": 435.6
+    },
+    {
+      "source": "smartbench_tdcs",
+      "pool_records": 96,
+      "facts_total": 382,
+      "needle": 12,
+      "multi_entity": 8,
+      "multi_attribute_key": "occupancy_type",
+      "multi_entities_effective": 5,
+      "multi_skipped_reason": "",
+      "canary_provenance": "frozen",
+      "mean_pool_words": 583.9
+    },
+    {
+      "source": "toolmem",
+      "pool_records": 96,
+      "facts_total": 851,
+      "needle": 12,
+      "multi_entity": 0,
+      "multi_attribute_key": null,
+      "multi_entities_effective": 0,
+      "multi_skipped_reason": "该源没有\"均匀属性\"（同一字段在 >=2 个 record 里出现、且能给出 >=2 个可判别且互不相同的取值），确定性多实体抽取不成立 -> 该源只出 needle",
+      "canary_provenance": "frozen",
+      "mean_pool_words": 1201.3
+    },
+    {
+      "source": "toolmem_raw",
+      "pool_records": 2029,
+      "facts_total": 55331,
+      "needle": 12,
+      "multi_entity": 8,
+      "multi_attribute_key": "token_count",
+      "multi_entities_effective": 5,
+      "multi_skipped_reason": "",
+      "canary_provenance": "derived",
+      "mean_pool_words": 1834.3
+    }
+  ],
+  "length_distribution": {
+    "min": 842,
+    "p10": 921,
+    "p25": 1324,
+    "median": 2353,
+    "p75": 3955,
+    "p90": 4646,
+    "max": 4880,
+    "mean": 2581.6,
+    "buckets_words": {
+      "800-999": 20,
+      "1000-1499": 11,
+      "1500-1999": 10,
+      "2000-2999": 39,
+      "3000+": 32
+    },
+    "est_ctx_tokens_mean": 3433.5,
+    "note": "词数 = 空白切分。est_ctx_tokens 只是 1.33 词/token 的粗估；真实 token 数由 e2e_longctx.py 用 tokenizer 实测并逐臂上报"
+  },
+  "source_paths": {
+    "frozen": "D:\\CodexData\\tmp\\privtrim-review-20261015\\crossdata\\frozen_samples.jsonl",
+    "toolmem_raw": "C:\\Users\\ADMIN\\Documents\\ChatGPT\\Cybersec_IoT\\research\\mem2act_scope_v1\\data\\toolmem_conversation.jsonl"
+  },
+  "source_schemas": {
+    "crossdata/frozen_samples.jsonl": {
+      "path": "D:\\CodexData\\tmp\\privtrim-review-20261015\\crossdata\\frozen_samples.jsonl",
+      "format": "jsonl, 581 行, 3860859 bytes, sha256 cb44ab1745a9f72f76bb799a2e649541fc6fa79fd9b69717e9abce357cfd42ed",
+      "fields": [
+        "sid",
+        "source",
+        "question",
+        "context",
+        "answers",
+        "canaries",
+        "variants",
+        "canary_position",
+        "meta"
+      ],
+      "per_source": {
+        "smartbench_tdcs": 96,
+        "simuhome": 5,
+        "pec_home": 96,
+        "toolmem": 96,
+        "privacylens": 96,
+        "hotpotqa": 96,
+        "squad": 96
+      },
+      "canaries": "[{type: email|phone|account, value, marker, fragment_length}]",
+      "context_construction": "norm_ws(源文本)[:6000 或 8000] 与 canary 记录块按 prefix/suffix/middle 三点位轮换拼接（build_crossdata.py）",
+      "note": "5 个 IoT/agent 源的 answers 全为空数组 —— 这正是本构建器要解决的问题；hotpotqa/squad 有 gold，不在本构建器范围内"
+    },
+    "toolmem_conversation.jsonl（原始语料）": {
+      "path": "C:\\Users\\ADMIN\\Documents\\ChatGPT\\Cybersec_IoT\\research\\mem2act_scope_v1\\data\\toolmem_conversation.jsonl",
+      "format": "jsonl, 2029 行, 33361325 bytes（约 31.8 MB）",
+      "fields": [
+        "session_id",
+        "original_conversation_ids",
+        "turns",
+        "turn_count",
+        "has_tool_calls",
+        "token_count"
+      ],
+      "turns_fields": [
+        "role",
+        "content",
+        "source_id",
+        "tool_calls",
+        "tool_call_id",
+        "name"
+      ],
+      "roles": {
+        "user": 25701,
+        "assistant": 30910,
+        "tool": 19506
+      },
+      "tool_calls_shape": "[{id, type:'function', function:{name, arguments(JSON 字符串)}}]，共 19591 个",
+      "tool_result_shape": "role=='tool' 的 content 可 json.loads 成 dict（19346 条）；顶层键高频：status 17282 / message 3561 / results 704 / data 619 / location 415 / date 364 / summary 308 / cwd 299 / file_path 285 / confidence 162 / price 158 / temperature / condition / city",
+      "note": "冻结集里的 toolmem 渲染（build_crossdata.py::x_toolmem）只取 t[\"content\"]，因此丢掉了 tool_calls —— 实体参数就在 arguments 里。本构建器的 toolmem_raw 池额外渲染 tool_calls，并渲染 session_id/turn_count/token_count 头行"
+    },
+    "raw_siblings_verified（已核对 schema，本构建器默认不取）": {
+      "smartbench_tdcs": "external\\SmartBench\\context-dependent\\tdcs_rbe\\{normal,anomaly}\\*.json —— 600 个文件（normal 300 / anomaly 300），top keys: id, label, description, reasoning, context{occupancy_type,duration_days}, events[{timestamp, device, status}], anomaly_details, anomaly_types, evidence_devices, metadata, pair_id, paired_id",
+      "pec_home": "external\\PEC-Home\\data\\release\\multi_user_preferences.jsonl (?) + dynamic_user_preferences.jsonl (712 行)，keys: device, environment, id, persona, persona_id, personalized_operation, room, room_id, source_record_id, target_actions, task, turns",
+      "privacylens": "external\\PrivacyLens\\data\\main_data.json —— list，493 项，keys: name, seed, vignette, trajectory",
+      "simuhome": "research\\simuhome_generated_tasks_v1\\tasks\\*.json —— 5 个文件，keys: meta{seed,query_type,case,num_rooms,num_devices,scenario}, query, user_location, eval{goals,required_actions}, initial_home_config{base_time,rooms,devices,attributes,tick_interval}",
+      "note": "这些真实源都在本地存在（路径已逐个 Test-Path 通过），schema 已核对。本构建器默认只从冻结节 + toolmem 原始语料取 record，以与项目其他实验保持同源、可审计；需要时可把它们接成新池"
+    }
+  },
+  "extraction": {
+    "principle": "答案一律是源自身结构化记录里已经发射出来的字段值；问题由该字段确定性渲染，构建过程不调用任何模型/LLM",
+    "truncation_guard": "frozen context 被 [:6000]/[:8000] 截断，所以字段抽取全部用\"带终止符\"正则（要求闭引号在场）；被切断的字段直接丢弃，不猜、不补",
+    "per_source": {
+      "smartbench_tdcs": "occupancy_type / duration_days / total_events / top_rooms（后者在 reasoning 文本里）/ evidence_events:<device>；anchor = 记录 id",
+      "simuhome": "meta 的 seed / num_rooms / num_devices / query_type / scenario / base_time / anchor_device；anchor = eval.goals[0].anchor.device_id",
+      "pec_home": "device / persona_id / personalized_operation / room / room_id / source_record_id / task；anchor = 记录 id",
+      "privacylens": "name(anchor) / data_subject / data_sender / data_recipient / data_type / transmission_principle / user_name / user_email / final_action / data_type_concrete / toolkits",
+      "toolmem": "逐个 `tool: {json}` 结果（raw_decode 截断容错）取标量字段；fact key = <字段>@<实体>，anchor = 实体值；无\"均匀属性\" -> 只出 needle",
+      "toolmem_raw": "会话头 session_id/turns/token_count + tool_call arguments 的标量参数 + tool 结果字段；anchor = session_id"
+    },
+    "needle_assembly": "1 个 needle record + >=min-distractors 个同源填充；填充按 sha256(\"order:<source>:<rid>\") 排序后确定性挑选，且必须不含 gold；needle 落在第几个 entry 由 seeded RNG 决定",
+    "multi_assembly": "k 个同源 record，每个贡献一个 account 实体（canary 记录块）+ 一个\"均匀属性\"（取值在池内可判别且逐 record 唯一）。属性取值两两互异 => 属性由目标实体唯一确定；删除式脱敏把 k 个 account 压成同一个 [REDACTED]，链接随之毁灭（对齐 conflict 基准）"
+  },
+  "self_checks": {
+    "gold_answer_in_context": true,
+    "needle_gold_unique_in_context": true,
+    "needle_answer_offset_inside_region": true,
+    "multi_entities_pairwise_distinct": true,
+    "multi_attributes_pairwise_distinct": true,
+    "multi_gold_attribute_unique_in_context": true,
+    "multi_target_entity_only_in_its_region": true,
+    "every_pool_record_verbatim_in_context": true,
+    "canary_recipe_matches_frozen_set": "389/389 email+account",
+    "canary_values_globally_unique_distinct": 4836,
+    "case_keys_unique": true,
+    "length_floor_words": 800
+  },
+  "determinism": {
+    "mechanism": "sorted globs; sorted record lists; no set-iteration-order dependence; single seeded RNG; sorted(obj.keys()) for tool-JSON facts; json.dumps with fixed key insertion order; newline=\"\\n\"",
+    "verify": "用两个不同 PYTHONHASHSEED 重跑同一命令，sha256 必须逐字节一致"
+  },
+  "not_run_here": [
+    "7B 模型推理（本地无 GPU）—— 见 e2e_longctx.py",
+    "hotpotqa / squad（已有 gold，无需重建）"
+  ]
+}
