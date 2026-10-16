@@ -1,0 +1,19 @@
+E2E v5 — router arms on conflict cases (fourth quadrant under test)
+cases=240  arms=full,delete,generalize_type,alias,alias_typed  max_new=64  dtype=fp16  guess_baseline_multi=33.3%
+
+mode    arm                   n       EM       F1   out_leak   ctx_tokens
+single  full                120   75.00%   75.00%       0.0%        275.8
+single  delete              120   17.50%   17.50%       0.0%        271.5
+single  generalize_type     120   95.83%   95.83%       0.0%        265.5
+single  alias               120   99.17%   99.17%       0.0%        267.5
+single  alias_typed         120   95.00%   95.00%       0.0%        267.5
+
+multi   full                120   86.67%   86.67%       0.0%        441.2
+multi   delete              120    2.50%    2.50%       0.0%        428.3
+multi   generalize_type     120   25.83%   25.83%       0.0%        410.3
+multi   alias               120   91.67%   91.67%       0.0%        416.3
+multi   alias_typed         120   86.67%   86.67%       0.0%        416.3
+
+=== PREDICTION CHECK ===
+single: F1 delete=17.5%  alias=99.2%  delta=+81.7 pp | out_leak delete=0.0% alias=0.0%
+multi: F1 delete=2.5%  alias=91.7%  delta=+89.2 pp | out_leak delete=0.0% alias=0.0%

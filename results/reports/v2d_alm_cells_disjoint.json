@@ -1,0 +1,553 @@
+{
+ "records_scored": 494,
+ "cap": 200,
+ "ratios": [
+  0.125,
+  0.25,
+  0.5
+ ],
+ "model": "/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/models/models--microsoft--llmlingua-2-xlm-roberta-large-meetingbank/snapshots/ebaba9b0e874dadd3003ffcff828e4397e568089",
+ "device": "cuda",
+ "cells": {
+  "sim_emb|0.125|smartbench_tdcs": [
+   32,
+   0,
+   0,
+   0
+  ],
+  "sim_char3|0.125|smartbench_tdcs": [
+   32,
+   0,
+   0,
+   0
+  ],
+  "cons_emb|0.125|smartbench_tdcs": [
+   32,
+   0,
+   0,
+   0
+  ],
+  "random_adj|0.125|smartbench_tdcs": [
+   32,
+   0,
+   16,
+   6
+  ],
+  "random_far|0.125|smartbench_tdcs": [
+   30,
+   0,
+   15,
+   0
+  ],
+  "sim_emb|0.25|smartbench_tdcs": [
+   32,
+   0,
+   0,
+   0
+  ],
+  "sim_char3|0.25|smartbench_tdcs": [
+   32,
+   0,
+   0,
+   0
+  ],
+  "cons_emb|0.25|smartbench_tdcs": [
+   32,
+   0,
+   0,
+   0
+  ],
+  "random_adj|0.25|smartbench_tdcs": [
+   32,
+   0,
+   18,
+   3
+  ],
+  "random_far|0.25|smartbench_tdcs": [
+   32,
+   0,
+   16,
+   0
+  ],
+  "sim_emb|0.5|smartbench_tdcs": [
+   64,
+   0,
+   0,
+   0
+  ],
+  "sim_char3|0.5|smartbench_tdcs": [
+   64,
+   0,
+   0,
+   0
+  ],
+  "cons_emb|0.5|smartbench_tdcs": [
+   64,
+   0,
+   0,
+   0
+  ],
+  "random_adj|0.5|smartbench_tdcs": [
+   64,
+   0,
+   30,
+   9
+  ],
+  "random_far|0.5|smartbench_tdcs": [
+   45,
+   0,
+   25,
+   0
+  ],
+  "sim_emb|0.125|pec_home": [
+   96,
+   0,
+   0,
+   0
+  ],
+  "sim_char3|0.125|pec_home": [
+   96,
+   0,
+   0,
+   0
+  ],
+  "cons_emb|0.125|pec_home": [
+   96,
+   0,
+   0,
+   0
+  ],
+  "random_adj|0.125|pec_home": [
+   96,
+   0,
+   40,
+   3
+  ],
+  "random_far|0.125|pec_home": [
+   96,
+   0,
+   35,
+   0
+  ],
+  "sim_emb|0.25|pec_home": [
+   192,
+   0,
+   0,
+   1
+  ],
+  "sim_char3|0.25|pec_home": [
+   192,
+   0,
+   9,
+   0
+  ],
+  "cons_emb|0.25|pec_home": [
+   192,
+   0,
+   0,
+   1
+  ],
+  "random_adj|0.25|pec_home": [
+   192,
+   0,
+   54,
+   7
+  ],
+  "random_far|0.25|pec_home": [
+   192,
+   0,
+   76,
+   0
+  ],
+  "sim_emb|0.5|pec_home": [
+   383,
+   0,
+   7,
+   3
+  ],
+  "sim_char3|0.5|pec_home": [
+   383,
+   0,
+   80,
+   3
+  ],
+  "cons_emb|0.5|pec_home": [
+   383,
+   0,
+   0,
+   4
+  ],
+  "random_adj|0.5|pec_home": [
+   383,
+   0,
+   110,
+   11
+  ],
+  "random_far|0.5|pec_home": [
+   379,
+   0,
+   139,
+   0
+  ],
+  "sim_emb|0.125|toolmem": [
+   407,
+   0,
+   0,
+   0
+  ],
+  "sim_char3|0.125|toolmem": [
+   407,
+   0,
+   0,
+   0
+  ],
+  "cons_emb|0.125|toolmem": [
+   407,
+   0,
+   0,
+   0
+  ],
+  "random_adj|0.125|toolmem": [
+   407,
+   0,
+   25,
+   1
+  ],
+  "random_far|0.125|toolmem": [
+   407,
+   0,
+   31,
+   0
+  ],
+  "sim_emb|0.25|toolmem": [
+   814,
+   0,
+   0,
+   0
+  ],
+  "sim_char3|0.25|toolmem": [
+   814,
+   0,
+   0,
+   0
+  ],
+  "cons_emb|0.25|toolmem": [
+   814,
+   0,
+   0,
+   0
+  ],
+  "random_adj|0.25|toolmem": [
+   814,
+   0,
+   68,
+   2
+  ],
+  "random_far|0.25|toolmem": [
+   814,
+   0,
+   81,
+   0
+  ],
+  "sim_emb|0.5|toolmem": [
+   1638,
+   0,
+   0,
+   1
+  ],
+  "sim_char3|0.5|toolmem": [
+   1638,
+   0,
+   27,
+   2
+  ],
+  "cons_emb|0.5|toolmem": [
+   1638,
+   0,
+   0,
+   1
+  ],
+  "random_adj|0.5|toolmem": [
+   1638,
+   0,
+   136,
+   1
+  ],
+  "random_far|0.5|toolmem": [
+   1638,
+   0,
+   162,
+   0
+  ],
+  "sim_emb|0.125|privacylens": [
+   122,
+   0,
+   0,
+   0
+  ],
+  "sim_char3|0.125|privacylens": [
+   122,
+   0,
+   0,
+   0
+  ],
+  "cons_emb|0.125|privacylens": [
+   122,
+   0,
+   0,
+   0
+  ],
+  "random_adj|0.125|privacylens": [
+   122,
+   0,
+   26,
+   0
+  ],
+  "random_far|0.125|privacylens": [
+   122,
+   0,
+   34,
+   0
+  ],
+  "sim_emb|0.25|privacylens": [
+   265,
+   0,
+   0,
+   0
+  ],
+  "sim_char3|0.25|privacylens": [
+   265,
+   0,
+   1,
+   0
+  ],
+  "cons_emb|0.25|privacylens": [
+   265,
+   0,
+   0,
+   0
+  ],
+  "random_adj|0.25|privacylens": [
+   265,
+   0,
+   64,
+   1
+  ],
+  "random_far|0.25|privacylens": [
+   265,
+   0,
+   69,
+   0
+  ],
+  "sim_emb|0.5|privacylens": [
+   529,
+   0,
+   1,
+   0
+  ],
+  "sim_char3|0.5|privacylens": [
+   529,
+   0,
+   33,
+   0
+  ],
+  "cons_emb|0.5|privacylens": [
+   529,
+   0,
+   0,
+   0
+  ],
+  "random_adj|0.5|privacylens": [
+   529,
+   0,
+   126,
+   10
+  ],
+  "random_far|0.5|privacylens": [
+   528,
+   0,
+   137,
+   0
+  ],
+  "sim_emb|0.125|hotpotqa": [
+   276,
+   28,
+   0,
+   0
+  ],
+  "sim_char3|0.125|hotpotqa": [
+   276,
+   11,
+   0,
+   0
+  ],
+  "cons_emb|0.125|hotpotqa": [
+   276,
+   28,
+   0,
+   0
+  ],
+  "random_adj|0.125|hotpotqa": [
+   276,
+   20,
+   26,
+   1
+  ],
+  "random_far|0.125|hotpotqa": [
+   276,
+   20,
+   37,
+   0
+  ],
+  "sim_emb|0.25|hotpotqa": [
+   553,
+   52,
+   0,
+   0
+  ],
+  "sim_char3|0.25|hotpotqa": [
+   553,
+   29,
+   13,
+   0
+  ],
+  "cons_emb|0.25|hotpotqa": [
+   553,
+   52,
+   0,
+   0
+  ],
+  "random_adj|0.25|hotpotqa": [
+   553,
+   41,
+   58,
+   1
+  ],
+  "random_far|0.25|hotpotqa": [
+   553,
+   43,
+   58,
+   0
+  ],
+  "sim_emb|0.5|hotpotqa": [
+   1121,
+   105,
+   0,
+   0
+  ],
+  "sim_char3|0.5|hotpotqa": [
+   1121,
+   64,
+   73,
+   1
+  ],
+  "cons_emb|0.5|hotpotqa": [
+   1121,
+   105,
+   0,
+   0
+  ],
+  "random_adj|0.5|hotpotqa": [
+   1121,
+   96,
+   141,
+   5
+  ],
+  "random_far|0.5|hotpotqa": [
+   1121,
+   89,
+   142,
+   0
+  ],
+  "sim_emb|0.125|squad": [
+   78,
+   30,
+   0,
+   1
+  ],
+  "sim_char3|0.125|squad": [
+   78,
+   30,
+   16,
+   0
+  ],
+  "cons_emb|0.125|squad": [
+   78,
+   30,
+   0,
+   1
+  ],
+  "random_adj|0.125|squad": [
+   78,
+   18,
+   39,
+   4
+  ],
+  "random_far|0.125|squad": [
+   75,
+   17,
+   37,
+   0
+  ],
+  "sim_emb|0.25|squad": [
+   94,
+   32,
+   0,
+   2
+  ],
+  "sim_char3|0.25|squad": [
+   94,
+   35,
+   20,
+   0
+  ],
+  "cons_emb|0.25|squad": [
+   94,
+   32,
+   0,
+   2
+  ],
+  "random_adj|0.25|squad": [
+   94,
+   18,
+   36,
+   4
+  ],
+  "random_far|0.25|squad": [
+   94,
+   19,
+   57,
+   0
+  ],
+  "sim_emb|0.5|squad": [
+   191,
+   58,
+   19,
+   10
+  ],
+  "sim_char3|0.5|squad": [
+   191,
+   50,
+   57,
+   1
+  ],
+  "cons_emb|0.5|squad": [
+   191,
+   61,
+   0,
+   13
+  ],
+  "random_adj|0.5|squad": [
+   191,
+   38,
+   95,
+   10
+  ],
+  "random_far|0.5|squad": [
+   172,
+   35,
+   99,
+   0
+  ]
+ }
+}

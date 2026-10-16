@@ -1,0 +1,29 @@
+V3 CONFIG=scatter  samples=frozen_samples_scattered.jsonl  granularity=sentence  records=550  cap=200  seed=20261015  dev=cuda
+model=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/models/models--microsoft--llmlingua-2-xlm-roberta-large-meetingbank/snapshots/ebaba9b0e874dadd3003ffcff828e4397e568089  layer_idx=4  n_layers=24  layer=early  tau=-  max_size=2  rand=sized_random
+note: tau 只约束合并边(edge-level)，链式合并可使同簇成员对的相似度 < tau，故 tau 不是簇直径上界；tau=- 表示该配置不设下界
+note: max_size 为该配置声明的簇大小上限（bound=4，作用于 bound_emb/rand4_emb；sim_emb 等两两配对臂恒为 2；其余配置也全是两两配对）
+
+mode           ratio     clusters  hit_answer    mix_sens   fuse_2sec
+sim_emb        0.125         1066        4.0%        0.0%        0.0%
+sim_emb        0.250         1988        3.3%        0.0%        0.0%
+sim_emb        0.500         3997        3.4%        0.0%        0.6%
+
+cons_emb       0.125         1066        4.0%        0.0%        0.0%
+cons_emb       0.250         1988        3.3%        0.0%        0.0%
+cons_emb       0.500         3997        3.4%        0.0%        0.6%
+
+imp_emb        0.125         1066        0.0%        0.0%        0.0%
+imp_emb        0.250         1988        0.0%        0.0%        0.0%
+imp_emb        0.500         3997        0.0%        0.0%        0.9%
+
+cons_imp_emb   0.125         1066        0.0%        0.0%        0.0%
+cons_imp_emb   0.250         1988        0.0%        0.0%        0.0%
+cons_imp_emb   0.500         3997        0.0%        0.0%        0.9%
+
+random_adj     0.125         1066        3.5%       20.0%        1.9%
+random_adj     0.250         1988        2.7%       18.4%        1.1%
+random_adj     0.500         3997        2.7%       18.1%        1.6%
+
+random_far     0.125         1062        3.1%       20.7%        2.2%
+random_far     0.250         1982        3.1%       17.9%        1.7%
+random_far     0.500         3940        2.8%       17.2%        1.5%

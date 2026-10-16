@@ -1,0 +1,22 @@
+E2E v4 — SAME-BUDGET selectors vs mask_quito_x (budget_cluster / budget_random)
+cases=1000  reduce_frac=0.25  max_new=64  dtype=fp16
+
+dataset    arm                 n        EM        F1   ctx_tokens
+hotpotqa   full              500    43.80%    55.17%       1405.9
+hotpotqa   qtx               500    44.60%    55.66%        702.7
+hotpotqa   budget_cluster    500    40.00%    48.33%        679.6
+hotpotqa   budget_random     500    23.20%    29.28%        681.7
+hotpotqa   qtx_cluster       500    39.40%    49.63%        593.8
+
+squad      full              500    79.80%    89.53%        229.0
+squad      qtx               500    77.80%    87.61%        114.2
+squad      budget_cluster    500    79.20%    87.69%         93.6
+squad      budget_random     500    36.60%    41.56%         94.3
+squad      qtx_cluster       500    77.20%    86.69%         97.4
+
+=== ALL ===
+full             1000    61.80%    72.35%        817.4
+qtx              1000    61.20%    71.64%        408.5
+budget_cluster   1000    59.60%    68.01%        386.6
+budget_random    1000    29.90%    35.42%        388.0
+qtx_cluster      1000    58.30%    68.16%        345.6
