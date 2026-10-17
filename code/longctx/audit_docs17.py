@@ -238,6 +238,42 @@ def main():
         if r:
             bad.append(r)
 
+    # docs/17 §2 第二模型段（Mistral + --alias-question，作业 10602656）
+    mq = cells(R + r'\results\cells\longctx_mistralq_cells.json')
+    MQ = {'alias_budget_link|0.5': (0.7343, 4150.0, 0.0000, 1.000, 1.000),
+          'full|None': (0.6931, 8897.0, None, 1.000, 1.000),
+          'budget_cluster_link|0.5': (0.7075, 4145.0, 0.0603, 1.000, 1.000),
+          'budget_cluster|0.5': (0.5196, 4142.0, None, 0.643, 1.000),
+          'budget_random|0.5': (0.2631, 4096.0, None, 0.821, 0.464),
+          'alias_budget_link|0.25': (0.7172, 1820.0, 0.0000, 0.982, 0.911),
+          'alias_budget_link|0.75': (0.7120, 6236.0, 0.0000, 1.000, 1.000)}
+    for k, (f1, tok, leak, tent, gic) in MQ.items():
+        v = mq.get(k) or {}
+        for lbl, got, exp, tol in (('F1', v.get('f1'), f1, 5e-5), ('tok', v.get('tok'), tok, 0.6),
+                                   ('tent', v.get('tent'), tent, 1e-3), ('gic', v.get('gic'), gic, 1e-3),
+                                   ('ctxLeak', v.get('leak'), leak, 1e-4)):
+            if exp is None:
+                continue
+            checked += 1
+            r = cmp1('mistralq %s %s' % (k, lbl), got, exp, tol)
+            if r:
+                bad.append(r)
+    checked += 3
+    for lbl, got, exp in (
+            ('mistralq alias gain', mq['alias_budget_link|0.5']['f1'] - mq['budget_cluster|0.5']['f1'], 0.2146),
+            ('mistralq link gain', mq['budget_cluster_link|0.5']['f1'] - mq['budget_cluster|0.5']['f1'], 0.1879),
+            ('mistralq vs full', mq['alias_budget_link|0.5']['f1'] - mq['full|None']['f1'], 0.0412)):
+        r = cmp1(lbl, got, exp, 5e-4)
+        if r:
+            bad.append(r)
+    m0 = cells(FIX + r'\aliaslink_mistral\cells.json')
+    ndiff = sum(1 for k in set(m0) & set(mq)
+                if k.split('|')[0] not in ('alias', 'alias_budget', 'alias_budget_link')
+                and abs(m0[k]['f1'] - mq[k]['f1']) > 1e-9)
+    checked += 1
+    if ndiff != 0:
+        bad.append('mistralq 非别名格差异 %d 处（docs 写 0）' % ndiff)
+
     print('AUDIT :: checked %d numbers against source artifacts' % checked)
     if bad:
         print('MISMATCHES (%d):' % len(bad))
