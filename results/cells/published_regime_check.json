@@ -1,0 +1,57 @@
+{
+ "n_cases": 96,
+ "cases_with_canary": 96,
+ "question_contains_canary": 0,
+ "answer_contains_canary": 0,
+ "canary_also_in_source_context": 0,
+ "n_canary_occurrences": 288,
+ "canary_relative_position": {
+  "min": 0.023508137432188065,
+  "median": 0.5148365635312392,
+  "max": 0.9880281690140845
+ },
+ "published": [
+  {
+   "method": "full",
+   "f1": 0.8444090361269518,
+   "retention": 1.0,
+   "pin_full": 0.0
+  },
+  {
+   "method": "quito_x",
+   "f1": 0.8573609239293202,
+   "retention": 0.4987986646649496,
+   "pin_full": 0.4513888888888889
+  },
+  {
+   "method": "dac",
+   "f1": 0.46468543031043036,
+   "retention": 0.4987986646649496,
+   "pin_full": 1.0
+  },
+  {
+   "method": "provence",
+   "f1": 0.6849278100616466,
+   "retention": 0.4987986646649496,
+   "pin_full": 0.6006944444444445
+  },
+  {
+   "method": "cpc",
+   "f1": 0.7635898901864085,
+   "retention": 0.4987986646649496,
+   "pin_full": 0.986111111111111
+  },
+  {
+   "method": "llmlingua2",
+   "f1": 0.6747195443696802,
+   "retention": 0.4987986646649496,
+   "pin_full": 0.4166666666666667
+  },
+  {
+   "method": "mask_llmlingua2",
+   "f1": 0.750671308861131,
+   "retention": 0.4987986646649496,
+   "pin_full": 1.0
+  }
+ ]
+}
