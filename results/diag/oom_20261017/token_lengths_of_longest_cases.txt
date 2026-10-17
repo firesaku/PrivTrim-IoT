@@ -1,0 +1,14 @@
+subset cases: 3
+key=longctx-smartbench_tdcs-multi-0004 kind=multi_entity ctx_chars=40804 ctx_tokens=18172 q_tokens=29 sum=18201
+key=longctx-smartbench_tdcs-multi-0001 kind=multi_entity ctx_chars=40804 ctx_tokens=18242 q_tokens=29 sum=18271
+key=longctx-smartbench_tdcs-multi-0006 kind=multi_entity ctx_chars=40802 ctx_tokens=18321 q_tokens=29 sum=18350
+--- top 6 by ctx tokens ---
+   18608  longctx-smartbench_tdcs-multi-0003 multi_entity
+   18506  longctx-smartbench_tdcs-multi-0007 multi_entity
+   18506  longctx-smartbench_tdcs-multi-0000 multi_entity
+   18321  longctx-smartbench_tdcs-multi-0006 multi_entity
+   18282  longctx-smartbench_tdcs-multi-0005 multi_entity
+   18242  longctx-smartbench_tdcs-multi-0001 multi_entity
+max_ctx_tokens=18608
+TOK_DONE
+--- STDERR ---

@@ -1,0 +1,18 @@
+HOST=gpu-11-1 DATE=2026-10-17T19:06:37+04:00
+Tesla V100-PCIE-32GB, 32768 MiB
+Tesla V100-PCIE-32GB, 32768 MiB
+Tesla V100-PCIE-32GB, 32768 MiB
+Tesla V100-PCIE-32GB, 32768 MiB
+[19:06:37] cases=3  arms=budget_cluster_link,alias_budget_link,budget_cluster,alias,full  budgets=[0.1, 0.15, 0.25]  sel=lex  dry_run=False
+[19:06:38] scorer=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/project/external/squad_v11/evaluate-v2.0.py
+[19:06:46] gpu Tesla V100-PCIE-32GB
+[19:06:47] loading LM fp16 maxlen=24576
+[19:06:53] selector=lex（model-free 词面 Jaccard 冗余度）
+[19:06:54] 问题同步别名：映射检查 12 处（跳过 0 处问题未提及目标实体）；映射不一致 0 处
+[19:06:54] 问题同步别名：别名 token 在压缩后文本中的投递率 6/12 = 50.0%（未投递 = 该臂把实体所在单元丢了，属实验观察，不是映射错误）
+[19:06:54] generating 33 prompts
+[19:07:12] gen 2/33  18.5s
+XBMULTI_RC=1
+===== REPORT =====
+cat: /dpc/kuex0095/100065732/privtrim_v2c_20261015/xb2_out/report.txt: No such file or directory
+XBMULTI_DONE

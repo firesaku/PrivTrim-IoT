@@ -1,0 +1,118 @@
+=== 各作业用到的 GPU 型号（第一行 nvidia-smi 输出） ===
+aliaslink-10602422.out             | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+aliasq-10602439.out                | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+batchchk-10602515.out              | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+ctl-10602535.out                   | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB, 1 MiB
+ctl-10602536.out                   | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB, 1 MiB
+e2e-1451077.out                    | oom=0 | NVIDIA H200, 143771 MiB
+e2e2b-10599443.out                 | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+e2e3-10600642.out                  | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+e2e4-10601688.out                  | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+e2e5-10601689.out                  | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+e2ea-10598862.out                  | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+e2eb-10599046.out                  | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+frA-10602526.out                   | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB, 1 MiB
+frB-10602527.out                   | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB, 1 MiB
+inscope-10602443.out               | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+lctxr3-10602067.out                | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+lctxseed-10602070_0.out            | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+lctxseed-10602070_1.out            | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+longctx-10601748.out               | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+longctx-10601749.out               | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+longctx-10601751.out               | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+longctx2-10601756.out              | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+longctx2-10601767.out              | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+mistral-10602423.out               | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+mistralq-10602656.out              | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+pallA-10602547.out                 | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB, 1 MiB
+pallB-10602560.out                 | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB, 1 MiB
+parA2-10602512.out                 | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB, 1798 MiB
+parA3-10602522.out                 | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB, 1798 MiB
+paraA-10602506.out                 | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+paraB-10602507.out                 | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+parB2-10602513.out                 | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB, 1798 MiB
+parB3-10602523.out                 | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB, 1798 MiB
+v1-1444037.out                     | oom=0 | 
+v1b-1444040.out                    | oom=0 | 
+v1fix-1444041.out                  | oom=0 | 
+v2c-1443690.out                    | oom=0 | 
+v2cfix-1454173.out                 | oom=0 | 
+v2d-1444010.out                    | oom=0 | NVIDIA H200, 143771 MiB, 0 MiB
+v2dalm-10601686.out                | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB, 884 MiB
+v2dalm-10601687.out                | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+v3-1444036_0.out                   | oom=0 | NVIDIA H200, 143771 MiB, 0 MiB
+v3-1444036_1.out                   | oom=0 | NVIDIA H200, 143771 MiB, 0 MiB
+v3-1444036_2.out                   | oom=0 | NVIDIA H200, 143771 MiB, 0 MiB
+v3-1444036_3.out                   | oom=0 | NVIDIA H200, 143771 MiB, 0 MiB
+v3fix-10601714_0.out               | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+v3fix-10601714_1.out               | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+v3fix-10601714_2.out               | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+v3fix-10601714_3.out               | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+v3fix-10601714_4.out               | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+v3fix-10601714_5.out               | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+v3gran-1444045.out                 | oom=0 | 
+v3match-10601726_0.out             | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+v3match-10601726_1.out             | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+v3match-10601726_2.out             | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+xb_multi-10602658.out              | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+xb_multi_b1-10602659.out           | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+xb_smoke-10602657.out              | oom=0 | Tesla V100-PCIE-32GB, 32768 MiB
+=== 分区里到底有哪些 GRES 类型 ===
+     PARTITION  NODES                 GRES      STATE           NODELIST
+         prod*      1               (null)   draining            cn-3-34
+         prod*    102               (null)      mixed cn-2-[42,44,51],cn
+         prod*     78               (null)  allocated cn-2-43,cn-3-32,cn
+         prod*     21               (null)       idle cn-2-[41,52-54],cn
+         devel      4               (null)       idle       cn-108-[5-8]
+         train      4               (null)       idle       cn-108-[1-4]
+           gpu      3           gpu:v100:2      mixed     gpu-10-[1,3-4]
+           gpu      1           gpu:v100:4      mixed           gpu-11-1
+           gpu      1           gpu:v100:4  allocated           gpu-11-3
+           gpu      1           gpu:v100:4       idle           gpu-11-2
+      ank-prod      3               (null)  allocated       cn-109-[5-7]
+      ank-prod      4               (null)       idle     cn-109-[2-4,8]
+          entc      2               (null)       idle        cn-12-[1-2]
+         ric2d      4               (null)  allocated     cn-109-[1,5-7]
+=== gpu 分区节点的 GPU 型号（scontrol） ===
+NodeName=cn-2-41 Arch=x86_64 CoresPerSocket=26 
+   Gres=(null)
+   CfgTRES=cpu=52,mem=312.50G,billing=52
+NodeName=cn-2-42 Arch=x86_64 CoresPerSocket=26 
+   Gres=(null)
+   CfgTRES=cpu=52,mem=312.50G,billing=52
+NodeName=cn-2-43 Arch=x86_64 CoresPerSocket=26 
+   Gres=(null)
+   CfgTRES=cpu=52,mem=312.50G,billing=52
+NodeName=cn-2-44 Arch=x86_64 CoresPerSocket=26 
+   Gres=(null)
+   CfgTRES=cpu=52,mem=312.50G,billing=52
+NodeName=cn-2-51 Arch=x86_64 CoresPerSocket=26 
+   Gres=(null)
+   CfgTRES=cpu=52,mem=312.50G,billing=52
+NodeName=cn-2-52 Arch=x86_64 CoresPerSocket=26 
+   Gres=(null)
+   CfgTRES=cpu=52,mem=312.50G,billing=52
+NodeName=cn-2-53 Arch=x86_64 CoresPerSocket=26 
+   Gres=(null)
+   CfgTRES=cpu=52,mem=312.50G,billing=52
+NodeName=cn-2-54 Arch=x86_64 CoresPerSocket=26 
+   Gres=(null)
+   CfgTRES=cpu=52,mem=312.50G,billing=52
+NodeName=cn-3-11 Arch=x86_64 CoresPerSocket=26 
+   Gres=(null)
+   CfgTRES=cpu=52,mem=312.50G,billing=52
+NodeName=cn-3-12 Arch=x86_64 CoresPerSocket=26 
+   Gres=(null)
+   CfgTRES=cpu=52,mem=312.50G,billing=52
+NodeName=cn-3-13 Arch=x86_64 CoresPerSocket=26 
+   Gres=(null)
+   CfgTRES=cpu=52,mem=312.50G,billing=52
+NodeName=cn-3-14 Arch=x86_64 CoresPerSocket=26 
+   Gres=(null)
+   CfgTRES=cpu=52,mem=312.50G,billing=52
+NodeName=cn-3-21 Arch=x86_64 CoresPerSocket=26 
+   Gres=(null)
+   CfgTRES=cpu=52,mem=312.50G,billing=52
+NodeName=cn-3-22 Arch=x86_64 CoresPerSocket=26 
+GPU_LIST_DONE
+--- STDERR ---
