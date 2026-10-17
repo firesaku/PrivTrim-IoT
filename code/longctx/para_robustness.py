@@ -81,10 +81,10 @@ def main():
     def d(o, x, y):
         return (o[x]['f1'] - o[y]['f1']) if x in o and y in o else float('nan')
 
-    pairs = [('budget_cluster_link@0.5', 'budget_cluster@0.5', '锚点增益（原始串）'),
-             ('alias_budget_link@0.5', 'alias_budget@0.5', '锚点增益（别名）'),
-             ('budget_cluster_link@0.5', 'full|None', 'link 相对不压缩'),
-             ('alias_budget_link@0.5', 'full|None', 'alias link 相对不压缩')]
+    pairs = [('budget_cluster_link|0.5', 'budget_cluster|0.5', '锚点增益（原始串）'),
+             ('alias_budget_link|0.5', 'alias_budget|0.5', '锚点增益（别名）'),
+             ('budget_cluster_link|0.5', 'full|None', 'link 相对不压缩'),
+             ('alias_budget_link|0.5', 'full|None', 'alias link 相对不压缩')]
     for x, y, name in pairs:
         if x in A and y in A and x in B and y in B:
             L.append('  %-24s 原 %+.4f → 改写 %+.4f   %s'
@@ -99,12 +99,12 @@ def main():
         L.append('')
         L.append('成对 bootstrap（同一批案例；差值 = 改写 − 原）:')
         for x, y, name in pairs:
-            kx = x.replace('|None', '@ref')
-            ky = y.replace('|None', '@ref')
+            kx = x.replace('|None','@ref').replace('|0.5','@0.5').replace('|0.25','@0.25').replace('|0.75','@0.75')
+            ky = y.replace('|None','@ref').replace('|0.5','@0.5').replace('|0.25','@0.25').replace('|0.75','@0.75')
             pairs2 = []
             for kk in PB:
-                if x in PB[kk] and y in PB[kk] and x in PA.get(kk, {}) and y in PA[kk]:
-                    pairs2.append((PB[kk][x] - PB[kk][y]) - (PA[kk][x] - PA[kk][y]))
+                if kx in PB[kk] and ky in PB[kk] and kx in PA.get(kk, {}) and ky in PA[kk]:
+                    pairs2.append((PB[kk][kx] - PB[kk][ky]) - (PA[kk][kx] - PA[kk][ky]))
             if len(pairs2) < 5:
                 L.append('  %-24s 配对数不足(%d)' % (name, len(pairs2)))
                 continue
