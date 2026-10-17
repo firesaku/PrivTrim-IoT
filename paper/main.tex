@@ -112,6 +112,11 @@ model-agnostic, deterministic, and reproducible bit-for-bit within a configurati
 deterministically derived gold answers, six published compressors re-run on it, per-source and
 per-stratum breakdowns, and a script that recomputes all 184 reported numbers from raw
 artefacts.
+\item \textbf{A missing condition for sanitiser design.} Recent sanitisers decide what to hide
+per span and balance privacy against utility, but treat the prompt as a bag of sensitive and
+useful spans~\cite{dyntext,promptgraph}. We show that once the prompt is long, budgeted and
+queried, a third property decides the outcome: the entity the question names must stay
+referable in what the model receives.
 \end{itemize}
 
 \section{Related Work}
@@ -127,14 +132,23 @@ quality of a redundancy score; it overrides the decision for units whose referen
 load-bearing. The two are composable: any of these scorers can supply the relevance signal
 inside our routing.
 
-\paragraph{De-identification and privacy in inference.}
-Anonymisation pipelines replace detected identifiers with typed placeholders before a model
-sees the text, and the security literature studies what such replacements leak through
-auxiliary channels. We study the orthogonal question of what happens to \emph{task} performance
-when replacement meets compression. The composition is instructive: each component behaves as
-designed, and the pair destroys the query. This is the qualitative difference between
-\emph{masking} (replace the value, keep a handle) and \emph{masking plus compression} (lose the
-handle as well).
+\paragraph{Sanitisation: the closest neighbour.}
+Two recent lines of work share our setting and differ in what they protect. DYNTEXT
+sanitises user-side text before inference with local differential privacy, replacing sensitive
+tokens by semantically similar non-sensitive tokens sampled from a dynamically built adjacency
+list, so that a fixed substitution table cannot be attacked or distort meaning~\cite{dyntext}.
+PromptGraph models a prompt as an attributed graph whose nodes carry span-level privacy scores
+and whose edges encode the contextual dependencies that utility needs, then selects a protected
+span set that maximises privacy gain net of lost dependencies, with placeholders restored after
+local consistency checks~\cite{promptgraph}. Both decide \emph{what to hide} per unit and both
+balance privacy against utility, and we share their conclusion that replacement beats deletion.
+The difference is what the protected unit has to keep doing afterwards. Neither formulation
+carries a query: relevance is not an input, the token budget is not a constraint, and nothing
+requires that the entity named in the question remain referable in the sanitised text. In our
+setting those three properties are simultaneous, and they interact --- which is why a policy
+that is optimal for hiding (hide the repeating identifier) is exactly the policy that destroys
+the question, and why replacement alone is not sufficient without a shared handle on both sides
+of the question--context pair.
 
 \paragraph{Long-context evaluation.}
 Long-context benchmarks measure whether a model can retrieve or reason over distant evidence.
@@ -622,6 +636,13 @@ retrieval-augmented generation,'' in \emph{ICLR}, 2025.
 for retrieval-augmented language models,'' 2024.
 \bibitem{quitox} S.~Wang et al., ``Quito-X: A novel contextual compression method for
 retrieval-augmented generation,'' 2024.
+\bibitem{dyntext} J.~Zhang, Z.~Tian, M.~Zhu, Y.~Song, T.~Sheng, S.~Yang, Q.~Du, X.~Liu,
+M.~Huang, and D.~Li, ``DYNTEXT: Semantic-aware dynamic text sanitization for privacy-preserving
+LLM inference,'' in \emph{Findings of the Association for Computational Linguistics: ACL 2025},
+pp.~20243--20255, 2025.
+\bibitem{promptgraph} C.~Gu, H.~Wan, D.~Hu, H.~Wang, and Z.~Gu, ``PromptGraph: Graph-guided
+prompt sanitization for balancing privacy and utility in LLM inference,'' \emph{arXiv
+preprint arXiv:2607.10709}, 2026.
 \end{thebibliography}
 
 \appendix
