@@ -11,10 +11,12 @@
 import io
 import json
 import os
+import re
 
 BASE = r'D:\CodexData\tmp\privtrim-review-20261015'
 R = BASE + r'\remote_probe'
 FIX = BASE + r'\fixres'
+REP = R + r'\results\reports'
 
 
 def cells(p):
@@ -128,6 +130,70 @@ def main():
         r = cmp1('inscope ' + lbl, got, exp, 0.6 if 'tok' in lbl else (5e-3 if ('gic' in lbl or 'tent' in lbl) else 5e-5))
         if r:
             bad.append(r)
+
+    # docs/17 §3.5 提问方式稳健性（两个变体）
+    pa = cells(R + r'\results\cells\longctx_paraA_cells.json')
+    pb = cells(R + r'\results\cells\longctx_paraB_cells.json')
+    AB = {'full|None': (0.6831, 0.6575),
+          'budget_cluster_link|0.5': (0.7441, 0.7170),
+          'alias_budget_link|0.5': (0.7262, 0.7170),
+          'budget_cluster|0.5': (0.5402, 0.4420),
+          'alias_budget|0.5': (0.5848, 0.4598),
+          'alias|None': (0.6618, 0.6385),
+          'delete|None': (0.4739, 0.4705)}
+    for k, (fa, fb) in AB.items():
+        for v, got, exp in (('A', (pa.get(k) or {}).get('f1'), fa),
+                            ('B', (pb.get(k) or {}).get('f1'), fb)):
+            checked += 1
+            r = cmp1('para%s %s' % (v, k), got, exp, 5e-5)
+            if r:
+                bad.append(r)
+    # 判据是臂间差：文档里写的四个判据与两个派生量都必须等于重算值
+    DERIVED = [
+        ('para raw gain A', pa['budget_cluster_link|0.5']['f1'] - pa['budget_cluster|0.5']['f1'], 0.2039),
+        ('para raw gain B', pb['budget_cluster_link|0.5']['f1'] - pb['budget_cluster|0.5']['f1'], 0.2750),
+        ('para alias gain A', pa['alias_budget_link|0.5']['f1'] - pa['alias_budget|0.5']['f1'], 0.1414),
+        ('para alias gain B', pb['alias_budget_link|0.5']['f1'] - pb['alias_budget|0.5']['f1'], 0.2571),
+        ('para link-full A', pa['budget_cluster_link|0.5']['f1'] - pa['full|None']['f1'], 0.0610),
+        ('para link-full B', pb['budget_cluster_link|0.5']['f1'] - pb['full|None']['f1'], 0.0594),
+        ('para aliaslink-full A', pa['alias_budget_link|0.5']['f1'] - pa['full|None']['f1'], 0.0432),
+        ('para aliaslink-full B', pb['alias_budget_link|0.5']['f1'] - pb['full|None']['f1'], 0.0594),
+        ('para full drop A', pa['full|None']['f1'] - q['full|None']['f1'], -0.0358),
+        ('para full drop B', pb['full|None']['f1'] - q['full|None']['f1'], -0.0614),
+    ]
+    for lbl, got, exp in DERIVED:
+        checked += 1
+        r = cmp1(lbl, got, exp, 5e-4)
+        if r:
+            bad.append(r)
+    # 报告里的 bootstrap 行：文档引用的 Δ/CI 必须与报告原文逐位一致
+    EXP_BOOT = {
+        'A': [('锚点增益（原始串）', 112, -0.0456, -0.1170, 0.0258),
+              ('锚点增益（别名）', 112, -0.0902, -0.1696, -0.0188),
+              ('link 相对不压缩', 112, 0.0617, -0.0107, 0.1344),
+              ('alias link 相对不压缩', 112, 0.0170, -0.0611, 0.0934)],
+        'B': [('锚点增益（原始串）', 112, 0.0255, -0.0191, 0.0778),
+              ('锚点增益（别名）', 112, 0.0255, -0.0115, 0.0676),
+              ('link 相对不压缩', 112, 0.0601, -0.0054, 0.1280),
+              ('alias link 相对不压缩', 112, 0.0333, -0.0283, 0.1007)],
+    }
+    BOOT_PAT = re.compile(r'(锚点增益（原始串）|锚点增益（别名）|link 相对不压缩|alias link 相对不压缩)'
+                          r'\s+n=\s*(\d+)\s+Δ差=([+-][\d.]+)\s+\[([+-][\d.]+), ([+-][\d.]+)\]')
+    for v in ('A', 'B'):
+        got = {}
+        for line in io.open(REP + r'\longctx_para%s_robustness.txt' % v, encoding='utf-8'):
+            m = BOOT_PAT.search(line)
+            if m:
+                got[m.group(1)] = (int(m.group(2)), float(m.group(3)),
+                                   float(m.group(4)), float(m.group(5)))
+        for name, n, d, lo, hi in EXP_BOOT[v]:
+            checked += 1
+            g = got.get(name)
+            if g is None:
+                bad.append('boot %s %s: MISSING' % (v, name))
+            elif g != (n, d, lo, hi):
+                bad.append('boot %s %s: got %s expected %s  <-- MISMATCH'
+                           % (v, name, g, (n, d, lo, hi)))
 
     print('AUDIT :: checked %d numbers against source artifacts' % checked)
     if bad:

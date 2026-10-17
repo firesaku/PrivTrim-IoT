@@ -61,6 +61,7 @@ def main():
     ap.add_argument('--rephrased', required=True, help='pallA cells.json')
     ap.add_argument('--orig-percase', default='')
     ap.add_argument('--reph-percase', default='')
+    ap.add_argument('--variant-label', default='A', help='改写变体标签，只用于报告标题')
     ap.add_argument('--out', default='')
     ap.add_argument('--json-out', default='')
     a = ap.parse_args()
@@ -69,7 +70,7 @@ def main():
     B = load(a.rephrased)
     keys = [k for k in A if k in B]
     L = []
-    L.append('提问方式稳健性：原问题 vs 机械改写变体 A（同 9 臂 × 3 预算配置）')
+    L.append('提问方式稳健性：原问题 vs 机械改写变体 %s（同 9 臂 × 3 预算配置）' % a.variant_label)
     L.append('%-28s %10s %10s %9s' % ('arm|budget', 'original', 'rephrased', 'delta'))
     for k in sorted(keys, key=lambda x: -A[x]['f1']):
         L.append('%-28s %10.4f %10.4f %+9.4f' % (k, A[k]['f1'], B[k]['f1'],
