@@ -1,0 +1,11 @@
+arm  orig_f1  A_f1  B_f1  | A_tok B_tok | A_gic B_gic
+full|None                0.718879 0.683067 0.657524 |   7964   7964 | 1.000 1.000
+budget_cluster|0.5       0.468750 0.540179 0.441964 |   3705   3705 | 1.000 1.000
+budget_cluster_link|0.5  0.718240 0.744081 0.716964 |   3706   3706 | 1.000 1.000
+alias_budget|0.5         0.513393 0.584821 0.459821 |   3708   3708 | 1.000 1.000
+alias_budget_link|0.5    0.745026 0.726224 0.716964 |   3708   3708 | 1.000 1.000
+alias|None               0.671898 0.661763 0.638466 |   7824   7824 | 1.000 1.000
+delete|None              0.491590 0.473886 0.470482 |   7845   7845 | 0.982 0.982
+orig: rawgain +0.249490 aliasgain +0.231633 linkVfull -0.000639 aliaslinkVfull +0.026146 aliasVfull -0.046981
+A: rawgain +0.203902 aliasgain +0.141402 linkVfull +0.061014 aliaslinkVfull +0.043157 aliasVfull -0.021303
+B: rawgain +0.275000 aliasgain +0.257143 linkVfull +0.059440 aliaslinkVfull +0.059440 aliasVfull -0.019059
