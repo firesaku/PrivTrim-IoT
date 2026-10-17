@@ -113,9 +113,11 @@ deterministically derived gold answers, six published compressors re-run on it, 
 per-stratum breakdowns, and a script that recomputes all 184 reported numbers from raw
 artefacts.
 \item \textbf{A missing condition for sanitiser design.} Recent sanitisers decide what to hide
-per span and balance privacy against utility, but treat the prompt as a bag of sensitive and
-useful spans~\cite{dyntext,promptgraph}. We show that once the prompt is long, budgeted and
-queried, a third property decides the outcome: the entity the question names must stay
+per span, model the dependencies that utility needs, and balance the two
+explicitly~\cite{dyntext,promptgraph}. What they take as given is the text itself: the
+dependency signal is intrinsic to the prompt, not conditioned on a query. We show that once the
+prompt is long, budgeted and queried, a third property decides the outcome: the entity the
+question names must stay
 referable in what the model receives.
 \end{itemize}
 
@@ -140,9 +142,11 @@ list, so that a fixed substitution table cannot be attacked or distort meaning~\
 PromptGraph models a prompt as an attributed graph whose nodes carry span-level privacy scores
 and whose edges encode the contextual dependencies that utility needs, then selects a protected
 span set that maximises privacy gain net of lost dependencies, with placeholders restored after
-local consistency checks~\cite{promptgraph}. Both decide \emph{what to hide} per unit and both
-balance privacy against utility, and we share their conclusion that replacement beats deletion.
-The difference is what the protected unit has to keep doing afterwards. Neither formulation
+local consistency checks~\cite{promptgraph}. Both decide \emph{what to hide} per unit, both
+balance privacy against utility, and both replace rather than delete --- a choice we quantify
+in our setting, where deleting the protected units costs $0.25$ F1 and makes different entities
+collide on the same surface form in all $40$ multi-entity cases. The difference is what the
+protected unit has to keep doing afterwards. Neither formulation
 carries a query: relevance is not an input, the token budget is not a constraint, and nothing
 requires that the entity named in the question remain referable in the sanitised text. In our
 setting those three properties are simultaneous, and they interact --- which is why a policy
