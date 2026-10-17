@@ -25,7 +25,8 @@ def cells(p):
     for k, v in o['all'].items():
         n = max(1, v['n'])
         out[k] = dict(n=v['n'], f1=v['f1'] / n, tok=v['tok'] / n, gic=v['ans'] / n,
-                      leak=v['cv'] / max(1, v['cn']), tent=v['tent'] / n, coll=v['coll'] / n)
+                      leak=v['cv'] / max(1, v['cn']), tent=v['tent'] / n, coll=v['coll'] / n,
+                      ov=v.get('ov', 0))
     return out
 
 
@@ -194,6 +195,48 @@ def main():
             elif g != (n, d, lo, hi):
                 bad.append('boot %s %s: got %s expected %s  <-- MISMATCH'
                            % (v, name, g, (n, d, lo, hi)))
+
+    # docs/17 §2.1 预算曲线（@0.10/@0.15 来自作业 10602732，其余来自 aliasq 10602439）
+    xb = cells(R + r'\results\cells\longctx_xbud_cells.json')
+    qa = cells(FIX + r'\aliasq_qwen\cells.json')
+    CURVE = {'budget_cluster_link': (0.5161, 0.5563, 0.6545, 0.7182, 0.7191),
+             'alias_budget_link': (0.5339, 0.5830, 0.6813, 0.7450, 0.7191),
+             'budget_cluster': (0.3750, 0.3125, 0.4107, 0.4688, 0.4955),
+             'alias_budget': (0.3929, 0.3393, 0.4643, 0.5134, 0.6384),
+             'budget_random': (0.0446, 0.0625, 0.1250, 0.2366, 0.4602),
+             'delete_budget': (0.3750, 0.3125, 0.4018, 0.4688, 0.4598)}
+    for arm, vals in CURVE.items():
+        for ratio, exp in zip(('0.1', '0.15', '0.25', '0.5', '0.75'), vals):
+            k = '%s|%s' % (arm, ratio)
+            src = xb if ratio in ('0.1', '0.15') else qa
+            checked += 1
+            r = cmp1('curve %s' % k, (src.get(k) or {}).get('f1'), exp, 5e-5)
+            if r:
+                bad.append(r)
+    for ratio, exp_tok in (('0.1', 391.0), ('0.15', 681.0), ('0.25', 1633.0),
+                           ('0.5', 3708.0), ('0.75', 5579.0)):
+        k = 'alias_budget_link|%s' % ratio
+        src = xb if ratio in ('0.1', '0.15') else qa
+        checked += 1
+        r = cmp1('curve tok %s' % k, (src.get(k) or {}).get('tok'), exp_tok, 0.6)
+        if r:
+            bad.append(r)
+    # 极端预算下我们的臂不得超预算；长度保持臂必须与 aliasq 逐位相同
+    for ratio in ('0.1', '0.15'):
+        for arm in ('budget_cluster_link', 'alias_budget_link', 'budget_cluster',
+                    'alias_budget', 'delete_budget'):
+            checked += 1
+            ov = ((xb.get('%s|%s' % (arm, ratio)) or {}).get('ov'))
+            if ov is None:
+                bad.append('xbud %s|%s: MISSING' % (arm, ratio))
+            elif abs(ov) > 0.5:
+                bad.append('xbud %s|%s overshoot=%s (docs 写 0)' % (arm, ratio, ov))
+    for k in ('full|None', 'alias|None', 'delete|None'):
+        checked += 1
+        r = cmp1('xbud invariance ' + k, (xb.get(k) or {}).get('f1'),
+                 (qa.get(k) or {}).get('f1'), 1e-9)
+        if r:
+            bad.append(r)
 
     print('AUDIT :: checked %d numbers against source artifacts' % checked)
     if bad:
