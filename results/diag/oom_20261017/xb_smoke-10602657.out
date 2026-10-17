@@ -1,0 +1,144 @@
+HOST=gpu-11-1 DATE=2026-10-17T19:04:23+04:00
+Tesla V100-PCIE-32GB, 32768 MiB
+Tesla V100-PCIE-32GB, 32768 MiB
+Tesla V100-PCIE-32GB, 32768 MiB
+Tesla V100-PCIE-32GB, 32768 MiB
+[19:04:23] cases=2  arms=budget_cluster_link,alias_budget_link,budget_cluster,full  budgets=[0.1, 0.15]  sel=lex  dry_run=False
+[19:04:23] scorer=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/project/external/squad_v11/evaluate-v2.0.py
+[19:04:39] gpu Tesla V100-PCIE-32GB
+[19:04:39] loading LM fp16 maxlen=24576
+[19:04:49] selector=lex（model-free 词面 Jaccard 冗余度）
+[19:04:49] 问题同步别名：映射检查 4 处（跳过 0 处问题未提及目标实体）；映射不一致 0 处
+[19:04:49] 问题同步别名：别名 token 在压缩后文本中的投递率 4/4 = 100.0%（未投递 = 该臂把实体所在单元丢了，属实验观察，不是映射错误）
+[19:04:49] generating 14 prompts
+[19:04:50] gen 2/14  1.2s
+[19:04:54] wrote /dpc/kuex0095/100065732/privtrim_v2c_20261015/xb_smoke_out/report.txt
+[19:04:54] wrote /dpc/kuex0095/100065732/privtrim_v2c_20261015/xb_smoke_out/cells.json
+[19:04:54] wrote /dpc/kuex0095/100065732/privtrim_v2c_20261015/xb_smoke_out/percase.jsonl
+E2E LONGCTX — 长上下文压缩基准（gold 由真实源结构化记录确定性导出）
+cases=2  arms=budget_cluster_link,alias_budget_link,budget_cluster,full  budgets=[0.1, 0.15]  selector=lex  dtype=fp16  batch=2  max_new=64  maxlen=24576
+model=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/models/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28
+scorer=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/project/external/squad_v11/evaluate-v2.0.py
+per-case budget B = round(ratio * nt(full_context))，由 tokenizer 实测
+
+[1] 预算对账（BUDGET ACCOUNTING）—— 预算臂实测 token 必须 <= 目标 B（超了直接 raise）
+arm              budget      n   target_mean   achieved_mean    dev_mean   |dev|_max    dev_max%
+alias_budget_link    0.10      2         211.5           205.5       -6.00        10.0       0.00%
+alias_budget_link    0.15      2         317.5           298.0      -19.50        30.0       0.00%
+budget_cluster     0.10      2         211.5           205.5       -6.00         9.0       0.00%
+budget_cluster     0.15      2         317.5           291.0      -26.50        37.0       0.00%
+budget_cluster_link    0.10      2         211.5           209.0       -2.50         4.0       0.00%
+budget_cluster_link    0.15      2         317.5           307.0      -10.50        21.0       0.00%
+full                ref      2        2116.5          2116.5        0.00         0.0       0.00%
+READ: 同预算块（budget_cluster / budget_cluster_link / budget_random / delete_budget / alias_budget / alias_budget_link）在同一
+      ratio 下可直接互比；长度保持块（full / delete / alias）的 achieved≈full 长度，
+      它们的 token 数逐格打印在上表，绝不含混。
+
+[2] 主表：per (source, arm, budget)
+--- 同预算块（同 ratio 可互比） ---
+source             arm             budget    n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+pec_home           alias_budget_link   0.10    2   50.00%   50.00%       205.5      100.0%    0.0%/0.0   %       0.0%       0.0%
+pec_home           alias_budget_link   0.15    2  100.00%  100.00%       298.0      100.0%    0.0%/0.0   %       0.0%       0.0%
+pec_home           budget_cluster    0.10    2    0.00%    0.00%       205.5      100.0%    0.0%/0.0   %       0.0%       0.0%
+pec_home           budget_cluster    0.15    2    0.00%    0.00%       291.0      100.0%    0.0%/0.0   %       0.0%       0.0%
+pec_home           budget_cluster_link   0.10    2   50.00%   50.00%       209.0      100.0%    6.1%/6.1   %       0.0%       0.0%
+pec_home           budget_cluster_link   0.15    2  100.00%  100.00%       307.0      100.0%    6.1%/6.1   %       0.0%       0.0%
+--- 长度保持块（参照） ---
+source             arm             budget    n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+pec_home           full               ref    2  100.00%  100.00%      2116.5      100.0%  100.0%/100.0 %       0.0%       0.0%
+
+=== ALL（跨源汇总） ===
+--- 同预算块 ---
+arm             budget     n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+alias_budget_link   0.10     2   50.00%   50.00%       205.5      100.0%    0.0%/0.0   %       0.0%       0.0%
+alias_budget_link   0.15     2  100.00%  100.00%       298.0      100.0%    0.0%/0.0   %       0.0%       0.0%
+budget_cluster    0.10     2    0.00%    0.00%       205.5      100.0%    0.0%/0.0   %       0.0%       0.0%
+budget_cluster    0.15     2    0.00%    0.00%       291.0      100.0%    0.0%/0.0   %       0.0%       0.0%
+budget_cluster_link   0.10     2   50.00%   50.00%       209.0      100.0%    6.1%/6.1   %       0.0%       0.0%
+budget_cluster_link   0.15     2  100.00%  100.00%       307.0      100.0%    6.1%/6.1   %       0.0%       0.0%
+--- 长度保持块 ---
+arm             budget     n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+full               ref     2  100.00%  100.00%      2116.5      100.0%  100.0%/100.0 %       0.0%       0.0%
+
+=== 按 case_kind 汇总（needle = 单点取证；multi_entity = 多实体消歧） ===
+kind          arm             budget     n       EM       F1  ctx_tokens gold_in_ctx     leak_v  tgt_ent_ok  collision
+multi_entity  alias_budget_link   0.10     2   50.00%   50.00%       205.5      100.0%       0.0%      100.0%       0.0%
+multi_entity  alias_budget_link   0.15     2  100.00%  100.00%       298.0      100.0%       0.0%      100.0%       0.0%
+multi_entity  budget_cluster    0.10     2    0.00%    0.00%       205.5      100.0%       0.0%        0.0%       0.0%
+multi_entity  budget_cluster    0.15     2    0.00%    0.00%       291.0      100.0%       0.0%        0.0%       0.0%
+multi_entity  budget_cluster_link   0.10     2   50.00%   50.00%       209.0      100.0%       6.1%      100.0%       0.0%
+multi_entity  budget_cluster_link   0.15     2  100.00%  100.00%       307.0      100.0%       6.1%      100.0%       0.0%
+multi_entity  full               ref     2  100.00%  100.00%      2116.5      100.0%     100.0%      100.0%       0.0%
+
+注：
+  - gold_in_ctx = gold 串是否还在该臂上下文里（model-free 上界；=0 则模型不可能答对）
+  - ctx_leak = privcheck.exposure_basic 的 value/fragment 泄漏率（分母是 canary 数）
+  - out_leak = privcheck.exposure_hit 对**模型输出**的命中率
+  - collision = 多实体案例里多个不同实体落到同一表面 token 的比例（删除式脱敏必然 100%，此时链接不可解）
+  - tgt_ent_ok = 目标实体的表面 token 是否还在上下文里（预算臂丢错区域时掉到 0）
+  - SQuAD 官方评分只做 normalize + EM/F1；UNKNOWN 不作为合法答案
+XBSMOKE_RC=0
+===== REPORT =====
+E2E LONGCTX — 长上下文压缩基准（gold 由真实源结构化记录确定性导出）
+cases=2  arms=budget_cluster_link,alias_budget_link,budget_cluster,full  budgets=[0.1, 0.15]  selector=lex  dtype=fp16  batch=2  max_new=64  maxlen=24576
+model=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/models/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28
+scorer=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/project/external/squad_v11/evaluate-v2.0.py
+per-case budget B = round(ratio * nt(full_context))，由 tokenizer 实测
+
+[1] 预算对账（BUDGET ACCOUNTING）—— 预算臂实测 token 必须 <= 目标 B（超了直接 raise）
+arm              budget      n   target_mean   achieved_mean    dev_mean   |dev|_max    dev_max%
+alias_budget_link    0.10      2         211.5           205.5       -6.00        10.0       0.00%
+alias_budget_link    0.15      2         317.5           298.0      -19.50        30.0       0.00%
+budget_cluster     0.10      2         211.5           205.5       -6.00         9.0       0.00%
+budget_cluster     0.15      2         317.5           291.0      -26.50        37.0       0.00%
+budget_cluster_link    0.10      2         211.5           209.0       -2.50         4.0       0.00%
+budget_cluster_link    0.15      2         317.5           307.0      -10.50        21.0       0.00%
+full                ref      2        2116.5          2116.5        0.00         0.0       0.00%
+READ: 同预算块（budget_cluster / budget_cluster_link / budget_random / delete_budget / alias_budget / alias_budget_link）在同一
+      ratio 下可直接互比；长度保持块（full / delete / alias）的 achieved≈full 长度，
+      它们的 token 数逐格打印在上表，绝不含混。
+
+[2] 主表：per (source, arm, budget)
+--- 同预算块（同 ratio 可互比） ---
+source             arm             budget    n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+pec_home           alias_budget_link   0.10    2   50.00%   50.00%       205.5      100.0%    0.0%/0.0   %       0.0%       0.0%
+pec_home           alias_budget_link   0.15    2  100.00%  100.00%       298.0      100.0%    0.0%/0.0   %       0.0%       0.0%
+pec_home           budget_cluster    0.10    2    0.00%    0.00%       205.5      100.0%    0.0%/0.0   %       0.0%       0.0%
+pec_home           budget_cluster    0.15    2    0.00%    0.00%       291.0      100.0%    0.0%/0.0   %       0.0%       0.0%
+pec_home           budget_cluster_link   0.10    2   50.00%   50.00%       209.0      100.0%    6.1%/6.1   %       0.0%       0.0%
+pec_home           budget_cluster_link   0.15    2  100.00%  100.00%       307.0      100.0%    6.1%/6.1   %       0.0%       0.0%
+--- 长度保持块（参照） ---
+source             arm             budget    n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+pec_home           full               ref    2  100.00%  100.00%      2116.5      100.0%  100.0%/100.0 %       0.0%       0.0%
+
+=== ALL（跨源汇总） ===
+--- 同预算块 ---
+arm             budget     n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+alias_budget_link   0.10     2   50.00%   50.00%       205.5      100.0%    0.0%/0.0   %       0.0%       0.0%
+alias_budget_link   0.15     2  100.00%  100.00%       298.0      100.0%    0.0%/0.0   %       0.0%       0.0%
+budget_cluster    0.10     2    0.00%    0.00%       205.5      100.0%    0.0%/0.0   %       0.0%       0.0%
+budget_cluster    0.15     2    0.00%    0.00%       291.0      100.0%    0.0%/0.0   %       0.0%       0.0%
+budget_cluster_link   0.10     2   50.00%   50.00%       209.0      100.0%    6.1%/6.1   %       0.0%       0.0%
+budget_cluster_link   0.15     2  100.00%  100.00%       307.0      100.0%    6.1%/6.1   %       0.0%       0.0%
+--- 长度保持块 ---
+arm             budget     n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+full               ref     2  100.00%  100.00%      2116.5      100.0%  100.0%/100.0 %       0.0%       0.0%
+
+=== 按 case_kind 汇总（needle = 单点取证；multi_entity = 多实体消歧） ===
+kind          arm             budget     n       EM       F1  ctx_tokens gold_in_ctx     leak_v  tgt_ent_ok  collision
+multi_entity  alias_budget_link   0.10     2   50.00%   50.00%       205.5      100.0%       0.0%      100.0%       0.0%
+multi_entity  alias_budget_link   0.15     2  100.00%  100.00%       298.0      100.0%       0.0%      100.0%       0.0%
+multi_entity  budget_cluster    0.10     2    0.00%    0.00%       205.5      100.0%       0.0%        0.0%       0.0%
+multi_entity  budget_cluster    0.15     2    0.00%    0.00%       291.0      100.0%       0.0%        0.0%       0.0%
+multi_entity  budget_cluster_link   0.10     2   50.00%   50.00%       209.0      100.0%       6.1%      100.0%       0.0%
+multi_entity  budget_cluster_link   0.15     2  100.00%  100.00%       307.0      100.0%       6.1%      100.0%       0.0%
+multi_entity  full               ref     2  100.00%  100.00%      2116.5      100.0%     100.0%      100.0%       0.0%
+
+注：
+  - gold_in_ctx = gold 串是否还在该臂上下文里（model-free 上界；=0 则模型不可能答对）
+  - ctx_leak = privcheck.exposure_basic 的 value/fragment 泄漏率（分母是 canary 数）
+  - out_leak = privcheck.exposure_hit 对**模型输出**的命中率
+  - collision = 多实体案例里多个不同实体落到同一表面 token 的比例（删除式脱敏必然 100%，此时链接不可解）
+  - tgt_ent_ok = 目标实体的表面 token 是否还在上下文里（预算臂丢错区域时掉到 0）
+  - SQuAD 官方评分只做 normalize + EM/F1；UNKNOWN 不作为合法答案
+XBSMOKE_DONE
