@@ -1,0 +1,221 @@
+[
+ {
+  "key": "inscope-pec_home-multi-0000",
+  "status": "ok",
+  "tokens": 454,
+  "n_entities": 2
+ },
+ {
+  "key": "inscope-pec_home-multi-0001",
+  "status": "ok",
+  "tokens": 395,
+  "n_entities": 2
+ },
+ {
+  "key": "inscope-pec_home-multi-0002",
+  "status": "ok",
+  "tokens": 473,
+  "n_entities": 2
+ },
+ {
+  "key": "inscope-pec_home-multi-0003",
+  "status": "ok",
+  "tokens": 297,
+  "n_entities": 2
+ },
+ {
+  "key": "inscope-pec_home-multi-0004",
+  "status": "ok",
+  "tokens": 252,
+  "n_entities": 2
+ },
+ {
+  "key": "inscope-pec_home-multi-0005",
+  "status": "ok",
+  "tokens": 512,
+  "n_entities": 2
+ },
+ {
+  "key": "inscope-pec_home-multi-0006",
+  "status": "ok",
+  "tokens": 473,
+  "n_entities": 2
+ },
+ {
+  "key": "longctx-pec_home-multi-0007",
+  "status": "DROP",
+  "reason": "selfcheck failed: n_ent=1 te=True gold=True tok=512"
+ },
+ {
+  "key": "longctx-privacylens-multi-0000",
+  "status": "DROP",
+  "reason": "selfcheck failed: n_ent=1 te=True gold=True tok=512"
+ },
+ {
+  "key": "longctx-privacylens-multi-0001",
+  "status": "DROP",
+  "reason": "selfcheck failed: n_ent=1 te=True gold=True tok=512"
+ },
+ {
+  "key": "longctx-privacylens-multi-0002",
+  "status": "DROP",
+  "reason": "target window lost entity/gold"
+ },
+ {
+  "key": "inscope-privacylens-multi-0003",
+  "status": "ok",
+  "tokens": 339,
+  "n_entities": 2
+ },
+ {
+  "key": "longctx-privacylens-multi-0004",
+  "status": "DROP",
+  "reason": "target window lost entity/gold"
+ },
+ {
+  "key": "longctx-privacylens-multi-0005",
+  "status": "DROP",
+  "reason": "selfcheck failed: n_ent=1 te=True gold=True tok=512"
+ },
+ {
+  "key": "longctx-privacylens-multi-0006",
+  "status": "DROP",
+  "reason": "target window lost entity/gold"
+ },
+ {
+  "key": "longctx-privacylens-multi-0007",
+  "status": "DROP",
+  "reason": "target window lost entity/gold"
+ },
+ {
+  "key": "longctx-simuhome-multi-0000",
+  "status": "DROP",
+  "reason": "target window lost entity/gold"
+ },
+ {
+  "key": "inscope-simuhome-multi-0001",
+  "status": "ok",
+  "tokens": 290,
+  "n_entities": 2
+ },
+ {
+  "key": "longctx-simuhome-multi-0002",
+  "status": "DROP",
+  "reason": "target window lost entity/gold"
+ },
+ {
+  "key": "inscope-simuhome-multi-0003",
+  "status": "ok",
+  "tokens": 327,
+  "n_entities": 2
+ },
+ {
+  "key": "inscope-simuhome-multi-0004",
+  "status": "ok",
+  "tokens": 290,
+  "n_entities": 2
+ },
+ {
+  "key": "inscope-simuhome-multi-0005",
+  "status": "ok",
+  "tokens": 288,
+  "n_entities": 2
+ },
+ {
+  "key": "inscope-simuhome-multi-0006",
+  "status": "ok",
+  "tokens": 327,
+  "n_entities": 2
+ },
+ {
+  "key": "longctx-simuhome-multi-0007",
+  "status": "DROP",
+  "reason": "target window lost entity/gold"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-multi-0000",
+  "status": "DROP",
+  "reason": "target window lost entity/gold"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-multi-0001",
+  "status": "DROP",
+  "reason": "target window lost entity/gold"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-multi-0002",
+  "status": "DROP",
+  "reason": "target window lost entity/gold"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-multi-0003",
+  "status": "DROP",
+  "reason": "target window lost entity/gold"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-multi-0004",
+  "status": "DROP",
+  "reason": "target window lost entity/gold"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-multi-0005",
+  "status": "DROP",
+  "reason": "target window lost entity/gold"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-multi-0006",
+  "status": "DROP",
+  "reason": "target window lost entity/gold"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-multi-0007",
+  "status": "DROP",
+  "reason": "target window lost entity/gold"
+ },
+ {
+  "key": "inscope-toolmem_raw-multi-0000",
+  "status": "ok",
+  "tokens": 314,
+  "n_entities": 2
+ },
+ {
+  "key": "longctx-toolmem_raw-multi-0001",
+  "status": "DROP",
+  "reason": "target window lost entity/gold"
+ },
+ {
+  "key": "inscope-toolmem_raw-multi-0002",
+  "status": "ok",
+  "tokens": 251,
+  "n_entities": 2
+ },
+ {
+  "key": "inscope-toolmem_raw-multi-0003",
+  "status": "ok",
+  "tokens": 303,
+  "n_entities": 2
+ },
+ {
+  "key": "inscope-toolmem_raw-multi-0004",
+  "status": "ok",
+  "tokens": 339,
+  "n_entities": 2
+ },
+ {
+  "key": "inscope-toolmem_raw-multi-0005",
+  "status": "ok",
+  "tokens": 307,
+  "n_entities": 2
+ },
+ {
+  "key": "inscope-toolmem_raw-multi-0006",
+  "status": "ok",
+  "tokens": 287,
+  "n_entities": 2
+ },
+ {
+  "key": "longctx-toolmem_raw-multi-0007",
+  "status": "DROP",
+  "reason": "target window lost entity/gold"
+ }
+]
