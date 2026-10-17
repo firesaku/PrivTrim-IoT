@@ -1,0 +1,67 @@
+=== jobA_112cases (cases=2352) ===
+  budget_cluster_link@0.75   totalF1=0.7191 tok=5581 | gic=112/112 (100%) F1|gic=0.7191 tok|gic=5581
+  full@ref                   totalF1=0.7189 tok=7964 | gic=112/112 (100%) F1|gic=0.7189 tok|gic=7964
+  budget_cluster_link@0.5    totalF1=0.7182 tok=3706 | gic=112/112 (100%) F1|gic=0.7182 tok|gic=3706
+  budget_cluster_link@0.25   totalF1=0.6545 tok=1633 | gic=102/112 (91%) F1|gic=0.7186 tok|gic=1784
+  alias_budget_link@0.5      totalF1=0.5397 tok=3708 | gic=112/112 (100%) F1|gic=0.5397 tok|gic=3708
+  alias_budget_link@0.75     totalF1=0.5048 tok=5579 | gic=112/112 (100%) F1|gic=0.5048 tok|gic=5579
+  budget_cluster@0.75        totalF1=0.4955 tok=5578 | gic=112/112 (100%) F1|gic=0.4955 tok|gic=5578
+  alias@ref                  totalF1=0.4933 tok=7824 | gic=112/112 (100%) F1|gic=0.4933 tok|gic=7824
+  delete@ref                 totalF1=0.4916 tok=7845 | gic=110/112 (98%) F1|gic=0.4956 tok|gic=7887
+  alias_budget@0.5           totalF1=0.4866 tok=3708 | gic=112/112 (100%) F1|gic=0.4866 tok|gic=3708
+  alias_budget@0.75          totalF1=0.4866 tok=5579 | gic=112/112 (100%) F1|gic=0.4866 tok|gic=5579
+  budget_cluster@0.5         totalF1=0.4688 tok=3705 | gic=112/112 (100%) F1|gic=0.4688 tok|gic=3705
+  delete_budget@0.5          totalF1=0.4688 tok=3696 | gic=110/112 (98%) F1|gic=0.4773 tok|gic=3712
+  budget_random@0.75         totalF1=0.4602 tok=5646 | gic=81/112 (72%) F1|gic=0.6363 tok|gic=5606
+  delete_budget@0.75         totalF1=0.4598 tok=5565 | gic=110/112 (98%) F1|gic=0.4682 tok|gic=5589
+  alias_budget_link@0.25     totalF1=0.4313 tok=1633 | gic=102/112 (91%) F1|gic=0.4735 tok|gic=1783
+  alias_budget@0.25          totalF1=0.4107 tok=1630 | gic=102/112 (91%) F1|gic=0.4510 tok|gic=1780
+  budget_cluster@0.25        totalF1=0.4107 tok=1630 | gic=102/112 (91%) F1|gic=0.4510 tok|gic=1780
+  delete_budget@0.25         totalF1=0.4018 tok=1629 | gic=100/112 (89%) F1|gic=0.4500 tok|gic=1786
+  budget_random@0.5          totalF1=0.2366 tok=3659 | gic=51/112 (46%) F1|gic=0.5196 tok|gic=3984
+  budget_random@0.25         totalF1=0.1250 tok=1588 | gic=25/112 (22%) F1|gic=0.5600 tok|gic=2111
+=== mistral_112cases (cases=2352) ===
+  budget_cluster_link@0.25   totalF1=0.7082 tok=1821 | gic=102/112 (91%) F1|gic=0.7777 tok|gic=1987
+  budget_cluster_link@0.5    totalF1=0.7075 tok=4145 | gic=112/112 (100%) F1|gic=0.7075 tok|gic=4145
+  full@ref                   totalF1=0.6931 tok=8897 | gic=112/112 (100%) F1|gic=0.6931 tok|gic=8897
+  budget_cluster_link@0.75   totalF1=0.6857 tok=6263 | gic=112/112 (100%) F1|gic=0.6857 tok|gic=6263
+  alias_budget_link@0.25     totalF1=0.5951 tok=1820 | gic=102/112 (91%) F1|gic=0.6535 tok|gic=1986
+  budget_cluster@0.25        totalF1=0.5856 tok=1821 | gic=102/112 (91%) F1|gic=0.6430 tok|gic=1988
+  delete_budget@0.25         totalF1=0.5856 tok=1819 | gic=100/112 (89%) F1|gic=0.6559 tok|gic=1994
+  alias_budget@0.25          totalF1=0.5677 tok=1821 | gic=102/112 (91%) F1|gic=0.6234 tok|gic=1988
+  budget_cluster@0.75        totalF1=0.5646 tok=6263 | gic=112/112 (100%) F1|gic=0.5646 tok|gic=6263
+  alias_budget_link@0.5      totalF1=0.5557 tok=4150 | gic=112/112 (100%) F1|gic=0.5557 tok|gic=4150
+  alias_budget_link@0.75     totalF1=0.5450 tok=6236 | gic=112/112 (100%) F1|gic=0.5450 tok|gic=6236
+  alias_budget@0.5           totalF1=0.5286 tok=4148 | gic=112/112 (100%) F1|gic=0.5286 tok|gic=4148
+  delete_budget@0.5          totalF1=0.5278 tok=4133 | gic=110/112 (98%) F1|gic=0.5374 tok|gic=4152
+  budget_cluster@0.5         totalF1=0.5196 tok=4142 | gic=112/112 (100%) F1|gic=0.5196 tok|gic=4142
+  alias_budget@0.75          totalF1=0.5128 tok=6236 | gic=112/112 (100%) F1|gic=0.5128 tok|gic=6236
+  delete_budget@0.75         totalF1=0.4809 tok=6283 | gic=110/112 (98%) F1|gic=0.4897 tok|gic=6312
+  budget_random@0.75         totalF1=0.4676 tok=6308 | gic=81/112 (72%) F1|gic=0.6466 tok|gic=6251
+  delete@ref                 totalF1=0.4559 tok=8766 | gic=110/112 (98%) F1|gic=0.4642 tok|gic=8814
+  alias@ref                  totalF1=0.4491 tok=8782 | gic=112/112 (100%) F1|gic=0.4491 tok|gic=8782
+  budget_random@0.5          totalF1=0.2631 tok=4096 | gic=52/112 (46%) F1|gic=0.5321 tok|gic=4423
+  budget_random@0.25         totalF1=0.1333 tok=1768 | gic=26/112 (23%) F1|gic=0.5385 tok|gic=2249
+=== inscope_19cases (cases=409) ===
+  budget_cluster_link@0.5    totalF1=0.8947 tok=144 | gic=19/19 (100%) F1|gic=0.8947 tok|gic=144
+  full@ref                   totalF1=0.5263 tok=343 | gic=19/19 (100%) F1|gic=0.5263 tok|gic=343
+  ext_full@0.5               totalF1=0.5263 tok=343 | gic=19/19 (100%) F1|gic=0.5263 tok|gic=343
+  ext_quito_x_native@0.5     totalF1=0.4211 tok=168 | gic=18/19 (95%) F1|gic=0.4444 tok|gic=169
+  ext_quito_x@0.5            totalF1=0.3509 tok=171 | gic=18/19 (95%) F1|gic=0.3333 tok|gic=171
+  ext_cpc_native@0.5         totalF1=0.3158 tok=117 | gic=6/19 (32%) F1|gic=1.0000 tok|gic=142
+  ext_llmlingua2@0.5         totalF1=0.2982 tok=171 | gic=7/19 (37%) F1|gic=0.7143 tok|gic=165
+  ext_llmlingua2_native@0.5  totalF1=0.2339 tok=169 | gic=7/19 (37%) F1|gic=0.5714 tok|gic=162
+  budget_random@0.5          totalF1=0.2105 tok=149 | gic=14/19 (74%) F1|gic=0.2857 tok|gic=142
+  ext_provence_native@0.5    totalF1=0.2000 tok=132 | gic=8/10 (80%) F1|gic=0.2500 tok|gic=162
+  ext_cpc@0.5                totalF1=0.1053 tok=171 | gic=12/19 (63%) F1|gic=0.1667 tok|gic=185
+  ext_provence@0.5           totalF1=0.0526 tok=171 | gic=7/19 (37%) F1|gic=0.1429 tok|gic=210
+  alias@ref                  totalF1=0.0000 tok=277 | gic=19/19 (100%) F1|gic=0.0000 tok|gic=277
+  alias_budget@0.5           totalF1=0.0000 tok=145 | gic=19/19 (100%) F1|gic=0.0000 tok|gic=145
+  alias_budget_link@0.5      totalF1=0.0000 tok=147 | gic=19/19 (100%) F1|gic=0.0000 tok|gic=147
+  budget_cluster@0.5         totalF1=0.0000 tok=137 | gic=19/19 (100%) F1|gic=0.0000 tok|gic=137
+  delete@ref                 totalF1=0.0000 tok=289 | gic=19/19 (100%) F1|gic=0.0000 tok|gic=289
+  delete_budget@0.5          totalF1=0.0000 tok=139 | gic=19/19 (100%) F1|gic=0.0000 tok|gic=139
+  ext_dac@0.5                totalF1=0.0000  (gic=0/19 样本不足，不报条件 F1)
+  ext_dac_native@0.5         totalF1=0.0000  (gic=0/19 样本不足，不报条件 F1)
+  ext_mask_llmlingua2@0.5    totalF1=0.0000 tok=171 | gic=19/19 (100%) F1|gic=0.0000 tok|gic=171
+  ext_mask_llmlingua2_native@0.5 totalF1=0.0000 tok=170 | gic=19/19 (100%) F1|gic=0.0000 tok|gic=170
