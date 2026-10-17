@@ -78,7 +78,7 @@ else:
             ha='left', va='top', color='#b06a5a', fontsize=8)
 x50, x75 = get('budget_cluster_link', 0.50)['tok'], get('budget_cluster_link', 0.75)['tok']
 ax.axvspan(x50, x75, color='#2f5d7c', alpha=0.07, zorder=1)
-ax.annotate('flat region 50-75%', xy=((x50 + x75) / 2, 0.115), ha='center',
+ax.annotate('flat region 50-75%', xy=((x50 + x75) / 2, 0.775), ha='center',
             fontsize=8, color='#2f5d7c')
 ax.set_xlabel('context tokens  (↓)')
 ax.set_ylabel('F1  (↑)')
@@ -102,40 +102,49 @@ ax.set_title('B  Why A happens: the entity survives or it does not',
 ax.set_ylim(0.55, 1.09)
 ax.grid(alpha=0.18, lw=0.6)
 
-# ---------------- C: the same-budget contrast ------------------------------
+# ---------------- C: the anchor rule, multi vs needle control --------------
 ax = axes[1][0]
 sub = d.get('by_case_kind', {})
-pairs = []
+KINDS = [('multi', 'multi-entity\n(disambiguation)'), ('needle', 'needle\n(single fact)')]
+BUDC = '0.5'
+agg = {}
 for k, v in sub.items():
-    if k.startswith('multi') and ('budget_cluster|' in k or 'budget_cluster_link|' in k):
-        parts = k.split('|')
-        pairs.append((parts[-1], parts[-2], v))
-groups = {}
-for bud, arm, v in pairs:
-    groups.setdefault(bud, {})[arm] = v
-buds = sorted(groups, key=lambda x: float(x))
-multi_n_pre = max((v['n'] for g in groups.values() for v in g.values()), default=0)
-x = np.arange(len(buds))
-w = 0.36
-for i, (arm, off) in enumerate((('budget_cluster', -w / 2), ('budget_cluster_link', w / 2))):
+    parts = k.split('|')
+    if len(parts) != 3 or parts[2] != BUDC:
+        continue
+    kind, arm = parts[0], parts[1]
+    # 注意：by_case_kind 的键是 'multi_entity' / 'needle'，必须前缀匹配。
+    # 用等值判断会静默漏掉 multi（而 needle 恰好匹配），得到一张"部分正确"的图。
+    kk = ('multi' if kind.startswith('multi')
+          else 'needle' if kind.startswith('needle') else None)
+    if kk is None or arm not in ('budget_cluster', 'budget_cluster_link'):
+        continue
+    agg[(kk, arm)] = (v['f1'] / v['n'], v['n'])
+xx = np.arange(len(KINDS))
+w = 0.34
+for off, arm in ((-w / 2, 'budget_cluster'), (w / 2, 'budget_cluster_link')):
     lab, c, mk, ls = ARMS[arm]
-    ys, ns = [], []
-    for b in buds:
-        v = groups[b].get(arm, {})
-        ys.append(v.get('f1', 0) / max(v.get('n', 1), 1))
-        ns.append(v.get('n', 0))
-    ax.bar(x + off, ys, w, color=c, label=lab, edgecolor='white', lw=0.6)
-    for xi, y, n in zip(x + off, ys, ns):
-        ax.text(xi, y + 0.015, '%.3f' % y, ha='center', fontsize=7.5)
-        ax.text(xi, 0.012, 'n=%d' % n, ha='center', fontsize=6.5, color='white')
-ax.set_xticks(x)
-ax.set_xticklabels(['%d%%' % round(float(b) * 100) for b in buds])
-ax.set_xlabel('budget')
+    ys = [agg.get((kd, arm), (0, 0))[0] for kd, _ in KINDS]
+    ns = [agg.get((kd, arm), (0, 0))[1] for kd, _ in KINDS]
+    ax.bar(xx + off, ys, w, color=c, label=lab, edgecolor='white', lw=0.6)
+    for xi, y, nn in zip(xx + off, ys, ns):
+        ax.text(xi, y + 0.016, '%.3f' % y, ha='center', fontsize=8)
+        ax.text(xi, 0.014, 'n=%d' % nn, ha='center', fontsize=6.5, color='white')
+for xi, (kd, _) in zip(xx, KINDS):
+    a = agg.get((kd, 'budget_cluster_link'), (0, 0))[0]
+    b = agg.get((kd, 'budget_cluster'), (0, 0))[0]
+    ax.text(xi, max(a, b) + 0.075, 'gain %+.3f' % (a - b), ha='center', fontsize=8.5,
+            fontweight='bold', color='#2f5d7c')
+ax.set_xticks(xx)
+ax.set_xticklabels([lab for _, lab in KINDS], fontsize=8)
 ax.set_ylabel('F1  (↑)')
-ax.set_title('C  Multi-entity cases (n=%d)' % multi_n_pre,
+ax.set_ylim(0, 1.04)
+ax.set_title('C  Gain by case type',
              loc='left', fontweight='bold')
-ax.legend(frameon=False, fontsize=8)
+ax.legend(frameon=False, fontsize=8, loc='upper left')
 ax.grid(alpha=0.18, lw=0.6, axis='y')
+multi_n = agg.get(('multi', 'budget_cluster'), (0, 40))[1] or 40
+
 
 # ---------------- D: delete vs alias ---------------------------------------
 ax = axes[1][1]
