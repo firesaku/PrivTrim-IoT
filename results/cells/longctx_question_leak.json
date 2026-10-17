@@ -1,0 +1,571 @@
+{
+ "rows": [
+  {
+   "arm": "full",
+   "ratio": null,
+   "alias_question": false,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "delete",
+   "ratio": null,
+   "alias_question": false,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "alias",
+   "ratio": null,
+   "alias_question": false,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "budget_cluster",
+   "ratio": 0.25,
+   "alias_question": false,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "budget_cluster",
+   "ratio": 0.5,
+   "alias_question": false,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "budget_cluster",
+   "ratio": 0.75,
+   "alias_question": false,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "budget_cluster_link",
+   "ratio": 0.25,
+   "alias_question": false,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "budget_cluster_link",
+   "ratio": 0.5,
+   "alias_question": false,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "budget_cluster_link",
+   "ratio": 0.75,
+   "alias_question": false,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "budget_random",
+   "ratio": 0.25,
+   "alias_question": false,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "budget_random",
+   "ratio": 0.5,
+   "alias_question": false,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "budget_random",
+   "ratio": 0.75,
+   "alias_question": false,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "delete_budget",
+   "ratio": 0.25,
+   "alias_question": false,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "delete_budget",
+   "ratio": 0.5,
+   "alias_question": false,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "delete_budget",
+   "ratio": 0.75,
+   "alias_question": false,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "alias_budget",
+   "ratio": 0.25,
+   "alias_question": false,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "alias_budget",
+   "ratio": 0.5,
+   "alias_question": false,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "alias_budget",
+   "ratio": 0.75,
+   "alias_question": false,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "alias_budget_link",
+   "ratio": 0.25,
+   "alias_question": false,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "alias_budget_link",
+   "ratio": 0.5,
+   "alias_question": false,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "alias_budget_link",
+   "ratio": 0.75,
+   "alias_question": false,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "full",
+   "ratio": null,
+   "alias_question": true,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "delete",
+   "ratio": null,
+   "alias_question": true,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "alias",
+   "ratio": null,
+   "alias_question": true,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 0,
+   "q_leak_frag": 0,
+   "cases_with_question_leak": 0,
+   "examples": []
+  },
+  {
+   "arm": "budget_cluster",
+   "ratio": 0.25,
+   "alias_question": true,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "budget_cluster",
+   "ratio": 0.5,
+   "alias_question": true,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "budget_cluster",
+   "ratio": 0.75,
+   "alias_question": true,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "budget_cluster_link",
+   "ratio": 0.25,
+   "alias_question": true,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "budget_cluster_link",
+   "ratio": 0.5,
+   "alias_question": true,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "budget_cluster_link",
+   "ratio": 0.75,
+   "alias_question": true,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "budget_random",
+   "ratio": 0.25,
+   "alias_question": true,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "budget_random",
+   "ratio": 0.5,
+   "alias_question": true,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "budget_random",
+   "ratio": 0.75,
+   "alias_question": true,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "delete_budget",
+   "ratio": 0.25,
+   "alias_question": true,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "delete_budget",
+   "ratio": 0.5,
+   "alias_question": true,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "delete_budget",
+   "ratio": 0.75,
+   "alias_question": true,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 40,
+   "q_leak_frag": 40,
+   "cases_with_question_leak": 40,
+   "examples": [
+    "longctx-pec_home-multi-0000",
+    "longctx-pec_home-multi-0001"
+   ]
+  },
+  {
+   "arm": "alias_budget",
+   "ratio": 0.25,
+   "alias_question": true,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 0,
+   "q_leak_frag": 0,
+   "cases_with_question_leak": 0,
+   "examples": []
+  },
+  {
+   "arm": "alias_budget",
+   "ratio": 0.5,
+   "alias_question": true,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 0,
+   "q_leak_frag": 0,
+   "cases_with_question_leak": 0,
+   "examples": []
+  },
+  {
+   "arm": "alias_budget",
+   "ratio": 0.75,
+   "alias_question": true,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 0,
+   "q_leak_frag": 0,
+   "cases_with_question_leak": 0,
+   "examples": []
+  },
+  {
+   "arm": "alias_budget_link",
+   "ratio": 0.25,
+   "alias_question": true,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 0,
+   "q_leak_frag": 0,
+   "cases_with_question_leak": 0,
+   "examples": []
+  },
+  {
+   "arm": "alias_budget_link",
+   "ratio": 0.5,
+   "alias_question": true,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 0,
+   "q_leak_frag": 0,
+   "cases_with_question_leak": 0,
+   "examples": []
+  },
+  {
+   "arm": "alias_budget_link",
+   "ratio": 0.75,
+   "alias_question": true,
+   "n_cases": 112,
+   "n_canaries": 1410,
+   "q_leak_value": 0,
+   "q_leak_frag": 0,
+   "cases_with_question_leak": 0,
+   "examples": []
+  }
+ ]
+}
