@@ -1,0 +1,237 @@
+{
+ "label": "jobA(no-flag)",
+ "alias_question": false,
+ "rows": {
+  "alias@ref": {
+   "n": 112,
+   "ctx_cases": 0,
+   "q_cases": 40,
+   "prompt_cases": 40,
+   "ncan": 1410,
+   "ctx_v": 0,
+   "ctx_f": 0,
+   "q_v": 40,
+   "q_f": 40
+  },
+  "alias_budget@0.25": {
+   "n": 112,
+   "ctx_cases": 0,
+   "q_cases": 40,
+   "prompt_cases": 40,
+   "ncan": 1410,
+   "ctx_v": 0,
+   "ctx_f": 0,
+   "q_v": 40,
+   "q_f": 40
+  },
+  "alias_budget@0.5": {
+   "n": 112,
+   "ctx_cases": 0,
+   "q_cases": 40,
+   "prompt_cases": 40,
+   "ncan": 1410,
+   "ctx_v": 0,
+   "ctx_f": 0,
+   "q_v": 40,
+   "q_f": 40
+  },
+  "alias_budget@0.75": {
+   "n": 112,
+   "ctx_cases": 0,
+   "q_cases": 40,
+   "prompt_cases": 40,
+   "ncan": 1410,
+   "ctx_v": 0,
+   "ctx_f": 0,
+   "q_v": 40,
+   "q_f": 40
+  },
+  "alias_budget_link@0.25": {
+   "n": 112,
+   "ctx_cases": 0,
+   "q_cases": 40,
+   "prompt_cases": 40,
+   "ncan": 1410,
+   "ctx_v": 0,
+   "ctx_f": 0,
+   "q_v": 40,
+   "q_f": 40
+  },
+  "alias_budget_link@0.5": {
+   "n": 112,
+   "ctx_cases": 0,
+   "q_cases": 40,
+   "prompt_cases": 40,
+   "ncan": 1410,
+   "ctx_v": 0,
+   "ctx_f": 0,
+   "q_v": 40,
+   "q_f": 40
+  },
+  "alias_budget_link@0.75": {
+   "n": 112,
+   "ctx_cases": 0,
+   "q_cases": 40,
+   "prompt_cases": 40,
+   "ncan": 1410,
+   "ctx_v": 0,
+   "ctx_f": 0,
+   "q_v": 40,
+   "q_f": 40
+  },
+  "budget_cluster@0.25": {
+   "n": 112,
+   "ctx_cases": 0,
+   "q_cases": 40,
+   "prompt_cases": 40,
+   "ncan": 1410,
+   "ctx_v": 0,
+   "ctx_f": 0,
+   "q_v": 40,
+   "q_f": 40
+  },
+  "budget_cluster@0.5": {
+   "n": 112,
+   "ctx_cases": 5,
+   "q_cases": 40,
+   "prompt_cases": 44,
+   "ncan": 1410,
+   "ctx_v": 45,
+   "ctx_f": 45,
+   "q_v": 40,
+   "q_f": 40
+  },
+  "budget_cluster@0.75": {
+   "n": 112,
+   "ctx_cases": 27,
+   "q_cases": 40,
+   "prompt_cases": 56,
+   "ncan": 1410,
+   "ctx_v": 155,
+   "ctx_f": 155,
+   "q_v": 40,
+   "q_f": 40
+  },
+  "budget_cluster_link@0.25": {
+   "n": 112,
+   "ctx_cases": 35,
+   "q_cases": 40,
+   "prompt_cases": 40,
+   "ncan": 1410,
+   "ctx_v": 35,
+   "ctx_f": 35,
+   "q_v": 40,
+   "q_f": 40
+  },
+  "budget_cluster_link@0.5": {
+   "n": 112,
+   "ctx_cases": 44,
+   "q_cases": 40,
+   "prompt_cases": 44,
+   "ncan": 1410,
+   "ctx_v": 85,
+   "ctx_f": 85,
+   "q_v": 40,
+   "q_f": 40
+  },
+  "budget_cluster_link@0.75": {
+   "n": 112,
+   "ctx_cases": 56,
+   "q_cases": 40,
+   "prompt_cases": 56,
+   "ncan": 1410,
+   "ctx_v": 190,
+   "ctx_f": 190,
+   "q_v": 40,
+   "q_f": 40
+  },
+  "budget_random@0.25": {
+   "n": 112,
+   "ctx_cases": 100,
+   "q_cases": 40,
+   "prompt_cases": 103,
+   "ncan": 1410,
+   "ctx_v": 358,
+   "ctx_f": 509,
+   "q_v": 40,
+   "q_f": 40
+  },
+  "budget_random@0.5": {
+   "n": 112,
+   "ctx_cases": 111,
+   "q_cases": 40,
+   "prompt_cases": 111,
+   "ncan": 1410,
+   "ctx_v": 708,
+   "ctx_f": 862,
+   "q_v": 40,
+   "q_f": 40
+  },
+  "budget_random@0.75": {
+   "n": 112,
+   "ctx_cases": 112,
+   "q_cases": 40,
+   "prompt_cases": 112,
+   "ncan": 1410,
+   "ctx_v": 1034,
+   "ctx_f": 1131,
+   "q_v": 40,
+   "q_f": 40
+  },
+  "delete@ref": {
+   "n": 112,
+   "ctx_cases": 0,
+   "q_cases": 40,
+   "prompt_cases": 40,
+   "ncan": 1410,
+   "ctx_v": 0,
+   "ctx_f": 0,
+   "q_v": 40,
+   "q_f": 40
+  },
+  "delete_budget@0.25": {
+   "n": 112,
+   "ctx_cases": 0,
+   "q_cases": 40,
+   "prompt_cases": 40,
+   "ncan": 1410,
+   "ctx_v": 0,
+   "ctx_f": 0,
+   "q_v": 40,
+   "q_f": 40
+  },
+  "delete_budget@0.5": {
+   "n": 112,
+   "ctx_cases": 0,
+   "q_cases": 40,
+   "prompt_cases": 40,
+   "ncan": 1410,
+   "ctx_v": 0,
+   "ctx_f": 0,
+   "q_v": 40,
+   "q_f": 40
+  },
+  "delete_budget@0.75": {
+   "n": 112,
+   "ctx_cases": 0,
+   "q_cases": 40,
+   "prompt_cases": 40,
+   "ncan": 1410,
+   "ctx_v": 0,
+   "ctx_f": 0,
+   "q_v": 40,
+   "q_f": 40
+  },
+  "full@ref": {
+   "n": 112,
+   "ctx_cases": 112,
+   "q_cases": 40,
+   "prompt_cases": 112,
+   "ncan": 1410,
+   "ctx_v": 1410,
+   "ctx_f": 1410,
+   "q_v": 40,
+   "q_f": 40
+  }
+ }
+}
