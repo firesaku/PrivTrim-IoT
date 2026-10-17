@@ -1,0 +1,562 @@
+[
+ {
+  "key": "longctx-pec_home-multi-0000",
+  "orig": "In the log above, which persona id is recorded for the account ACCT-5ee052b431dc?",
+  "new": "Which persona id is associated with the account ACCT-5ee052b431dc in the log above?"
+ },
+ {
+  "key": "longctx-pec_home-multi-0001",
+  "orig": "In the log above, which persona id is recorded for the account ACCT-5be08d44f1fd?",
+  "new": "Which persona id is associated with the account ACCT-5be08d44f1fd in the log above?"
+ },
+ {
+  "key": "longctx-pec_home-multi-0002",
+  "orig": "In the log above, which persona id is recorded for the account ACCT-7358fe654211?",
+  "new": "Which persona id is associated with the account ACCT-7358fe654211 in the log above?"
+ },
+ {
+  "key": "longctx-pec_home-multi-0003",
+  "orig": "In the log above, which persona id is recorded for the account ACCT-573c8510555b?",
+  "new": "Which persona id is associated with the account ACCT-573c8510555b in the log above?"
+ },
+ {
+  "key": "longctx-pec_home-multi-0004",
+  "orig": "In the log above, which persona id is recorded for the account ACCT-c9a6ba2852a7?",
+  "new": "Which persona id is associated with the account ACCT-c9a6ba2852a7 in the log above?"
+ },
+ {
+  "key": "longctx-pec_home-multi-0005",
+  "orig": "In the log above, which persona id is recorded for the account ACCT-cb927b4f9827?",
+  "new": "Which persona id is associated with the account ACCT-cb927b4f9827 in the log above?"
+ },
+ {
+  "key": "longctx-pec_home-multi-0006",
+  "orig": "In the log above, which persona id is recorded for the account ACCT-d3e27fa9b05a?",
+  "new": "Which persona id is associated with the account ACCT-d3e27fa9b05a in the log above?"
+ },
+ {
+  "key": "longctx-pec_home-multi-0007",
+  "orig": "In the log above, which persona id is recorded for the account ACCT-1a4515d5e002?",
+  "new": "Which persona id is associated with the account ACCT-1a4515d5e002 in the log above?"
+ },
+ {
+  "key": "longctx-pec_home-needle-0000",
+  "orig": "In the log above, what is the task name recorded for the record with id pec_home_multi_0266_02?",
+  "new": "What task name is associated with the record with id pec_home_multi_0266_02 in the log above?"
+ },
+ {
+  "key": "longctx-pec_home-needle-0001",
+  "orig": "In the log above, what is the task name recorded for the record with id pec_home_dynam_0094_00?",
+  "new": "What task name is associated with the record with id pec_home_dynam_0094_00 in the log above?"
+ },
+ {
+  "key": "longctx-pec_home-needle-0002",
+  "orig": "In the log above, what is the task name recorded for the record with id pec_home_dynam_0098_01?",
+  "new": "What task name is associated with the record with id pec_home_dynam_0098_01 in the log above?"
+ },
+ {
+  "key": "longctx-pec_home-needle-0003",
+  "orig": "In the log above, what is the target room recorded for the record with id pec_home_multi_0271_01?",
+  "new": "What target room is associated with the record with id pec_home_multi_0271_01 in the log above?"
+ },
+ {
+  "key": "longctx-pec_home-needle-0004",
+  "orig": "In the log above, what is the task name recorded for the record with id pec_home_multi_0328_00?",
+  "new": "What task name is associated with the record with id pec_home_multi_0328_00 in the log above?"
+ },
+ {
+  "key": "longctx-pec_home-needle-0005",
+  "orig": "In the log above, what is the task name recorded for the record with id pec_home_multi_0341_01?",
+  "new": "What task name is associated with the record with id pec_home_multi_0341_01 in the log above?"
+ },
+ {
+  "key": "longctx-pec_home-needle-0006",
+  "orig": "In the log above, what is the task name recorded for the record with id pec_home_dynam_0303_01?",
+  "new": "What task name is associated with the record with id pec_home_dynam_0303_01 in the log above?"
+ },
+ {
+  "key": "longctx-pec_home-needle-0007",
+  "orig": "In the log above, what is the task name recorded for the record with id pec_home_multi_0173_00?",
+  "new": "What task name is associated with the record with id pec_home_multi_0173_00 in the log above?"
+ },
+ {
+  "key": "longctx-pec_home-needle-0008",
+  "orig": "In the log above, what is the task name recorded for the record with id pec_home_multi_0273_02?",
+  "new": "What task name is associated with the record with id pec_home_multi_0273_02 in the log above?"
+ },
+ {
+  "key": "longctx-pec_home-needle-0009",
+  "orig": "In the log above, what is the personalized operation recorded for the record with id pec_home_multi_0242_00?",
+  "new": "What personalized operation is associated with the record with id pec_home_multi_0242_00 in the log above?"
+ },
+ {
+  "key": "longctx-pec_home-needle-0010",
+  "orig": "In the log above, what is the task name recorded for the record with id pec_home_dynam_0142_01?",
+  "new": "What task name is associated with the record with id pec_home_dynam_0142_01 in the log above?"
+ },
+ {
+  "key": "longctx-pec_home-needle-0011",
+  "orig": "In the log above, what is the personalized operation recorded for the record with id pec_home_dynam_0121_00?",
+  "new": "What personalized operation is associated with the record with id pec_home_dynam_0121_00 in the log above?"
+ },
+ {
+  "key": "longctx-privacylens-multi-0000",
+  "orig": "In the log above, which data recipient is recorded for the account ACCT-28c4a9545617?",
+  "new": "Which data recipient is associated with the account ACCT-28c4a9545617 in the log above?"
+ },
+ {
+  "key": "longctx-privacylens-multi-0001",
+  "orig": "In the log above, which data recipient is recorded for the account ACCT-c758e5d0b885?",
+  "new": "Which data recipient is associated with the account ACCT-c758e5d0b885 in the log above?"
+ },
+ {
+  "key": "longctx-privacylens-multi-0002",
+  "orig": "In the log above, which data recipient is recorded for the account ACCT-ed8ab7fcc79f?",
+  "new": "Which data recipient is associated with the account ACCT-ed8ab7fcc79f in the log above?"
+ },
+ {
+  "key": "longctx-privacylens-multi-0003",
+  "orig": "In the log above, which data recipient is recorded for the account ACCT-6369287b4339?",
+  "new": "Which data recipient is associated with the account ACCT-6369287b4339 in the log above?"
+ },
+ {
+  "key": "longctx-privacylens-multi-0004",
+  "orig": "In the log above, which data recipient is recorded for the account ACCT-55320f984351?",
+  "new": "Which data recipient is associated with the account ACCT-55320f984351 in the log above?"
+ },
+ {
+  "key": "longctx-privacylens-multi-0005",
+  "orig": "In the log above, which data recipient is recorded for the account ACCT-e883fbc9a30b?",
+  "new": "Which data recipient is associated with the account ACCT-e883fbc9a30b in the log above?"
+ },
+ {
+  "key": "longctx-privacylens-multi-0006",
+  "orig": "In the log above, which data recipient is recorded for the account ACCT-bb6f813fa98f?",
+  "new": "Which data recipient is associated with the account ACCT-bb6f813fa98f in the log above?"
+ },
+ {
+  "key": "longctx-privacylens-multi-0007",
+  "orig": "In the log above, which data recipient is recorded for the account ACCT-f8e04d5c0c2e?",
+  "new": "Which data recipient is associated with the account ACCT-f8e04d5c0c2e in the log above?"
+ },
+ {
+  "key": "longctx-privacylens-needle-0000",
+  "orig": "In the log above, what is the transmission principle recorded for the record named main203?",
+  "new": "What transmission principle is associated with the record named main203 in the log above?"
+ },
+ {
+  "key": "longctx-privacylens-needle-0001",
+  "orig": "In the log above, what is the data sender recorded for the record named main179?",
+  "new": "What data sender is associated with the record named main179 in the log above?"
+ },
+ {
+  "key": "longctx-privacylens-needle-0002",
+  "orig": "In the log above, what is the data type recorded for the record named main294?",
+  "new": "What data type is associated with the record named main294 in the log above?"
+ },
+ {
+  "key": "longctx-privacylens-needle-0003",
+  "orig": "In the log above, what is the transmission principle recorded for the record named main256?",
+  "new": "What transmission principle is associated with the record named main256 in the log above?"
+ },
+ {
+  "key": "longctx-privacylens-needle-0004",
+  "orig": "In the log above, what is the data recipient recorded for the record named main124?",
+  "new": "What data recipient is associated with the record named main124 in the log above?"
+ },
+ {
+  "key": "longctx-privacylens-needle-0005",
+  "orig": "In the log above, what is the user name recorded for the record named main203?",
+  "new": "What user name is associated with the record named main203 in the log above?"
+ },
+ {
+  "key": "longctx-privacylens-needle-0006",
+  "orig": "In the log above, what is the data subject recorded for the record named main69?",
+  "new": "What data subject is associated with the record named main69 in the log above?"
+ },
+ {
+  "key": "longctx-privacylens-needle-0007",
+  "orig": "In the log above, what is the transmission principle recorded for the record named main292?",
+  "new": "What transmission principle is associated with the record named main292 in the log above?"
+ },
+ {
+  "key": "longctx-privacylens-needle-0008",
+  "orig": "In the log above, what is the concrete data type recorded for the record named main187?",
+  "new": "What concrete data type is associated with the record named main187 in the log above?"
+ },
+ {
+  "key": "longctx-privacylens-needle-0009",
+  "orig": "In the log above, what is the data sender recorded for the record named main56?",
+  "new": "What data sender is associated with the record named main56 in the log above?"
+ },
+ {
+  "key": "longctx-privacylens-needle-0010",
+  "orig": "In the log above, what is the data recipient recorded for the record named main149?",
+  "new": "What data recipient is associated with the record named main149 in the log above?"
+ },
+ {
+  "key": "longctx-privacylens-needle-0011",
+  "orig": "In the log above, what is the user email recorded for the record named main106?",
+  "new": "What user email is associated with the record named main106 in the log above?"
+ },
+ {
+  "key": "longctx-simuhome-multi-0000",
+  "orig": "In the log above, which anchor device identifier is recorded for the account ACCT-d77e96159be2?",
+  "new": "Which anchor device identifier is associated with the account ACCT-d77e96159be2 in the log above?"
+ },
+ {
+  "key": "longctx-simuhome-multi-0001",
+  "orig": "In the log above, which anchor device identifier is recorded for the account ACCT-65b3592f4fd8?",
+  "new": "Which anchor device identifier is associated with the account ACCT-65b3592f4fd8 in the log above?"
+ },
+ {
+  "key": "longctx-simuhome-multi-0002",
+  "orig": "In the log above, which anchor device identifier is recorded for the account ACCT-d77e96159be2?",
+  "new": "Which anchor device identifier is associated with the account ACCT-d77e96159be2 in the log above?"
+ },
+ {
+  "key": "longctx-simuhome-multi-0003",
+  "orig": "In the log above, which anchor device identifier is recorded for the account ACCT-65b3592f4fd8?",
+  "new": "Which anchor device identifier is associated with the account ACCT-65b3592f4fd8 in the log above?"
+ },
+ {
+  "key": "longctx-simuhome-multi-0004",
+  "orig": "In the log above, which anchor device identifier is recorded for the account ACCT-65b3592f4fd8?",
+  "new": "Which anchor device identifier is associated with the account ACCT-65b3592f4fd8 in the log above?"
+ },
+ {
+  "key": "longctx-simuhome-multi-0005",
+  "orig": "In the log above, which anchor device identifier is recorded for the account ACCT-c49099338de0?",
+  "new": "Which anchor device identifier is associated with the account ACCT-c49099338de0 in the log above?"
+ },
+ {
+  "key": "longctx-simuhome-multi-0006",
+  "orig": "In the log above, which anchor device identifier is recorded for the account ACCT-c49099338de0?",
+  "new": "Which anchor device identifier is associated with the account ACCT-c49099338de0 in the log above?"
+ },
+ {
+  "key": "longctx-simuhome-multi-0007",
+  "orig": "In the log above, which anchor device identifier is recorded for the account ACCT-d77e96159be2?",
+  "new": "Which anchor device identifier is associated with the account ACCT-d77e96159be2 in the log above?"
+ },
+ {
+  "key": "longctx-simuhome-needle-0000",
+  "orig": "In the log above, what is the query type recorded for entry 0?",
+  "new": "What query type is associated with entry 0 in the log above?"
+ },
+ {
+  "key": "longctx-simuhome-needle-0001",
+  "orig": "In the log above, what is the simulator seed recorded for entry 3?",
+  "new": "What simulator seed is associated with entry 3 in the log above?"
+ },
+ {
+  "key": "longctx-simuhome-needle-0002",
+  "orig": "In the log above, what is the query type recorded for entry 2?",
+  "new": "What query type is associated with entry 2 in the log above?"
+ },
+ {
+  "key": "longctx-simuhome-needle-0003",
+  "orig": "In the log above, what is the query type recorded for entry 0?",
+  "new": "What query type is associated with entry 0 in the log above?"
+ },
+ {
+  "key": "longctx-simuhome-needle-0004",
+  "orig": "In the log above, what is the scenario name recorded for entry 2?",
+  "new": "What scenario name is associated with entry 2 in the log above?"
+ },
+ {
+  "key": "longctx-simuhome-needle-0005",
+  "orig": "In the log above, what is the simulator seed recorded for entry 1?",
+  "new": "What simulator seed is associated with entry 1 in the log above?"
+ },
+ {
+  "key": "longctx-simuhome-needle-0006",
+  "orig": "In the log above, what is the query type recorded for entry 1?",
+  "new": "What query type is associated with entry 1 in the log above?"
+ },
+ {
+  "key": "longctx-simuhome-needle-0007",
+  "orig": "In the log above, what is the simulator seed recorded for entry 2?",
+  "new": "What simulator seed is associated with entry 2 in the log above?"
+ },
+ {
+  "key": "longctx-simuhome-needle-0008",
+  "orig": "In the log above, what is the simulator seed recorded for entry 1?",
+  "new": "What simulator seed is associated with entry 1 in the log above?"
+ },
+ {
+  "key": "longctx-simuhome-needle-0009",
+  "orig": "In the log above, what is the query type recorded for entry 0?",
+  "new": "What query type is associated with entry 0 in the log above?"
+ },
+ {
+  "key": "longctx-simuhome-needle-0010",
+  "orig": "In the log above, what is the scenario name recorded for entry 3?",
+  "new": "What scenario name is associated with entry 3 in the log above?"
+ },
+ {
+  "key": "longctx-simuhome-needle-0011",
+  "orig": "In the log above, what is the simulator seed recorded for entry 2?",
+  "new": "What simulator seed is associated with entry 2 in the log above?"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-multi-0000",
+  "orig": "In the log above, which occupancy type is recorded for the account ACCT-a874b16f82ee?",
+  "new": "Which occupancy type is associated with the account ACCT-a874b16f82ee in the log above?"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-multi-0001",
+  "orig": "In the log above, which occupancy type is recorded for the account ACCT-0c36103b15f6?",
+  "new": "Which occupancy type is associated with the account ACCT-0c36103b15f6 in the log above?"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-multi-0002",
+  "orig": "In the log above, which occupancy type is recorded for the account ACCT-e8c045f7abca?",
+  "new": "Which occupancy type is associated with the account ACCT-e8c045f7abca in the log above?"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-multi-0003",
+  "orig": "In the log above, which occupancy type is recorded for the account ACCT-0c36103b15f6?",
+  "new": "Which occupancy type is associated with the account ACCT-0c36103b15f6 in the log above?"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-multi-0004",
+  "orig": "In the log above, which occupancy type is recorded for the account ACCT-121b148e326d?",
+  "new": "Which occupancy type is associated with the account ACCT-121b148e326d in the log above?"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-multi-0005",
+  "orig": "In the log above, which occupancy type is recorded for the account ACCT-0c36103b15f6?",
+  "new": "Which occupancy type is associated with the account ACCT-0c36103b15f6 in the log above?"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-multi-0006",
+  "orig": "In the log above, which occupancy type is recorded for the account ACCT-121b148e326d?",
+  "new": "Which occupancy type is associated with the account ACCT-121b148e326d in the log above?"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-multi-0007",
+  "orig": "In the log above, which occupancy type is recorded for the account ACCT-e8c045f7abca?",
+  "new": "Which occupancy type is associated with the account ACCT-e8c045f7abca in the log above?"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-needle-0000",
+  "orig": "In the log above, what is the top rooms recorded for the record with id TDCS_TIMING_002_normal_v0002_22bc6c?",
+  "new": "What top rooms is associated with the record with id TDCS_TIMING_002_normal_v0002_22bc6c in the log above?"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-needle-0001",
+  "orig": "In the log above, what is the total number of events recorded for the record with id TDCS_CASCADE_003_anomaly_v0001_b5d1e5?",
+  "new": "What total number of events is associated with the record with id TDCS_CASCADE_003_anomaly_v0001_b5d1e5 in the log above?"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-needle-0002",
+  "orig": "In the log above, what is the top rooms recorded for the record with id TDCS_REVERSE_003_anomaly_v0002_935c45?",
+  "new": "What top rooms is associated with the record with id TDCS_REVERSE_003_anomaly_v0002_935c45 in the log above?"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-needle-0003",
+  "orig": "In the log above, what is the total number of events recorded for the record with id TDCS_CASCADE_002_normal_v0002_e096fe?",
+  "new": "What total number of events is associated with the record with id TDCS_CASCADE_002_normal_v0002_e096fe in the log above?"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-needle-0004",
+  "orig": "In the log above, what is the total number of events recorded for the record with id TDCS_TREND_013_anomaly_v0001_2712fa?",
+  "new": "What total number of events is associated with the record with id TDCS_TREND_013_anomaly_v0001_2712fa in the log above?"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-needle-0005",
+  "orig": "In the log above, what is the top rooms recorded for the record with id TDCS_FREQ_001_anomaly_v0002_c49fe9?",
+  "new": "What top rooms is associated with the record with id TDCS_FREQ_001_anomaly_v0002_c49fe9 in the log above?"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-needle-0006",
+  "orig": "In the log above, what is the total number of events recorded for the record with id TDCS_DELAY_002_anomaly_v0003_b4f82d?",
+  "new": "What total number of events is associated with the record with id TDCS_DELAY_002_anomaly_v0003_b4f82d in the log above?"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-needle-0007",
+  "orig": "In the log above, what is the top rooms recorded for the record with id TDCS_DELAY_001_anomaly_v0000_b4287e?",
+  "new": "What top rooms is associated with the record with id TDCS_DELAY_001_anomaly_v0000_b4287e in the log above?"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-needle-0008",
+  "orig": "In the log above, what is the top rooms recorded for the record with id TDCS_STAT_014_normal_v0003_3d6d09?",
+  "new": "What top rooms is associated with the record with id TDCS_STAT_014_normal_v0003_3d6d09 in the log above?"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-needle-0009",
+  "orig": "In the log above, what is the total number of events recorded for the record with id TDCS_MULTI_002_anomaly_v0003_33433d?",
+  "new": "What total number of events is associated with the record with id TDCS_MULTI_002_anomaly_v0003_33433d in the log above?"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-needle-0010",
+  "orig": "In the log above, what is the top rooms recorded for the record with id TDCS_DURATION_007_anomaly_v0001_aaf37e?",
+  "new": "What top rooms is associated with the record with id TDCS_DURATION_007_anomaly_v0001_aaf37e in the log above?"
+ },
+ {
+  "key": "longctx-smartbench_tdcs-needle-0011",
+  "orig": "In the log above, what is the total number of events recorded for the record with id TDCS_TIMING_005_normal_v0001_894514?",
+  "new": "What total number of events is associated with the record with id TDCS_TIMING_005_normal_v0001_894514 in the log above?"
+ },
+ {
+  "key": "longctx-toolmem-needle-0000",
+  "orig": "In the log above, what is the totalRevenue field recorded for entry 1?",
+  "new": "What totalRevenue field is associated with entry 1 in the log above?"
+ },
+ {
+  "key": "longctx-toolmem-needle-0001",
+  "orig": "In the log above, what is the cwd field recorded for entry 0?",
+  "new": "What cwd field is associated with entry 0 in the log above?"
+ },
+ {
+  "key": "longctx-toolmem-needle-0002",
+  "orig": "In the log above, what is the total_interest field recorded for entry 2?",
+  "new": "What total_interest field is associated with entry 2 in the log above?"
+ },
+ {
+  "key": "longctx-toolmem-needle-0003",
+  "orig": "In the log above, what is the summary field recorded for entry 1?",
+  "new": "What summary field is associated with entry 1 in the log above?"
+ },
+ {
+  "key": "longctx-toolmem-needle-0004",
+  "orig": "In the log above, what is the premium_gas_price field recorded for entry 0?",
+  "new": "What premium_gas_price field is associated with entry 0 in the log above?"
+ },
+ {
+  "key": "longctx-toolmem-needle-0005",
+  "orig": "In the log above, what is the competition field recorded for entry 2?",
+  "new": "What competition field is associated with entry 2 in the log above?"
+ },
+ {
+  "key": "longctx-toolmem-needle-0006",
+  "orig": "In the log above, what is the booking_id field recorded for the entry describing BK789012?",
+  "new": "What booking_id field is associated with the entry describing BK789012 in the log above?"
+ },
+ {
+  "key": "longctx-toolmem-needle-0007",
+  "orig": "In the log above, what is the reminder_id field recorded for entry 3?",
+  "new": "What reminder_id field is associated with entry 3 in the log above?"
+ },
+ {
+  "key": "longctx-toolmem-needle-0008",
+  "orig": "In the log above, what is the confidence field recorded for entry 2?",
+  "new": "What confidence field is associated with entry 2 in the log above?"
+ },
+ {
+  "key": "longctx-toolmem-needle-0009",
+  "orig": "In the log above, what is the message field recorded for entry 3?",
+  "new": "What message field is associated with entry 3 in the log above?"
+ },
+ {
+  "key": "longctx-toolmem-needle-0010",
+  "orig": "In the log above, what is the confidence field recorded for entry 2?",
+  "new": "What confidence field is associated with entry 2 in the log above?"
+ },
+ {
+  "key": "longctx-toolmem-needle-0011",
+  "orig": "In the log above, what is the message field recorded for entry 3?",
+  "new": "What message field is associated with entry 3 in the log above?"
+ },
+ {
+  "key": "longctx-toolmem_raw-multi-0000",
+  "orig": "In the log above, which token count is recorded for the account ACCT-55aea7c3990f?",
+  "new": "Which token count is associated with the account ACCT-55aea7c3990f in the log above?"
+ },
+ {
+  "key": "longctx-toolmem_raw-multi-0001",
+  "orig": "In the log above, which token count is recorded for the account ACCT-833f2975481f?",
+  "new": "Which token count is associated with the account ACCT-833f2975481f in the log above?"
+ },
+ {
+  "key": "longctx-toolmem_raw-multi-0002",
+  "orig": "In the log above, which token count is recorded for the account ACCT-d1673ca5724e?",
+  "new": "Which token count is associated with the account ACCT-d1673ca5724e in the log above?"
+ },
+ {
+  "key": "longctx-toolmem_raw-multi-0003",
+  "orig": "In the log above, which token count is recorded for the account ACCT-4c217de403fe?",
+  "new": "Which token count is associated with the account ACCT-4c217de403fe in the log above?"
+ },
+ {
+  "key": "longctx-toolmem_raw-multi-0004",
+  "orig": "In the log above, which token count is recorded for the account ACCT-334a1bfc5138?",
+  "new": "Which token count is associated with the account ACCT-334a1bfc5138 in the log above?"
+ },
+ {
+  "key": "longctx-toolmem_raw-multi-0005",
+  "orig": "In the log above, which token count is recorded for the account ACCT-b5d44280dcfd?",
+  "new": "Which token count is associated with the account ACCT-b5d44280dcfd in the log above?"
+ },
+ {
+  "key": "longctx-toolmem_raw-multi-0006",
+  "orig": "In the log above, which token count is recorded for the account ACCT-214355c8cdd3?",
+  "new": "Which token count is associated with the account ACCT-214355c8cdd3 in the log above?"
+ },
+ {
+  "key": "longctx-toolmem_raw-multi-0007",
+  "orig": "In the log above, which token count is recorded for the account ACCT-5371697e08de?",
+  "new": "Which token count is associated with the account ACCT-5371697e08de in the log above?"
+ },
+ {
+  "key": "longctx-toolmem_raw-needle-0000",
+  "orig": "In the log above, what is the strategy argument recorded for session session_00136?",
+  "new": "What strategy argument is associated with session session_00136 in the log above?"
+ },
+ {
+  "key": "longctx-toolmem_raw-needle-0001",
+  "orig": "In the log above, what is the current_engagement field recorded for session session_01462?",
+  "new": "What current_engagement field is associated with session session_01462 in the log above?"
+ },
+ {
+  "key": "longctx-toolmem_raw-needle-0002",
+  "orig": "In the log above, what is the cwd field recorded for session session_00887?",
+  "new": "What cwd field is associated with session session_00887 in the log above?"
+ },
+ {
+  "key": "longctx-toolmem_raw-needle-0003",
+  "orig": "In the log above, what is the shotmap_data field recorded for session session_01964?",
+  "new": "What shotmap_data field is associated with session session_01964 in the log above?"
+ },
+ {
+  "key": "longctx-toolmem_raw-needle-0004",
+  "orig": "In the log above, what is the percent_change field recorded for session session_02009?",
+  "new": "What percent_change field is associated with session session_02009 in the log above?"
+ },
+ {
+  "key": "longctx-toolmem_raw-needle-0005",
+  "orig": "In the log above, what is the token count recorded for session session_01939?",
+  "new": "What token count is associated with session session_01939 in the log above?"
+ },
+ {
+  "key": "longctx-toolmem_raw-needle-0006",
+  "orig": "In the log above, what is the usable_energy_kwh field recorded for session session_00293?",
+  "new": "What usable_energy_kwh field is associated with session session_00293 in the log above?"
+ },
+ {
+  "key": "longctx-toolmem_raw-needle-0007",
+  "orig": "In the log above, what is the token count recorded for session session_01966?",
+  "new": "What token count is associated with session session_01966 in the log above?"
+ },
+ {
+  "key": "longctx-toolmem_raw-needle-0008",
+  "orig": "In the log above, what is the token count recorded for session session_00838?",
+  "new": "What token count is associated with session session_00838 in the log above?"
+ },
+ {
+  "key": "longctx-toolmem_raw-needle-0009",
+  "orig": "In the log above, what is the message field recorded for session session_00319?",
+  "new": "What message field is associated with session session_00319 in the log above?"
+ },
+ {
+  "key": "longctx-toolmem_raw-needle-0010",
+  "orig": "In the log above, what is the confidence_score field recorded for session session_01555?",
+  "new": "What confidence_score field is associated with session session_01555 in the log above?"
+ },
+ {
+  "key": "longctx-toolmem_raw-needle-0011",
+  "orig": "In the log above, what is the radius argument recorded for session session_00879?",
+  "new": "What radius argument is associated with session session_00879 in the log above?"
+ }
+]
