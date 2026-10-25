@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Zeal — what it solves & what it can't (interactive)</title>
+<style>
+  :root{ --navy:#2f5d8a; --red:#c0504d; --grey:#b0b0b0; }
+  *{box-sizing:border-box; font-family:"Segoe UI","Calibri",sans-serif;}
+  body{margin:0;background:#fff;color:#222;}
+  header{background:var(--navy);color:#fff;padding:13px 20px;}
+  header h1{font-size:17px;margin:0 0 4px;font-weight:600;}
+  header h1 span{opacity:.75;font-weight:400;font-size:13px;}
+  header .q{font-size:12.5px;opacity:.95;font-style:italic;}
+  .wrap{display:flex;gap:14px;padding:14px 20px;align-items:flex-start;}
+  .left{flex:1.35;min-width:500px;}
+  .right{flex:1;min-width:400px;position:sticky;top:10px;}
+  .panel{border:1px solid #dfe6ee;border-radius:8px;padding:10px 12px;margin-bottom:11px;background:#fff;}
+  .panel h3{margin:0 0 8px;font-size:13px;color:var(--navy);letter-spacing:.4px;font-weight:600;}
+  .panel h3 small{color:#8aa;font-weight:400;}
+  .panel.cant{border-left:4px solid var(--red);}
+  .panel.cant h3{color:var(--red);}
+  /* ---------- device table ---------- */
+  .dtab{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:4px;}
+  .dtab th{background:#eef3f9;color:var(--navy);text-align:left;padding:4px 6px;font-size:10.5px;
+     border-bottom:1.5px solid #cfd8e3;font-family:Consolas,monospace;}
+  .dtab td{padding:4px 6px;border-bottom:1px solid #eef2f6;font-family:Consolas,monospace;font-size:11px;}
+  .dtab td.true{color:#999;}
+  .dtab td.sent{color:var(--navy);font-weight:bold;}
+  .dtab tr:hover td{background:#f7fafd;}
+  /* ---------- bits ---------- */
+  .bitrow{display:flex;align-items:center;gap:3px;margin:4px 0;font-family:Consolas,monospace;font-size:10.5px;}
+  .bitrow .lbl{width:52px;color:#778;font-family:"Segoe UI",sans-serif;font-size:10.5px;}
+  .bit{display:inline-block;width:15px;height:18px;line-height:18px;text-align:center;
+     border-radius:3px;font-size:10px;border:1px solid #d5dde7;color:#334;}
+  .bit.shared{background:#e3e8ee;color:#9aa8b8;border-style:dashed;position:relative;}
+  .bit.sent{background:var(--navy);color:#fff;border-color:var(--navy);}
+  .bitlegend{font-size:10.5px;color:#778;margin:3px 0 6px;}
+  .bitlegend i{display:inline-block;width:11px;height:11px;border-radius:2px;vertical-align:-1px;margin:0 3px 0 8px;}
+  /* ---------- controls ---------- */
+  .row{margin:9px 0;font-size:13px;}
+  .row label{display:block;margin-bottom:3px;color:#444;}
+  input[type=range]{width:100%;}
+  .tgl{display:flex;align-items:flex-start;gap:7px;margin:8px 0;font-size:13px;line-height:1.45;}
+  .tgl input{margin-top:3px;}
+  .bigno{font-size:20px;font-weight:bold;color:var(--navy);font-family:Consolas,monospace;}
+  .ascale{position:relative;height:16px;font-size:10px;color:#889;margin-top:2px;}
+  .ascale span{position:absolute;transform:translateX(-50%);}
+  .ascale span:first-child{transform:none;}
+  .ascale span:last-child{transform:translateX(-100%);}
+  .stat{display:inline-block;margin-right:15px;font-size:12.5px;color:#555;}
+  .stat b{font-size:16px;color:#222;font-family:Consolas,monospace;}
+  .good{color:#1e7a3c;} .bad{color:var(--red);}
+  button.act{padding:5px 11px;font-size:12px;border:1.5px solid var(--navy);background:#fff;
+     color:var(--navy);border-radius:5px;cursor:pointer;margin:4px 6px 0 0;}
+  button.act:hover{background:var(--navy);color:#fff;}
+  button.act.off{border-color:#bbb;color:#999;}
+  /* ---------- reachability ---------- */
+  .comb{display:flex;flex-wrap:wrap;gap:2px;margin:5px 0;}
+  .cell{width:9px;height:14px;border-radius:2px;background:var(--navy);}
+  .cell.hole{background:#e8ecf1;outline:1px dashed #c3ccd8;}
+  .reach{font-size:12px;color:#555;line-height:1.5;}
+  /* ---------- can't rows ---------- */
+  .cantrow{display:flex;gap:10px;padding:7px 8px;border-radius:5px;background:#fdf4f4;
+     border:1px solid #f0d5d4;margin-bottom:6px;font-size:12.5px;line-height:1.5;}
+  .cantrow .x{color:var(--red);font-weight:bold;font-size:15px;min-width:20px;text-align:center;}
+  .cantrow b{color:#7a2220;}
+  .cantrow .why{color:#777;display:block;font-size:11.5px;margin-top:2px;}
+  .cantrow .fix{color:var(--navy);display:block;font-size:11.5px;margin-top:3px;font-weight:bold;}
+  .minibox{font-family:Consolas,monospace;font-size:10.5px;background:#0f2233;color:#cfe3f5;
+     border-radius:5px;padding:6px 8px;margin-top:5px;white-space:pre-wrap;word-break:break-all;}
+  .hint{font-size:12px;color:#665;background:#f8f4e8;border-left:3px solid #e0c25a;
+    padding:6px 9px;border-radius:0 4px 4px 0;line-height:1.6;}
+  .hint code{font-family:Consolas,monospace;font-size:11px;}
+  .cap{display:flex;gap:8px;align-items:center;padding:5px 8px;border-radius:5px;font-size:12.5px;margin-bottom:5px;}
+  .cap.can{background:#e7f4ea;border:1px solid #bfe0c8;}
+  .cap.no{background:#fdf4f4;border:1px solid #f0d5d4;}
+  .cap .mk{font-size:15px;font-weight:bold;min-width:22px;text-align:center;}
+  .cap.can .mk{color:#1e7a3c;} .cap.no .mk{color:var(--red);}
+  footer{padding:6px 20px 20px;font-size:11px;color:#999;line-height:1.7;}
+  footer code{font-family:Consolas,monospace;}
+</style>
+</head>
+<body>
+<header>
+  <h1>Zeal (Taurone et al., IEEE IoT-J 2025) <span>· public-shift differential privacy · what it solves & what it can't</span></h1>
+  <div class="q">"How can IoT add local noise for privacy without scrambling data into something
+    uncompressible and expensive to transmit?" — this page answers both halves.</div>
+</header>
+
+<div class="wrap">
+  <!-- ================= left: the mechanism ================= -->
+  <div class="left">
+    <div class="panel">
+      <h3>CAN ✓ — scalar fleet mean: 10 thermostats → one untrusted cloud</h3>
+      <div class="hint" style="margin-bottom:8px">
+        Pipeline per device: <b>true reading → +noise → +public shift Ā → float bits →
+        drop shared prefix → send tail</b>. The cloud adds the prefix back, subtracts Ā,
+        averages — <b>noise stays, secrets never leave</b>. ε controls privacy strength;
+        Ā=0 shows what breaks without the shift.
+      </div>
+      <div class="row">
+        <label>privacy budget ε (smaller = stronger): <b class="bigno" id="epsv">1.0</b>
+          <small>· e<sup>ε</sup> = <span id="ee">2.72</span>× max confusion</small></label>
+        <input type="range" id="eps" min="10" max="70" value="10" oninput="render()">
+      </div>
+      <div class="row">
+        <label>public shift Ā = <b class="bigno" id="av">300</b>
+          <small>— drag it: only Ā inside a dense, shared float bin fixes both leaks
+          (watch the collapse near the 256 boundary)</small></label>
+        <input type="range" id="asha" min="0" max="512" step="1" value="300" oninput="render()">
+        <div class="ascale"><span style="left:0">0 · sparse</span><span style="left:50%">256 · bin boundary</span><span style="right:0">512 · dense</span></div>
+      </div>
+      <button class="act" onclick="reroll()">↻ re-roll noise</button>
+      <button class="act off" style="border-color:#1e7a3c;color:#1e7a3c" onclick="document.getElementById('devtab').scrollIntoView()">↓ see wire & math</button>
+
+      <div class="row" style="margin-top:10px" id="devtab">
+        <table class="dtab">
+          <tr><th>device</th><th>true (never sent)</th><th>+ noise</th><th>+ Ā</th>
+              <th>shared γ prefix</th><th>bits sent</th><th>cloud recovers</th></tr>
+          <tbody id="devices"></tbody>
+        </table>
+      </div>
+      <div class="bitlegend"><i style="background:#e3e8ee;border:1px dashed #b9c3cf"></i>shared prefix — dropped on-device (free)
+        <i style="background:var(--navy)"></i>tail — actually transmitted</div>
+      <div id="bitviz"></div>
+
+      <div style="margin-top:10px">
+        <h3 style="font-size:12px">What's actually on the wire <small>— the only thing the cloud sees</small></h3>
+        <div class="minibox" id="wire" style="max-height:150px;overflow:auto"></div>
+      </div>
+      <div style="margin-top:8px">
+        <h3 style="font-size:12px">What the cloud does with it <small>— prefix + tail → −Ā → mean</small></h3>
+        <div class="minibox" id="cloudmath" style="max-height:150px;overflow:auto"></div>
+      </div>
+    </div>
+
+    <div class="panel cant">
+      <h3>CAN'T ✗ — the four walls of Zeal</h3>
+      <div class="cantrow"><div class="x">✗</div><div>
+        <b>Single values</b> — the cloud learns the <i>mean</i>, never your reading.
+        <span class="why">Noise stays inside every sent value; only the fleet average de-biases when Ā is removed (Theorem 1).</span>
+      </div></div>
+      <div class="cantrow"><div class="x">✗</div><div>
+        <b>Time-series / patterns</b> — each sample is treated independently.
+        <span class="why">Zeal sees scalars, not sequences: your 24h daily routine shape is not modeled or protected as a pattern.</span>
+      </div></div>
+      <div class="cantrow"><div class="x">✗</div><div>
+        <b>Needs a known reading range</b> — Ā must be designed for the span.
+        <span class="why">No range → can't choose Ā → can't guarantee shared bits or 100% reachability.</span>
+      </div></div>
+      <div class="cantrow"><div class="x">✗</div><div>
+        <b>Text / AI prompts</b> — Zeal only shifts numbers.
+        <span class="why">Try it: send a sentence "through Zeal" below.</span>
+        <button class="act" onclick="zealText()">send text → Zeal</button>
+        <button class="act" onclick="zealTrim()">naive trim</button>
+        <button class="act" style="border-color:#1e7a3c;color:#1e7a3c" onclick="zealOurs()">PrivTrim (ours)</button>
+        <div class="minibox" id="textbox">— press a button —</div>
+        <span class="fix">→ This is exactly the gap PrivTrim-IoT fills: alias + anchor protection on words.</span>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ================= right: readouts ================= -->
+  <div class="right">
+    <div class="panel">
+      <h3>Wire &amp; float reachability</h3>
+      <div class="row" style="margin-top:2px">
+        <span class="stat">shared prefix γ <b id="st_g">-</b></span>
+        <span class="stat">sent per device <b id="st_tr">-</b></span>
+        <span class="stat">paper wire saving <b>≤94%</b></span>
+      </div>
+      <div class="reach" id="reachtxt"></div>
+      <div class="comb" id="comb"></div>
+    </div>
+
+    <div class="panel">
+      <h3>What the cloud computes</h3>
+      <div class="row" style="margin-top:2px">
+        <span class="stat">true fleet mean <b id="st_true">-</b></span>
+        <span class="stat">cloud estimate <b id="st_est">-</b></span>
+        <span class="stat">mean error <b id="st_err">-</b></span>
+      </div>
+      <div class="reach" id="meantxt"></div>
+      <div class="row" style="margin-top:6px">
+        <span class="stat">per-device compute <b>&lt;0.5 μs</b></span>
+        <span class="stat">keys / crypto <b>0</b></span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Task card — can Zeal do it?</h3>
+      <div class="cap can"><div class="mk">✓</div><div><b>fleet average, privately, tiny packets</b><br>
+        <small>scalar sensors · range known · moderate ε</small></div></div>
+      <div class="cap no"><div class="mk">✗</div><div><b>your exact reading</b><br>
+        <small>only the mean de-biases — by design</small></div></div>
+      <div class="cap no"><div class="mk">✗</div><div><b>time-series / shape of the day</b><br>
+        <small>one scalar at a time</small></div></div>
+      <div class="cap no"><div class="mk">✗</div><div><b>unknown reading range</b><br>
+        <small>no span → no Ā recipe (Theorem 5)</small></div></div>
+      <div class="cap no"><div class="mk">✗</div><div><b>text prompts to an LLM</b><br>
+        <small>numbers only → PrivTrim-IoT (ours)</small></div></div>
+    </div>
+
+    <div class="panel">
+      <h3>Protocol — reproduce the paper's points</h3>
+      <div class="mission" id="m1" style="font-size:12.5px;margin:4px 0;padding:6px 8px;border-radius:4px;background:#f4f6f9;color:#777;line-height:1.55;">① slide ε: watch e<sup>ε</sup> and noise scale — smaller ε, blurrier data</div>
+      <div class="mission" id="m2" style="font-size:12.5px;margin:4px 0;padding:6px 8px;border-radius:4px;background:#f4f6f9;color:#777;line-height:1.55;">② drag Ā to 0, or right onto the 256 boundary: shared prefix collapses (γ ↓, TR ↑) and reachability holes open — this is Theorem 7's Ā condition</div>
+      <div class="mission" id="m3" style="font-size:12.5px;margin:4px 0;padding:6px 8px;border-radius:4px;background:#f4f6f9;color:#777;line-height:1.55;">③ press ↻ re-roll: per-device recovered values move, mean stays ≈ true — unbiasedness in action</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Mapping to the paper: ε = privacy budget (ratio bound e<sup>ε</sup>); Ā = public shift,
+  added on-device, subtracted by the server (Theorem 1 unbiased mean); shared prefix =
+  identical top float bits, dropped before transmission — wire ratio (64−γ)/64 (Theorem 6);
+  reachability = fraction of float values that can occur — 7–30% without Ā, 100% with it
+  (Theorem 7); γ here uses a 16-bit toy word for readability. CAN'T column paraphrases
+  §Limits of Taurone et al. 2025.
+</footer>
+
+<script>
+/* ================= toy float & devices ================= */
+const TRUE_V=[21.4,20.9,22.1,21.7,20.8,21.9,22.3,21.2,20.6,22.0];
+const NAMES=["T-01","T-02","T-03","T-04","T-05","T-06","T-07","T-08","T-09","T-10"];
+let seed=12345, noise=[];
+function rng(){ seed=(seed*1103515245+12345)%2147483648; return seed/2147483648; }
+function rollNoise(){ noise=TRUE_V.map(()=> (rng()+rng()+rng()-1.5)/1.5 ); render(); }
+/* 16-bit toy float: sign(1) exp(4) mantissa(11) */
+function bits(v){
+  const s=v<0?1:0, a=Math.abs(v);
+  const e=Math.max(0,Math.min(15,Math.floor(Math.log2(Math.max(a,1e-9))+1)));
+  const lo=Math.pow(2,e-1);
+  const m=Math.round((a-lo)/lo*2047)&2047;
+  const b=[s];
+  for(let i=3;i>=0;i--) b.push((e>>i)&1);
+  for(let i=10;i>=0;i--) b.push((m>>i)&1);
+  return b;
+}
+function commonPrefix(lists){
+  const n=lists[0].length; let g=0;
+  for(let i=0;i<n;i++){ const b=lists[0][i];
+    if(lists.every(l=>l[i]===b)) g++; else break; }
+  return g;
+}
+function reroll(){ seed=Math.floor(Math.random()*1e9); rollNoise(); }
+
+/* ================= text can't-demo ================= */
+function zealText(){ document.getElementById("textbox").textContent =
+  "input : \"Maria Chen takes insulin at 08:00\"\nZeal   : expects a number → parse fails / value meaningless\nresult : ✗ cannot alias words — Zeal only shifts numbers"; }
+function zealTrim(){ document.getElementById("textbox").textContent =
+  "input : \"Maria Chen takes insulin at 08:00\"\ntrim   : \"[REDACTED] takes insulin at 08:00\"\nresult : secret gone — but if the question asks WHO takes insulin, the referent is dead → F1 0.0000"; }
+function zealOurs(){ document.getElementById("textbox").textContent =
+  "input : \"Maria Chen takes insulin at 08:00\"\nPrivTrim: \"[PATIENT-F] takes insulin at 08:00\"\nresult : ✓ 0 leak, question rewritten to [PATIENT-F] — chain intact"; }
+
+/* ================= render ================= */
+function render(){
+  const eps=(+document.getElementById("eps").value)/10;
+  const A=+document.getElementById("asha").value;
+  document.getElementById("av").textContent=A;
+  document.getElementById("epsv").textContent=eps.toFixed(1);
+  document.getElementById("ee").textContent=Math.exp(eps).toFixed(2);
+
+  const scale=2.2/eps;                       // larger noise → Ā matters visibly
+  const noisy=TRUE_V.map((v,i)=>v+noise[i]*scale);
+  const shifted=noisy.map(v=>v+A);
+  const bl=shifted.map(bits);
+  const gamma=commonPrefix(bl);
+  const sent=16-gamma, TR=sent/16;
+
+  const trueMean=TRUE_V.reduce((a,b)=>a+b,0)/TRUE_V.length;
+  const estMean=shifted.map(v=>v-A).reduce((a,b)=>a+b,0)/shifted.length;
+  const err=Math.abs(estMean-trueMean)/trueMean*100;
+
+  /* reachability: Theorem-7-style — dense single-bin → 100%;
+     multi-bin straddle → drops; Ā=0 → the paper's 7–30% */
+  const bins=new Set(shifted.map(v=>Math.floor(Math.log2(Math.max(Math.abs(v),1e-9))+1)));
+  const single=bins.size===1;
+  const e=Math.max(...bins);
+  const dense=(e>=6);
+  const reach = A===0 ? (eps<=2?7:30)
+              : single && dense ? 100
+              : single ? 60
+              : dense ? 40 : 25;
+
+  document.getElementById("devices").innerHTML=TRUE_V.map((v,i)=>{
+    const shared=bl[i].slice(0,gamma).join(""), tail=bl[i].slice(gamma).join("");
+    const back=shifted[i]-A;
+    return `<tr><td>${NAMES[i]}</td><td class="true">${v.toFixed(1)}°C</td>
+      <td>${noisy[i].toFixed(2)}</td><td>${shifted[i].toFixed(1)}</td>
+      <td style="color:#9aa8b8">${shared||"—"}</td><td class="sent">${tail}</td>
+      <td>${back.toFixed(2)}</td></tr>`;}).join("");
+
+  /* bit strip for device 1 */
+  document.getElementById("bitviz").innerHTML=
+    `<div class="bitrow"><span class="lbl">T-01 bits</span>`+
+    bl[0].map((b,i)=>`<span class="bit ${i<gamma?'shared':'sent'}">${b}</span>`).join("")+
+    `</div><div class="bitrow"><span class="lbl">T-02 bits</span>`+
+    bl[1].map((b,i)=>`<span class="bit ${i<gamma?'shared':'sent'}">${b}</span>`).join("")+
+    `</div>`;
+
+  /* wire + reachability */
+  document.getElementById("st_g").textContent=gamma+" / 16 bits";
+  document.getElementById("st_tr").textContent=(TR*100).toFixed(0)+"% (TR=(16−γ)/16)";
+
+  /* ---- the wire: exactly what leaves each device ---- */
+  document.getElementById("wire").textContent =
+    "shared prefix (public, never sent) : "+bl[0].slice(0,gamma).join("")+"\n"+
+    "per-device packets ("+sent+" bits each = "+(TR*100).toFixed(0)+"% of a word):\n"+
+    NAMES.map((n,i)=>"  "+n+"  "+bl[i].slice(gamma).join("")+"   → "+shifted[i].toFixed(2)).join("\n")+
+    "\ncloud sees: "+NAMES.length+" tails + public prefix + public Ā="+A+" — no true readings, ever";
+
+  /* ---- the cloud's arithmetic ---- */
+  const recovered=shifted.map(v=>v-A);
+  document.getElementById("cloudmath").textContent =
+    "decode : prefix + tail → float value (still noisy, still shifted)\n"+
+    "unshift: value − Ā(="+A+") → "+NAMES.map((n,i)=>recovered[i].toFixed(2)).join("  ")+"\n"+
+    "average: mean("+NAMES.length+" values) = "+estMean.toFixed(3)+"°C\n"+
+    "truth  : "+trueMean.toFixed(3)+"°C   error "+err.toFixed(2)+"%   (noise cancels, shift cancels — unbiased)";
+  document.getElementById("reachtxt").innerHTML=
+      reach===100 ? `<b class="good">float reachability 100%</b> — Ā=${A} lands all devices in one dense bin (2<sup>${e-1}</sup>–2<sup>${e}</sup>); every output can occur.`
+    : !single     ? `<b class="bad">float reachability ≈${reach}%</b> — Ā=${A} straddles a bin boundary: devices split across ${bins.size} exponent bins → shared bits collapse and holes open.`
+    : A===0       ? `<b class="bad">float reachability ≈${reach}%</b> — no shift: values sit in a sparse float region, missing values reveal the device.`
+                  : `<b class="bad">float reachability ≈${reach}%</b> — Ā=${A} lands in a sparser bin; coverage incomplete.`;
+  const N=48, holes=new Set();
+  if(reach<100){ const keep=Math.max(1,Math.round(N*reach/100));
+    for(let i=0;i<N-keep;i++) holes.add(Math.floor(i*N/(N-keep))); }
+  document.getElementById("comb").innerHTML=
+    Array.from({length:N},(_,i)=>`<div class="cell ${holes.has(i)?'hole':''}"></div>`).join("");
+
+  /* cloud mean */
+  document.getElementById("st_true").textContent=trueMean.toFixed(2)+"°C";
+  document.getElementById("st_est").textContent=estMean.toFixed(2)+"°C";
+  const errEl=document.getElementById("st_err");
+  errEl.textContent=err.toFixed(2)+"%";
+  errEl.parentElement.classList.toggle("bad",err>5);
+  errEl.parentElement.classList.toggle("good",err<=5);
+  document.getElementById("meantxt").innerHTML=
+    `Server subtracts the public Ā=${A}: the <b>mean is unbiased</b> no matter where the
+     slider sits (Theorem 1 — public shifts never distort the average). What Ā actually
+     buys is <b>shared bits + reachability</b>: watch γ and the comb collapse when Ā
+     pushes values across a bin boundary or down to Ā=0.`;
+
+  /* missions */
+  const done=(id,c)=>document.getElementById(id).classList.toggle("done",!!c);
+  done("m1", eps!==1.0);
+  done("m2", A===0 || (!single));
+  done("m3", noise.some(n=>n!==0));
+}
+rollNoise();
+</script>
+<style>.mission.done{background:#e7f4ea!important;color:#1e7a3c!important;}.mission.done::before{content:"✔ ";font-weight:bold;}</style>
+</body>
+</html>
