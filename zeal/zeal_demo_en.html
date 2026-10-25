@@ -91,13 +91,15 @@
   <!-- ================= left: the mechanism ================= -->
   <div class="left">
     <div class="panel">
-      <h3>CAN ✓ — scalar fleet mean: 10 thermostats → one untrusted cloud</h3>
+      <h3>CAN ✓ — scalar fleet mean: 8 mixed sensors (volts / mA / lux / °C / %RH) → one untrusted cloud</h3>
       <div class="hint" style="margin-bottom:8px">
         Pipeline per device: <b>true reading → +noise → +public shift Ā → float bits →
         drop shared prefix → send tail</b>. The cloud adds the prefix back, subtracts Ā,
-        averages — <b>noise stays, secrets never leave</b>. ε controls privacy strength;
-        Ā=0 shows what breaks without the shift — watch the <b>reachability</b> panel on
-        the right: holes appear, and the reachable set becomes <b>input-dependent</b>.
+        averages — <b>noise stays, secrets never leave</b>. ε controls privacy strength.
+        Readings span exponent bins 2/4/8/16 — <b>the optimal Ā is the smallest shift that
+        gathers all readings into one dense bin, not the largest</b>; oversized Ā just wastes
+        the shared prefix. Watch the <b>reachability</b> panel: holes appear and the
+        reachable set becomes <b>input-dependent</b> when Ā is wrong.
       </div>
       <div class="row">
         <label>privacy budget ε (smaller = stronger): <b class="bigno" id="epsv">1.0</b>
@@ -105,18 +107,20 @@
         <input type="range" id="eps" min="10" max="70" value="10" oninput="render()">
       </div>
       <div class="row">
-        <label>public shift Ā = <b class="bigno" id="av">300</b>
-          <small>— drag it: only Ā inside a dense, shared float bin fixes both leaks
-          (watch the collapse near the 256 boundary)</small></label>
-        <input type="range" id="asha" min="0" max="512" step="1" value="300" oninput="render()">
-        <div class="ascale"><span style="left:0">0 · sparse</span><span style="left:50%">256 · bin boundary</span><span style="right:0">512 · dense</span></div>
+        <label>public shift Ā = <b class="bigno" id="av">21</b>
+          <small>— drag it: the optimal Ā gathers every reading into ONE dense bin
+          (max shared prefix γ). Larger is <b>not</b> better: past the bin it wastes γ,
+          and the tail you send is never shorter.</small></label>
+        <input type="range" id="asha" min="0" max="2048" step="1" value="21" oninput="render()">
+        <div class="ascale"><span style="left:0">0</span><span style="left:12%">21· optimal</span><span style="left:25%">512</span><span style="right:0">2048</span></div>
       </div>
       <button class="act" onclick="reroll()">↻ re-roll noise</button>
+      <button class="act" style="border-color:#1e7a3c;color:#1e7a3c" onclick="setOptimalA()">★ optimal Ā (Theorem-6)</button>
       <button class="act off" style="border-color:#1e7a3c;color:#1e7a3c" onclick="document.getElementById('devtab').scrollIntoView()">↓ see wire & math</button>
 
       <div class="row" style="margin-top:10px" id="devtab">
         <table class="dtab">
-          <tr><th>device</th><th>true (never sent)</th><th>+ noise</th><th>+ Ā</th>
+          <tr><th>sensor</th><th>true (never sent)</th><th>+ noise</th><th>+ Ā</th>
               <th>shared γ prefix</th><th>bits sent</th><th>cloud recovers</th></tr>
           <tbody id="devices"></tbody>
         </table>
@@ -190,6 +194,7 @@
         <span class="stat">true fleet mean <b id="st_true">-</b></span>
         <span class="stat">cloud estimate <b id="st_est">-</b></span>
         <span class="stat">mean error <b id="st_err">-</b></span>
+        <span class="stat" id="st_ushw"><b id="st_ush">-</b></span>
       </div>
       <div class="reach" id="meantxt"></div>
       <div class="row" style="margin-top:6px">
@@ -215,7 +220,7 @@
     <div class="panel">
       <h3>Protocol — reproduce the paper's points</h3>
       <div class="mission" id="m1" style="font-size:12.5px;margin:4px 0;padding:6px 8px;border-radius:4px;background:#f4f6f9;color:#777;line-height:1.55;">① slide ε: watch e<sup>ε</sup> and noise scale — smaller ε, blurrier data</div>
-      <div class="mission" id="m2" style="font-size:12.5px;margin:4px 0;padding:6px 8px;border-radius:4px;background:#f4f6f9;color:#777;line-height:1.55;">② drag Ā to 0, or right onto the 256 boundary: shared prefix collapses (γ ↓, TR ↑) and reachability holes open — this is Theorem 7's Ā condition</div>
+      <div class="mission" id="m2" style="font-size:12.5px;margin:4px 0;padding:6px 8px;border-radius:4px;background:#f4f6f9;color:#777;line-height:1.55;">② drag Ā to 0, or across a bin boundary: shared prefix collapses (γ ↓, TR ↑) and reachability holes open — this is Theorem 7's Ā condition. Then press <b>★ optimal Ā</b>: the smallest shift, not the largest, is what wins</div>
       <div class="mission" id="m3" style="font-size:12.5px;margin:4px 0;padding:6px 8px;border-radius:4px;background:#f4f6f9;color:#777;line-height:1.55;">③ press ↻ re-roll: per-device recovered values move, mean stays ≈ true — unbiasedness in action</div>
     </div>
   </div>
@@ -234,8 +239,21 @@
 
 <script>
 /* ================= toy float & devices ================= */
-const TRUE_V=[21.4,20.9,22.1,21.7,20.8,21.9,22.3,21.2,20.6,22.0];
-const NAMES=["T-01","T-02","T-03","T-04","T-05","T-06","T-07","T-08","T-09","T-10"];
+/* Readings span exponent bins 2 / 4 / 8 / 16 — a mixed-device fleet, so no single
+   exponent covers them at Ā=0. Optimal Ā = the smallest shift that collects every
+   reading into one dense bin (here [16,32) → Ā_opt ≈ 21.4). Overshooting just wastes
+   the shared prefix without buying reachability. */
+const SENSORS=[
+  {n:"VOLT-A", v:2.14,  u:"V"},
+  {n:"AMP-B",  v:4.09,  u:"mA"},
+  {n:"LUX-C",  v:7.81,  u:"lx"},
+  {n:"TMP-D",  v:8.54,  u:"°C"},
+  {n:"TMP-E",  v:9.12,  u:"°C"},
+  {n:"CUR-F",  v:14.7,  u:"mA"},
+  {n:"TMP-G",  v:17.3,  u:"°C"},
+  {n:"HUM-H",  v:10.6,  u:"%RH"},
+];
+const TRUE_V=SENSORS.map(s=>s.v), NAMES=SENSORS.map(s=>s.n);
 let seed=12345, noise=[];
 function rng(){ seed=(seed*1103515245+12345)%2147483648; return seed/2147483648; }
 function rollNoise(){ noise=TRUE_V.map(()=> (rng()+rng()+rng()-1.5)/1.5 ); render(); }
@@ -250,6 +268,16 @@ function bits(v){
   for(let i=10;i>=0;i--) b.push((m>>i)&1);
   return b;
 }
+/* decode a toy-float value back (what the wire actually carries after prefix
+   re-attachment + shared-prefix restoration). Needed so the unshift error below
+   is the real finite-precision penalty, not an exact-subtraction artifact. */
+function unbits(v){
+  const s=v<0?-1:1, a=Math.abs(v);
+  const e=Math.max(0,Math.min(15,Math.floor(Math.log2(Math.max(a,1e-9))+1)));
+  const lo=Math.pow(2,e-1);
+  const m=Math.round((a-lo)/lo*2047)&2047;          // same quantization as bits()
+  return s*lo*(1+m/2047);
+}
 function commonPrefix(lists){
   const n=lists[0].length; let g=0;
   for(let i=0;i<n;i++){ const b=lists[0][i];
@@ -257,6 +285,23 @@ function commonPrefix(lists){
   return g;
 }
 function reroll(){ seed=Math.floor(Math.random()*1e9); rollNoise(); }
+/* Optimal Ā per Theorem 6's recipe: the smallest shift that collects every noisy
+   reading into ONE dense exponent bin (here [32,64)). Ā_opt is the SMALLEST shift
+   into that bin — any larger Ā gains ≈1 shared bit per doubling but multiplies
+   the unshift float error, so the optimum sits at the bottom edge, not the top. */
+function setOptimalA(){
+  /* smallest Ā that puts every noisy reading into ONE dense bin (exponent ≥ 6):
+     scan upward; the first hit is the γ-optimal shift. Larger Ā adds ≈1 shared
+     bit per doubling but multiplies the unshift float error — the optimum is
+     the bottom edge, not the top of the range. */
+  for(let A=0;A<=2048;A++){
+    const bins=new Set(TRUE_V.map((v,i)=>
+        Math.floor(Math.log2(Math.max(Math.abs(v+noise[i]*(2.2/((+document.getElementById("eps").value)/10))+A),1e-9)))+1));
+    if(bins.size===1 && Math.max(...bins)>=6){
+      document.getElementById("asha").value=A; render(); return;
+    }
+  }
+}
 
 /* ================= text can't-demo ================= */
 function zealText(){ document.getElementById("textbox").textContent =
@@ -282,7 +327,7 @@ function render(){
   const sent=16-gamma, TR=sent/16;
 
   const trueMean=TRUE_V.reduce((a,b)=>a+b,0)/TRUE_V.length;
-  const estMean=shifted.map(v=>v-A).reduce((a,b)=>a+b,0)/shifted.length;
+  const estMean=shifted.map(v=>unbits(v)-A).reduce((a,b)=>a+b,0)/shifted.length;
   const err=Math.abs(estMean-trueMean)/trueMean*100;
 
   /* reachability: Theorem-7-style — dense single-bin → 100%;
@@ -298,17 +343,17 @@ function render(){
 
   document.getElementById("devices").innerHTML=TRUE_V.map((v,i)=>{
     const shared=bl[i].slice(0,gamma).join(""), tail=bl[i].slice(gamma).join("");
-    const back=shifted[i]-A;
-    return `<tr><td>${NAMES[i]}</td><td class="true">${v.toFixed(1)}°C</td>
+    const back=unbits(shifted[i])-A;                     // wire value is quantized
+    return `<tr><td>${NAMES[i]}</td><td class="true">${v.toFixed(1)}${SENSORS[i].u}</td>
       <td>${noisy[i].toFixed(2)}</td><td>${shifted[i].toFixed(1)}</td>
       <td style="color:#9aa8b8">${shared||"—"}</td><td class="sent">${tail}</td>
-      <td>${back.toFixed(2)}</td></tr>`;}).join("");
+      <td>${back.toFixed(3)}</td></tr>`;}).join("");
 
   /* bit strip for device 1 */
   document.getElementById("bitviz").innerHTML=
-    `<div class="bitrow"><span class="lbl">T-01 bits</span>`+
+    `<div class="bitrow"><span class="lbl">${NAMES[0]} bits</span>`+
     bl[0].map((b,i)=>`<span class="bit ${i<gamma?'shared':'sent'}">${b}</span>`).join("")+
-    `</div><div class="bitrow"><span class="lbl">T-02 bits</span>`+
+    `</div><div class="bitrow"><span class="lbl">${NAMES[1]} bits</span>`+
     bl[1].map((b,i)=>`<span class="bit ${i<gamma?'shared':'sent'}">${b}</span>`).join("")+
     `</div>`;
 
@@ -323,13 +368,17 @@ function render(){
     NAMES.map((n,i)=>"  "+n+"  "+bl[i].slice(gamma).join("")+"   → "+shifted[i].toFixed(2)).join("\n")+
     "\ncloud sees: "+NAMES.length+" tails + public prefix + public Ā="+A+" — no true readings, ever";
 
-  /* ---- the cloud's arithmetic ---- */
-  const recovered=shifted.map(v=>v-A);
+  /* ---- the cloud's arithmetic ----
+     The wire carries the QUANTIZED float tail, so the cloud sees unbits(x*), not x*.
+     recovered = unbits(x*) − Ā  → the −Ā subtraction inherits the float rounding,
+     and that rounding grows with ULP(Ā). This is the finite-precision cost that
+     makes "bigger Ā is not better" real. */
+  const recovered=shifted.map(v=>unbits(v)-A);
   document.getElementById("cloudmath").textContent =
-    "decode : prefix + tail → float value (still noisy, still shifted)\n"+
-    "unshift: value − Ā(="+A+") → "+NAMES.map((n,i)=>recovered[i].toFixed(2)).join("  ")+"\n"+
-    "average: mean("+NAMES.length+" values) = "+estMean.toFixed(3)+"°C\n"+
-    "truth  : "+trueMean.toFixed(3)+"°C   error "+err.toFixed(2)+"%   (noise cancels, shift cancels — unbiased)";
+    "decode : prefix + tail → quantized float (still noisy, still shifted)\n"+
+    "unshift: value − Ā(="+A+") → "+NAMES.map((n,i)=>recovered[i].toFixed(3)).join("  ")+"\n"+
+    "average: mean("+NAMES.length+" values) = "+estMean.toFixed(3)+"\n"+
+    "truth  : "+trueMean.toFixed(3)+"   error "+err.toFixed(2)+"%   (noise cancels, shift cancels — unbiased)";
   document.getElementById("reachtxt").innerHTML=
       reach===100 ? `<b class="good">float reachability 100%</b> — Ā=${A} lands all devices in one dense bin (2<sup>${e-1}</sup>–2<sup>${e}</sup>); every output can occur.`
     : !single     ? `<b class="bad">float reachability ≈${reach}%</b> — Ā=${A} straddles a bin boundary: devices split across ${bins.size} exponent bins → shared bits collapse and holes open.`
@@ -363,12 +412,21 @@ function render(){
        x=10 rules out x=13 → the support reveals the input (DP broken).`;
 
   /* cloud mean */
-  document.getElementById("st_true").textContent=trueMean.toFixed(2)+"°C";
-  document.getElementById("st_est").textContent=estMean.toFixed(2)+"°C";
+  document.getElementById("st_true").textContent=trueMean.toFixed(2);
+  document.getElementById("st_est").textContent=estMean.toFixed(2);
   const errEl=document.getElementById("st_err");
   errEl.textContent=err.toFixed(2)+"%";
   errEl.parentElement.classList.toggle("bad",err>5);
   errEl.parentElement.classList.toggle("good",err<=5);
+  /* unshift precision penalty: x*−Ā is re-rounded in finite precision.
+     A bigger Ā stores x* in a coarser float bin → the −Ā subtraction returns a
+     value further from the true noisy value. γ only grows ~1 bit per doubling of
+     Ā while this error grows with ULP(Ā) — that is why optimal Ā is the SMALLEST
+     shift into a dense single bin, not the largest (cf. §IV-B finite precision). */
+  const ushErr = recovered.map((r,i)=>Math.abs(r-noisy[i])).reduce((a,b)=>a+b,0)/NAMES.length;
+  document.getElementById("st_ush").textContent = "unshift float error "+ushErr.toFixed(3);
+  document.getElementById("st_ushw").classList.toggle("bad", ushErr>0.05);
+  document.getElementById("st_ushw").classList.toggle("good", ushErr<=0.05);
   document.getElementById("meantxt").innerHTML=
     `Server subtracts the public Ā=${A}: the <b>mean is unbiased</b> no matter where the
      slider sits (Theorem 1 — public shifts never distort the average). What Ā actually
