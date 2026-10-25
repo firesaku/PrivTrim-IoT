@@ -44,6 +44,15 @@
   .card.dropped .txt{text-decoration:line-through;color:#999;}
   .card.dropped::after{content:"dropped";position:absolute;right:8px;bottom:6px;font-size:10px;color:var(--red);}
   .card.kept-anchor{border:2.5px solid var(--navy);box-shadow:0 0 0 2px #dbe6f2;}
+  .card.deleted{opacity:.42;background:#f9eceb;border:1.5px dashed var(--red);}
+  .card.deleted .txt{text-decoration:line-through;color:#a05a56;}
+  .card.deleted::after{content:"\2715 unit deleted";position:absolute;right:8px;bottom:6px;
+      font-size:10px;color:var(--red);font-weight:bold;}
+  .card.merged{opacity:.55;background:#f2f4f7;border-style:dashed;}
+  .card.merged .txt{color:#8fa0b2;}
+  .card.merged::after{content:"\21E2 folded into the summary line";position:absolute;
+      right:8px;bottom:20px;font-size:10px;color:#8a97a8;}
+  .card.mhd{border:2px solid #6f9bb5;background:#eef4fa;}
   .size{position:absolute;bottom:7px;right:9px;font-size:10px;color:#aaa;font-family:Consolas,monospace;}
   /* ---------- controls ---------- */
   .row{margin:8px 0;font-size:13px;}
@@ -157,7 +166,13 @@
         <code>lex_drop_order</code>). The red <b>#</b> = its position in the <b>drop order</b> —
         smaller means dropped earlier. Protected units (<code>protect_of</code>: anchor unit /
         gold-bearing unit / manual pin) are always pushed to the tail and can never be dropped.
-        Switch the query on the right and watch the anchor / quadrant labels move.
+        Switch the query on the right and watch the anchor / quadrant labels move.<br>
+        In ★ mode the three <code>temp ward-3</code> records <b>fold into one summary
+        line</b> — that is what MERGE actually does (fold &ne; blank &ne; drop).
+        And note: <b>ALIAS alone never shortens the prompt</b> — token savings only
+        start when you tick <code>hard-budget pruning</code>.<br>
+        And in ★, DELETE means <b>removal</b>: a sensitive-but-irrelevant unit leaves C′
+        entirely — there is no <code>[REDACTED]</code> line for it.
       </div>
       <div class="sens-note">
         Why this data is sensitive: <b>real patient names are bound to medical devices</b>, and an
@@ -177,11 +192,13 @@
           <span class="armtag">arm: delete_budget</span>
           <span class="budget-tag has">has token budget</span></div>
         <div class="a" id="qb_ali" onclick="preset('alias')">ALIAS
-          <small>sensitive · relevant — value replaced, handle kept, anchors protected</small>
+          <small>sensitive · relevant — value replaced, handle kept · <b>renaming alone
+          saves 0 tokens</b> (tick pruning to compress)</small>
           <span class="armtag">arm: alias_budget_link</span>
           <span class="budget-tag has">has token budget</span></div>
-        <div class="g" id="qb_mrg" onclick="preset('cluster')">MERGE
-          <small>not sensitive · not relevant — redundant units dropped first</small>
+        <div class="g" id="qb_mrg" onclick="preset('merge')">MERGE
+          <small>not sensitive · not relevant — <b>redundant records fold into one
+          summary line</b> (didactic fold; pruning adds dropping on top)</small>
           <span class="armtag">arm: budget_cluster</span>
           <span class="budget-tag has">has token budget</span></div>
         <div class="g" id="qb_keep" onclick="preset('link')">KEEP
@@ -215,6 +232,7 @@
       <select id="mode" onchange="render()" style="display:none">
         <option value="raw">none</option>
         <option value="cluster">prune only</option>
+        <option value="merge">MERGE (fold)</option>
         <option value="delete">DELETE</option>
         <option value="alias">ALIAS</option>
         <option value="star">OUR RESULT</option>
@@ -232,6 +250,9 @@
         <small id="btok"></small></label>
         <input type="range" id="budget" min="10" max="100" value="100" oninput="render()">
       </div>
+      <div class="tgl"><input type="checkbox" id="prune" checked onchange="render()">
+        <label for="prune"><b>hard-budget pruning</b>: drop units (in drop order) until the
+        prompt fits B — <b>untick it and ALIAS saves zero tokens</b>; it only renames</label></div>
       <div class="tgl"><input type="checkbox" id="protect" checked onchange="render()">
         <label for="protect"><b>anchor protection</b>: units holding the queried entity / the
         gold answer go to the tail of the drop order (<code>protect_of</code>)</label></div>
@@ -264,8 +285,8 @@
 
     <div class="panel">
       <h3>Protocol — reproduce the reported numbers</h3>
-      <div class="mission" id="m1">① run <code>budget_cluster @ 0.5</code>: high-redundancy canary
-        records are dropped first</div>
+      <div class="mission" id="m1">① run <code>budget_cluster @ 0.5</code> (MERGE tile +
+        pruning on): high-redundancy records are dropped first</div>
       <div class="mission" id="m2">② turn anchor protection OFF: the anchor unit is dropped →
         referent broken (ent 0.00 · gold 1.00)</div>
       <div class="mission" id="m3">③ on Q1/Q2, turn <code>--alias-question</code> OFF: q–C′ surface
@@ -273,6 +294,10 @@
       <div class="mission" id="m4">④ <code>alias_budget_link @ 0.5</code> fully on: leak 0 · F1 ≈ 0.7450</div>
       <div class="mission" id="m5">⑤ switch the query to Q3: anchor protection follows a
         <b>non-sensitive</b> unit — protection is question-driven, not secret-driven</div>
+      <div class="mission" id="m6">⑥ in ★, find <code>[MERGE×3]</code> in C′: three
+        <code>temp ward-3</code> records became ONE summary line — fold ≠ drop ≠ redact</div>
+      <div class="mission" id="m7">⑦ click ALIAS with pruning unticked: values renamed,
+        <b>0 tokens saved</b> — savings only start when pruning is on</div>
       <div class="ladder" style="margin-top:8px">
         measured F1 ladder (longctx, n=112, Qwen2.5-7B):<br>
         0.7189 <span id="l_full">full</span> → 0.4688 <span id="l_clu">redundancy-only</span>
@@ -285,13 +310,17 @@
 <footer>
   Page mechanics map 1-to-1 onto the implementation: redundancy order =
   <code>lex_drop_order</code> (Jaccard); dropping = <code>drop_to_budget</code> two-phase trim
-  (coarse pre-trim on unit sums, then exact trim on the joined text); protection =
-  <code>protect_of</code> pushing anchor/gold units to the tail; aliasing = shared
-  <code>Aliaser</code> instance (protection keys rewritten with the same map = <code>ali_keys</code>,
-  otherwise protection silently fails); question rewrite = <code>--alias-question</code>;
-  over-budget failure = <code>check_budget</code> hard assertion. Reported numbers are the
-  long-context measurements: F1 0.7189 / 0.4688 / 0.7182 / 0.7450, counterexample signature
-  ent 0.00 · gold-in-context 1.00 · 39/40 UNKNOWN, question-side leak 40/112 → 0/112.
+  (coarse pre-trim on unit sums, then exact trim on the joined text) — the
+  <b>hard-budget pruning</b> checkbox gates this stage: ALIAS/DELETE rename or blank
+  values but save 0 tokens without it; MERGE in ★ folds redundant units into a summary
+  line (didactic stand-in for <code>lex_drop_order</code> clustering: fold ≠ delete ≠ drop);
+  protection = <code>protect_of</code> pushing anchor/gold units to the tail; aliasing =
+  shared <code>Aliaser</code> instance (protection keys rewritten with the same map =
+  <code>ali_keys</code>, otherwise protection silently fails); question rewrite =
+  <code>--alias-question</code>; over-budget failure = <code>check_budget</code> hard
+  assertion. Reported numbers are the long-context measurements: F1 0.7189 / 0.4688 /
+  0.7182 / 0.7450, counterexample signature ent 0.00 · gold-in-context 1.00 ·
+  39/40 UNKNOWN, question-side leak 40/112 → 0/112.
 </footer>
 
 <script>
@@ -321,6 +350,11 @@ const QS = [
  {q:"what setpoint is configured on the hvac unit?",
   ent:"hvac", gold:"22.0C", anchor:9},
 ];
+/* MERGE groups: non-sensitive, non-relevant near-duplicates that collapse into
+   ONE summary line in ★ mode — fold ≠ delete ≠ budget-drop. Key = group, value =
+   the single line that replaces them. */
+const MERGE_GROUPS = [[4,5,6]];
+const MERGED = {"4,5,6":"temp ward-3 21.4–21.5C · 07:30–08:00 (3 records merged into 1)"};
 const pins = new Set();
 
 function rewrite(t, mode){
@@ -350,17 +384,20 @@ function quadrant(isRel, sens){
 
 function preset(p){
   const m=document.getElementById("mode"), pr=document.getElementById("protect"),
-        qa=document.getElementById("qalias"), b=document.getElementById("budget");
+        qa=document.getElementById("qalias"), b=document.getElementById("budget"),
+        pz=document.getElementById("prune");
   /* distinct budgets & behaviour per quadrant:
      FULL none · MERGE 0.40 · KEEP 0.60 · DELETE 0.75 ·
-     ALIAS 0.50 (context only — question NOT rewritten) ·
+     ALIAS: pruning OFF by default — renaming alone saves 0 tokens
+     (tick hard-budget pruning → alias_budget_link, question NOT rewritten) ·
      OUR RESULT 0.50 (alias + protect + --alias-question, the full pipeline) */
-  if(p==="raw"){m.value="raw"; pr.checked=false; qa.checked=false; b.value=100;}
-  if(p==="cluster"){m.value="cluster"; pr.checked=false; b.value=40;}
-  if(p==="link"){m.value="cluster"; pr.checked=true; b.value=60;}
-  if(p==="delete"){m.value="delete"; pr.checked=true; qa.checked=false; b.value=75;}
-  if(p==="alias"){m.value="alias"; pr.checked=true; qa.checked=false; b.value=50;}
-  if(p==="star"){m.value="star"; pr.checked=true; qa.checked=true; b.value=50;}
+  if(p==="raw"){m.value="raw"; pr.checked=false; qa.checked=false; pz.checked=false; b.value=100;}
+  if(p==="cluster"){m.value="cluster"; pr.checked=false; pz.checked=true; b.value=40;}
+  if(p==="merge"){m.value="merge"; pr.checked=false; pz.checked=false; b.value=40;}
+  if(p==="link"){m.value="cluster"; pr.checked=true; pz.checked=true; b.value=60;}
+  if(p==="delete"){m.value="delete"; pr.checked=true; qa.checked=false; pz.checked=true; b.value=75;}
+  if(p==="alias"){m.value="alias"; pr.checked=true; qa.checked=false; pz.checked=false; b.value=50;}
+  if(p==="star"){m.value="star"; pr.checked=true; qa.checked=true; pz.checked=true; b.value=50;}
   render();
 }
 function togglePin(i){ pins.has(i)?pins.delete(i):pins.add(i); render(); }
@@ -376,51 +413,101 @@ function ourResult(){
 function render(){
   const mode=document.getElementById("mode").value;
   const star=(mode==="star");
-  const protect=document.getElementById("protect").checked && mode!=="raw";
+  const prune=document.getElementById("prune").checked && mode!=="raw";
+  const protect=document.getElementById("protect").checked && mode!=="raw" && prune;
   const qalias=document.getElementById("qalias").checked;
   const ali=(mode==="alias"||star);                       // rewrite context?
   const pct=+document.getElementById("budget").value;
   const Q = QS[+document.getElementById("qsel").value];
+  const qHasCanary = ALIAS[Q.ent]!==undefined;
   document.getElementById("qalias").disabled = !ali;
-  document.getElementById("protect").disabled = (mode==="raw");
-  document.getElementById("budget").disabled = (mode==="raw");
+  document.getElementById("protect").disabled = (mode==="raw"||!prune);
+  document.getElementById("budget").disabled = (mode==="raw"||!prune);
+  document.getElementById("prune").disabled = (mode==="raw");
 
   /* per-arm summary banner — makes the quadrant differences explicit */
   const armres={
     raw:"<b>full</b> — no token budget; every unit crosses the wire verbatim · "+
         "leak = 4 context + 1 question · F1 ≈ 0.7189 (baseline)",
-    cluster:"<b>budget_cluster</b> @ 0.40 — hard cap drops the most redundant units first; "+
-        "no protection → the anchor can fall with them · reported F1 ≈ 0.4688 @0.5",
-    link:"<b>budget_cluster_link</b> @ 0.60 — same hard cap, but protect_of keeps the "+
-        "anchor/gold units at the tail of the drop order · reported F1 ≈ 0.7182 @0.5 (+0.2494)",
-    delete:"<b>delete_budget</b> @ 0.75 — sensitive values blanked to [REDACTED] then trimmed "+
-        "to the cap; referent still broken → 39/40 UNKNOWN · F1 = 0.0000",
-    alias:"<b>alias_budget_link</b> @ 0.50 — context aliased, but the <b>question still says "+
-        "the real name</b> → surface mismatch + question-side leak · F1 ≈ 0.5397",
-    star:"<b>alias_budget_link @ 0.5 — OUR RESULT:</b> alias + protect + "+
+    cluster:(prune
+      ? "<b>budget_cluster</b> @ 0.40 — hard cap drops the most redundant units first; "+
+        "no protection → the anchor can fall with them · reported F1 ≈ 0.4688 @0.5"
+      : "<b>pruning off</b> — nothing is dropped: all units cross verbatim; budget slider inert"),
+    link:(prune
+      ? "<b>budget_cluster_link</b> @ 0.60 — same hard cap, but protect_of keeps the "+
+        "anchor/gold units at the tail of the drop order · reported F1 ≈ 0.7182 @0.5 (+0.2494)"
+      : "<b>pruning off</b> — protection has nothing to fight: the drop stage is inert"),
+    delete:(prune
+      ? "<b>delete_budget</b> @ 0.75 — sensitive-but-irrelevant units <b>removed</b>; the "+
+        "needed value is blanked to [REDACTED]; referent broken → 39/40 UNKNOWN · F1 = 0.0000"
+      : "<b>delete</b> (no pruning) — unneeded sensitive units removed, the needed value "+
+        "blanked; referent still broken"),
+    merge:(prune
+      ? "<b>merge_fold + budget_cluster</b> — records fold first, then the cap drops what "+
+        "is left · F1 ≈ 0.4688 @0.5 (budget_cluster measured)"
+      : "<b>merge_fold</b> — the three temp ward-3 records collapse into ONE summary line "+
+        "(3 units → 1). <b>Folding saves tokens; nothing is dropped, nothing sensitive "+
+        "is touched</b> — that is MERGE, not DELETE, not pruning"),
+    alias:(prune
+      ? "<b>alias_budget_link</b> @ 0.50 — context aliased, but the <b>question still says "+
+        "the real name</b> → surface mismatch + question-side leak · F1 ≈ 0.5397"
+      : "<b>alias</b> (full length) — values renamed, <b>nothing dropped: 0 tokens saved.</b> "+
+        "Compression only starts when you tick hard-budget pruning"+
+        (qHasCanary&&!qalias?" · and the question still leaks the real name":"")),
+    star:(prune
+      ? "<b>alias_budget_link @ 0.5 — OUR RESULT:</b> alias + protect + "+
         "<code>--alias-question</code> all on · <b>0 leaks · chain intact · F1 ≈ 0.7450 (beats full)</b>"
-  }[mode];
+      : "<b>quadrant routing, pruning off:</b> alias / delete / keep applied, and the merge "+
+        "group still folds 3 lines into 1 — <b>MERGE compresses by folding; pruning compresses "+
+        "by dropping; ALIAS compresses nothing</b>")
+  }[mode==="cluster"&&protect?"link":mode];
   document.getElementById("armres").innerHTML = armres || "";
 
   /* highlight the active quadrant tile */
   const tid = mode==="raw" ? "qb_full"
     : mode==="cluster" ? (protect?"qb_keep":"qb_mrg")
+    : mode==="merge" ? "qb_mrg"
     : mode==="delete" ? "qb_del"
     : star ? "qb_star" : "qb_ali";
   ["qb_del","qb_ali","qb_mrg","qb_keep","qb_full","qb_star"].forEach(id=>document.getElementById(id).classList.remove("now"));
   document.getElementById(tid).classList.add("now");
 
   /* ★ mode = the four quadrants run AT ONCE, each on its own units:
-     sens+rel → ALIAS · sens+!rel → DELETE · !sens+rel → KEEP · !sens+!rel → MERGE(budget-dropped) */
+     sens+rel → ALIAS · sens+!rel → DELETE · !sens+rel → KEEP · !sens+!rel → MERGE(fold)
+     DELETE quadrant = REMOVAL: a sensitive-but-irrelevant unit leaves C′ entirely —
+     no [REDACTED] line. The standalone DELETE arm differs only for the sensitive-but-
+     NEEDED unit: its value is blanked (that is exactly what breaks the referent). */
+  const deleted = new Set();
   const texts = UNITS.map((u,i)=>{
+    const isRel = (i===Q.anchor) || u.t.includes(Q.gold);
     if(star){
-      const isRel = (i===Q.anchor) || u.t.includes(Q.gold);
       if(u.sens && isRel) return rewrite(u.t,"alias");
-      if(u.sens)          return rewrite(u.t,"delete");
+      if(u.sens){ deleted.add(i); return u.t; }             // unit removed entirely
       return u.t;
     }
-    return rewrite(u.t, ali?"alias":(mode==="delete"?"delete":"raw"));
+    if(mode==="delete"){
+      if(u.sens && !isRel){ deleted.add(i); return u.t; }   // DELETE: remove whole unit
+      if(u.sens) return rewrite(u.t,"delete");              // needed value → [REDACTED] → referent breaks
+      return u.t;
+    }
+    return rewrite(u.t, ali?"alias":"raw");
   });
+  const fullTok = texts.map(tok).reduce((a,b)=>a+b,0) + texts.length-1;   // pre-merge length
+
+  /* MERGE fold (★ and the merge arm): an eligible merge group collapses into ONE
+     summary line. Members leave the prompt as a folded summary — NOT blanked like
+     DELETE, NOT dropped like budget pruning. The head unit carries the summary text. */
+  const consumed = new Set(), mheads = new Set(), mheadN = {};
+  if(star || mode==="merge"){
+    for(const g of MERGE_GROUPS){
+      const ok = g.every(i=> !UNITS[i].sens &&
+          !(i===Q.anchor || UNITS[i].t.includes(Q.gold)));
+      if(!ok) continue;
+      g.slice(1).forEach(i=>consumed.add(i));
+      mheads.add(g[0]); mheadN[g[0]] = g.length;
+      texts[g[0]] = MERGED[g.join(",")] || ("merged "+g.length+" records");
+    }
+  }
   const entKey = (ali && ALIAS[Q.ent]) ? ALIAS[Q.ent] : Q.ent;
 
   const goldFlags = texts.map(t=>t.includes(Q.gold));
@@ -431,17 +518,20 @@ function render(){
   const anchorProtected = protect && texts[Q.anchor].includes(entKey);   // ali_keys pitfall
 
   const red = redundancy(texts);
-  const order = dropOrder(red, prot);
+  /* drop order: redundant first; protected (anchors/gold/pins) AND merge heads
+     (folded summaries — the merge stage's own output) at the tail. DELETEd and
+     folded-away members never appear in the order at all. */
+  const order = dropOrder(red, prot.map((p,i)=>p||mheads.has(i)))
+      .filter(i=>!consumed.has(i) && !deleted.has(i));
   const ordPos={}; order.forEach((idx,p)=>ordPos[idx]=p+1);
 
   const utok = texts.map(tok);
-  const fullTok = utok.reduce((a,b)=>a+b,0) + texts.length-1;
   const B = mode==="raw" ? fullTok : Math.max(8, Math.round(pct/100*fullTok));
-  let kept = new Set(UNITS.map((_,i)=>i));
-  if(mode!=="raw"){
-    let sum = utok.reduce((a,b)=>a+b,0);
+  let kept = new Set(UNITS.map((_,i)=>i).filter(i=>!consumed.has(i) && !deleted.has(i)));
+  const joined = ()=> [...kept].reduce((a,i)=>a+utok[i],0)+Math.max(0,kept.size-1);
+  if(prune){                                   // prune unchecked → NOTHING dropped
+    let sum = [...kept].reduce((a,i)=>a+utok[i],0);
     for(const i of order){ if(sum<=B)break; kept.delete(i); sum-=utok[i]; }
-    const joined = ()=> [...kept].reduce((a,i)=>a+utok[i],0)+Math.max(0,kept.size-1);
     let cur=0;
     while(kept.size>1 && joined()>B){
       while(cur<order.length && !kept.has(order[cur])) cur++;
@@ -449,10 +539,8 @@ function render(){
       kept.delete(order[cur]); cur++;
     }
   }
-  const sentTok = mode==="raw" ? fullTok
-    : [...kept].reduce((a,i)=>a+utok[i],0)+Math.max(0,kept.size-1);
+  const sentTok = joined();
 
-  const qHasCanary = ALIAS[Q.ent]!==undefined;
   const question = (ali&&qalias&&qHasCanary) ? Q.q.replace(Q.ent, ALIAS[Q.ent]) : Q.q;
   const qEnt = (ali&&qalias&&qHasCanary) ? ALIAS[Q.ent] : Q.ent;
   const promptText = "q′ = "+question+"\n\nC′ =\n"+
@@ -468,11 +556,16 @@ function render(){
 
   const armName =
     mode==="raw" ? "full" :
+    mode==="merge" ? (prune?"merge_fold + budget_cluster":"merge_fold (fold only)") :
+    !prune && mode==="cluster" ? "cluster (prune off)" :
+    !prune && mode==="delete" ? "delete (full length)" :
+    !prune && star ? "alias_budget_link (prune off)" :
+    !prune ? "alias (full length)" :
     mode==="cluster" ? (protect?"budget_cluster_link":"budget_cluster") :
     mode==="delete" ? "delete_budget" :
     star ? "alias_budget_link  ★ OUR RESULT" :
     (protect?"alias_budget_link":"alias_budget") + (qalias||!qHasCanary?"":"  (−alias-question)");
-  const armPct = mode==="raw"?"":" @ "+(pct/100).toFixed(2);
+  const armPct = (mode==="raw"||!prune)?"":" @ "+(pct/100).toFixed(2);
 
   let cls,msg,sub;
   if(!goldIn){cls="v-bad";msg="gold unit dropped → UNKNOWN";
@@ -480,8 +573,20 @@ function render(){
   else if(!linkAlive){cls="v-bad";msg="answer survives, the referent does not → UNKNOWN";
     sub="<code>ent 0.00 · gold-in-context 1.00 · 39/40 UNKNOWN → F1 0.0000</code><br>"+
         "counterexample signature: high-redundancy records dropped first, entity→attribute link broken";}
-  else if(qMismatch){cls="v-warn";msg="q–C′ surface mismatch (question keeps the real name)";
+  else if(qMismatch && prune){cls="v-warn";msg="q–C′ surface mismatch (question keeps the real name)";
     sub="≈ F1 0.5397 · question-side leak +1 — measured run without <code>--alias-question</code>";}
+  else if(!prune && mode==="merge"){cls="v-ok";msg="MERGE fold: 3 records → 1 summary line";
+    sub="<b>"+consumed.size+" units folded into "+mheads.size+" line — folding itself "+
+        "saves "+(fullTok-sentTok)+" tok</b>; nothing dropped, sensitive units untouched · "+
+        "leak "+leak+" unchanged — MERGE compresses, it does not hide secrets";}
+  else if(!prune && mode!=="raw"){cls=(star&&leak===0?"v-ok":"v-warn");
+    msg="no pruning stage → nothing dropped, 0 pruning savings";
+    sub=(star?("<b>merge fold still compresses</b>: "+consumed.size+" units folded into "+
+               (mheads.size===1?"1 summary line":mheads.size+" summary lines")+" · ")
+             :("<b>"+(ali?"ALIAS renames values — it never shortens the prompt":
+                       "DELETE blanks values — it never shortens the prompt")+"</b> · "))+
+        "realised "+sentTok+" tok · leak "+leak+
+        (leak?" — tick pruning AND <code>--alias-question</code> to fix":"");}
   else{cls="v-ok";msg="entity–attribute link intact → answerable";
     sub = star ? "≈ <b>F1 0.7450</b> · leak 0/112 — <code>alias_budget_link@0.5</code> full pipeline (beats full)"
         : ali ? "≈ <b>F1 0.7450</b> · leak 0/112 — <code>alias_budget_link@0.5</code> (beats full)"
@@ -492,8 +597,8 @@ function render(){
   /* ---------- render ---------- */
   document.getElementById("qtext").textContent=question;
   document.getElementById("qent").textContent=qEnt;
-  document.getElementById("bpct").textContent = mode==="raw"?"—":pct+"%";
-  document.getElementById("btok").textContent = "B = "+B+" tok";
+  document.getElementById("bpct").textContent = (mode==="raw"||!prune)?"off":pct+"%";
+  document.getElementById("btok").textContent = prune ? "B = "+B+" tok" : "pruning off";
   document.getElementById("cards").innerHTML = UNITS.map((u,i)=>{
     const t=texts[i];
     let html=t.replace(Q.gold,'<mark>'+Q.gold+'</mark>');
@@ -502,16 +607,19 @@ function render(){
         html=html.split(ALIAS[k]).join('<span class="ali">'+ALIAS[k]+'</span>');
     html=html.split('[REDACTED]').join('<span class="sec">[REDACTED]</span>');
     const isRel = (i===Q.anchor) || texts[i].includes(Q.gold);
-    const [qc,qn]=quadrant(isRel,u.sens);
+    const merged = consumed.has(i), mhd = mheads.has(i), rmvd = deleted.has(i);
+    const [qc,qn] = mhd ? ["q-mrg","MERGE ×"+mheadN[i]] : quadrant(isRel,u.sens);
     const dropped=!kept.has(i);
     const b=[`<span class="badge ${qc}">${qn}</span>`];
+    if(rmvd)b.push('<span class="badge q-del">✕ unit deleted</span>');
+    if(merged)b.push('<span class="badge q-mrg">⇢ folded, not dropped</span>');
     if(i===Q.anchor)b.push('<span class="badge b-anchor">anchor unit</span>');
     if(texts[i].includes(Q.gold))b.push('<span class="badge b-gold">gold</span>');
     if(prot[i])b.push('<span class="badge b-prot">📌 protected</span>');
     if(i===Q.anchor&&protect&&!anchorProtected)b.push('<span class="badge b-fail">protection silently off</span>');
     if(pins.has(i))b.push('<span class="badge b-pin">manual📌</span>');
-    return `<div class="card ${dropped?'dropped':''} ${(!dropped&&i===Q.anchor&&protect)?'kept-anchor':''}" onclick="togglePin(${i})" title="click to pin/unpin">
-      <div class="ord">drop #<b>${ordPos[i]}</b></div>
+    return `<div class="card ${dropped?'dropped':''} ${merged?'merged':''} ${mhd?'mhd':''} ${rmvd?'deleted':''} ${(!dropped&&!merged&&!rmvd&&i===Q.anchor&&protect)?'kept-anchor':''}" onclick="togglePin(${i})" title="click to pin/unpin">
+      <div class="ord">${rmvd?'✕ deleted':(merged?'≡ merged':'drop #<b>'+ordPos[i]+'</b>')}</div>
       <div class="txt">${html}</div>
       <div class="redbar"><i style="width:${Math.round(red[i]*100)}%"></i></div>
       <div class="badges">${b.join('')}</div>
@@ -532,6 +640,7 @@ function render(){
       : `q′ = ${esc(question)}`;
   const body=[...kept].sort((a,b)=>a-b).map(i=>{
     const line=esc(texts[i]);
+    if(mheads.has(i)) return `<span class="mk-mrg">[MERGE×${mheadN[i]}]</span> `+line;
     if(!star) return line;
     const isRel=(i===Q.anchor)||UNITS[i].t.includes(Q.gold);
     const cls = UNITS[i].sens ? (isRel?["mk-ali","ALIAS"]:["mk-del","DELETE"])
@@ -539,23 +648,27 @@ function render(){
     return `<span class="${cls[0]}">[${cls[1]}]</span> `+line;
   }).join("\n");
   document.getElementById("prompt").innerHTML = qlabel+"\n\nC′ =\n"+body;
-  const counts = star?{ali:0,del:0,keep:0,mrg:[...kept].length-0}:{};
+  const counts = star?{ali:0,del:0,keep:0,mrg:0,drp:0}:{};
   if(star){ [...kept].forEach(i=>{
+      if(mheads.has(i)){counts.mrg++; return;}
       const isRel=(i===Q.anchor)||UNITS[i].t.includes(Q.gold);
-      if(UNITS[i].sens&&isRel)counts.ali++; else if(UNITS[i].sens)counts.del++; else counts.keep++; });
-    counts.mrg=UNITS.length-kept.size; }
+      if(UNITS[i].sens&&isRel)counts.ali++; else counts.keep++; });
+    counts.del=deleted.size;
+    counts.drp=[...order].filter(i=>!kept.has(i)).length; }
   document.getElementById("pchips").innerHTML =
       `<span class="${ali?'ok':'bad'}">ctx ${ali?'rewritten':'verbatim'}</span>`+
       `<span class="${(!ali||!qHasCanary)?'ok':(qalias?'ok':'bad')}">`+
           `${!qHasCanary?'q non-sensitive':(ali&&qalias?'q rewritten ✓':'q not rewritten ✗')}</span>`+
-      `<span class="${mode==='raw'?'bad':'ok'}">budget ${mode==='raw'?'none':'≤ '+B}</span>`+
+      `<span class="${(mode==='raw'||!prune)?'bad':'ok'}">`+
+          `budget ${mode==='raw'?'none':(prune?'≤ '+B:'off — nothing dropped')}</span>`+
       `<span class="${protect?'ok':'bad'}">protection ${protect?'on':'off'}</span>`+
       `<span class="${leak===0?'ok':'bad'}">leak ${leak}</span>`+
       (star?`<span class="ok" style="border-color:var(--navy);color:var(--navy);background:#e2ecf6">`+
-        `ops in C′: ${counts.ali}×ALIAS + ${counts.del}×DELETE + ${counts.keep}×KEEP + ${counts.mrg}×MERGE(dropped)</span>`:"");
+        `ops in C′: ${counts.ali}×ALIAS + ${counts.del}×DELETE + ${counts.keep}×KEEP + `+
+        `${counts.mrg}×MERGE(folded ${consumed.size}→${mheads.size}) + ${counts.drp}×prune-dropped</span>`:"");
   document.getElementById("st_tok").textContent=sentTok;
-  document.getElementById("st_b").textContent=B;
-  document.getElementById("st_tok").parentElement.classList.toggle("over",sentTok>B);
+  document.getElementById("st_b").textContent=prune?B:"off";
+  document.getElementById("st_tok").parentElement.classList.toggle("over",prune&&sentTok>B);
   document.getElementById("st_leak").textContent=leak;
   document.getElementById("st_anchor").textContent=kept.has(Q.anchor)?"kept":"dropped";
   document.getElementById("st_anchor").style.color=kept.has(Q.anchor)?"#1e7a3c":"#c0504d";
@@ -569,11 +682,13 @@ function render(){
   document.getElementById(lid).classList.add("now");
 
   const done=(id,c)=>document.getElementById(id).classList.toggle("done",!!c);
-  done("m1", mode==="cluster" && pct<=60 && sentTok<=B);
+  done("m1", (mode==="cluster"||mode==="merge") && prune && pct<=60 && sentTok<=B);
   done("m2", !protect && !kept.has(Q.anchor) && !linkAlive && mode!=="raw");
   done("m3", ali && !qalias && qHasCanary);
-  done("m4", star && protect && kept.has(Q.anchor) && pct<=60 && leak===0);
+  done("m4", star && prune && protect && kept.has(Q.anchor) && pct<=60 && leak===0);
   done("m5", Q.anchor===9 && protect && kept.has(Q.anchor));
+  done("m6", star && consumed.size>0 && mheads.has(4) && kept.has(4));
+  done("m7", mode==="alias" && !prune && sentTok>=fullTok-1);
 }
 render();
 </script>
