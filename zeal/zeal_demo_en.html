@@ -96,8 +96,8 @@
         Pipeline per device: <b>true reading → +noise → +public shift Ā → float bits →
         drop shared prefix → send tail</b>. The cloud adds the prefix back, subtracts Ā,
         averages — <b>noise stays, secrets never leave</b>. ε controls privacy strength;
-        Ā=0 shows what breaks without the shift — watch the <b>bead-vs-shelf</b> panel on
-        the right: holes appear, and each input leaves a <b>different</b> hole map.
+        Ā=0 shows what breaks without the shift — watch the <b>reachability</b> panel on
+        the right: holes appear, and the reachable set becomes <b>input-dependent</b>.
       </div>
       <div class="row">
         <label>privacy budget ε (smaller = stronger): <b class="bigno" id="epsv">1.0</b>
@@ -173,11 +173,11 @@
       <div class="reach" id="reachtxt"></div>
       <div class="comb" id="comb"></div>
 
-      <h3 style="font-size:12px;margin-top:10px">How Ā fixes the holes <small>— bead step vs. shelf spacing</small></h3>
+      <h3 style="font-size:12px;margin-top:10px">How Ā restores reachability <small>— output stride Δ vs. float spacing ULP</small></h3>
       <div class="reach" style="font-size:11.5px">
-        Two possible inputs <b style="color:var(--navy)">x=10</b> and <b style="color:#c0504d">x=13</b>,
-        one landing shelf per row. A cell = one reachable float; a hole = a float no bead
-        can land on.
+        Two neighbouring inputs <b style="color:var(--navy)">x=10</b> and <b style="color:#c0504d">x=13</b>,
+        one output line per row. A cell = a representable output; a hole = a float the
+        mechanism can never produce for that input.
       </div>
       <div class="comb" id="combA" style="margin-top:5px"></div>
       <div class="comb" id="combB"></div>
@@ -226,10 +226,10 @@
   added on-device, subtracted by the server (Theorem 1 unbiased mean); shared prefix =
   identical top float bits, dropped before transmission — wire ratio (64−γ)/64 (Theorem 6);
   reachability = fraction of float values that can occur — 7–30% without Ā, 100% with it
-  (Theorem 7); the two combs below are a toy version of the paper's Fig. 7 logic: the bead
-  step Δ vs shelf spacing ULP decides whether floats get skipped — and skipped differently
-  per input — which is exactly the leak Ā closes; γ here uses a 16-bit toy word for
-  readability. CAN'T column paraphrases §Limits of Taurone et al. 2025.
+  (Theorem 7); the two combs below are a toy version of the paper's Fig. 7 logic: when the
+  output stride Δ exceeds the float spacing ULP, representable outputs are skipped — and
+  the skipped set is input-dependent — which is exactly the leak Ā closes; γ here uses a
+  16-bit toy word for readability. CAN'T column paraphrases §Limits of Taurone et al. 2025.
 </footer>
 
 <script>
@@ -333,7 +333,7 @@ function render(){
   document.getElementById("reachtxt").innerHTML=
       reach===100 ? `<b class="good">float reachability 100%</b> — Ā=${A} lands all devices in one dense bin (2<sup>${e-1}</sup>–2<sup>${e}</sup>); every output can occur.`
     : !single     ? `<b class="bad">float reachability ≈${reach}%</b> — Ā=${A} straddles a bin boundary: devices split across ${bins.size} exponent bins → shared bits collapse and holes open.`
-    : A===0       ? `<b class="bad">float reachability ≈${reach}%</b> — no shift: values sit in a sparse float region, missing values reveal the device.`
+    : A===0       ? `<b class="bad">float reachability ≈${reach}%</b> — no shift: outputs sit in a sparse float region; the reachable set is input-dependent.`
                   : `<b class="bad">float reachability ≈${reach}%</b> — Ā=${A} lands in a sparser bin; coverage incomplete.`;
   const N=48, holes=new Set();
   if(reach<100){ const keep=Math.max(1,Math.round(N*reach/100));
@@ -341,10 +341,10 @@ function render(){
   document.getElementById("comb").innerHTML=
     Array.from({length:N},(_,i)=>`<div class="cell ${holes.has(i)?'hole':''}"></div>`).join("");
 
-  /* --- why Ā fixes it: bead step Δ vs shelf spacing ULP.
-     Dense Ā bin → ULP >> Δ → every shelf cell is hit (all blue/red).
-     Ā=0 / straddled bins → Δ > ULP → cells get skipped, and the skipped
-     pattern differs per input → the output itself leaks which input it was. */
+  /* --- why Ā fixes it: output stride Δ vs. float spacing ULP.
+     A dense Ā bin → ULP >> Δ → every representable output is reachable.
+     Ā=0 / straddled bins → Δ > ULP → outputs are skipped, and the skipped
+     set differs per input → the output distribution is input-dependent = leak. */
   const step = reach===100 ? 0.2 : 2.6;                 // Δ in cell units
   const hitA = i => (((i-0.3)%step+step)%step) < 1.0;   // input x=10, phase 0.3
   const hitB = i => (((i-1.1)%step+step)%step) < 1.0;   // input x=13, phase 1.1
@@ -356,11 +356,11 @@ function render(){
     Array.from({length:N},(_,i)=>`<div class="cell ${hitB(i)?'':'hole'}"></div>`).join("");
   const same = Array.from({length:N},(_,i)=>hitA(i)===hitB(i)).every(Boolean);
   document.getElementById("leakmsg").innerHTML = same
-    ? `<b class="good">hole maps identical</b> — 4&nbsp;mm beads on an 11&nbsp;cm shelf: every
-       cell hit for BOTH inputs, output reveals nothing about which x produced it.`
-    : `<b class="bad">hole maps differ</b> — 4&nbsp;mm beads on a 2&nbsp;mm shelf: cells 4&nbsp;mm
-       apart get skipped, and WHICH cells are empty depends on the input. Seeing a value
-       in a cell only x=10 can reach rules out x=13 → the output leaks the input.`;
+    ? `<b class="good">reachability sets identical</b> — Δ ≪ ULP: every output is
+       reachable for both inputs, so the mechanism's support is input-independent.`
+    : `<b class="bad">reachability sets differ</b> — Δ &gt; ULP: representable outputs are
+       skipped, and the skipped set depends on the input. An output reachable only under
+       x=10 rules out x=13 → the support reveals the input (DP broken).`;
 
   /* cloud mean */
   document.getElementById("st_true").textContent=trueMean.toFixed(2)+"°C";
