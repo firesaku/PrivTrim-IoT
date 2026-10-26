@@ -115,7 +115,7 @@
         <div class="ascale"><span style="left:0">2⁰=1</span><span style="left:1.6%">2³=8</span><span style="left:12.5%">2⁶=64</span><span style="right:0">2⁹=512</span></div>
       </div>
       <button class="act" onclick="reroll()">↻ re-roll noise</button>
-      <button class="act" style="border-color:#1e7a3c;color:#1e7a3c" onclick="setOptimalA()">★ optimal Ā (Theorem-6)</button>
+      <button class="act" style="border-color:#1e7a3c;color:#1e7a3c" onclick="setOptimal()">★ optimal ε+Ā (Theorem 6)</button>
       <button class="act" onclick="setGiant(100)">Ā = 2¹⁰⁰</button>
       <button class="act" onclick="setGiant(1000)">Ā = 2¹⁰⁰⁰</button>
       <button class="act" onclick="setGiant(10000)">Ā = 2¹⁰⁰⁰⁰</button>
@@ -224,7 +224,7 @@
     <div class="panel">
       <h3>Protocol — reproduce the paper's points</h3>
       <div class="mission" id="m1" style="font-size:12.5px;margin:4px 0;padding:6px 8px;border-radius:4px;background:#f4f6f9;color:#777;line-height:1.55;">① slide ε: watch e<sup>ε</sup> and noise scale — smaller ε, blurrier data</div>
-      <div class="mission" id="m2" style="font-size:12.5px;margin:4px 0;padding:6px 8px;border-radius:4px;background:#f4f6f9;color:#777;line-height:1.55;">② drag Ā to 0, or across a bin boundary: shared prefix collapses (γ ↓, TR ↑) and reachability holes open — this is Theorem 7's Ā condition. Then press <b>★ optimal Ā</b>: the smallest shift, not the largest, is what wins</div>
+      <div class="mission" id="m2" style="font-size:12.5px;margin:4px 0;padding:6px 8px;border-radius:4px;background:#f4f6f9;color:#777;line-height:1.55;">② drag Ā to 0, or across a bin boundary: shared prefix collapses (γ ↓, TR ↑) and reachability holes open — this is Theorem 7's Ā condition. Then press <b>★ optimal ε+Ā</b>: strongest ε + smallest single-bin shift wins</div>
       <div class="mission" id="m3" style="font-size:12.5px;margin:4px 0;padding:6px 8px;border-radius:4px;background:#f4f6f9;color:#777;line-height:1.55;">③ press ↻ re-roll: per-device recovered values move, mean stays ≈ true — unbiasedness in action</div>
     </div>
   </div>
@@ -302,15 +302,17 @@ function reroll(){ seed=Math.floor(Math.random()*1e9); rollNoise(); }
    reading into ONE dense exponent bin (here [32,64)). Ā_opt is the SMALLEST shift
    into that bin — any larger Ā gains ≈1 shared bit per doubling but multiplies
    the unshift float error, so the optimum sits at the bottom edge, not the top. */
-function setOptimalA(){
-  /* smallest Ā that puts every noisy reading into ONE dense bin (exponent ≥ 6):
-     scan upward; the first hit is the γ-optimal shift. Larger Ā adds ≈1 shared
-     bit per doubling but multiplies the unshift float error — the optimum is
-     the bottom edge, not the top of the range. */
+/* Optimal configuration for THIS fleet: ε is cheapest at the privacy end —
+   the fleet mean is unbiased at ANY ε (Theorem 1), so the strongest privacy the
+   slider offers costs nothing on the statistic. Then Ā = the smallest shift that
+   puts every noisy reading into ONE dense bin (first hit = γ-max wiring with the
+   smallest unshift penalty). Both knobs set together, deterministically. */
+function setOptimal(){
   giantE=0;
+  document.getElementById("eps").value=10;                    // ε=1.0: strongest privacy, mean still unbiased
   for(let A=0;A<=512;A++){
     const bins=new Set(TRUE_V.map((v,i)=>
-        Math.floor(Math.log2(Math.max(Math.abs(v+noise[i]*(2.2/((+document.getElementById("eps").value)/10))+A),1e-9)))+1));
+        Math.floor(Math.log2(Math.max(Math.abs(v+noise[i]*(2.2/1.0)+A),1e-9)))+1));
     if(bins.size===1 && Math.max(...bins)>=6){
       document.getElementById("asha").value=A; render(); return;
     }
