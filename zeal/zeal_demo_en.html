@@ -91,12 +91,12 @@
   <!-- ================= left: the mechanism ================= -->
   <div class="left">
     <div class="panel">
-      <h3>CAN ✓ — scalar fleet mean: 8 thermometers spanning 2–32 °C bins → one untrusted cloud</h3>
+      <h3>CAN ✓ — scalar fleet mean: 10 thermometers spanning 2–64 °C bins → one untrusted cloud</h3>
       <div class="hint" style="margin-bottom:8px">
         Pipeline per device: <b>true reading → +noise → +public shift Ā → float bits →
         drop shared prefix → send tail</b>. The cloud adds the prefix back, subtracts Ā,
         averages — <b>noise stays, secrets never leave</b>. ε controls privacy strength.
-        Readings span exponent bins 2/4/8/16 — <b>the optimal Ā is the smallest shift that
+        Readings span exponent bins [2,4)–[32,64) — <b>the optimal Ā is the smallest shift that
         gathers all readings into one dense bin, not the largest</b>; oversized Ā just wastes
         the shared prefix. Watch the <b>reachability</b> panel: holes appear and the
         reachable set becomes <b>input-dependent</b> when Ā is wrong.
@@ -124,6 +124,7 @@
       <div class="row" style="margin-top:10px" id="devtab">
         <table class="dtab">
           <tr><th>device</th><th>true (never sent)</th><th>+ noise</th><th>+ Ā</th>
+              <th>x* · bins true→+noise→x*</th>
               <th>shared γ prefix</th><th>bits sent</th><th>cloud recovers</th></tr>
           <tbody id="devices"></tbody>
         </table>
@@ -255,6 +256,8 @@ const SENSORS=[
   {n:"T-06", v:14.7,  u:"°C"},
   {n:"T-07", v:17.3,  u:"°C"},
   {n:"T-08", v:10.6,  u:"°C"},
+  {n:"T-09", v:28.0,  u:"°C"},
+  {n:"T-10", v:60.0,  u:"°C"},
 ];
 const TRUE_V=SENSORS.map(s=>s.v), NAMES=SENSORS.map(s=>s.n);
 let seed=12345, noise=[], giantE=0;
@@ -280,6 +283,13 @@ function unbits(v){
   const lo=Math.pow(2,e-1);
   const m=Math.round((a-lo)/lo*2047)&2047;          // same quantization as bits()
   return s*lo*(1+m/2047);
+}
+/* exponent-bin label for the bin-path column: [2^e, 2^(e+1)) */
+function binLabel(v){
+  if(v<0) return "neg";
+  const e=Math.floor(Math.log2(Math.max(v,1e-9)));
+  const lo=Math.pow(2,e);
+  return "["+lo+","+(lo*2)+")";
 }
 function commonPrefix(lists){
   const n=lists[0].length; let g=0;
@@ -340,6 +350,7 @@ function render(){
     document.getElementById("devices").innerHTML=TRUE_V.map((v,i)=>
       `<tr><td>${NAMES[i]}</td><td class="true">${v.toFixed(1)}°C</td>
        <td>${noisy[i].toFixed(2)}</td><td>2${toSup(giantE)}+${noisy[i].toFixed(2)}</td>
+       <td>2${toSup(giantE)} · e=${giantE}</td>
        <td style="color:#9aa8b8">all 16</td><td class="sent">(none)</td>
        <td>0.000</td></tr>`).join("");
     document.getElementById("bitviz").innerHTML=
@@ -414,8 +425,10 @@ function render(){
   document.getElementById("devices").innerHTML=TRUE_V.map((v,i)=>{
     const shared=bl[i].slice(0,gamma).join(""), tail=bl[i].slice(gamma).join("");
     const back=unbits(shifted[i])-A;                     // wire value is quantized
+    const xstar=unbits(shifted[i]);
     return `<tr><td>${NAMES[i]}</td><td class="true">${v.toFixed(1)}${SENSORS[i].u}</td>
       <td>${noisy[i].toFixed(2)}</td><td>${shifted[i].toFixed(1)}</td>
+      <td>${xstar.toFixed(2)} · ${binLabel(v)}→${binLabel(noisy[i])}→${binLabel(xstar)}</td>
       <td style="color:#9aa8b8">${shared||"—"}</td><td class="sent">${tail}</td>
       <td>${back.toFixed(3)}</td></tr>`;}).join("");
 
