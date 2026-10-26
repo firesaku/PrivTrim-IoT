@@ -108,14 +108,17 @@
       </div>
       <div class="row">
         <label>public shift Ā = <b class="bigno" id="av">21</b>
-          <small>— drag it: the optimal Ā gathers every reading into ONE dense bin
-          (max shared prefix γ). Larger is <b>not</b> better: past the bin it wastes γ,
-          and the tail you send is never shorter.</small></label>
-        <input type="range" id="asha" min="0" max="2048" step="1" value="21" oninput="render()">
-        <div class="ascale"><span style="left:0">0</span><span style="left:12%">21· optimal</span><span style="left:25%">512</span><span style="right:0">2048</span></div>
+          <small>— ticks are powers of two. Optimal Ā gathers every reading into ONE
+          dense bin; larger is <b>not</b> better — γ gains ~1 bit per doubling while the
+          unshift error multiplies, until at Ā ≈ 2¹⁰⁰ nothing survives (Figure 11).</small></label>
+        <input type="range" id="asha" min="0" max="512" step="1" value="21" oninput="giantE=0;render()">
+        <div class="ascale"><span style="left:0">2⁰=1</span><span style="left:1.6%">2³=8</span><span style="left:12.5%">2⁶=64</span><span style="right:0">2⁹=512</span></div>
       </div>
       <button class="act" onclick="reroll()">↻ re-roll noise</button>
       <button class="act" style="border-color:#1e7a3c;color:#1e7a3c" onclick="setOptimalA()">★ optimal Ā (Theorem-6)</button>
+      <button class="act" onclick="setGiant(100)">Ā = 2¹⁰⁰</button>
+      <button class="act" onclick="setGiant(1000)">Ā = 2¹⁰⁰⁰</button>
+      <button class="act" onclick="setGiant(10000)">Ā = 2¹⁰⁰⁰⁰</button>
       <button class="act off" style="border-color:#1e7a3c;color:#1e7a3c" onclick="document.getElementById('devtab').scrollIntoView()">↓ see wire & math</button>
 
       <div class="row" style="margin-top:10px" id="devtab">
@@ -254,7 +257,7 @@ const SENSORS=[
   {n:"T-08", v:10.6,  u:"°C"},
 ];
 const TRUE_V=SENSORS.map(s=>s.v), NAMES=SENSORS.map(s=>s.n);
-let seed=12345, noise=[];
+let seed=12345, noise=[], giantE=0;
 function rng(){ seed=(seed*1103515245+12345)%2147483648; return seed/2147483648; }
 function rollNoise(){ noise=TRUE_V.map(()=> (rng()+rng()+rng()-1.5)/1.5 ); render(); }
 /* 16-bit toy float: sign(1) exp(4) mantissa(11) */
@@ -294,7 +297,8 @@ function setOptimalA(){
      scan upward; the first hit is the γ-optimal shift. Larger Ā adds ≈1 shared
      bit per doubling but multiplies the unshift float error — the optimum is
      the bottom edge, not the top of the range. */
-  for(let A=0;A<=2048;A++){
+  giantE=0;
+  for(let A=0;A<=512;A++){
     const bins=new Set(TRUE_V.map((v,i)=>
         Math.floor(Math.log2(Math.max(Math.abs(v+noise[i]*(2.2/((+document.getElementById("eps").value)/10))+A),1e-9)))+1));
     if(bins.size===1 && Math.max(...bins)>=6){
@@ -302,6 +306,12 @@ function setOptimalA(){
     }
   }
 }
+/* Figure-11 presets: Ā = 2¹⁰⁰ / 2¹⁰⁰⁰ / 2¹⁰⁰⁰⁰. Beyond ~2⁵³ a double already
+   rounds every x* to one float; at 2¹⁰⁰⁰ the exponent exceeds float64 range —
+   we render the analytic end-state instead of a literal number. */
+function setGiant(e){ giantE=e; document.getElementById("asha").value=512; render(); }
+function toSup(x){ const m={"0":"⁰","1":"¹","2":"²","3":"³","4":"⁴","5":"⁵","6":"⁶","7":"⁷","8":"⁸","9":"⁹",".":"·","-":"⁻"};
+  return String(x).split("").map(c=>m[c]||c).join(""); }
 
 /* ================= text can't-demo ================= */
 function zealText(){ document.getElementById("textbox").textContent =
@@ -314,19 +324,79 @@ function zealOurs(){ document.getElementById("textbox").textContent =
 /* ================= render ================= */
 function render(){
   const eps=(+document.getElementById("eps").value)/10;
-  const A=+document.getElementById("asha").value;
-  document.getElementById("av").textContent=A;
+  const scale=2.2/eps;                       // larger noise → Ā matters visibly
+  const noisy=TRUE_V.map((v,i)=>v+noise[i]*scale);
+  const trueMean=TRUE_V.reduce((a,b)=>a+b,0)/TRUE_V.length;
   document.getElementById("epsv").textContent=eps.toFixed(1);
   document.getElementById("ee").textContent=Math.exp(eps).toFixed(2);
 
-  const scale=2.2/eps;                       // larger noise → Ā matters visibly
-  const noisy=TRUE_V.map((v,i)=>v+noise[i]*scale);
+  /* -------- Figure-11 regime: Ā = 2¹⁰⁰ / 2¹⁰⁰⁰ / 2¹⁰⁰⁰⁰ --------
+     Once ULP(Ā) > data range, every noisy reading rounds to the SAME float:
+     the wire carries identical words, x*−Ā comes back 0 for every device,
+     the fleet mean is destroyed (≈100% error). Reachability is 100% — and
+     useless, because the reachable set is a single point for every input. */
+  if(giantE){
+    document.getElementById("av").textContent="2"+toSup(giantE);
+    document.getElementById("devices").innerHTML=TRUE_V.map((v,i)=>
+      `<tr><td>${NAMES[i]}</td><td class="true">${v.toFixed(1)}°C</td>
+       <td>${noisy[i].toFixed(2)}</td><td>2${toSup(giantE)}+${noisy[i].toFixed(2)}</td>
+       <td style="color:#9aa8b8">all 16</td><td class="sent">(none)</td>
+       <td>0.000</td></tr>`).join("");
+    document.getElementById("bitviz").innerHTML=
+      `<div class="bitrow"><span class="lbl">x* bits</span>`+
+      Array.from({length:16},()=>`<span class="bit shared">·</span>`).join("")+
+      `</div><div style="font-size:10.5px;color:#c0504d">every device sends the identical 16-bit word — the data lives below ULP(Ā)</div>`;
+    document.getElementById("st_g").textContent="16 / 16 bits (degenerate)";
+    document.getElementById("st_tr").textContent="≈0% — but the data is gone";
+    document.getElementById("wire").textContent=
+      "shared prefix (public) : 1111111111111111  ← all 16 bits shared\n"+
+      "per-device packets    : <empty> — every device rounds to the SAME float 2^"+giantE+"\n"+
+      "cloud sees: identical words + public Ā=2^"+giantE+" — no readings, no differences, nothing";
+    document.getElementById("cloudmath").textContent =
+      "decode : prefix + tail → all devices = 2^"+giantE+"\n"+
+      "unshift: 2^"+giantE+" − 2^"+giantE+" = 0 for every device\n"+
+      "average: mean(8 zeros) = 0\n"+
+      "truth  : "+trueMean.toFixed(3)+"°C   error ≈100%   ← Figure 11: oversized Ā destroys the value";
+    document.getElementById("reachtxt").innerHTML=
+      `<b class="bad">reachability 100% — degenerate</b> — Ā=2<sup>${giantE}</sup>: ULP(Ā) ≫ data range
+       → every input's reachable set collapses to ONE float. Sets match, but nothing is expressed.`;
+    const N=48;
+    document.getElementById("comb").innerHTML=
+      Array.from({length:N},()=>`<div class="cell"></div>`).join("");
+    document.getElementById("combA").innerHTML=
+      `<div style="font-size:10px;color:var(--navy);width:100%">x = 10</div>`+
+      Array.from({length:N},()=>`<div class="cell"></div>`).join("");
+    document.getElementById("combB").innerHTML=
+      `<div style="font-size:10px;color:#c0504d;width:100%">x = 13</div>`+
+      Array.from({length:N},()=>`<div class="cell"></div>`).join("");
+    document.getElementById("leakmsg").innerHTML=
+      `<b class="bad">both rows full — and meaningless</b>: ULP(Ā) > data range rounds every
+       output to the same float. Support is input-independent only because it is EMPTY of
+       information (cf. Figure 11: single-value error ≈ Ā, mean error ≈ 100%).`;
+    document.getElementById("st_true").textContent=trueMean.toFixed(2)+"°C";
+    document.getElementById("st_est").textContent="0.00°C";
+    const errEl=document.getElementById("st_err");
+    errEl.textContent="100%";
+    errEl.parentElement.classList.add("bad"); errEl.parentElement.classList.remove("good");
+    document.getElementById("st_ush").textContent="unshift error ≈ Ā (data destroyed)";
+    document.getElementById("st_ushw").classList.add("bad");
+    document.getElementById("st_ushw").classList.remove("good");
+    document.getElementById("meantxt").innerHTML=
+      `<b>Figure 11 in the paper</b> — past Ā≈2<sup>50</sup> a double can no longer
+       represent x* distinctly; ULP(Ā) exceeds the whole data range. The wire still
+       compresses perfectly (γ=16/16) and reachability is "100%" — yet every
+       device reads back 0. The optimum Ā is the SMALLEST shift into one dense
+       bin, never the largest.`;
+    return;
+  }
+
+  const A=+document.getElementById("asha").value;
+  document.getElementById("av").textContent=A+"  ≈ 2"+toSup(Math.log2(Math.max(A,1)).toFixed(1));
   const shifted=noisy.map(v=>v+A);
   const bl=shifted.map(bits);
   const gamma=commonPrefix(bl);
   const sent=16-gamma, TR=sent/16;
 
-  const trueMean=TRUE_V.reduce((a,b)=>a+b,0)/TRUE_V.length;
   const estMean=shifted.map(v=>unbits(v)-A).reduce((a,b)=>a+b,0)/shifted.length;
   const err=Math.abs(estMean-trueMean)/trueMean*100;
 
