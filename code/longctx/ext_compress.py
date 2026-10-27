@@ -25,6 +25,16 @@
 `native.text` 是算法自身在最优 rate 下的原生输出（可能超预算）。
 `matched` 是等预算对标的正确选择；两者都保留，便于事后核查。
 """
+# --- HPC_LOGIN_GUARD_V1 : 禁止在登录节点运行（2026-10-27 违规事故后加入）---
+import os as _os_guard, sys as _sys_guard
+if not _os_guard.environ.get("SLURM_JOB_ID"):
+    _sys_guard.stderr.write(
+        "\n[BLOCKED] 该脚本会加载模型/做重计算，必须在 Slurm 作业内运行。\n"
+        "  检测不到 SLURM_JOB_ID -> 当前很可能是 HPC 登录节点。\n"
+        "  正确做法:  sbatch <你的.slurm>   （优先 --partition=prod）\n"
+        "  参见 AGENTS.md 规则 1。\n\n")
+    _sys_guard.exit(97)
+# --- end HPC_LOGIN_GUARD_V1 ---
 import argparse
 import json
 import os

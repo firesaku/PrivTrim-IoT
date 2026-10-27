@@ -1,0 +1,178 @@
+{
+ "cases": 50,
+ "arms": [
+  "full"
+ ],
+ "budgets": [
+  0.5
+ ],
+ "selector": "lex",
+ "dry_run": false,
+ "stub_preds": null,
+ "selector_used": "lex",
+ "emb": null,
+ "model": "/dpc/kuex0095/100069961_ku/privtrim/hf_cache/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28",
+ "scorer": "/dpc/kuex0095/100069961_ku/privtrim/external/squad_v11/evaluate-v2.0.py",
+ "seed": 20261015,
+ "max_new": 64,
+ "maxlen": 24576,
+ "n_prompts": 150,
+ "budget_accounting": {
+  "full|None": {
+   "n": 50,
+   "tgt": 107731.0,
+   "got": 107731.0,
+   "dev": 0.0,
+   "devmax": 0.0,
+   "devmax_signed": 0.0
+  },
+  "ext_full|0.5": {
+   "n": 50,
+   "tgt": 53866.0,
+   "got": 107731.0,
+   "dev": 53865.0,
+   "devmax": 1223,
+   "devmax_signed": 1223
+  },
+  "ext_intact|0.5": {
+   "n": 50,
+   "tgt": 53866.0,
+   "got": 102434.0,
+   "dev": 48568.0,
+   "devmax": 1127,
+   "devmax_signed": 1127
+  }
+ },
+ "cells": {
+  "pec_home|full|None": {
+   "n": 50,
+   "em": 0.0,
+   "f1": 0.0,
+   "tok": 107731,
+   "ans": 50,
+   "cv": 756,
+   "cf": 756,
+   "cn": 756,
+   "ov": 0,
+   "coll": 0,
+   "tent": 50,
+   "tattr": 50
+  },
+  "pec_home|ext_full|0.5": {
+   "n": 50,
+   "em": 0.0,
+   "f1": 0.0,
+   "tok": 107731,
+   "ans": 50,
+   "cv": 756,
+   "cf": 756,
+   "cn": 756,
+   "ov": 0,
+   "coll": 0,
+   "tent": 50,
+   "tattr": 50
+  },
+  "pec_home|ext_intact|0.5": {
+   "n": 50,
+   "em": 35.0,
+   "f1": 35.0,
+   "tok": 102434,
+   "ans": 50,
+   "cv": 3,
+   "cf": 7,
+   "cn": 756,
+   "ov": 0,
+   "coll": 0,
+   "tent": 0,
+   "tattr": 50
+  }
+ },
+ "all": {
+  "full|None": {
+   "n": 50,
+   "em": 0.0,
+   "f1": 0.0,
+   "tok": 107731,
+   "ans": 50,
+   "cv": 756,
+   "cf": 756,
+   "cn": 756,
+   "ov": 0,
+   "coll": 0,
+   "tent": 50,
+   "tattr": 50
+  },
+  "ext_full|0.5": {
+   "n": 50,
+   "em": 0.0,
+   "f1": 0.0,
+   "tok": 107731,
+   "ans": 50,
+   "cv": 756,
+   "cf": 756,
+   "cn": 756,
+   "ov": 0,
+   "coll": 0,
+   "tent": 50,
+   "tattr": 50
+  },
+  "ext_intact|0.5": {
+   "n": 50,
+   "em": 35.0,
+   "f1": 35.0,
+   "tok": 102434,
+   "ans": 50,
+   "cv": 3,
+   "cf": 7,
+   "cn": 756,
+   "ov": 0,
+   "coll": 0,
+   "tent": 0,
+   "tattr": 50
+  }
+ },
+ "by_case_kind": {
+  "multi_entity|full|None": {
+   "n": 50,
+   "em": 0.0,
+   "f1": 0.0,
+   "tok": 107731,
+   "ans": 50,
+   "cv": 756,
+   "cf": 756,
+   "cn": 756,
+   "ov": 0,
+   "coll": 0,
+   "tent": 50,
+   "tattr": 50
+  },
+  "multi_entity|ext_full|0.5": {
+   "n": 50,
+   "em": 0.0,
+   "f1": 0.0,
+   "tok": 107731,
+   "ans": 50,
+   "cv": 756,
+   "cf": 756,
+   "cn": 756,
+   "ov": 0,
+   "coll": 0,
+   "tent": 50,
+   "tattr": 50
+  },
+  "multi_entity|ext_intact|0.5": {
+   "n": 50,
+   "em": 35.0,
+   "f1": 35.0,
+   "tok": 102434,
+   "ans": 50,
+   "cv": 3,
+   "cf": 7,
+   "cn": 756,
+   "ov": 0,
+   "coll": 0,
+   "tent": 0,
+   "tattr": 50
+  }
+ }
+}
