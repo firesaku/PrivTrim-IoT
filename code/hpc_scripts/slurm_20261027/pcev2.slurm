@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-pcev2
 #SBATCH --gres=gpu:nvidia_h200:1
@@ -7,9 +7,9 @@
 #SBATCH --mem=24G
 #SBATCH --time=00:25:00
 #SBATCH --array=0-3%4
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/pcev2-%A_%a.out
-#SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/pcev2-%A_%a.err
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/pcev2-%A_%a.out
+#SBATCH --error=/path/to/project/logs/pcev2-%A_%a.err
 #
 # Perception Compressor 评测（必须走 GPU：评测脚本 e2e_longctx_r5full.py
 # 在第 594 行无条件调用 torch.cuda.get_device_name(0)，CPU 分区会直接崩）。
@@ -18,7 +18,7 @@
 # 案例集取"当前已有压缩产物"的那部分（随压缩作业推进而增减）。
 set -uo pipefail
 module load intel_h200_gpu 2>/dev/null || true
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 export PYTHONNOUSERSITE=1
 export PYTHONPATH=$RD/code:$RD/code/longctx
 export HF_HOME=$RD/hf_cache

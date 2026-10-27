@@ -1,7 +1,7 @@
 #!/bin/bash
 # 在 Almesbar 上提交 E2E（V100 单卡，FP16），带输入预检
-B=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
+B=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
+RD=/path/to/100065732/privtrim_v2c_20261015
 PY="$B/.venv-main/bin/python"
 
 echo "===== 1. 输入预检 ====="
@@ -23,7 +23,7 @@ echo "===== 3. 写 slurm ====="
 mkdir -p "$RD/logs" "$RD/e2eout"
 cat > "$RD/e2e_alm.slurm" <<EOF
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-e2ea
 #SBATCH --gres=gpu:v100:1

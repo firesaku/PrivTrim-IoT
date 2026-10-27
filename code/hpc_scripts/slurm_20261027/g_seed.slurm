@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-seed
 #SBATCH --gres=gpu:nvidia_h200:1
@@ -8,16 +8,16 @@
 #SBATCH --time=00:35:00
 #SBATCH --array=0-63%24
 #SBATCH --requeue
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/seed-%A_%a.out
-#SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/seed-%A_%a.err
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/seed-%A_%a.out
+#SBATCH --error=/path/to/project/logs/seed-%A_%a.err
 #
 # å¤š seed ç¨³å¥æ€§ï¼š2728 ä¾‹ x 9 è‡‚ x 3 é¢„ç®—ï¼Œseed={7001,7002}
 # max_opt å®žæµ‹ 43ä¾‹/ç‰‡ ~8minï¼›æ­¤å¤„ seed2 ä¹Ÿ 64 ç‰‡ -> 43 ä¾‹/ç‰‡ï¼Œ--time=20min å®½è£•
 # å¹‚ç­‰ï¼šå·²æœ‰ cells.json çš„åˆ†ç‰‡è‡ªåŠ¨è·³è¿‡
 set -uo pipefail
 module load intel_h200_gpu 2>/dev/null || true
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 export PYTHONNOUSERSITE=1
 export PYTHONPATH=$RD/code:$RD/code/longctx
 export HF_HOME=$RD/hf_cache

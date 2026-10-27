@@ -11,7 +11,7 @@ e2e 会把 method 变成 arm 名 `ext_<method>`。
 """
 import json, io, os, sys, collections
 
-RD = '/dpc/kuex0095/100069961_ku/privtrim'
+RD = '/path/to/project'
 EXT = RD + '/out/ext_full'
 MAXJ = RD + '/data/longctx_max.jsonl'
 # 允许调用方指定输出路径，避免多个并发 task 同时写同一个文件

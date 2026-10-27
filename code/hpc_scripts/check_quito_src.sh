@@ -1,5 +1,5 @@
 #!/bin/bash
-B=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
+B=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
 echo "===== project/research 下的压缩源码 ====="
 ls -1 "$B/project/research/" 2>&1 | head -30
 echo
@@ -18,7 +18,7 @@ echo "===== DB 里 mask_quito_x 的 payload 长什么样 ====="
 PY="$B/.venv-main/bin/python"
 "$PY" - <<'EOF' 2>&1 | head -25
 import sqlite3
-p='/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/run/qwen25_7b/results.sqlite'
+p='/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/run/qwen25_7b/results.sqlite'
 con=sqlite3.connect('file:%s?mode=ro'%p, uri=True)
 cur=con.cursor()
 r=cur.execute("SELECT key,case_key,dataset,method,rate,length(payload),status FROM jobs WHERE method='mask_quito_x' AND rate=0.5 LIMIT 5").fetchall()

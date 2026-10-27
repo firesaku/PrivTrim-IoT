@@ -7,7 +7,7 @@ B: out/typeb_s*_percase.jsonl
 import json, io, glob, collections
 import numpy as np
 
-RD = '/dpc/kuex0095/100069961_ku/privtrim'
+RD = '/path/to/project'
 rng = np.random.default_rng(20261027)
 BOOT = 4000
 

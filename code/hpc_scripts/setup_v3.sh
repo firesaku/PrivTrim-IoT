@@ -1,9 +1,9 @@
 #!/bin/bash
 # V3 作业数组：4 个配置，每任务 1 张卡，最多 2 并发（不占整节点）
 set -uo pipefail
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
-MD=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/models
-PY=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/.venv-main/bin/python
+RD=/path/to/100065732/privtrim_v2c_20261015
+MD=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/models
+PY=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/.venv-main/bin/python
 mkdir -p "$RD/logs" "$RD/v3out"
 
 echo "===== 1. 解析 encoder ====="
@@ -20,7 +20,7 @@ ls -l "$RD"/frozen_samples*.jsonl 2>&1
 echo "===== 3. 写数组 slurm ====="
 cat > "$RD/v3.slurm" <<EOF
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-v3
 #SBATCH --array=0-3%2

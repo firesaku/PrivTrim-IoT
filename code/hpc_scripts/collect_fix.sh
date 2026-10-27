@@ -1,4 +1,4 @@
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
+RD=/path/to/100065732/privtrim_v2c_20261015
 echo '=== cancel impossible interactive job ==='
 scancel 1451131 2>&1 && echo 'cancelled 1451131' || echo 'scancel failed'
 echo '=== my queue ==='

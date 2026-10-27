@@ -1,8 +1,8 @@
 #!/bin/bash
 # 提交端到端 F1 对比（单卡 H200）
 set -uo pipefail
-B=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
+B=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
+RD=/path/to/100065732/privtrim_v2c_20261015
 PY="$B/.venv-main/bin/python"
 mkdir -p "$RD/logs" "$RD/e2eout"
 
@@ -19,7 +19,7 @@ ls -l "$CASES" 2>&1
 
 cat > "$RD/e2e.slurm" <<EOF
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-e2e
 #SBATCH --gres=gpu:nvidia_h200:1

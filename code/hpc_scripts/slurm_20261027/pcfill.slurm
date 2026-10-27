@@ -1,20 +1,20 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-pcfill
 #SBATCH --gres=gpu:nvidia_h200:1
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=24G
 #SBATCH --time=00:15:00
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/pcfill-%j.out
-#SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/pcfill-%j.err
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/pcfill-%j.out
+#SBATCH --error=/path/to/project/logs/pcfill-%j.err
 #
 # 补齐 perception 评测：上一轮 4 分片启动时压缩还没跑完，只覆盖了 274/300 例。
 # 这里把缺的案例补评一遍（压缩已 300/300 完成）。
 set -uo pipefail
 module load intel_h200_gpu 2>/dev/null || true
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 export PYTHONNOUSERSITE=1
 export PYTHONPATH=$RD/code:$RD/code/longctx
 export HF_HOME=$RD/hf_cache

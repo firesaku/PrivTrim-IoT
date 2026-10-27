@@ -4,12 +4,12 @@
   内部臂  : out/max32_percase.jsonl        (2728 例 x 21)
   外部臂  : out/extev_s*_percase.jsonl     (由 exteval.slurm 产出，ext_<method> / ext_<method>_native)
 
-用法: cd /dpc/kuex0095/100069961_ku/privtrim && env/bin/python analyze_ext.py
+用法: cd /path/to/project && env/bin/python analyze_ext.py
       可选参数 1: 覆盖外部臂文件的 glob（用于在真实数据到齐前用 dry-run 产物验证本脚本）
 """
 import json, io, os, sys, glob, collections, math
 
-RD = '/dpc/kuex0095/100069961_ku/privtrim'
+RD = '/path/to/project'
 EXT_GLOB = sys.argv[1] if len(sys.argv) > 1 else RD + '/out/*ev*_s*_percase.jsonl'
 BOOT = 4000
 try:

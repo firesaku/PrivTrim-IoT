@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-intactN
 #SBATCH --gres=gpu:nvidia_h200:1
@@ -7,15 +7,15 @@
 #SBATCH --mem=48G
 #SBATCH --time=00:35:00
 #SBATCH --array=0-1%2
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim/repos/text_sanitization
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/intactN-%A_%a.out
-#SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/intactN-%A_%a.err
+#SBATCH --chdir=/path/to/project/repos/text_sanitization
+#SBATCH --output=/path/to/project/logs/intactN-%A_%a.out
+#SBATCH --error=/path/to/project/logs/intactN-%A_%a.err
 #
 # INTACT 样本跑（100 例分 2 片）。实测 3 篇 35 秒 ≈ 12 秒/篇，50 篇约 10 分钟。
 # 分 2 片是为了塞进碎片化空洞（此前 16 片 x 22 分钟验证过这个策略）。
 set -uo pipefail
 module load intel_h200_gpu 2>/dev/null || true
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 export PYTHONNOUSERSITE=1
 export HF_HOME=$RD/hf_cache
 export HF_HUB_CACHE=$RD/hf_cache

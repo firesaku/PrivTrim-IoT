@@ -1,10 +1,10 @@
-"""SFTP download from Madar."""
+"""SFTP download from <CLUSTER>."""
 import os, sys, time, paramiko
 
-HOST = 'login.madar.ku.ac.ae'
+HOST = 'login.<CLUSTER>.<ADMIN_DOMAIN>'
 USER = '100065732_ku'
 KEY = r'D:\Shijie Zeng\HPC\100065732_ku-ssh-key.pem'
-PWFILE = r'D:\Shijie Zeng\HPC\madar-key-pass.txt'
+PWFILE = r'D:\Shijie Zeng\HPC\<CLUSTER>-key-pass.txt'
 
 def load_key():
     with open(PWFILE, 'rb') as fh:

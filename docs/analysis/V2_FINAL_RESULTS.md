@@ -1,7 +1,7 @@
 # V2 最终结果：聚类去敏压缩的可行性（本地 + HPC CPU + HPC GPU）
 
 > 2026-10-15 ｜ 0 次下游模型调用 ｜ 目的：在投入实现前判定"相似度聚类合并"是机制还是装饰
-> 作业：Madar `prod` **1443690**（COMPLETED，3s，8 CPU） / Madar `gpu` **1444010**（COMPLETED，65s，**1×H200 单卡**）
+> 作业：<CLUSTER> `prod` **1443690**（COMPLETED，3s，8 CPU） / <CLUSTER> `gpu` **1444010**（COMPLETED，65s，**1×H200 单卡**）
 
 ---
 

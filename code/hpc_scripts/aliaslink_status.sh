@@ -1,4 +1,4 @@
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
+RD=/path/to/100065732/privtrim_v2c_20261015
 echo "=== squeue ==="
 squeue -u 100065732 -o "%.10i %.14j %.9T %.10M %.12R" 2>&1 | head -n 20
 echo "=== sacct (last 2 days) ==="

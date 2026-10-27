@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-lm14
 #SBATCH --gres=gpu:nvidia_h200:1
@@ -8,14 +8,14 @@
 #SBATCH --time=00:50:00
 #SBATCH --array=0-31%16
 #SBATCH --requeue
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/lm14-%A_%a.out
-#SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/lm14-%A_%a.err
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/lm14-%A_%a.out
+#SBATCH --error=/path/to/project/logs/lm14-%A_%a.err
 #
 # ç¬¬ä¸‰æ¨¡åž‹ Qwen2.5-14B-Instructï¼š2728 ä¾‹ / 32 ç‰‡ = 86ä¾‹/ç‰‡, 9è‡‚x3é¢„ç®—
 set -uo pipefail
 module load intel_h200_gpu 2>/dev/null || true
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 export PYTHONNOUSERSITE=1
 export PYTHONPATH=$RD/code:$RD/code/longctx
 export HF_HOME=$RD/hf_cache

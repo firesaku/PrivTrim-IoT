@@ -5,7 +5,7 @@
 """
 import json, io, os, sys
 
-RD = '/dpc/kuex0095/100069961_ku/privtrim'
+RD = '/path/to/project'
 EXT = RD + '/out/ext_full'
 CASES = ' '.join(sys.argv[1].split()) if len(sys.argv) > 1 else RD + '/data/public_lb.jsonl'
 OUT = sys.argv[2] if len(sys.argv) > 2 else RD + '/data/ext_arms_pub.jsonl'

@@ -3,7 +3,7 @@
   2) pt-b8chk (1482354) 的 batch=8 与 batch=2 是否逐例等价
 """
 import json, io, os, collections
-RD = '/dpc/kuex0095/100069961_ku/privtrim'
+RD = '/path/to/project'
 
 
 def load(p):

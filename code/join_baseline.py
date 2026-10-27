@@ -19,8 +19,8 @@ CLI 兼容：默认路径常量与输出文件名都没变，新增的都是可�
 import io, json, os, sqlite3, sys
 from collections import defaultdict
 
-B = '/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005'
-RD = '/dpc/kuex0095/100065732/privtrim_v2c_20261015'
+B = '/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005'
+RD = '/path/to/100065732/privtrim_v2c_20261015'
 DB = os.path.join(B, 'run/qwen25_7b/results.sqlite')
 MINE = os.path.join(RD, 'e2eout/e2e2_percase.jsonl')
 OUT = os.path.join(RD, 'e2eout/join_report.txt')

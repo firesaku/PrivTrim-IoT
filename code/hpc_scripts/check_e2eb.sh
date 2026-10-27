@@ -1,5 +1,5 @@
 #!/bin/bash
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
+RD=/path/to/100065732/privtrim_v2c_20261015
 JID=$(cat "$RD/.e2eb_jid" 2>/dev/null | tr -d ' \r')
 [ -z "$JID" ] && JID=${1:-10599046}
 echo "JID=$JID"

@@ -11,7 +11,7 @@
 """
 import json, io, os
 
-RD = '/dpc/kuex0095/100069961_ku/privtrim'
+RD = '/path/to/project'
 EXT = RD + '/out/ext_full'
 PLAN = RD + '/data/extc_plan.json'
 

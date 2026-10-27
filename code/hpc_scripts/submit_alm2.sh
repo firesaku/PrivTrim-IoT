@@ -3,8 +3,8 @@
 #   1) v2d pair-budget fix, both modes  (fixed: v2d_gpu.py has no --dtype)
 #   2) e2e4 same-budget selector comparison
 set -uo pipefail
-B=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
+B=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
+RD=/path/to/100065732/privtrim_v2c_20261015
 PY="$B/.venv-main/bin/python"
 LM="$B/models/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28"
 EMB="$B/models/models--microsoft--llmlingua-2-xlm-roberta-large-meetingbank/snapshots/ebaba9b0e874dadd3003ffcff828e4397e568089"
@@ -24,7 +24,7 @@ echo "===== v2d argparse surface (no --dtype expected) ====="
 echo "===== write v2d slurm (1xV100) ====="
 cat > "$RD/v2d_fix_alm.slurm" <<EOF
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-v2dalm
 #SBATCH --gres=gpu:v100:1
@@ -58,7 +58,7 @@ chmod +x "$RD/v2d_fix_alm.slurm"
 echo "===== write e2e4 slurm (1xV100) ====="
 cat > "$RD/e2e4.slurm" <<EOF
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-e2e4
 #SBATCH --gres=gpu:v100:1

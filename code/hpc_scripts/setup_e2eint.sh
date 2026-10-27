@@ -1,8 +1,8 @@
 #!/bin/bash
 # 改投 interactive 分区（vis-91，空闲 L40S 48GB），并取消要等 6 小时的 gpu 作业
 set -uo pipefail
-B=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
+B=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
+RD=/path/to/100065732/privtrim_v2c_20261015
 PY="$B/.venv-main/bin/python"
 LM=""; EMB=""
 for d in "$B"/models/models--Qwen--Qwen2.5-7B-Instruct/snapshots/*/ ; do [ -f "$d/config.json" ] && LM="${d%/}"; done
@@ -17,7 +17,7 @@ sleep 2
 echo "===== 2. 写 interactive slurm（L40S 单卡）====="
 cat > "$RD/e2eint.slurm" <<EOF
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=interactive
 #SBATCH --job-name=pt-e2ei
 #SBATCH --gres=gpu:nvidia_l40s:1

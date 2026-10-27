@@ -1,9 +1,9 @@
 #!/bin/bash
 # 建 GPU 单卡作业并提交（不占整节点）
 set -uo pipefail
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
-MD=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/models
-PY=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/.venv-main/bin/python
+RD=/path/to/100065732/privtrim_v2c_20261015
+MD=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/models
+PY=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/.venv-main/bin/python
 mkdir -p "$RD/logs"
 
 echo "===== 1. 解析编码器 snapshot 路径 ====="
@@ -18,7 +18,7 @@ ls -l "$MODEL" 2>&1 | head -10
 echo "===== 2. 写单卡 slurm ====="
 cat > "$RD/v2d.slurm" <<EOF
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-v2d
 #SBATCH --gres=gpu:nvidia_h200:1

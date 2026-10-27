@@ -1,6 +1,6 @@
-B=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
+B=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
 PY=$B/.venv-main/bin/python
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
+RD=/path/to/100065732/privtrim_v2c_20261015
 echo "=== r4 argparse ==="
 grep -n "add_argument" "$RD/e2e_longctx_r4.py" 2>&1 | sed 's/^ *//' | head -n 40
 echo "=== apply_chat_template usage ==="
@@ -10,8 +10,8 @@ echo "=== tokenizer preflight ==="
 $PY - <<'EOF'
 import json, sys
 from transformers import AutoTokenizer
-RD='/dpc/kuex0095/100065732/privtrim_v2c_20261015'
-B='/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005'
+RD='/path/to/100065732/privtrim_v2c_20261015'
+B='/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005'
 qwen = B+'/models/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28'
 mist = B+'/models/mistral-7b-instruct-v03'
 cases=[json.loads(l) for l in open(RD+'/longctx_cases.jsonl', encoding='utf-8')]

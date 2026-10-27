@@ -10,7 +10,7 @@
 """
 import json, io, re
 
-RD = '/dpc/kuex0095/100069961_ku/privtrim'
+RD = '/path/to/project'
 SRC = RD + '/data/public_lb.jsonl'          # Type A：LongBench 原问题
 OUT_QA = RD + '/data/pc_qa.jsonl'
 OUT_QD = RD + '/data/pc_query_dict_questions.json'   # 待生成引导问题的清单

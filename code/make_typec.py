@@ -22,7 +22,7 @@
 """
 import json, io, hashlib, random, os
 
-RD = '/dpc/kuex0095/100069961_ku/privtrim'
+RD = '/path/to/project'
 LB = RD + '/data/longbench/data'
 TASKS = ['multifieldqa_en', 'qasper', 'hotpotqa']
 OUT = RD + '/data/public_lb_typec.jsonl'

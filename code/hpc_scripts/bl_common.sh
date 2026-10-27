@@ -1,10 +1,10 @@
-B=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
+B=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
 C=$B/project/research/token_compression_batch1_v1
 echo "=== common.py FULL ==="
 cat -n "$C/common.py" 2>&1
 echo
 echo "=== venvs ==="
-ls -d $B/.venv* $B/*/.venv* /dpc/kuex0095/100065732/.venv* 2>/dev/null
+ls -d $B/.venv* $B/*/.venv* /path/to/100065732/.venv* 2>/dev/null
 echo "=== which venv has llmlingua ==="
 for v in $B/.venv*; do
   [ -x "$v/bin/python" ] && echo -n "$v: " && "$v/bin/python" -c "import llmlingua;print('llmlingua OK')" 2>&1 | tail -n 1

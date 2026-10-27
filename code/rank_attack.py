@@ -13,7 +13,7 @@ that single strategy against two defender settings:
 """
 import json, io, sys, math, collections
 
-RD = '/dpc/kuex0095/100069961_ku/privtrim'
+RD = '/path/to/project'
 sys.path.insert(0, RD + '/code/longctx')
 import v4_router as V
 

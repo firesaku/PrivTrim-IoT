@@ -1,12 +1,12 @@
 """
 Almesbar 远程执行器（密码认证）。
 凭据来源：环境变量 KU_ZSJ -> 指向一个只含密码的文件；密码只读进进程内存，
-不写入本文件、不拼进命令行、不打印。仅用于本用户已获授权的 kuex0095 项目。
+不写入本文件、不拼进命令行、不打印。仅用于本用户已获授权的 <SLURM_ACCOUNT> 项目。
 """
 import io, os, sys, argparse
 import paramiko
 
-HOST = 'login.almesbar.ku.ac.ae'
+HOST = 'login.almesbar.<ADMIN_DOMAIN>'
 USER = '100065732@kunet.ae'
 
 def load_password():

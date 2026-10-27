@@ -1,6 +1,6 @@
 #!/bin/bash
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
-PY=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/.venv-main/bin/python
+RD=/path/to/100065732/privtrim_v2c_20261015
+PY=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/.venv-main/bin/python
 echo "--- 逐例文件 ---"
 ls -l "$RD/e2eout/e2e2_percase.jsonl" 2>&1
 wc -l "$RD/e2eout/e2e2_percase.jsonl" 2>&1

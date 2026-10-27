@@ -1,10 +1,10 @@
 #!/bin/bash
 # Almesbar (V100) parallel path for the pair-budget fix: v2d real embeddings, both modes.
-# /dpc is shared with Madar, so RD and the uploaded scripts are already visible here.
+# /dpc is shared with <CLUSTER>, so RD and the uploaded scripts are already visible here.
 set -uo pipefail
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
-MD=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/models
-PY=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/.venv-main/bin/python
+RD=/path/to/100065732/privtrim_v2c_20261015
+MD=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/models
+PY=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/.venv-main/bin/python
 mkdir -p "$RD/logs"
 
 echo "===== host / gpu ====="
@@ -22,7 +22,7 @@ echo "MODEL=$MODEL"
 echo "===== write v2d slurm (1xV100, fp16) ====="
 cat > "$RD/v2d_fix_alm.slurm" <<EOF
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-v2dalm
 #SBATCH --gres=gpu:v100:1

@@ -1,5 +1,5 @@
 V1 PARAPHRASE-AWARE LEAK CHECKER — full-corpus coverage
-cases_file=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/run/qwen25_7b/cases.jsonl.gz
+cases_file=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/run/qwen25_7b/cases.jsonl.gz
 cases=17975  secrets=53925
 
 bucket                    n     hit_rate

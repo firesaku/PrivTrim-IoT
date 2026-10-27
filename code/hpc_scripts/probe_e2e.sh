@@ -1,5 +1,5 @@
 #!/bin/bash
-B=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
+B=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
 echo "===== 1. models 目录全列 ====="
 ls -1 "$B/models" 2>&1
 echo

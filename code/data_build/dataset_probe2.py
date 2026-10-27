@@ -77,7 +77,7 @@ for tag, pat in [("SIMUHOME_TASKS", os.path.join(C, 'research', 'simuhome_genera
     emit(tag, "%s | %s" % (tag, " ; ".join(p[len(C)+1:] for p in gg)))
 
 # 7 HPC cases 结构（已有的 17975 例，最全的 SQuAD+HotpotQA 增强版）
-hpc = r"D:\CodexData\artifacts\privtrim-madar-20261013\hpc_full\run\qwen25_7b\cases.jsonl.gz"
+hpc = r"D:\CodexData\artifacts\privtrim-<CLUSTER>-20261013\hpc_full\run\qwen25_7b\cases.jsonl.gz"
 if os.path.exists(hpc):
     with gzip.open(hpc, 'rt', encoding='utf-8') as fh:
         first = json.loads(fh.readline())

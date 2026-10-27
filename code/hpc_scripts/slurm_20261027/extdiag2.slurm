@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-edg2
 #SBATCH --gres=gpu:nvidia_h200:1
@@ -7,9 +7,9 @@
 #SBATCH --mem=64G
 #SBATCH --time=00:08:00
 #SBATCH --array=0-5
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/edg2-%A_%a.out
-#SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/edg2-%A_%a.err
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/edg2-%A_%a.out
+#SBATCH --error=/path/to/project/logs/edg2-%A_%a.err
 #
 # 外部基线诊断 v2 —— 相对 v1 只改一件事: 把墙钟从 20min 砍到 8min。
 #
@@ -22,7 +22,7 @@
 # 而失败的 extfull 用的是 2cpu/24G —— 资源不足是嫌疑之一,先不动它。
 set -uo pipefail
 module load intel_h200_gpu 2>/dev/null || true
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 export PYTHONNOUSERSITE=1
 export PYTHONPATH=$RD/code:$RD/code/longctx
 export HF_HOME=$RD/hf_cache

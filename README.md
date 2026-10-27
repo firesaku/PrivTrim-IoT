@@ -50,14 +50,15 @@
 │   ├── 05_HPC运行记录.md           ← 集群/作业/踩坑
 │   ├── 06_数据资产.md              ← 样本集 sha256 / 复现步骤
 │   ├── 21_补充实验_秩泄漏与公开基准与2025基线.md   ← ★ 长上下文阶段收尾
-│   ├── 22_合规_登录节点守卫.md                     ← HPC 合规加固记录
+│   ├── 22_合规_登录节点守卫.md                     ← 合规加固记录
+│   ├── 23_复现配置.md                              ← ★ 复现所需全部技术参数
 │   ├── 附录_全量实验结果_20261021.md               ← 16 节详细数字
 │   └── analysis/                  ← 阶段性分析文档（12 份）
 ├── results/
 │   ├── reports/                   ← 14 份实验报告（原文）
 │   ├── cells/                     ← 原始计数 JSON
 │   ├── percase/                   ← 逐例预测与分数（jsonl；新增批次为 .jsonl.gz）
-│   └── logs/                      ← 30 份 HPC 作业日志（含失败与诊断）
+│   └── logs/                      ← 30 份作业日志（含失败与诊断）
 ├── code/
 │   ├── *.py                       ← 主实验脚本（V1/V2/V3/E2E/join）
 │   ├── mechanism/                 ← 机制可行性与消融（v2/v2b 探针、mech.py、split*）
@@ -66,15 +67,21 @@
 │   ├── hpc_scripts/               ← Slurm 提交/环境/巡检脚本
 │   │   └── slurm_20261027/        ← 本轮 63 个提交脚本（keyfull/公开基准/Perception）
 │   ├── longctx/                   ← 长上下文评测管线（e2e_longctx_r5full.py 等）
+│   ├── external/squad_v11/        ← SQuAD v2 官方评分器（算 F1/EM）
 │   ├── pc_stubs/                  ← Perception Compressor 的三个空壳依赖
-│   ├── tools/                     ← 结果导出与跨集群 SFTP 传输
+│   ├── tools/                     ← 结果导出与跨集群传输
 │   └── verify/                    ← 独立复核脚本（见下方「复核」一节）
-└── data/                          ← 冻结样本集 + 公开基准（新增批次为 .gz）
+└── data/                          ← 冻结样本集 + 公开基准（大文件为 .gz）
 ```
 
 > **注意**：`results/percase/` 与 `data/` 下体积较大的文件以 **`.jsonl.gz`** 存放，
-> 使用前 `gunzip -k` 解压即可。取景自 LongBench 的公开基准构造脚本见
-> `code/make_public_bench.py`。
+> 使用前 `gunzip -k` 解压即可。主实验基准为 `data/longctx_max.jsonl.gz`（2,728 例）。
+> 完整复现参数见 [`docs/23_复现配置.md`](docs/23_复现配置.md)。
+>
+> **重脚本有 Slurm 守卫**：`code/` 与 `code/longctx/` 下会加载模型的脚本在
+> 检测不到 `SLURM_JOB_ID` 时会以退出码 97 拒绝运行（防止误在共享登录节点跑计算）。
+> 在 Slurm 作业内自动通过；本地试跑可 `SLURM_JOB_ID=local python <script>`。
+> 纯分析脚本（`analyze_*.py` 等）无此限制。
 
 ---
 
@@ -201,8 +208,8 @@ AI 生成的分析文档集中在 `docs/analysis/`，已与 `results/` 中的原
 | 项 | 数值 |
 |---|---|
 | 时间范围 | 2026-10-15 ~ 2026-10-16 |
-| HPC 作业 | **12 个**（Madar 10 + Almesbar 4，含取消/失败） |
-| 集群 | Madar（H200）、Almesbar（V100） |
+| HPC 作业 | **12 个**（<CLUSTER> 10 + Almesbar 4，含取消/失败） |
+| 集群 | <CLUSTER>（H200）、Almesbar（V100） |
 | 峰值占用 | 全部单卡，**未占整节点** |
 | 下游模型生成量 | ~19,000 次（含作废的 5000 次） |
 | 零模型调用的离线样本 | 2 种相似度 × 3 比例 × 4 粒度 × 7 数据集 |

@@ -1,7 +1,7 @@
-B=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
+B=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
 PY=$B/.venv-main/bin/python
 DST="$B/models/mistral-7b-instruct-v03"
-LOG=/dpc/kuex0095/100065732/privtrim_v2c_20261015/logs/dl_mistral.log
+LOG=/path/to/100065732/privtrim_v2c_20261015/logs/dl_mistral.log
 mkdir -p "$DST"
 echo "=== existing? ==="
 ls -1 "$DST" 2>&1 | head -n 5

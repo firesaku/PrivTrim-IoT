@@ -1,5 +1,5 @@
 #!/bin/bash
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
+RD=/path/to/100065732/privtrim_v2c_20261015
 echo "===== QUEUE ====="
 squeue -j 1443690 -o '%.12i %.10P %.14j %.9T %.11M %.20R' 2>&1
 echo "===== SACCT ====="

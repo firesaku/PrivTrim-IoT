@@ -1,6 +1,6 @@
 import sqlite3, zlib, json, sys
 
-DB = '/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/run/qwen25_7b/results.sqlite'
+DB = '/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/run/qwen25_7b/results.sqlite'
 con = sqlite3.connect('file:%s?mode=ro' % DB, uri=True)
 cur = con.cursor()
 

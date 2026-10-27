@@ -1,4 +1,4 @@
-﻿RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
+﻿RD=/path/to/100065732/privtrim_v2c_20261015
 echo "===== 我的队列 ====="
 squeue -u $(id -un) -o '%.14i %.9P %.14j %.9T %.11M %.8b %.18R' 2>&1
 echo "===== 我所有作业的终态 ====="

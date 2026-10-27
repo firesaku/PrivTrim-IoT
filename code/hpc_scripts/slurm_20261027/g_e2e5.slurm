@@ -1,20 +1,20 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-e2e5
 #SBATCH --gres=gpu:nvidia_h200:1
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=24G
 #SBATCH --time=00:30:00
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/e2e5-%j.out
-#SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/e2e5-%j.err
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/e2e5-%j.out
+#SBATCH --error=/path/to/project/logs/e2e5-%j.err
 #
 # ç¬¬å››è±¡é™ GPU æ‰“åˆ†ï¼šconflict æ¡ˆä¾‹ x 5 è‡‚ï¼ˆfull/delete/generalize_type/alias/alias_typedï¼‰
 # 240 ä¾‹ x 5 = 1200 promptï¼ŒçŸ­ä¸Šä¸‹æ–‡
 set -uo pipefail
 module load intel_h200_gpu 2>/dev/null || true
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 export PYTHONNOUSERSITE=1
 export PYTHONPATH=$RD/code
 export HF_HOME=$RD/hf_cache

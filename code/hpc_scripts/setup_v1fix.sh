@@ -1,12 +1,12 @@
 #!/bin/bash
 # 重跑修正后的 V1（限制 digitchunk 只对 phone），并查 V3 数组
 set -uo pipefail
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
-PY=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/.venv-main/bin/python
+RD=/path/to/100065732/privtrim_v2c_20261015
+PY=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/.venv-main/bin/python
 
 cat > "$RD/v1.slurm" <<EOF
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=prod
 #SBATCH --job-name=pt-v1fix
 #SBATCH --cpus-per-task=4

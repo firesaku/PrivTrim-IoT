@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-extnew
 #SBATCH --gres=gpu:nvidia_h200:1
@@ -7,9 +7,9 @@
 #SBATCH --mem=24G
 #SBATCH --time=00:15:00
 #SBATCH --array=0-31%32
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/extnew-%A_%a.out
-#SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/extnew-%A_%a.err
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/extnew-%A_%a.out
+#SBATCH --error=/path/to/project/logs/extnew-%A_%a.err
 #
 # EVALUATE TWO ARMS THAT ARE ALREADY COMPRESSED BUT NEVER SCORED.
 #
@@ -27,7 +27,7 @@
 # Cost: 2 arms x 2728 cases x ~0.43 s = ~39 min single-GPU; over 32 shards ~75 s.
 set -uo pipefail
 module load intel_h200_gpu 2>/dev/null || true
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 export PYTHONNOUSERSITE=1
 export PYTHONPATH=$RD/code:$RD/code/longctx
 export HF_HOME=$RD/hf_cache

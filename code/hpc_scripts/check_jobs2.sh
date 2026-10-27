@@ -1,4 +1,4 @@
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
+RD=/path/to/100065732/privtrim_v2c_20261015
 echo '=== final states ==='
 sacct -j 10601687,10601688,10601689 -o JobID,JobName%12,State,Elapsed,ExitCode 2>&1 | grep -vE '\.(ba|ex)'
 echo '=== v2d job out tail ==='
