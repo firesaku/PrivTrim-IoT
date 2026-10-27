@@ -1,14 +1,14 @@
 """Merge the 32 max32 shards into one result set + aggregate tables.
 
 用法（在登录节点）：
-  cd /dpc/kuex0095/100069961_ku/privtrim
+  cd /path/to/project
   env/bin/python merge_max32.py
 
 幂等：分片不全时只报告缺哪些，不写合并文件。
 """
 import json, io, os, sys, collections
 
-RD = '/dpc/kuex0095/100069961_ku/privtrim'
+RD = '/path/to/project'
 N = 32
 
 rows, missing, per_shard = [], [], {}

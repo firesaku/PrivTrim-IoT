@@ -1,10 +1,10 @@
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
-B=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
+RD=/path/to/100065732/privtrim_v2c_20261015
+B=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
 for V in A B; do
   mkdir -p "$RD/para${V}_out"
   cat > "$RD/para${V}.slurm" <<EOF
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-para${V}
 #SBATCH --gres=gpu:v100:1

@@ -1,4 +1,4 @@
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
+RD=/path/to/100065732/privtrim_v2c_20261015
 echo "=== r4 exists / size / sha ==="
 ls -l "$RD/e2e_longctx_r4.py" 2>&1
 sha256sum "$RD/e2e_longctx_r4.py" 2>&1

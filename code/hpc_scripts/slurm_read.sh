@@ -1,4 +1,4 @@
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
+RD=/path/to/100065732/privtrim_v2c_20261015
 echo "=== aliaslink.slurm ==="
 cat "$RD/aliaslink.slurm" 2>&1
 echo "=== squeue --me ==="

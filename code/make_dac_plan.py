@@ -13,7 +13,7 @@
 """
 import json, io, os
 
-RD = '/dpc/kuex0095/100069961_ku/privtrim'
+RD = '/path/to/project'
 EXT = RD + '/out/ext_full'
 PER = 5          # 每任务案例数
 PLAN = RD + '/data/dac_plan.json'

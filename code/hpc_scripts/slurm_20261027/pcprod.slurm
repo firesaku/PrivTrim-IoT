@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=prod
 #SBATCH --job-name=pt-pcprod
 #SBATCH --cpus-per-task=24
 #SBATCH --mem=64G
 #SBATCH --time=01:30:00
 #SBATCH --array=0-31%32
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/pcprod-%A_%a.out
-#SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/pcprod-%A_%a.err
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/pcprod-%A_%a.out
+#SBATCH --error=/path/to/project/logs/pcprod-%A_%a.err
 #
 # 在 CPU 分区（prod）上运行 Perception Compressor 全量 300 例。
 #
@@ -19,7 +19,7 @@
 #
 # driver 会自动检测无 GPU 并退回 CPU/float32，无需改代码。
 set -uo pipefail
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 export PYTHONNOUSERSITE=1
 export PYTHONPATH=$RD/pc_stubs:$RD/repos/PerceptionCompressor:$RD/code:$RD/code/longctx
 export HF_HOME=$RD/hf_cache

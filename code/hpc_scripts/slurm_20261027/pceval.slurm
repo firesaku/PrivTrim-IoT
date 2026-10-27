@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=prod
 #SBATCH --job-name=pt-pceval
 #SBATCH --cpus-per-task=24
 #SBATCH --mem=64G
 #SBATCH --time=02:00:00
 #SBATCH --array=0-15%16
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/pceval-%A_%a.out
-#SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/pceval-%A_%a.err
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/pceval-%A_%a.out
+#SBATCH --error=/path/to/project/logs/pceval-%A_%a.err
 #
 # 评测 Perception Compressor 的压缩产物（CPU 分区，绕开 GPU 队列）。
 #
@@ -18,7 +18,7 @@
 #
 # 只覆盖当前已产出压缩文件的案例（driver 会跳过没有 ext 产物的 key）。
 set -uo pipefail
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 export PYTHONNOUSERSITE=1
 export PYTHONPATH=$RD/code:$RD/code/longctx
 export HF_HOME=$RD/hf_cache

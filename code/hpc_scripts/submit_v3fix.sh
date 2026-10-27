@@ -2,8 +2,8 @@
 # Almesbar: corrected v3 runs -- early layer (PACT口径) + size-matched random control,
 # plus a reproduction check that --layer last --rand-legacy still returns the published table.
 set -uo pipefail
-B=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
+B=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
+RD=/path/to/100065732/privtrim_v2c_20261015
 PY="$B/.venv-main/bin/python"
 EMB="$B/models/models--microsoft--llmlingua-2-xlm-roberta-large-meetingbank/snapshots/ebaba9b0e874dadd3003ffcff828e4397e568089"
 mkdir -p "$RD/logs" "$RD/v3out2"
@@ -13,7 +13,7 @@ echo "===== verify patched v3 ====="
 
 cat > "$RD/v3fix.slurm" <<EOF
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-v3fix
 #SBATCH --gres=gpu:v100:1

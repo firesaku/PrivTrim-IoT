@@ -12,7 +12,7 @@ ACCT-xxx 提问，模型只能答 UNKNOWN -> F1 = 0。这是"referential danglin
 """
 import json, io, glob, collections, sys
 
-RD = '/dpc/kuex0095/100069961_ku/privtrim'
+RD = '/path/to/project'
 
 cases = {json.loads(x)['key']: json.loads(x)
          for x in io.open(RD + '/data/longctx_max.jsonl', encoding='utf-8') if x.strip()}

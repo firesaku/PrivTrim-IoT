@@ -1,15 +1,15 @@
 #!/bin/bash
-# 在 Madar 上建目录、解析 python、写 slurm 并提交（CPU/prod，不占 GPU）
+# 在 <CLUSTER> 上建目录、解析 python、写 slurm 并提交（CPU/prod，不占 GPU）
 set -uo pipefail
 
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
+RD=/path/to/100065732/privtrim_v2c_20261015
 mkdir -p "$RD/logs"
 
 echo "===== 1. resolve python with numpy ====="
 PY=""
 for cand in \
-  /dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/.venv-main/bin/python \
-  /dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/.venv-main/bin/python \
+  /path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/.venv-main/bin/python \
+  /path/to/100065732/privtrim_iot_hpc_20261005/.venv-main/bin/python \
   "$(command -v python3 2>/dev/null)" ; do
   [ -n "$cand" ] || continue
   [ -x "$cand" ] || continue
@@ -25,7 +25,7 @@ ls -l "$RD" 2>&1
 echo "===== 3. write slurm ====="
 cat > "$RD/v2c.slurm" <<EOF
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=prod
 #SBATCH --job-name=pt-v2c
 #SBATCH --cpus-per-task=8

@@ -3,11 +3,11 @@
 不需要 GPU：只读 out/max32_percase.jsonl（2828 例 x 21 臂，逐例 F1/EM）。
 仅依赖标准库 + numpy（HPC venv 自带）。
 
-用法: cd /dpc/kuex0095/100069961_ku/privtrim && env/bin/python sigtest.py
+用法: cd /path/to/project && env/bin/python sigtest.py
 """
 import json, io, math, collections, sys
 
-RD = '/dpc/kuex0095/100069961_ku/privtrim'
+RD = '/path/to/project'
 SRC = RD + '/out/max32_percase.jsonl'
 BOOT = 10000
 random_seed = 20261020

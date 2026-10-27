@@ -1,12 +1,12 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=prod
 #SBATCH --job-name=pt-dacwd5
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=4G
 #SBATCH --time=18:00:00
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/dacwd5-%j.out
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/dacwd5-%j.out
 #
 # WATCHDOG v5 - watches the 15-minute-shard compression job 1489726.
 #
@@ -16,7 +16,7 @@
 # (0-3 shards, priority 3376 vs others at 4058), so a short window would fire
 # evaluation on a tiny partial set and then compete with compression for GPUs.
 set -uo pipefail
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 TARGET=1699
 COMPRESS_JOB=1489726
 echo "wd5 start $(date -Is) target=$TARGET watching=$COMPRESS_JOB"

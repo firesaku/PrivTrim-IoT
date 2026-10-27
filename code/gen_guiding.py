@@ -18,7 +18,7 @@ import json, io, sys
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-RD = '/dpc/kuex0095/100069961_ku/privtrim'
+RD = '/path/to/project'
 IN = RD + '/data/pc_query_dict_questions.json'
 OUT = RD + '/data/pc_query_dict.json'
 

@@ -1,16 +1,16 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=prod
 #SBATCH --job-name=pt-dlm2
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=32G
 #SBATCH --time=02:00:00
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/dlm2-%j.out
-#SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/dlm2-%j.err
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/dlm2-%j.out
+#SBATCH --error=/path/to/project/logs/dlm2-%j.err
 set -uo pipefail
 module load intel_h200_gpu miniconda/3
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 export PYTHONNOUSERSITE=1
 export HF_HOME=$RD/hf_cache
 PY=$RD/env/bin/python

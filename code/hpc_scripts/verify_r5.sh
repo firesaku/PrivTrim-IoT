@@ -1,4 +1,4 @@
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
+RD=/path/to/100065732/privtrim_v2c_20261015
 echo "=== r5 remote integrity ==="
 sha256sum "$RD/e2e_longctx_r5.py" 2>&1
 wc -c "$RD/e2e_longctx_r5.py" 2>&1

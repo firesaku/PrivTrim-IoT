@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-pcrun
 #SBATCH --gres=gpu:nvidia_h200:1
@@ -8,9 +8,9 @@
 #SBATCH --time=02:00:00
 #SBATCH --array=0-15%16
 #SBATCH --depend=afterok:1506330
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/pcrun-%A_%a.out
-#SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/pcrun-%A_%a.err
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/pcrun-%A_%a.out
+#SBATCH --error=/path/to/project/logs/pcrun-%A_%a.err
 #
 # 全量运行 Perception Compressor（NAACL 2025 Findings）于 LongBench 300 例。
 #
@@ -22,7 +22,7 @@
 #       长上下文 GPU 上预计 1-5 min/例 -> 19-95 min/片，--time=2h 留足。
 set -uo pipefail
 module load intel_h200_gpu 2>/dev/null || true
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 export PYTHONNOUSERSITE=1
 export PYTHONPATH=$RD/pc_stubs:$RD/repos/PerceptionCompressor:$RD/code:$RD/code/longctx
 export HF_HOME=$RD/hf_cache

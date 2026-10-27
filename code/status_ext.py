@@ -1,7 +1,7 @@
 """外部基线全量进度总览 + 续跑指引（零 GPU，随时可跑）。
 
 用法:
-  cd /dpc/kuex0095/100069961_ku/privtrim && env/bin/python status_ext.py
+  cd /path/to/project && env/bin/python status_ext.py
 
 回答四个问题:
   1. 五个压缩方法各完成到哪 / 还差多少
@@ -11,7 +11,7 @@
 """
 import json, io, os, glob, collections
 
-RD = '/dpc/kuex0095/100069961_ku/privtrim'
+RD = '/path/to/project'
 EXT = RD + '/out/ext_full'
 MINI = ['quito_x', 'provence', 'cpc', 'llmlingua2', 'mask_llmlingua2']
 

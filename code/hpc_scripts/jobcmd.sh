@@ -1,4 +1,4 @@
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
+RD=/path/to/100065732/privtrim_v2c_20261015
 echo "=== job 10602422 Command/WorkDir ==="
 scontrol show job 10602422 2>&1 | grep -E "Command=|WorkDir=|StdOut=|StdErr=|Partition=|Gres=|NumCPUs=|Mem="
 echo "=== submit script location ==="

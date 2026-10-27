@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-intact
 #SBATCH --gres=gpu:nvidia_h200:1
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=48G
 #SBATCH --time=00:20:00
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim/repos/text_sanitization
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/intact-%j.out
-#SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/intact-%j.err
+#SBATCH --chdir=/path/to/project/repos/text_sanitization
+#SBATCH --output=/path/to/project/logs/intact-%j.out
+#SBATCH --error=/path/to/project/logs/intact-%j.err
 #
 # INTACT 探针：在我们的 3 个案例上跑 replacements.py 的 LLM 生成分支。
 #
@@ -23,7 +23,7 @@
 # 因为 guess 还要再跑一轮 LLM 推断，先确认生成这一环能通。
 set -uo pipefail
 module load intel_h200_gpu 2>/dev/null || true
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 export PYTHONNOUSERSITE=1
 export HF_HOME=$RD/hf_cache
 export HF_HUB_CACHE=$RD/hf_cache
@@ -45,7 +45,7 @@ echo "=== rc=$RC elapsed=$(( $(date +%s) - T0 ))s"
 echo "=== output summary"
 $PY - <<'PY'
 import json, io, os
-p = '/dpc/kuex0095/100069961_ku/privtrim/data/intact_probe3_out.json'
+p = '/path/to/project/data/intact_probe3_out.json'
 if not os.path.exists(p):
     print('  no output file'); raise SystemExit(0)
 docs = json.load(io.open(p, encoding='utf-8'))

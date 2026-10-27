@@ -1,12 +1,12 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=prod
 #SBATCH --job-name=pt-dacwd3
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=4G
 #SBATCH --time=18:00:00
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/dacwd3-%j.out
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/dacwd3-%j.out
 #
 # DAC COMPLETION WATCHDOG v3 - target corrected to the ACHIEVABLE ceiling.
 #
@@ -19,7 +19,7 @@
 # It also stops waiting once compression stops making progress, so a permanently
 # stalled queue still hands off to evaluation rather than hanging for 18 h.
 set -uo pipefail
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 TARGET=1699
 COMPRESS_JOB=1489637
 echo "wd3 start $(date -Is) target=$TARGET (DAC-attention feasibility ceiling)"

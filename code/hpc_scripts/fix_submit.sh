@@ -1,4 +1,4 @@
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
+RD=/path/to/100065732/privtrim_v2c_20261015
 echo "=== fix shebang ==="
 head -n 1 "$RD/mistral.slurm"
 sed -i '1i #!/bin/bash' "$RD/mistral.slurm"

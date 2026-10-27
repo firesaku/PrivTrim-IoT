@@ -1,4 +1,4 @@
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
+RD=/path/to/100065732/privtrim_v2c_20261015
 date -Iseconds
 echo "=== elapsed ==="
 squeue -j 10602422 -o "%.10i %.9T %.10M" 2>&1 | tail -n 2

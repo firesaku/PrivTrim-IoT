@@ -1,6 +1,6 @@
 import json, io, glob, collections
 
-RD = '/dpc/kuex0095/100069961_ku/privtrim'
+RD = '/path/to/project'
 
 
 def load(pat):

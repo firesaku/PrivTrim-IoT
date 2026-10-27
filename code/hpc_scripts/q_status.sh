@@ -1,4 +1,4 @@
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
+RD=/path/to/100065732/privtrim_v2c_20261015
 date +%H:%M:%S
 squeue --me -o "%.10i %.16j %.9T %.8M %.10R" 2>&1 | head
 echo "--- A tail ---"; tail -n 2 "$RD/logs/aliaslink-10602422.out" 2>&1

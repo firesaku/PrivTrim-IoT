@@ -27,7 +27,7 @@ if not _os_guard.environ.get("SLURM_JOB_ID"):
 import sys, os, json, io, argparse, time, glob
 import torch
 
-RD = '/dpc/kuex0095/100069961_ku/privtrim'
+RD = '/path/to/project'
 sys.path.insert(0, RD + '/pc_stubs')                    # icecream/seaborn/pynvml 桩
 sys.path.insert(0, RD + '/repos/PerceptionCompressor')  # 作者原码
 import PerceptionCompressor as PC

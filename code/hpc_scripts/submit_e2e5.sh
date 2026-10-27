@@ -1,8 +1,8 @@
 #!/bin/bash
 # Almesbar: e2e5 -- router arms on conflict cases (the fourth-quadrant test).
 set -uo pipefail
-B=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
+B=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
+RD=/path/to/100065732/privtrim_v2c_20261015
 PY="$B/.venv-main/bin/python"
 LM="$B/models/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28"
 SC="$B/project/external/squad_v11/evaluate-v2.0.py"
@@ -16,7 +16,7 @@ wc -l "$RD/v4_variants.jsonl"
 
 cat > "$RD/e2e5.slurm" <<EOF
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-e2e5
 #SBATCH --gres=gpu:v100:1

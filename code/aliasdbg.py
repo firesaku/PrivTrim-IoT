@@ -1,5 +1,5 @@
 import json, io, sys, os
-RD = '/dpc/kuex0095/100069961_ku/privtrim'
+RD = '/path/to/project'
 sys.path.insert(0, RD + '/code/longctx')
 import v4_router as V
 

@@ -1,6 +1,6 @@
 import csv, io, json, os
 
-FIN = r"D:\CodexData\artifacts\privtrim-madar-20261013\final"
+FIN = r"D:\CodexData\artifacts\privtrim-<CLUSTER>-20261013\final"
 OUT = r"D:\CodexData\tmp\privtrim-review-20261015\results_dump.txt"
 
 def f(x):

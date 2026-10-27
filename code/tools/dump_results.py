@@ -1,6 +1,6 @@
 import csv, json, io, os, re, sys
 
-FIN = r"D:\CodexData\artifacts\privtrim-madar-20261013\final"
+FIN = r"D:\CodexData\artifacts\privtrim-<CLUSTER>-20261013\final"
 README = os.path.join(FIN, "README.md")
 TABLES = os.path.join(FIN, "tables.csv")
 GLOBAL = os.path.join(FIN, "comparisons_global.json")

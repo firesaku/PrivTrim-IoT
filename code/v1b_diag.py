@@ -27,8 +27,8 @@ TYPES = ('email', 'phone', 'account')
 def find_cases(arg):
     if arg and os.path.exists(arg):
         return arg
-    for pat in [r"/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/*/run/qwen25_7b/cases.jsonl.gz",
-                r"/dpc/kuex0095/100065732/**/cases.jsonl.gz"]:
+    for pat in [r"/path/to/100065732/privtrim_iot_hpc_20261005/*/run/qwen25_7b/cases.jsonl.gz",
+                r"/path/to/100065732/**/cases.jsonl.gz"]:
         g = glob.glob(pat, recursive=True)
         if g:
             return sorted(g, key=os.path.getsize)[-1]

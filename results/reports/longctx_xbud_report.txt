@@ -1,7 +1,7 @@
 E2E LONGCTX — 长上下文压缩基准（gold 由真实源结构化记录确定性导出）
 cases=112  arms=full,delete,alias,budget_cluster,budget_cluster_link,budget_random,delete_budget,alias_budget,alias_budget_link  budgets=[0.1, 0.15]  selector=lex  dtype=fp16  batch=2  max_new=64  maxlen=24576
-model=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/models/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28
-scorer=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/project/external/squad_v11/evaluate-v2.0.py
+model=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/models/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28
+scorer=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/project/external/squad_v11/evaluate-v2.0.py
 per-case budget B = round(ratio * nt(full_context))，由 tokenizer 实测
 
 [1] 预算对账（BUDGET ACCOUNTING）—— 预算臂实测 token 必须 <= 目标 B（超了直接 raise）

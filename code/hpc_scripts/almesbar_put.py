@@ -5,7 +5,7 @@ import time
 
 import paramiko
 
-HOST = 'login.almesbar.ku.ac.ae'
+HOST = 'login.almesbar.<ADMIN_DOMAIN>'
 USER = '100065732@kunet.ae'
 
 

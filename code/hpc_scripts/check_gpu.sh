@@ -1,5 +1,5 @@
 #!/bin/bash
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
+RD=/path/to/100065732/privtrim_v2c_20261015
 JID=${1:-1444010}
 echo "===== 该作业状态 ====="
 squeue -j "$JID" -o '%.12i %.10P %.14j %.9T %.11M %.8b %.20R' 2>&1

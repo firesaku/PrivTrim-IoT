@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-probe2
 #SBATCH --gres=gpu:nvidia_h200:1
@@ -7,15 +7,15 @@
 #SBATCH --mem=32G
 #SBATCH --time=00:20:00
 #SBATCH --array=0-1
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/probe2-%A_%a.out
-#SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/probe2-%A_%a.err
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/probe2-%A_%a.out
+#SBATCH --error=/path/to/project/logs/probe2-%A_%a.err
 #
 # 新增两个外部基线的可行性探针 —— DAC 的教训：没量过显存就直接铺 30 个分片是要出事的。
 # 每个 task 跑 1 个方法，取最短 / 中位 / 最长 3 个案例，报告 显存 + 耗时 + 预算是否达标。
 set -uo pipefail
 module load intel_h200_gpu 2>/dev/null || true
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 export PYTHONNOUSERSITE=1
 export PYTHONPATH=$RD/code:$RD/code/longctx
 export HF_HOME=$RD/hf_cache

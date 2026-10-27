@@ -13,13 +13,13 @@ echo "===== GPU 分区空闲卡估算 ====="
 timeout 20 sinfo -p gpu -o "%N %t %G %C" 2>&1
 echo
 echo "===== 模型目录（只 ls，不 find）====="
-MD=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/models
+MD=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/models
 timeout 20 ls -d "$MD"/*/ 2>&1 | head -15
 echo
 echo "===== venv python ====="
-P=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/.venv-main/bin/python
+P=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/.venv-main/bin/python
 timeout 60 "$P" -c "import sys,torch,transformers;print('PY_OK',sys.version.split()[0],torch.__version__,transformers.__version__,torch.cuda.is_available())" 2>&1 | tail -3
 echo
 echo "===== 磁盘余量 ====="
-timeout 20 df -h /dpc/kuex0095 2>&1 | tail -2
+timeout 20 df -h /path/to 2>&1 | tail -2
 echo "FASTPROBE_DONE"

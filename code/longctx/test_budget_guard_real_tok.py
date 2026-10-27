@@ -54,7 +54,7 @@ def load_harness():
 E = load_harness()
 from transformers import AutoTokenizer                           # noqa: E402
 
-B_ROOT = ('/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/'
+B_ROOT = ('/path/to/100065732/privtrim_iot_hpc_20261005/'
           'PrivTrim_IoT_HPC_20261005')
 LM = os.environ.get('LM') or os.path.join(
     B_ROOT, 'models/models--Qwen--Qwen2.5-7B-Instruct/snapshots/'

@@ -8,7 +8,7 @@
 """
 import io, os, re, sys
 
-RD = '/dpc/kuex0095/100069961_ku/privtrim'
+RD = '/path/to/project'
 TARGETS = [
     'run_pc.py',
     'gen_guiding.py',

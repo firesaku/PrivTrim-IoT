@@ -8,7 +8,7 @@
 """
 import json, io, os, sys, glob
 
-RD = '/dpc/kuex0095/100069961_ku/privtrim'
+RD = '/path/to/project'
 sys.path.insert(0, RD + '/research/token_compression_batch1_v1')
 import common as C
 

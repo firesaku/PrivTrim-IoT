@@ -14,7 +14,7 @@
 """
 import json, io, re, random
 
-RD = '/dpc/kuex0095/100069961_ku/privtrim'
+RD = '/path/to/project'
 SRC = RD + '/data/public_lb.jsonl'
 OUT = RD + '/data/public_lb_typeb.jsonl'
 

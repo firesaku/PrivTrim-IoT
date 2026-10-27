@@ -1,11 +1,11 @@
 #!/bin/bash
-# Submit the pair-budget fix verification on Madar.
+# Submit the pair-budget fix verification on <CLUSTER>.
 #   GPU job (1xH200, single card -- not the whole node): v2d real embeddings, both pair modes
 #   CPU job (prod, 8 cores):                             v2c char-3gram, both pair modes
 set -uo pipefail
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
-MD=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/models
-PY=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/.venv-main/bin/python
+RD=/path/to/100065732/privtrim_v2c_20261015
+MD=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/models
+PY=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/.venv-main/bin/python
 mkdir -p "$RD/logs"
 
 echo "===== 0. sanity ====="
@@ -32,7 +32,7 @@ if [ -z "$MODEL" ]; then echo "NO_MODEL_FOUND"; exit 4; fi
 echo "===== 2. write GPU slurm (v2d, both pair modes, 1xH200) ====="
 cat > "$RD/v2d_fix.slurm" <<EOF
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-v2dfix
 #SBATCH --gres=gpu:nvidia_h200:1
@@ -77,7 +77,7 @@ chmod +x "$RD/v2d_fix.slurm"
 echo "===== 3. write CPU slurm (v2c, both pair modes, prod/8cpu) ====="
 cat > "$RD/v2c_fix.slurm" <<EOF
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=prod
 #SBATCH --job-name=pt-v2cfix
 #SBATCH --cpus-per-task=8

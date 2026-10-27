@@ -1,21 +1,21 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=prod
 #SBATCH --job-name=pt-pcprod3
 #SBATCH --cpus-per-task=24
 #SBATCH --mem=64G
 #SBATCH --time=03:00:00
 #SBATCH --array=0-95%96
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/pcprod3-%A_%a.out
-#SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/pcprod3-%A_%a.err
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/pcprod3-%A_%a.out
+#SBATCH --error=/path/to/project/logs/pcprod3-%A_%a.err
 #
 # 第三波：补齐前两波超时后剩下的案例。
 # 前两波在 --time=1:30:00 到期时完成 193/300。driver 有 exists 判断，
 # 已完成的会瞬间跳过，因此 96 个分片只处理缺失的那 107 例。
 # 时限放宽到 3 小时（prod 分区上限 3 天，不受限）。
 set -uo pipefail
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 export PYTHONNOUSERSITE=1
 export PYTHONPATH=$RD/pc_stubs:$RD/repos/PerceptionCompressor:$RD/code:$RD/code/longctx
 export HF_HOME=$RD/hf_cache

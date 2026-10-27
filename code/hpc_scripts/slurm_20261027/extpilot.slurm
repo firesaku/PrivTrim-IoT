@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-extpilot
 #SBATCH --gres=gpu:nvidia_h200:1
@@ -7,9 +7,9 @@
 #SBATCH --mem=64G
 #SBATCH --time=00:08:00
 #SBATCH --array=0-5
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/extpilot-%A_%a.out
-#SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/extpilot-%A_%a.err
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/extpilot-%A_%a.out
+#SBATCH --error=/path/to/project/logs/extpilot-%A_%a.err
 #
 # 外部基线全量化的第一步：在**从未压缩过的新案例**上验证流程并测速。
 #
@@ -24,7 +24,7 @@
 #   产出直接写 out/ext_full（与最终全量同一目录，可续跑）。
 set -uo pipefail
 module load intel_h200_gpu 2>/dev/null || true
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 export PYTHONNOUSERSITE=1
 export PYTHONPATH=$RD/code:$RD/code/longctx
 export HF_HOME=$RD/hf_cache

@@ -1,12 +1,12 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=prod
 #SBATCH --job-name=pt-dacwd4
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=4G
 #SBATCH --time=18:00:00
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/dacwd4-%j.out
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/dacwd4-%j.out
 #
 # DAC COMPLETION WATCHDOG v4.
 #  - watches compression job 1489705 (feasible subset, 1699 cases)
@@ -14,7 +14,7 @@
 #  - hands off to dacev27.slurm when the ceiling is hit, the queue drains,
 #    or compression stalls for 40 min
 set -uo pipefail
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 TARGET=1699
 COMPRESS_JOB=1489705
 echo "wd4 start $(date -Is) target=$TARGET watching=$COMPRESS_JOB"

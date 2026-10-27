@@ -1,12 +1,12 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=prod
 #SBATCH --job-name=pt-dacwd
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=4G
 #SBATCH --time=14:00:00
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/dacwd-%j.out
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/dacwd-%j.out
 #
 # DAC COMPLETION WATCHDOG.
 #
@@ -18,7 +18,7 @@
 # Condition: dac compressed files >= 2700 (allow a small shortfall) OR
 #            the compression array no longer has RUNNING/PENDING tasks.
 set -uo pipefail
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 TARGET=2700
 COMPRESS_JOB=1489637
 echo "watchdog start $(date -Is) target=$TARGET"

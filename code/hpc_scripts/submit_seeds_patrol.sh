@@ -2,8 +2,8 @@
 # 多种子方差实验（seed 20261016 / 20261017；r3 主结果用的是 20261015）
 # + 安装巡检脚本
 set -uo pipefail
-B=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
+B=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
+RD=/path/to/100065732/privtrim_v2c_20261015
 PY="$B/.venv-main/bin/python"
 LM="$B/models/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28"
 SC="$B/project/external/squad_v11/evaluate-v2.0.py"
@@ -17,7 +17,7 @@ squeue -u "$(id -un)" -h -o '%i %j %T %M' 2>&1 | head -5
 echo "===== 2. 写多种子 array slurm ====="
 cat > "$RD/lctxseed.slurm" <<EOF
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-lctxseed
 #SBATCH --gres=gpu:v100:1
@@ -55,7 +55,7 @@ cat > "$RD/patrol.sh" <<'PEOF'
 #!/bin/bash
 # 巡检：一眼看清每个作业是"在跑 / 卡住 / 死了 / 完成"
 # 用法：bash patrol.sh
-R=/dpc/kuex0095/100065732/privtrim_v2c_20261015
+R=/path/to/100065732/privtrim_v2c_20261015
 NOW=$(date -u +%s)
 echo "=== PATROL $(date -u '+%Y-%m-%d %H:%M:%S') UTC ==="
 echo "--- 队列 ---"

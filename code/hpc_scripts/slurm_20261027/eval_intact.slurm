@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-evint
 #SBATCH --gres=gpu:nvidia_h200:1
@@ -7,9 +7,9 @@
 #SBATCH --mem=24G
 #SBATCH --time=00:15:00
 #SBATCH --array=0-1%2
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/evint-%A_%a.out
-#SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/evint-%A_%a.err
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/evint-%A_%a.out
+#SBATCH --error=/path/to/project/logs/evint-%A_%a.err
 #
 # INTACT 匿名化文本的 QA 评测 —— 唯一目的是拿到 F1，
 # 好和「零泄漏」阵营里的我们自己（F1 0.6888 / 长度 20%）做等隐私对比。
@@ -18,7 +18,7 @@
 #       = 150 次生成 x 0.43s ≈ 65s -> --time=15min 极宽松
 set -uo pipefail
 module load intel_h200_gpu 2>/dev/null || true
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 export PYTHONNOUSERSITE=1
 export PYTHONPATH=$RD/code:$RD/code/longctx
 export HF_HOME=$RD/hf_cache

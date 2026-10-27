@@ -1,5 +1,5 @@
 import io, json, os
-p = r"/dpc/kuex0095/100065732/privtrim_v2c_20261015/e2eout/e2e_alm_cells.json"
+p = r"/path/to/100065732/privtrim_v2c_20261015/e2eout/e2e_alm_cells.json"
 d = json.loads(io.open(p, encoding='utf-8').read())
 print("cases:", d.get('cases'), "arms:", d.get('arms'))
 print()

@@ -23,12 +23,12 @@ echo "===== 7. MY RECENT JOBS (7d) ====="
 sacct -u $(id -un) --starttime=now-7days -o JobID,JobName%22,Partition,Account,State,Elapsed,AllocCPUS,ReqMem,AllocTRES%32 -X 2>&1 | head -30
 echo
 echo "===== 8. PROJECT DIR ====="
-ls -la /dpc/kuex0095/ 2>&1 | head -20
+ls -la /path/to/ 2>&1 | head -20
 echo "--- my subdir ---"
-ls -la /dpc/kuex0095/100065732/ 2>&1 | head -30
+ls -la /path/to/100065732/ 2>&1 | head -30
 echo
 echo "===== 9. QUOTA ====="
-df -h /dpc/kuex0095 2>&1
+df -h /path/to 2>&1
 echo
 echo "===== 10. MODULES ====="
 module avail 2>&1 | head -20

@@ -1,7 +1,7 @@
 import csv, io, json, os
 from collections import Counter
 
-FIN = r"D:\CodexData\artifacts\privtrim-madar-20261013\final"
+FIN = r"D:\CodexData\artifacts\privtrim-<CLUSTER>-20261013\final"
 OUT = r"D:\CodexData\tmp\privtrim-review-20261015\conclusions.txt"
 
 def f(x):

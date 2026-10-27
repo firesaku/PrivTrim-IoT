@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-xmistral
 #SBATCH --gres=gpu:nvidia_h200:1
@@ -7,9 +7,9 @@
 #SBATCH --mem=32G
 #SBATCH --time=00:20:00
 #SBATCH --array=0-2%3
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/xmistral-%A_%a.out
-#SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/xmistral-%A_%a.err
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/xmistral-%A_%a.out
+#SBATCH --error=/path/to/project/logs/xmistral-%A_%a.err
 #
 # ③ 跨模型泛化：把主实验的关键臂换到 Mistral-7B-Instruct-v0.3 上重跑。
 #
@@ -23,7 +23,7 @@
 #       按 0.43s/次 ≈ 516s 单卡 -> 3 片 x 100 例 ≈ 3 分钟/片
 set -uo pipefail
 module load intel_h200_gpu 2>/dev/null || true
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 export PYTHONNOUSERSITE=1
 export PYTHONPATH=$RD/code:$RD/code/longctx
 export HF_HOME=$RD/hf_cache

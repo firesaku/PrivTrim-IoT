@@ -1,4 +1,4 @@
-B=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
+B=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005
 C=$B/project/research/token_compression_batch1_v1
 echo "=== compress.py lines 95-175 ==="
 sed -n '95,175p' "$C/compress.py" 2>&1

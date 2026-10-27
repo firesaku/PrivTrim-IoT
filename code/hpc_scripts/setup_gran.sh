@@ -1,9 +1,9 @@
 #!/bin/bash
 # 补跑 gran 配置（单卡），并收集已有 V3 报告
 set -uo pipefail
-RD=/dpc/kuex0095/100065732/privtrim_v2c_20261015
-MD=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/models
-PY=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/.venv-main/bin/python
+RD=/path/to/100065732/privtrim_v2c_20261015
+MD=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/models
+PY=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/.venv-main/bin/python
 MODEL=""
 for d in "$MD"/models--microsoft--llmlingua-2-xlm-roberta-large-meetingbank/snapshots/*/ ; do
   [ -f "$d/config.json" ] && MODEL="${d%/}"
@@ -12,7 +12,7 @@ echo "MODEL=$MODEL"
 
 cat > "$RD/v3gran.slurm" <<EOF
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<SLURM_ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-v3gran
 #SBATCH --gres=gpu:nvidia_h200:1

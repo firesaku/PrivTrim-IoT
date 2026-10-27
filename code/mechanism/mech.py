@@ -1,6 +1,6 @@
 import csv, io, os
 
-FIN = r"D:\CodexData\artifacts\privtrim-madar-20261013\final"
+FIN = r"D:\CodexData\artifacts\privtrim-<CLUSTER>-20261013\final"
 D = r"D:\CodexData\tmp\privtrim-review-20261015\mech"
 os.makedirs(D, exist_ok=True)
 

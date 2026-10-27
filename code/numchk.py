@@ -1,6 +1,6 @@
 import json, io, re, collections
 
-RD = '/dpc/kuex0095/100069961_ku/privtrim'
+RD = '/path/to/project'
 cs = [json.loads(x) for x in io.open(RD + '/data/longctx_max.jsonl', encoding='utf-8') if x.strip()]
 
 FLOAT = re.compile(r'-?\d+\.\d+')

@@ -20,8 +20,8 @@ squeue -u "$(id -un)" -o '%.12i %.10P %.16j %.9T %.11M %.6D %b %R' 2>&1
 echo
 echo "===== 3. 可用 python 环境 ====="
 for p in \
-  /dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/.venv-main/bin/python \
-  /dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/.venv-compression/bin/python ; do
+  /path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/.venv-main/bin/python \
+  /path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/.venv-compression/bin/python ; do
   if [ -x "$p" ]; then
     echo "--- $p"
     "$p" -c "import sys,torch,transformers;print('py',sys.version.split()[0],'torch',torch.__version__,'tf',transformers.__version__,'cuda',torch.cuda.is_available())" 2>&1 | head -3
@@ -30,11 +30,11 @@ for p in \
 done
 echo
 echo "===== 4. 本地模型目录 ====="
-MD=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/models
+MD=/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/models
 ls -d $MD/*/ 2>&1 | head -20
 echo "--- HF 缓存 ---"
 ls -d ~/.cache/huggingface/hub/*/ 2>&1 | head -20
 echo
 echo "===== 5. 小嵌入模型是否存在 ====="
-find /dpc/kuex0095/100065732 -maxdepth 6 -iname '*minilm*' -o -maxdepth 6 -iname '*sentence*' -o -maxdepth 6 -iname '*bge*' -o -maxdepth 6 -iname '*e5-*' 2>/dev/null | head -10
+find /path/to/100065732 -maxdepth 6 -iname '*minilm*' -o -maxdepth 6 -iname '*sentence*' -o -maxdepth 6 -iname '*bge*' -o -maxdepth 6 -iname '*e5-*' 2>/dev/null | head -10
 echo "PROBE2_DONE"
