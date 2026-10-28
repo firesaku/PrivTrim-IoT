@@ -1,0 +1,103 @@
+# 26 · 数据集 key 冲突：两套基准共用 key 但内容不同
+
+> 状态：**已确认，影响所有按 `case_key` 拼接的分析**。
+> 核查方式：直接比对两个数据文件（本机执行，无集群计算）。
+
+---
+
+## 26.1 事实
+
+仓库里有两个长上下文基准：
+
+| 文件 | 案例数 | 用途 |
+|---|---|---|
+| `data/longctx_cases.jsonl` | **112** | 论文主表 `tab:main`（`full = 0.7189`）|
+| `data/longctx_max.jsonl` | **2,728** | 扩展基准（`full = 0.6078`）|
+
+**两者的 112 个重叠 key，装的是不同的案例。**
+
+| 比较项 | 相同 / 112 |
+|---|---:|
+| 金标答案（`answers`）| **25** |
+| 上下文（`context`）| **14** |
+
+### 实例
+
+同一个 key `longctx-pec_home-multi-0005`：
+
+| 文件 | 金标 |
+|---|---|
+| `longctx_cases.jsonl` | `multi_0178_00` |
+| `longctx_max.jsonl` | `multi_0247_00` |
+
+同一个 key `longctx-privacylens-needle-0004`（前缀是 `needle`）：
+
+| 文件 | 金标 |
+|---|---|
+| `longctx_cases.jsonl` | `a close friend outside of the community` |
+| `longctx_max.jsonl` | `John Doe` |
+
+连案例类型都不同。
+
+---
+
+## 26.2 危害
+
+**任何按 `case_key` 跨数据集拼接的分析都会被静默污染。** 例如：
+
+```python
+# 用 112 例的 key 去查 2,728 那套的结果 —— 拿到的其实是另一批案例
+keys = {c['key'] for c in load('data/longctx_cases.jsonl')}
+for p in glob('results/percase/max32_*.jsonl.gz'):
+    for r in load(p):
+        if r['case_key'] in keys:
+            ...   # 这些行来自 longctx_max，不是 longctx_cases
+```
+
+不会报错，数字看起来也正常，但含义完全变了。
+
+### 已经造成过的误判
+
+| 现象 | 误判 | 真相 |
+|---|---|---|
+| 112 例 `full` 在不同批次里是 0.7189 与 0.6431 | "评测批次配置不一致" | 两个数据集，分别是 `longctx_cases` 与 `longctx_max` |
+| 用 112 例 key 查 `max32` 得到 0.6521 | "论文数字对不上仓库结果" | 该批次根本不是这个数据集 |
+
+---
+
+## 26.3 如何判定一个批次属于哪个数据集（自校验）
+
+用**恒等基线** `full`（原始全文，不做任何压缩）。它的分数由数据集决定，与压缩方法无关：
+
+| 数据集 | `full` F1 |
+|---|---:|
+| `longctx_cases`（112）| **0.7189** |
+| `longctx_max`（2,728）| **0.6078** |
+
+任何批次，只要 `full` 对不上其中之一，就不能与其并列比较。
+
+已验证的批次归属：
+
+| 批次 | `full` | 属于 |
+|---|---:|---|
+| `longctx_aliasq` / `longctx_aliaslink` / `longctx_r3` | 0.7189 | `longctx_cases` |
+| `extevfull` / `ev2new` / `keyfull` / `max32` | 0.6078–0.6431 | `longctx_max` |
+
+---
+
+## 26.4 建议
+
+1. **改名加前缀**：把两套 key 分别加上 `v1:` / `v2:` 前缀，或在 `case_key` 里带上数据集与版本号，杜绝碰撞
+2. **分析脚本必须自校验**：读入结果后先比对 `full` 的 F1，与预期不符则拒绝继续
+3. **论文里明确标注**：`tab:main` 与扩展基准是两套不同样本，数字不可互相引用
+
+---
+
+## 26.5 与"金标 oracle"问题的关系
+
+两者独立：
+
+- **金标 oracle**（`docs/24`）：压缩时用了答案位置 → 影响方法有效性
+- **key 冲突**（本文）：两套基准共用 key → 影响数据完整性与可复现性
+
+修 oracle 需要重跑；修 key 冲突需要改数据/脚本命名，且**任何已有的跨集拼接结果都要作废重算**。
