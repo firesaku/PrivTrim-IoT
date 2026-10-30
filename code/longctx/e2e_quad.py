@@ -457,9 +457,12 @@ def build_arm_texts(case, nt, budgets, arms, order_fn, seed=20261015):
     order_r = list(range(len(raw_units)))
     rng.shuffle(order_r)
 
-    # ---------------- 四象限路由（实验 B）----------------
+    # ---------------- 四象限路由 ----------------
+    QUAD_WINDOW = 2       # 无记录块结构时，锚点前后各取几句
+
     def _entry_index(units):
-        """每个单元所属的 entry 序号；----- entry N ----- 作为分界。"""
+        """每个单元所属的 entry 序号；----- entry N ----- 作为分界。
+        若全文没有标记，则全部为 -1。"""
         idx, cur = [], -1
         for u in units:
             if re.match(r'^-{3,}\s*entry\s+\d+', u.strip(), re.I):
@@ -477,18 +480,33 @@ def build_arm_texts(case, nt, budgets, arms, order_fn, seed=20261015):
     def build_quad4(redact_rel, B, order_f):
         """按象限施加不同操作。
 
-        相关轴 = 问题点名实体所在 entry（target_entity 或 anchor，两者都来自问题）。
-        完全不使用金标答案。
-          (sens, rel)   -> 别名（redact_rel=True 时改为删除）
-          (sens, irrel) -> 删除（整单元丢弃）
-          (plain, rel)  -> 保留
-          (plain, irrel)-> 按冗余度填充到预算
+        相关区域两种确定模式：
+          (1) 文本有 ----- entry N ----- 结构 -> 锚点所在 entry 的全部单元
+          (2) 无结构（如 LongBench 段落）      -> 锚点前后各 QUAD_WINDOW 句
+
+        (sens, rel)   -> 别名（redact_rel=True 时改为删除）
+        (sens, irrel) -> 删除
+        (plain, rel)  -> 保留
+        (plain, irrel)-> 按冗余度填充到预算
         """
         us = split_units(full)
         ents = _entry_index(us)
-        akeys = protect_keys()                       # target_entity 和/或 anchor
+        akeys = protect_keys()
         tgt_units = [i for i, u in enumerate(us) if any(k and k in u for k in akeys)]
-        tgt_ents = set(ents[i] for i in tgt_units)
+
+        has_marker = any(re.match(r'^-{3,}\s*entry\s+\d+', u.strip(), re.I) for u in us)
+        if has_marker:
+            tgt_ents = set(ents[i] for i in tgt_units)
+            rel_set = set(i for i in range(len(us)) if ents[i] in tgt_ents)
+        else:
+            rel_set = set()
+            for i in tgt_units:
+                for j in range(max(0, i - QUAD_WINDOW),
+                               min(len(us), i + QUAD_WINDOW + 1)):
+                    rel_set.add(j)
+        if not rel_set:
+            rel_set = set(tgt_units)      # 兜底：至少保住锚点本身
+
         al = v4_router.Aliaser('alias')
         al.preseed(cans)
         for _c in cans:
@@ -497,7 +515,7 @@ def build_arm_texts(case, nt, budgets, arms, order_fn, seed=20261015):
         out, forced, cand = [], [], []
         for i, u in enumerate(us):
             s = _is_sens(u)
-            r = bool(tgt_ents) and (ents[i] in tgt_ents)
+            r = i in rel_set
             if s and r:
                 out.append(privcheck.redact(u) if redact_rel
                            else v4_router.apply_replacements(u, cans, al))
@@ -511,7 +529,22 @@ def build_arm_texts(case, nt, budgets, arms, order_fn, seed=20261015):
                 out.append(u)
                 cand.append(i)
 
-        # 候选单元按冗余度排序（最冗余的先丢）
+        # 强制集合若本身超预算，按与锚点距离裁剪（锚点优先），
+        # 被裁掉的降级为可丢弃 —— 保证 check_budget 不会因超支抛错。
+        if tgt_units:
+            prio = sorted(forced, key=lambda i: (min(abs(i - j) for j in tgt_units), i))
+        else:
+            prio = sorted(forced)
+        kept, acc = [], 0
+        for i in prio:
+            c = nt(out[i])
+            if acc + c <= B:
+                kept.append(i)
+                acc += c
+            elif out[i]:
+                cand.append(i)
+        forced = kept
+
         flags = [False] * len(out)
         for i in forced:
             flags[i] = True
@@ -528,14 +561,11 @@ def build_arm_texts(case, nt, budgets, arms, order_fn, seed=20261015):
         chosen.sort()
 
         # 精确修剪：' '.join 会插入分隔符，真实 token 数可能大于逐单元之和
-        # （drop_to_budget 的注释记录过这个坑：实测最多超 1 个 token）。
-        # check_budget 一超就 raise，所以这里必须按**真实拼接文本**回退。
         forced_set = set(forced)
         while True:
             txt = ' '.join(out[i] for i in chosen if out[i])
             if nt(txt) <= B:
                 break
-            # 从后往前丢一个非强制单元
             dropped = False
             for i in reversed(chosen):
                 if i not in forced_set:
@@ -543,7 +573,7 @@ def build_arm_texts(case, nt, budgets, arms, order_fn, seed=20261015):
                     dropped = True
                     break
             if not dropped:
-                break          # 只剩强制单元仍超预算：交给 check_budget 报错
+                break
         return ' '.join(out[i] for i in chosen if out[i])
 
     F = nt(full)
