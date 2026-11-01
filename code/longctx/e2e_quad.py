@@ -552,6 +552,10 @@ def build_arm_texts(case, nt, budgets, arms, order_fn, seed=20261015):
 
         total = sum(nt(out[i]) for i in forced)
         chosen = list(forced)
+        # 实测对比：此处按 drop_order 正序加入 = 优先保留**最冗余**的单元。
+        # 与 drop_to_budget 的丢弃方向相反，但实测更优（见 docs/27 §27.12）：
+        # 因为答案承载单元往往是最冗余的（答案值在大量干扰记录中重复），
+        # 保留最冗余恰好保住答案。反向填充在 Type C 上从 0.6733 崩到 0.0167。
         for i in drop_order:
             if i in cand:
                 c = nt(out[i])
