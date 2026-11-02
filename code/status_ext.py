@@ -78,6 +78,6 @@ print('\n--- 续跑命令 ---')
 if need_comp:
     total = sum(N - len(cover[m]) for m in need_comp)
     print('  env/bin/python make_extc_plan.py        # 重算剩余分片（自带覆盖自检）')
-    print('  sbatch extcomp2.slurm                   # 预计 %d 个案例待压缩' % total)
+    print('  待压缩 %d 个案例' % total)
 if need_comp or need_eval:
-    print('  注意: extcomp2.slurm 与 extevalfull.slurm 都可直接重跑，幂等。')
+    print('  注意: 压缩与评测入口都可直接重跑，幂等。')

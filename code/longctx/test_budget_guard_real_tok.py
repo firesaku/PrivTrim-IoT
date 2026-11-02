@@ -13,7 +13,7 @@
 R1 案例复现：在真实失败案例上，逐臂逐预算比对"修复前算法"与修复后实现。
 R2 全量预检：112 案例 x 全部预算臂 x 3 预算，断言 nt(发射文本) <= B。
 R3 边界穷举性质测试：对随机单元集，**穷举求和式丢弃循环会停下来的每一个 B**，
-   这是唯一能必然命中"和 <= B 但拼接 > B"的构造；同时统计旧算法违规数。
+   这是唯一能必然命中"和 <= B 但拼接 > B"的构造；同时统计旧算法误用数。
 R4 单调性：budget_cluster 下 gold 存活随预算**单调不减**（预算越大留得越多；
    注意 test_longctx_synthetic.py 的 T10 标签写作"单调不增"，其代码实为
    g[0.25] <= g[0.5] <= g[0.75]，以代码为准）。
@@ -54,7 +54,7 @@ def load_harness():
 E = load_harness()
 from transformers import AutoTokenizer                           # noqa: E402
 
-B_ROOT = ('/path/to/100065732/privtrim_iot_hpc_20261005/'
+B_ROOT = ('/path/to/<user>/privtrim_iot_hpc_20261005/'
           'PrivTrim_IoT_HPC_20261005')
 LM = os.environ.get('LM') or os.path.join(
     B_ROOT, 'models/models--Qwen--Qwen2.5-7B-Instruct/snapshots/'
@@ -151,7 +151,7 @@ def main():
         if (ci + 1) % 20 == 0:
             print('R2 progress %d/%d rows=%d bad=%d'
                   % (ci + 1, len(cases), nrows, len(bad)), flush=True)
-    print('R2 预检行数=%d  违规=%d' % (nrows, len(bad)), flush=True)
+    print('R2 预检行数=%d  误用=%d' % (nrows, len(bad)), flush=True)
     check('R2 全量预检无预算超标', not bad, bad[:5])
     check('R2 行数=112x18', nrows == 112 * 18, 'n=%d' % nrows)
 
@@ -192,8 +192,8 @@ def main():
     print('R3 boundary_trials=%d  max_accounting_gap=%d  '
           'old_violations=%d  new_violations=%d'
           % (trials, max_gap, old_viol, new_viol), flush=True)
-    check('R3 新实现零违规（边界穷举）', new_viol == 0, 'new_viol=%d' % new_viol)
-    check('R3 旧实现在边界上确有违规（缺陷可复现）', old_viol > 0,
+    check('R3 新实现零误用（边界穷举）', new_viol == 0, 'new_viol=%d' % new_viol)
+    check('R3 旧实现在边界上确有误用（缺陷可复现）', old_viol > 0,
           'old_viol=%d max_gap=%d' % (old_viol, max_gap))
     overall_old_viol += old_viol
 

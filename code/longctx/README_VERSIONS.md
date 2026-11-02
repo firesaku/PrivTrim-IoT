@@ -73,10 +73,10 @@ RuntimeError: 预算突破（不允许静默超标）: … budget_random ratio=0
 在集群上先跑，只加载 tokenizer、不占显存：
 
 ```
-R2 预检行数=2016  违规=0
+R2 预检行数=2016  误用=0
 R3 boundary_trials=2488  max_accounting_gap=1  old_violations=32  new_violations=0
 R4 gold 存活随预算单调不减  ok
 BUDGET_GUARD_ALL_PASS
 ```
 
-**R3 是关键回归**：它穷举了 sum 记账恰好会停下的那些 B 值 —— 那是唯一能命中此缺口的构造。32 个旧违规 → 0。
+**R3 是关键回归**：它穷举了 sum 记账恰好会停下的那些 B 值 —— 那是唯一能命中此缺口的构造。32 个旧误用 → 0。

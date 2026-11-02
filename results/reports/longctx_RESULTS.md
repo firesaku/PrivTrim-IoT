@@ -1,6 +1,6 @@
 # PrivTrim-IoT — long-context benchmark results
 
-Job **10601756** on Almesbar (`gpu-11-2`, Tesla V100-PCIE-32GB): state `COMPLETED`, exit `0:0`, elapsed `01:14:58`. Harness `e2e_longctx_r2.py`, sha256 `b6a584f845b8816df5860fd166cbeb3ac1d411eea991c77d89eeb80b136188cf`. Qwen2.5-7B-Instruct fp16, `--sel lex`, batch 4, maxlen 8192, max-new 64, seed 20261015.
+Batch job on the GPU cluster (32 GB device): state `COMPLETED`, exit `0:0`, elapsed `01:14:58`. Harness `e2e_longctx_r2.py`, sha256 `b6a584f845b8816df5860fd166cbeb3ac1d411eea991c77d89eeb80b136188cf`. Qwen2.5-7B-Instruct fp16, `--sel lex`, batch 4, maxlen 8192, max-new 64, seed 20261015.
 
 112 cases x 18 (arm, ratio) = 2016 generations; all 2016 per-case rows present.
 

@@ -1,6 +1,6 @@
 """
 把我们的逐例结果与已发布基线（mask_quito_x / full）逐例 join，做同案例对比。
-在 Almesbar 上直接读共享盘上的 results.sqlite（只读）。
+在 the GPU cluster 上直接读共享盘上的 results.sqlite（只读）。
 
 审计修复（2026-10-16，全部为加法式、默认响亮）：
   1) my 侧唯一性：JSONL 里若有重复 (dataset, case_key, arm) 行（例如重跑追加），旧版会把
@@ -19,8 +19,8 @@ CLI 兼容：默认路径常量与输出文件名都没变，新增的都是可�
 import io, json, os, sqlite3, sys
 from collections import defaultdict
 
-B = '/path/to/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005'
-RD = '/path/to/100065732/privtrim_v2c_20261015'
+B = '/path/to/<user>/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005'
+RD = '/path/to/<user>/privtrim_v2c_20261015'
 DB = os.path.join(B, 'run/qwen25_7b/results.sqlite')
 MINE = os.path.join(RD, 'e2eout/e2e2_percase.jsonl')
 OUT = os.path.join(RD, 'e2eout/join_report.txt')

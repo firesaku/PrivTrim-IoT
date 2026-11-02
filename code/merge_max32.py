@@ -1,6 +1,6 @@
 """Merge the 32 max32 shards into one result set + aggregate tables.
 
-用法（在登录节点）：
+用法（在共享机器）：
   cd /path/to/project
   env/bin/python merge_max32.py
 

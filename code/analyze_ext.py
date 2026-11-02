@@ -2,7 +2,7 @@
 
 数据来源:
   内部臂  : out/max32_percase.jsonl        (2728 例 x 21)
-  外部臂  : out/extev_s*_percase.jsonl     (由 exteval.slurm 产出，ext_<method> / ext_<method>_native)
+  外部臂  : out/extev_s*_percase.jsonl     (由对应批量作业产出，ext_<method> / ext_<method>_native)
 
 用法: cd /path/to/project && env/bin/python analyze_ext.py
       可选参数 1: 覆盖外部臂文件的 glob（用于在真实数据到齐前用 dry-run 产物验证本脚本）

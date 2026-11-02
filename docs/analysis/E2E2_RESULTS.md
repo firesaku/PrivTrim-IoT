@@ -1,6 +1,6 @@
 # 端到端对比 v2：token 级 vs 句子级 + 与已发布基线的同案例 join
 
-> 2026-10-15 ｜ Almesbar 作业 **10599443**（`COMPLETED` exit 0:0，31:03，**1×V100-32GB**，FP16）
+> 2026-10-15 ｜ the GPU cluster 作业 **10599443**（`COMPLETED` exit 0:0，31:03，**1×V100-32GB**，FP16）
 > 1000 例（SQuAD 500 + HotpotQA 500），确定性哈希选案，与已发布基线**逐例 join**（同 case_key）
 
 ---

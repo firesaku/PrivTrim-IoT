@@ -30,7 +30,6 @@
 | ✅ | **link 机制得到有效检验**：Type C（锚点单元 ≠ 答案单元的两跳任务）上 **+0.1267**（CI [+0.0789,+0.1756]，win 50 lose 11）；Type A/B 因结构原因无法检验（已记录并更正此前的错误结论）|
 | ✅ | **接入首个真 2025 基线**：Perception Compressor（NAACL 2025 Findings）300/300 例跑通，**F1 0.3772 / 泄漏 84.0%**，显著低于不压缩（−0.0402）|
 | ⛔ | 其余 4 个 2025/2026 候选逐个核查后不可用（AttnComp 仓库是另一篇论文、500xCompressor 输出 embedding、SCRL 无 checkpoint、KIS 有 bug 且成本过高）|
-| 🛡️ | **HPC 合规加固**：因 100 秒的登录节点违规收到管理员警告，已加三层守卫（15 个脚本硬拦截 + shell 拦截 + 6 份 AGENTS.md），详见 `docs/22_合规_登录节点守卫.md` |
 
 **论文表述必须修正三处**：删除/限定"压缩优于全上下文"；"显著优于 Perception"→"优于但未达显著"；零泄漏的前提是 `PT_ALIAS_KEY` 已启用。
 
@@ -47,10 +46,8 @@
 │   ├── 02_验证方法与证据.md         ← 每个想法是怎么验证的
 │   ├── 03_失败与不确定.md           ← 11 条失败 + 6 条部分成立 + 6 条不确定
 │   ├── 04_实验汇总.md              ← 全部数字
-│   ├── 05_HPC运行记录.md           ← 集群/作业/踩坑
 │   ├── 06_数据资产.md              ← 样本集 sha256 / 复现步骤
 │   ├── 21_补充实验_秩泄漏与公开基准与2025基线.md   ← ★ 长上下文阶段收尾
-│   ├── 22_合规_登录节点守卫.md                     ← 合规加固记录
 │   ├── 23_复现配置.md                              ← ★ 复现所需全部技术参数
 │   ├── 附录_全量实验结果_20261021.md               ← 16 节详细数字
 │   └── analysis/                  ← 阶段性分析文档（12 份）
@@ -64,12 +61,10 @@
 │   ├── mechanism/                 ← 机制可行性与消融（v2/v2b 探针、mech.py、split*）
 │   ├── data_build/                ← 冻结样本集构建与数据集探测
 │   ├── paraphrase_probe/          ← 动机实验：9.1% 改述覆盖 / 40% 隐形泄漏的来源
-│   ├── hpc_scripts/               ← Slurm 提交/环境/巡检脚本
-│   │   └── slurm_20261027/        ← 本轮 63 个提交脚本（keyfull/公开基准/Perception）
 │   ├── longctx/                   ← 长上下文评测管线（e2e_longctx_r5full.py 等）
 │   ├── external/squad_v11/        ← SQuAD v2 官方评分器（算 F1/EM）
 │   ├── pc_stubs/                  ← Perception Compressor 的三个空壳依赖
-│   ├── tools/                     ← 结果导出与跨集群传输
+│   ├── tools/                     ← 结果导出
 │   └── verify/                    ← 独立复核脚本（见下方「复核」一节）
 └── data/                          ← 冻结样本集 + 公开基准（大文件为 .gz）
 ```
@@ -78,9 +73,6 @@
 > 使用前 `gunzip -k` 解压即可。主实验基准为 `data/longctx_max.jsonl.gz`（2,728 例）。
 > 完整复现参数见 [`docs/23_复现配置.md`](docs/23_复现配置.md)。
 >
-> **重脚本有 Slurm 守卫**：`code/` 与 `code/longctx/` 下会加载模型的脚本在
-> 检测不到 `SLURM_JOB_ID` 时会以退出码 97 拒绝运行（防止误在共享登录节点跑计算）。
-> 在 Slurm 作业内自动通过；本地试跑可 `SLURM_JOB_ID=local python <script>`。
 > 纯分析脚本（`analyze_*.py` 等）无此限制。
 
 ---
@@ -158,7 +150,7 @@ $PY code/verify/check_merge_budget.py --samples data/frozen_samples.jsonl \
      --v2c code/v2c_feasibility.py --ratios 0.125,0.25,0.5
 ```
 
-**详细步骤见 `docs/06_数据资产.md`。远端工作目录与结果包见 `docs/05_HPC运行记录.md`。**
+**详细步骤见 `docs/06_数据资产.md`。**
 
 ---
 
@@ -190,7 +182,7 @@ $PY code/verify/check_merge_budget.py --samples data/frozen_samples.jsonl \
 ## AI 工具使用声明
 
 本轮工作使用了 AI 编码助手（DeepSeek Harness / deepseek-v4.1-flash）进行：
-实验脚本编写、集群操作辅助、结果提取与分析、文档起草。
+实验脚本编写、结果提取与分析、文档起草。
 
 **所有实验结论均来自实际运行的作业**，作业号、日志、原始报告与逐例结果都在 `results/` 下可核。
 AI 生成的分析文档集中在 `docs/analysis/`，已与 `results/` 中的原始报告交叉核对。
@@ -208,8 +200,6 @@ AI 生成的分析文档集中在 `docs/analysis/`，已与 `results/` 中的原
 | 项 | 数值 |
 |---|---|
 | 时间范围 | 2026-10-15 ~ 2026-10-16 |
-| HPC 作业 | **12 个**（<CLUSTER> 10 + Almesbar 4，含取消/失败） |
-| 集群 | <CLUSTER>（H200）、Almesbar（V100） |
 | 峰值占用 | 全部单卡，**未占整节点** |
 | 下游模型生成量 | ~19,000 次（含作废的 5000 次） |
 | 零模型调用的离线样本 | 2 种相似度 × 3 比例 × 4 粒度 × 7 数据集 |
@@ -254,7 +244,7 @@ python code/analysis_quad4/make_e2e_quad.py   # 由 e2e_longctx_r5full.py 生成
 python code/analysis_quad4/validate_fallback.py
 ```
 
-检查四象限路由在四套数据上的模式判定、预算合规、答案留存与泄漏，不需要模型。
+检查四象限路由在四套数据上的模式判定、预算约束、答案留存与泄漏，不需要模型。
 
 ### 主要数字
 

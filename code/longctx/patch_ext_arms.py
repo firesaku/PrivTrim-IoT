@@ -83,7 +83,7 @@ B_NEW = '''    # ---- 外部基线臂：把已发布压缩器的输出原样注�
                 s['devmax'] = max(s['devmax'], abs(dev))
                 s['devmax_signed'] = max(s['devmax_signed'], dev)
                 # 已发布 compress_case 内部已 assert matched.tokens <= floor(0.5n)，
-                # 这里再独立记一次超标量，避免把"它自己违规"和"我们记账错"混为一谈。
+                # 这里再独立记一次超标量，避免把"它自己误用"和"我们记账错"混为一谈。
                 if toks_used[-1] > B:
                     log('EXT_OVER_BUDGET %s %s got=%d B=%d' % (c['key'], arm, toks_used[-1], B))
                 if a.dump_arms:

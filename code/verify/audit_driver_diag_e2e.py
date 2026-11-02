@@ -2,13 +2,13 @@
 # swapped to the local mirror copy, to verify real runtime behavior.
 import io, json, sys
 
-HPC = r"/path/to/100065732/privtrim_v2c_20261015/e2eout/e2e_alm_cells.json"
+HPC = r"/path/to/<user>/privtrim_v2c_20261015/e2eout/e2e_alm_cells.json"
 LOCAL = r"D:\CodexData\tmp\privtrim-review-20261015\repo_staging\extracted\e2eout\e2e_alm_cells.json"
 
 src = io.open(r"D:\CodexData\tmp\privtrim-review-20261015\hpc\diag_e2e.py", encoding="utf-8").read()
 assert HPC in src, "hardcoded path not found in diag_e2e.py"
 src = src.replace(HPC, LOCAL)
-# Emulate the HPC login node's UTF-8 stdout (Windows console here is cp1252).
+# Emulate the HPC shared machine's UTF-8 stdout (Windows console here is cp1252).
 sys.stdout.reconfigure(encoding="utf-8")
 sys.stderr.reconfigure(encoding="utf-8")
 sys.stderr.write("[driver] executing diag_e2e.py verbatim against local JSON mirror\n")

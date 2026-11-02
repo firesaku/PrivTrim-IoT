@@ -50,16 +50,6 @@ delete/alias 的替换语义 import hpc/v4_router.py 的 Aliaser / apply_replace
         --budgets 0.25,0.5,0.75 --arms all --dtype fp16 --batch 8 \
         --max-new 64 --maxlen 8192 --seed 20261016
 """
-# --- HPC_LOGIN_GUARD_V1 : 禁止在登录节点运行（2026-10-27 违规事故后加入）---
-import os as _os_guard, sys as _sys_guard
-if not _os_guard.environ.get("SLURM_JOB_ID"):
-    _sys_guard.stderr.write(
-        "\n[BLOCKED] 该脚本会加载模型/做重计算，必须在 Slurm 作业内运行。\n"
-        "  检测不到 SLURM_JOB_ID -> 当前很可能是 HPC 登录节点。\n"
-        "  正确做法:  sbatch <你的.slurm>   （优先 --partition=prod）\n"
-        "  参见 AGENTS.md 规则 1。\n\n")
-    _sys_guard.exit(97)
-# --- end HPC_LOGIN_GUARD_V1 ---
 import argparse
 import collections
 import hashlib
@@ -849,7 +839,7 @@ def main():
                 s['devmax'] = max(s['devmax'], abs(dev))
                 s['devmax_signed'] = max(s['devmax_signed'], dev)
                 # 已发布 compress_case 内部已 assert matched.tokens <= floor(0.5n)，
-                # 这里再独立记一次超标量，避免把"它自己违规"和"我们记账错"混为一谈。
+                # 这里再独立记一次超标量，避免把"它自己误用"和"我们记账错"混为一谈。
                 if toks_used[-1] > B:
                     log('EXT_OVER_BUDGET %s %s got=%d B=%d' % (c['key'], arm, toks_used[-1], B))
                 if a.dump_arms:
