@@ -94,7 +94,8 @@ if abs(q.get('leak', -1)) > 1e-9:
     FAILS.append('quad4 leak')
 
 section('1b) 外部基线（同一 extevfull 批次）')
-e = collect([(PC, ['extevfull_s*_percase.jsonl.gz'])])
+e = collect([(PC, ['extevfull_s*_percase.jsonl.gz',
+               'extevfull_s*_percase.gz'])])
 check('ext_full（恒等基线，应约等于我们的 full）', (stats(e, 'ext_full') or {}).get('f1'), 0.6078)
 check('quito_x',     (stats(e, 'ext_quito_x') or {}).get('f1'), 0.4831)
 check('cpc',         (stats(e, 'ext_cpc') or {}).get('f1'), 0.4740)
@@ -108,7 +109,8 @@ if abs(ml.get('leak', -1)) > 1e-9:
 # ---------------------------------------------------------------- 2) 112
 section('2) longctx_cases 112 例（论文主表，正向填充）')
 m112 = collect([(Q4, ['quad4_112_fwd_*.jsonl.gz'])])
-ref = collect([(PC, ['longctx_aliasq_percase.jsonl'])])
+ref = collect([(PC, ['longctx_aliasq_percase.jsonl',
+               'longctx_aliasq_percase.gz'])])
 check('full',              (stats(m112, 'full') or {}).get('f1'), 0.7189)
 check('alias',             (stats(m112, 'alias') or {}).get('f1'), 0.6475)
 check('quad4',             (stats(m112, 'quad4') or {}).get('f1'), 0.6366)
