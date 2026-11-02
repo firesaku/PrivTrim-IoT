@@ -1,0 +1,11 @@
+# 统一换行符，保证「生成器重建 == 仓库文件」在任何平台上逐字节成立
+* text=auto eol=lf
+
+# 二进制文件不做转换
+*.gz   binary
+*.pdf  binary
+*.png  binary
+*.jpg  binary
+*.zip  binary
+*.pt   binary
+*.bin  binary
