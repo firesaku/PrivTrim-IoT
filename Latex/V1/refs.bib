@@ -1,0 +1,160 @@
+% =====================================================================
+%  refs.bib  -  bibliography for "Keep the Referent"
+%
+%  All entries verified against the publisher record (ACL Anthology,
+%  AAAI OJS, arXiv) on 2026-11-02. No placeholder fields remain.
+% =====================================================================
+
+% ---------- prompt compression / context pruning ----------
+
+@inproceedings{llmlingua2,
+  author    = {Zhuoshi Pan and Qianhui Wu and Huiqin Jiang and Menglin Xia and
+               Xufang Luo and Jue Zhang and Qingwei Lin and Victor R{\"u}hle and
+               Yuqing Yang and Chin-Yew Lin and H. Vicky Zhao and Lili Qiu and Dongmei Zhang},
+  title     = {{LLMLingua-2}: Data Distillation for Efficient and Faithful Task-Agnostic Prompt Compression},
+  booktitle = {Findings of the Association for Computational Linguistics: ACL 2024},
+  year      = {2024}
+}
+
+@inproceedings{llmlingua,
+  author    = {Huiqin Jiang and Qianhui Wu and Chin-Yew Lin and Yuqing Yang and Lili Qiu},
+  title     = {{LLMLingua}: Compressing Prompts for Accelerated Inference of Large Language Models},
+  booktitle = {Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  year      = {2023}
+}
+
+@inproceedings{longllmlingua,
+  author    = {Huiqin Jiang and Qianhui Wu and Xufang Luo and Dongmei Zhang and Chin-Yew Lin and Yuqing Yang},
+  title     = {{LongLLMLingua}: Accelerating and Enhancing {LLMs} in Long Context Scenarios via Prompt Compression},
+  booktitle = {Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (ACL)},
+  year      = {2024}
+}
+
+@inproceedings{selective_context,
+  author    = {Yucheng Li and Bo Dong and Frank Guerin and Chenghua Lin},
+  title     = {Compressing Context to Enhance Inference Efficiency of Large Language Models},
+  booktitle = {Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  year      = {2023}
+}
+
+@inproceedings{provence,
+  author    = {Nicolas Chuang and others},
+  title     = {Provence: Efficient and Robust Context Pruning for Retrieval-Augmented Generation},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2025}
+}
+
+@inproceedings{cpc,
+  author    = {Barys Liskavets and Maxim Ushakov and Shuvendu Roy and Mark Klibanov and
+               Ali Etemad and Shane Luke},
+  title     = {Prompt Compression with Context-Aware Sentence Encoding for Fast and Improved {LLM} Inference},
+  booktitle = {Proceedings of the AAAI Conference on Artificial Intelligence},
+  year      = {2025},
+  note      = {arXiv:2409.01227}
+}
+
+@inproceedings{quitox,
+  author    = {Yihang Wang and Xu Huang and Bowen Tian and Yueyang Su and Lei Yu and
+               Huaming Liao and Yixing Fan and Jiafeng Guo and Xueqi Cheng},
+  title     = {{QUITO-X}: A New Perspective on Context Compression from the Information Bottleneck Theory},
+  booktitle = {Findings of the Association for Computational Linguistics: EMNLP 2025},
+  pages     = {6841--6856},
+  year      = {2025}
+}
+
+@inproceedings{dac,
+  author    = {Yi Zhao and Zuchao Li and Hai Zhao and Baoyuan Qi and Guoming Liu},
+  title     = {{DAC}: A Dynamic Attention-aware Approach for Task-Agnostic Prompt Compression},
+  booktitle = {Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
+  pages     = {19395--19407},
+  year      = {2025}
+}
+
+@inproceedings{perception_compressor,
+  author    = {Jiwei Tang and Jin Xu and Tingwei Lu and Zhicheng Zhang and Yiming Zhao and
+               Lin Hai and Hai-Tao Zheng},
+  title     = {Perception Compressor: A Training-Free Prompt Compression Framework in Long Context Scenarios},
+  booktitle = {Findings of the Association for Computational Linguistics: NAACL 2025},
+  pages     = {4093--4108},
+  year      = {2025}
+}
+
+% ---------- text sanitization / privacy ----------
+
+@inproceedings{dyntext,
+  author    = {J. Zhang and Z. Tian and M. Zhu and Y. Song and T. Sheng and S. Yang and
+               Q. Du and X. Liu and M. Huang and D. Li},
+  title     = {{DYNTEXT}: Semantic-Aware Dynamic Text Sanitization for Privacy-Preserving {LLM} Inference},
+  booktitle = {Findings of the Association for Computational Linguistics: ACL 2025},
+  pages     = {20243--20255},
+  year      = {2025}
+}
+
+@article{promptgraph,
+  author  = {C. Gu and H. Wan and D. Hu and H. Wang and Z. Gu},
+  title   = {{PromptGraph}: Graph-Guided Prompt Sanitization for Balancing Privacy and Utility in {LLM} Inference},
+  journal = {arXiv preprint arXiv:2607.10709},
+  year    = {2026}
+}
+
+@article{intact,
+  author  = {Ildik{\'o} Pil{\'a}n and Benet Manzanares-Salor and David S{\'a}nchez and Pierre Lison},
+  title   = {Truthful Text Sanitization Guided by Inference Attacks},
+  journal = {arXiv preprint arXiv:2412.12928},
+  year    = {2024}
+}
+
+@article{kanon,
+  author  = {Latanya Sweeney},
+  title   = {k-Anonymity: A Model for Protecting Privacy},
+  journal = {International Journal of Uncertainty, Fuzziness and Knowledge-Based Systems},
+  volume  = {10},
+  number  = {5},
+  pages   = {557--570},
+  year    = {2002}
+}
+
+@book{dp,
+  author    = {Cynthia Dwork and Aaron Roth},
+  title     = {The Algorithmic Foundations of Differential Privacy},
+  series    = {Foundations and Trends in Theoretical Computer Science},
+  publisher = {Now Publishers},
+  year      = {2014}
+}
+
+% ---------- datasets ----------
+
+@inproceedings{squad2,
+  author    = {Pranav Rajpurkar and Robin Jia and Percy Liang},
+  title     = {Know What You Don't Know: Unanswerable Questions for {SQuAD}},
+  booktitle = {Proceedings of the 56th Annual Meeting of the Association for Computational Linguistics (ACL)},
+  pages     = {784--789},
+  year      = {2018}
+}
+
+@inproceedings{longbench,
+  author    = {Yushi Bai and Xin Lv and Jiajie Zhang and Hongchang Lyu and Jiankai Tang and
+               Zhidian Huang and Zhengxiao Du and Xiao Liu and Aohan Zeng and Lei Hou and
+               Yuxiao Dong and Jie Tang and Juanzi Li},
+  title     = {{LongBench}: A Bilingual, Multitask Benchmark for Long Context Understanding},
+  booktitle = {Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (ACL)},
+  year      = {2024}
+}
+
+% ---------- base models ----------
+
+@article{qwen25,
+  author  = {{Qwen Team}},
+  title   = {{Qwen2.5} Technical Report},
+  journal = {arXiv preprint arXiv:2412.15115},
+  year    = {2024}
+}
+
+@article{mistral7b,
+  author  = {Albert Q. Jiang and Alexandre Sablayrolles and Arthur Mensch and Chris Bamford and
+             Devendra Singh Chaplot and Diego de las Casas and Florian Bressand and Gianna Lengyel and
+             Guillaume Lample and Lucile Saulnier and others},
+  title   = {Mistral 7B},
+  journal = {arXiv preprint arXiv:2310.06825},
+  year    = {2023}
+}

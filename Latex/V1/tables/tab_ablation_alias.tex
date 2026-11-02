@@ -1,0 +1,25 @@
+\begin{table*}[t]
+\caption{Isolating the alias-instead-of-delete rule. Replacing the alias operation by
+deletion in the sensitive-and-relevant cell, with everything else held fixed, costs a large
+and significant amount wherever the anchor is itself a sensitive value (multi-entity,
+single-hop, two-hop) and nothing where it is not (topical variants, no anchor). The
+two-hop column is the clearest case: the reference answer is present in the context in
+$96.3\%$ of cases under the delete variant, and F1 is nevertheless $0.0000$, because the
+account that identifies the record has been removed.}
+\label{tab:ablation_alias}
+\centering\small
+\setlength{\tabcolsep}{6pt}
+\begin{tabular}{lrrrr}
+\toprule
+Benchmark & \textsc{DARK} & delete variant & $\Delta$ & 95\% CI \\
+\midrule
+extension, all ($2{,}728$)     & 0.4937 & 0.3142 & $+0.1795$ & $[+0.1643,+0.1945]$ \\
+\quad multi-entity ($1{,}500$) & ---    & ---    & $+0.3273$ & $[+0.3040,+0.3513]$ \\
+\quad needle ($1{,}228$)       & ---    & ---    & $-0.0010$ & $[-0.0105,+0.0086]$ (n.s.) \\
+main set ($112$)               & 0.6366 & 0.5205 & $+0.1161$ & $[+0.0446,+0.1875]$ \\
+LongBench topical ($300$)      & 0.3516 & 0.3503 & $+0.0013$ & $[-0.0002,+0.0042]$ (n.s.) \\
+LongBench single-hop ($300$)   & 0.9607 & 0.1674 & $+0.7933$ & $[+0.7430,+0.8426]$ \\
+LongBench two-hop ($300$)      & 0.6733 & 0.0000 & $+0.6733$ & $[+0.6200,+0.7256]$ \\
+\bottomrule
+\end{tabular}
+\end{table*}

@@ -1,0 +1,38 @@
+\begin{table*}[t]
+\caption{Comparison on the 2{,}728-case extension (Qwen2.5-7B-Instruct, $r=0.50$). Published
+compressors are re-run through their reference implementations on the same cases; arms
+suffixed \arm{\_native} use each method's own default length. \emph{Leak} is the fraction of
+cases in which a protected value is recoverable from the prompt. \textsc{DARK} and the
+masking baseline are the only arms at $0\%$; \textsc{DARK} exceeds that baseline by
+$+0.3226$ $[+0.3041,+0.3414]$. Against the strongest compressor, Quito-X, the difference is
+$+0.0107$ $[-0.0091,+0.0306]$, i.e.\ not significant, at $0\%$ versus $98.1\%$ leakage.
+The uncompressed arm reproduces the reference value $0.6078$ from a separately evaluated
+batch to within one case in $2{,}728$.}
+\label{tab:external}
+\centering\small
+\setlength{\tabcolsep}{6pt}
+\begin{tabular}{llrr}
+\toprule
+Method & Family & F1 $\uparrow$ & leak $\downarrow$ \\
+\midrule
+\arm{full}                     & uncompressed       & 0.6081 & 100.0\% \\
+\arm{ext\_full}                & uncompressed (rerun) & 0.6078 & 100.0\% \\
+\textbf{\textsc{DARK}}     & ours (routes)      & \textbf{0.4937} & \textbf{0.0\%} \\
+Quito-X                        & query-aware        & 0.4831 & 98.1\% \\
+Quito-X \arm{\_native}         & query-aware        & 0.4862 & 98.1\% \\
+CPC                            & query-aware        & 0.4740 & 92.6\% \\
+CPC \arm{\_native}             & query-aware        & 0.4523 & 93.4\% \\
+Provence                       & query-aware        & 0.4080 & 90.8\% \\
+Provence \arm{\_native}        & query-aware        & 0.4047 & 88.8\% \\
+\arm{alias\_budget\_link}      & ours, no answer key, merged cell & 0.3482 & 0.0\% \\
+\arm{budget\_cluster\_link}    & raw text, anchor kept & 0.3352 & 55.4\% \\
+\arm{quad4\_del}               & ours, delete instead of alias & 0.3142 & 0.0\% \\
+LLMLingua-2                    & task-agnostic      & 0.2651 & 100.0\% \\
+LLMLingua-2 \arm{\_native}     & task-agnostic      & 0.2433 & 100.0\% \\
+\arm{mask\_llmlingua2}         & sanitize + compress & 0.1712 & 0.0\% \\
+\arm{mask\_llmlingua2\_native} & sanitize + compress & 0.1663 & 0.0\% \\
+\arm{alias\_budget}            & global alias, no anchor & 0.1469 & 0.0\% \\
+\arm{budget\_cluster}          & redundancy only    & 0.0981 & 0.5\% \\
+\bottomrule
+\end{tabular}
+\end{table*}

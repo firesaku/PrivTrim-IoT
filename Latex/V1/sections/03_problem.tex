@@ -1,0 +1,54 @@
+\section{Problem Formulation}
+\label{sec:problem}
+
+\paragraph{Setting.}
+A prompt is a pair $(q, C)$: a question $q$ written on the user side and an excerpt $C$
+drawn from an IoT log. The excerpt is split into units $U(C)=\{u_1,\dots,u_m\}$, one per
+record or key--value group. Each case carries a set of protected values
+$V=\{v_1,\dots,v_n\}$; a unit is \emph{sensitive} when it contains a value in $V$. A model
+$M$ answers $q$ from the compressed context, and the answer is scored against a reference
+span.
+
+\paragraph{What must not reach the model.}
+The prompt is the object of study. It travels from the device to the model process and may
+be logged, cached, or inspected. A policy is \emph{leak-free} on a case when no value in $V$
+is recoverable from the exact text handed to the model, that is, from the rewritten question
+$q'$ concatenated with the compressed context, not from the context alone. Recoverability is
+measured with the pattern set of the published protocol (full value plus fragments). We
+assume no adversarial manipulation of the model and no side channel beyond the prompt text,
+and we do not model an adversary who holds the alias map; Section~\ref{sec:discussion}
+states what that leaves out.
+
+\paragraph{The queried entity.}
+Each question names an entity $e^\star$, which may be an account, a device, or a record
+identifier. The \emph{anchor} $A\subseteq U(C)$ is the set of units containing a mention of
+$e^\star$. A unit plays a referential role when the question cannot be resolved without
+knowing which entity a value belongs to.
+
+\paragraph{Budget.}
+A budget arm receives a ratio $r$ and must realise a compressed context of at most
+$B=\lceil r\cdot n_C\rceil$ tokens, where $n_C$ is the token length of the uncompressed
+excerpt under the tokenizer used to build the prompt. Exceeding $B$ is a hard error rather
+than a silent truncation, because in this domain the answer region is often at the end of the
+excerpt and truncation would remove it without notice.
+
+\paragraph{Metrics.}
+\begin{itemize}
+\item \textbf{Task quality.} EM and F1 from the SQuAD~v2 scorer~\cite{squad2};
+\textsc{unknown} is not a legal answer.
+\item \textbf{Prompt leak}. Fraction of cases in which any protected value is recoverable
+from question plus compressed context. Lower is better.
+\item \textbf{Gold-in-context (GIC)}. Fraction of cases in which the reference span survives
+compression. It is model-free, and therefore an upper bound on what the reader can achieve;
+it is also blind to whether the surviving span is still interpretable, which is why we report
+task quality as a separate endpoint.
+\item \textbf{Overshoot}. Indicator that a budget arm exceeded $B$ on a case.
+\end{itemize}
+
+\paragraph{The condition we study.}
+The setting is narrow and we state it as such: long, identifier-dense operational text; a
+question that names an entity; and a requirement that the entity's value not reach the
+model. Questions of this form are common in IoT operations and, as
+Section~\ref{sec:analysis} shows, are exactly the ones on which redundancy-based compression
+is harmful. The same routing reduces to ordinary compression when the question is topical
+and names no entity; we report that variant as out of scope rather than as a success.

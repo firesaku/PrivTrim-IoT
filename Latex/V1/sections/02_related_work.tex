@@ -1,0 +1,49 @@
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Prompt compression.}
+One family reduces prompt length by scoring and removing tokens or sentences. \textsc{LLMLingua}~\cite{llmlingua} and \textsc{LongLLMLingua}~\cite{longllmlingua}
+use a small language model to estimate token informativeness; \textsc{LLMLingua-2}~\cite{llmlingua2}
+distils the decision into a token classifier for task-agnostic compression;
+Selective Context~\cite{selective_context} drops spans that carry little
+self-information; Provence~\cite{provence} prunes sentences jointly with question
+relevance; CPC~\cite{cpc} scores sentences with a context-aware encoder;
+Quito-X~\cite{quitox} casts compression as an information-bottleneck problem and
+approximates mutual information with cross-attention; DAC~\cite{dac} adds an
+attention-aware term to an entropy criterion; the Perception
+Compressor~\cite{perception_compressor} retrieves relevant demonstrations with guiding
+questions before compressing at the token level. These methods differ mainly in how they
+estimate relevance and redundancy. They share one assumption: that the prompt is ordinary
+text whose only cost is length. None of them alters a value the model is allowed to read,
+and none is evaluated on questions whose answer \emph{is} a protected value. The omission is
+consequential. The strongest of these methods leaves $98.1\%$ of protected values
+recoverable in our benchmark, and it preserves the answer for a query that names a sensitive
+entity far less reliably than it preserves an ordinary answer span.
+
+\paragraph{Text sanitization for inference.}
+A second family rewrites protected spans before the prompt leaves the user side.
+DYNTEXT~\cite{dyntext} substitutes sensitive tokens with semantically similar non-sensitive
+neighbours drawn from a dynamic adjacency list, so that a fixed substitution table cannot be
+attacked; PromptGraph~\cite{promptgraph} guides the rewrite with a dependency graph;
+INTACT~\cite{intact} replaces identifiers with generalised candidates selected for
+resistance to LLM inference attacks. Masking wrappers around published compressors belong
+here too. These methods decide per span what to hide and treat utility as whatever survives
+the rewrite. On our benchmark that framing has a measurable cost: a masking pipeline that
+achieves zero leakage scores $0.1712$ on the $2{,}728$-case extension, because the span it
+removes is the referent the question needs. Differential privacy~\cite{dp} and
+$k$-anonymity~\cite{kanon} supply formal guarantees, but neither offers the per-query
+referential behaviour this task requires; Section~\ref{sec:discussion} returns to that point.
+
+\paragraph{Long-context question answering.}
+LongBench~\cite{longbench} supplies the passages from which we derive the public-benchmark
+variants, and SQuAD~v2~\cite{squad2} supplies the scoring function. Our contribution is
+orthogonal to the retrieval and long-context modelling literature: we do not modify the
+reader, only the text it receives, and we measure the effect at a fixed token budget.
+
+\paragraph{Where this study sits.}
+The two families above optimise different objectives, length and concealment, and each
+reports utility on prompts whose answer is ordinary text. We study the case where both
+objectives fall on the same span, and show that the resulting conflict is resolvable by
+changing \emph{which operation} acts on that span rather than by trading one objective
+against the other. We keep the compression interface of the first family and the
+per-span rewriting of the second, and modify the stage at which the operation is chosen.

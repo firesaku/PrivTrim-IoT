@@ -1,0 +1,60 @@
+% Fig.6 —— 两个真实案例的定性对比（预测为模型实际输出）
+\definecolor{anchorbg}{HTML}{DCE4E6}
+\definecolor{failbg}{HTML}{F0E4E2}
+\definecolor{okbg}{HTML}{E4EAE7}
+
+\begin{figure*}[t]
+\centering
+
+\begin{minipage}[t]{0.47\textwidth}
+\centering
+{\small\bfseries (a) two-hop: the answer sits behind a chain}\\[3pt]
+{\scriptsize\itshape Q: which device does account \texttt{ACCT-5f31} operate?}\\[4pt]
+\begin{flushleft}\ttfamily\scriptsize\setlength{\parskip}{1.5pt}
+\textcolor{black!45}{164}\ \ \colorbox{anchorbg}{\strut account ACCT-5f31} belongs to \colorbox{anchorbg}{\strut user U-5a675c}\\
+\textcolor{black!45}{\dots}\\
+\textcolor{black!45}{170}\ \ \colorbox{anchorbg}{\strut user U-5a675c} operates device \underline{sensor\_422708\_15}
+\end{flushleft}
+\vspace{3pt}
+{\scriptsize\itshape after aliasing, both links keep a name:}\\[3pt]
+\begin{flushleft}\ttfamily\scriptsize
+\colorbox{anchorbg}{\strut account [ACCT-A]} belongs to \colorbox{anchorbg}{\strut user [USER-B]}\\
+\colorbox{anchorbg}{\strut user [USER-B]} operates device \underline{sensor\_422708\_15}
+\end{flushleft}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.47\textwidth}
+\centering
+{\small\bfseries (b) multi-entity: the answer looks like a distractor}\\[3pt]
+{\scriptsize\itshape Q: which persona id is recorded for account \texttt{ACCT-447f...}?}\\[4pt]
+\begin{flushleft}\ttfamily\scriptsize\setlength{\parskip}{1.5pt}
+\textcolor{black!45}{07}\ \ \{``device'': ``dehumidifiers'',\\
+\phantom{07}\ \ \ ``id'': \underline{``multi\_0166\_00''}, \dots\}\\
+\textcolor{black!45}{08}\ \ Private contact record:\\
+\textcolor{black!45}{09}\ \ Contact email: contact.e67e...\\
+\textcolor{black!45}{11}\ \ \colorbox{anchorbg}{\strut Account ID: ACCT-447fa54ac66d}
+\end{flushleft}
+\vspace{3pt}
+{\scriptsize\itshape the target account is the eleventh of sixteen,}\\
+{\scriptsize\itshape and its record is shaped like every other record.}
+\end{minipage}
+
+\vspace{7pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lcccc}
+\toprule
+ & \arm{full} & \arm{alias} & \arm{delete} & \textsc{DARK} \\
+\midrule
+(a)\ \ two-hop, \texttt{lbc-hotpotqa-0000} & \colorbox{okbg}{sensor\_422708\_15} & \colorbox{okbg}{sensor\_422708\_15} & \colorbox{failbg}{UNKNOWN} & \colorbox{okbg}{sensor\_422708\_15} \\
+(b)\ \ multi-entity, \texttt{multi-0032} & \colorbox{failbg}{UNKNOWN} & \colorbox{okbg}{multi\_0166\_00} & \colorbox{failbg}{UNKNOWN} & \colorbox{okbg}{multi\_0166\_00} \\
+\bottomrule
+\end{tabular}}
+
+\caption{Two cases where the routing changes the answer, with the predictions the reader
+actually produced. In (a) the question names an account that reaches the answer only through
+a user identifier six records later; deleting either link leaves the answer present but
+unreachable, and the model returns \textsc{unknown}. In (b) the answer sits in one of sixteen
+near-identical account records, so the uncompressed prompt \emph{also} fails---here the
+distractor structure, not the budget, is what defeats the reader---while both aliasing arms
+answer correctly. Shaded spans mark the names that keep a chain addressable.}
+\label{fig:cases}
+\end{figure*}

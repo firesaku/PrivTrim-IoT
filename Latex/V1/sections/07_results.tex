@@ -1,0 +1,84 @@
+\section{Results}
+\label{sec:results}
+
+\input{tables/tab_main}
+
+\subsection{Compression costs little}
+
+Table~\ref{tab:main} answers the first question: at an equal $50\%$ budget, does the routing
+rule preserve the task? Aliasing the whole context without compressing scores $0.6475$;
+\textsc{DARK} scores $0.6366$ at $48.6\%$ of the tokens. The paired difference is
+$-0.0109$ with a $95\%$ interval of $[-0.0824,+0.0612]$, which does not exclude zero: on
+this benchmark, halving the context costs no measurable task quality relative to the
+leak-free uncompressed arm. Against not compressing and not sanitizing, the deficit is
+$-0.0823$ $[-0.1610,-0.0041]$, which is the price of the privacy constraint rather than of
+compression, since the aliasing arm pays it as well ($-0.0714$ against \arm{full}).
+
+The comparison specific to our design is the lower block of the table. Two arms are
+leak-free and compress to nearly the same length: \arm{alias\_budget\_link}, which aliases
+globally and protects the anchor line, and \textsc{DARK}. The difference is $+0.2147$
+$[+0.1224,+0.3085]$. The two do not differ in the privacy operation---both alias---but in
+which region survives: one line, or the block containing it.
+
+\input{tables/tab_external}
+
+\subsection{At scale, the comparison is a privacy comparison}
+
+Table~\ref{tab:external} reports the $2{,}728$-case extension. \textsc{DARK} scores
+$0.4937$, level with the strongest query-aware compressor (Quito-X, $0.4831$; difference
+$+0.0107$, interval $[-0.0091,+0.0306]$) and above CPC ($0.4740$) and Provence ($0.4080$).
+What separates the arms is leakage. Every published compressor leaves protected values in
+the prompt, in $88.8\%$ to $100\%$ of cases, because concealing them is not among its
+objectives. \textsc{DARK} leaves none. Among leak-free arms the nearest competitor is a
+masking wrapper at $0.1712$, which \textsc{DARK} exceeds by $+0.3226$
+$[+0.3041,+0.3414]$.
+
+The reading we take from this table is narrow. A query-aware compressor reaches the same F1
+as our rule at the same budget, but only by forwarding the value the question names. When
+that value must not be forwarded, the compressor loses the task, as the masking row shows,
+and the routing rule does not.
+
+\input{tables/tab_budget}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig1_main.pdf}
+\caption{Behaviour across the budget sweep (112 cases). (a) F1 at five ratios with bootstrap
+$95\%$ intervals over cases; the dotted line is the uncompressed reference. (b) Fraction of
+cases in which a protected value is recoverable from the prompt. \textsc{DARK}, the
+delete variant and the global-alias arm stay at zero for the whole range, while the arm that
+compresses raw text leaks in $35.7\%$ of cases at tight budgets and $50.0\%$ at $r=0.75$, so
+its apparent parity at loose budgets is bought with exposure. (c) Composition of case
+outcomes at $r=0.50$: solid is an exact answer, the pale band is a partial match, hatched is
+a wrong or \textsc{unknown} answer. (d) The same four arms under a second reader and two
+question paraphrases; the ordering of the arms is preserved in all four conditions.}
+\label{fig:budget}
+\end{figure*}
+
+\subsection{The advantage holds across budgets}
+
+Table~\ref{tab:budget} varies the budget over five ratios. \textsc{DARK} is the strongest
+budget arm at every point: $+0.205$ at $r=0.10$, $+0.263$ at $r=0.25$, $+0.215$ at
+$r=0.50$, and $+0.065$ at $r=0.75$, all at zero leakage. Its own score is not monotone. It
+peaks at $r=0.50$ and drops by $0.021$ at $r=0.75$, because the additional refill text admitted
+at a loose budget is repetitive context that competes with the relevant block for the
+reader's attention. The competing arms keep improving with budget, so the margin narrows;
+at $r=0.75$ it is small. We report the non-monotonicity rather than describing the curve as
+monotone, and note that the half-budget setting used elsewhere is where the mechanism
+separates most clearly from the alternatives.
+
+\subsection{Cross-model and phrasing stability}
+
+On Mistral-7B-Instruct-v0.3 at $r=0.50$, \textsc{DARK} scores $0.6946$ against $0.6366$
+on Qwen2.5-7B. Every other arm loses ground when the reader changes: \arm{full} $-0.0258$,
+\arm{alias} $-0.0544$, \arm{delete} $-0.0357$, \arm{alias\_budget\_link} $-0.0471$,
+\arm{budget\_cluster\_link} $-0.0471$. The routing rule is the only arm that improves, which
+is consistent with the mechanism: a second reader gains more from a cleaned, budgeted prompt
+than from a long one.
+
+Against two mechanical rewritings of the question, \textsc{DARK} scores $0.6637$ and
+$0.6023$ against $0.6366$ on the original, a maximum change of $-0.0343$. The uncompressed
+arm changes by $-0.0614$ over the same rewritings. The margin over
+\arm{alias\_budget\_link} remains significant in all three conditions ($+0.2147$, $+0.2711$,
+$+0.1994$). The check is relevant because the rule keys on a mention of the queried entity,
+and a rewriting could in principle disturb that mention; in these variants it does not.

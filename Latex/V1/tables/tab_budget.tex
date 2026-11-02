@@ -1,0 +1,24 @@
+\begin{table}[t]
+\caption{Budget curve on the 112-case benchmark. Every row satisfies its budget with zero
+overshoot. \textsc{DARK} is the strongest budget arm at all five ratios; its advantage
+narrows as the budget grows, and its own score peaks at $r=0.50$ because at $r=0.75$ the
+additional refill text is noise. The last row gives the mean realised context length in tokens.}
+\label{tab:budget}
+\centering\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrrr}
+\toprule
+Arm & @0.10 & @0.15 & @0.25 & @0.50 & @0.75 \\
+\midrule
+\textbf{\textsc{DARK}} & \textbf{0.4357} & \textbf{0.4681} & \textbf{0.5116} & \textbf{0.6366} & \textbf{0.6158} \\
+\arm{quad4\_del}           & 0.3297 & 0.3788 & 0.3955 & 0.5205 & 0.5086 \\
+BCL                        & 0.2304 & 0.2052 & 0.2310 & 0.4308 & 0.5576 \\
+ABL                        & 0.2304 & 0.2052 & 0.2488 & 0.4219 & 0.5512 \\
+\midrule
+realised tokens            & 656 & 1033 & 1913 & 3869 & 5830 \\
+\bottomrule
+\end{tabular}}
+\vspace{2pt}
+{\footnotesize Uncompressed reference: F1 $0.7189$ at $7964$ tokens.}
+\end{table}

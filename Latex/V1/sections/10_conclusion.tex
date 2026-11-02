@@ -1,0 +1,30 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+We studied what happens to a privacy-preserving inference pipeline when the entity a
+question asks about is also the entity that must be protected. Two standard remedies fail
+there, for opposite reasons. Redaction removes the referent the reader needs. Redundancy
+ordering removes the record that carries the answer, because on this data the answer-bearing
+record is the most repetitive one. We presented \textsc{DARK}, which resolves the conflict
+by deciding the two axes per unit and by giving the sensitive-and-relevant cell an operation
+that neither remedy provides: the unit stays, its values are aliased, and the same map is
+applied to the question. Relevance is read off the question---the record block that mentions
+the queried entity---so the pipeline needs neither a reference answer nor training.
+
+Across a 112-case benchmark over six public datasets, \textsc{DARK} uses $48.6\%$ of the
+tokens at zero prompt-level leakage and is statistically indistinguishable from aliasing the
+full context without compression ($-0.0109$). On a $2{,}728$-case extension it matches the
+strongest query-aware compressor ($+0.0107$, not significant) at $0\%$ leakage against
+$98.1\%$, and exceeds the nearest leak-free baseline by $0.3226$ F1 points. A single
+controlled substitution isolates the decision behind these numbers: replacing the alias
+operation with deletion costs $0.1795$ F1 points overall, $0.3273$ on multi-entity cases, and
+nothing where no anchor exists. The last figure matters as much as the others, because it
+indicates that the rule acts on the structure it was designed for and is inert elsewhere.
+
+Two directions follow from the limits stated in Section~\ref{sec:discussion}. The fallback
+window is the weakest part of the mechanism: in the two-hop variant the answer lies outside
+it and is recovered only through the refill order, so widening the relevant region to cover
+the answer is the first configuration to test. The second concerns the privacy claim itself.
+A pipeline of this shape would be considerably stronger with a guarantee that survives an
+adversary holding the alias map, and establishing one is a different piece of work from the
+one reported here.

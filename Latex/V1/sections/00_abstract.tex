@@ -1,0 +1,22 @@
+\begin{abstract}
+IoT device logs are long, identifier-dense, and routinely copied into language-model
+prompts. A question about a device or an account names exactly the value that must not reach
+the model: the queried entity is also the entity under protection. Redaction removes the
+value and, with it, the handle the model needs to answer. Generic compression drops context
+and frequently drops the record that carries the answer. We present \textsc{DARK}, a
+training-free routing rule that decides every context unit with one of four
+operations---delete, alias, refill, keep---and treats the sensitive-and-relevant cell
+differently from the rest: the unit stays in
+the prompt, its protected values are replaced by stable aliases, and the same alias map is
+applied to the question. Relevance is read off the question alone---the record block that
+mentions the queried entity---so the compressor never consults the reference answer. On a
+112-case benchmark over six public datasets, \textsc{DARK} reaches F1 $0.6366$ using
+$48.6\%$ of the original tokens with no protected value recoverable from the prompt, and is
+statistically indistinguishable from aliasing the full context without compression
+($0.6475$; difference $-0.0109$, $95\%$ CI $[-0.0824,+0.0612]$). On a 2{,}728-case extension
+it matches the strongest query-aware compressor ($0.4937$ vs.\ $0.4831$; difference not
+significant) while leaving $0\%$ of protected values recoverable against that method's
+$98.1\%$, and it exceeds the only leak-free baseline by $0.3226$ F1 points. The same
+ordering holds at every budget from $10\%$ to $75\%$, on a second model, and under two
+question paraphrases.
+\end{abstract}

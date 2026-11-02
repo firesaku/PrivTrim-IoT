@@ -1,0 +1,51 @@
+\section{Experimental Setup}
+\label{sec:setup}
+
+\paragraph{Models and decoding.}
+The main reader is Qwen2.5-7B-Instruct~\cite{qwen25}; the cross-model check uses
+Mistral-7B-Instruct-v0.3~\cite{mistral7b}. Both run in fp16 with greedy decoding,
+$64$ new tokens, maximum context $24{,}576$ tokens and a strict policy that aborts rather
+than truncates when a prompt exceeds it. The random seed is fixed at \texttt{20261015}.
+Scoring uses the official SQuAD~v2 script~\cite{squad2}.
+
+\paragraph{Baselines.}
+We re-run eight published compressors through their reference implementations:
+LLMLingua-2~\cite{llmlingua2}, LongLLMLingua~\cite{longllmlingua}, Selective
+Context~\cite{selective_context}, Provence~\cite{provence}, CPC~\cite{cpc},
+Quito-X~\cite{quitox}, DAC~\cite{dac}, and the Perception
+Compressor~\cite{perception_compressor}. Where a method exposes both a budget-matched and a
+native configuration we report both; the budget-matched one is used for the headline
+comparison, since published defaults vary in length. We additionally run two
+sanitization-oriented baselines, INTACT~\cite{intact} and a masking wrapper around
+LLMLingua-2, and our own non-routing arms: \arm{ful},
+\arm{alias} (alias all protected values, no compression), \arm{delete} (redact all, no
+compression), \arm{alias\_budget} and \arm{alias\_budget\_link} (global alias, then
+redundancy-based selection without and with anchor protection), and the corresponding
+\arm{budget\_cluster} pair on raw text.
+
+\paragraph{What each baseline receives.}
+All compressors receive the question and the context and nothing else. We verified in the
+runner that the reference answer is never passed to any baseline, and that no baseline
+consumes the anchor set. This is the fairness condition for the comparison: the
+contribution we claim is precisely the ability to obtain the referential benefit without
+the answer key.
+
+\paragraph{Equal-budget comparison.}
+Budget arms are anchored at $r=0.5$ for the main comparison and swept over
+$r\in\{0.10,0.15,0.25,0.50,0.75\}$ for the budget curve. Published compressors are
+evaluated at their own $50\%$ setting, with the token accounting reported in every table so
+that a method that realises a different length is visible as such.
+
+\paragraph{Statistics.}
+All comparisons between two arms on the same cases are paired. We report the mean paired
+difference and a $95\%$ percentile bootstrap interval with $10{,}000$ resamples over cases.
+A difference is called significant when the interval excludes zero. We deliberately do not
+attach a significance claim to any comparison across the two benchmark sizes, which draw
+different cases.
+
+\paragraph{Reproducibility controls.}
+Two controls are run in every batch. First, the uncompressed arm is recomputed; it involves
+no selection logic, so it must reproduce the reference value, and any deviation indicates
+that the run differs in model, precision, or data. Second, every budget arm asserts
+non-overshoot at the case level. Runs that fail either control are discarded rather than
+reported.

@@ -1,0 +1,100 @@
+\section{Appendix}
+\label{sec:appendix}
+
+\subsection{Per-source breakdown}
+
+\paragraph{Extension set ($2{,}728$ cases).}
+F1 by source, budget $r=0.50$, all arms of ours constructed without the answer key. The
+routing rule is strongest on \arm{pec\_home} and \arm{smartbench\_tdcs} and weakest on
+\arm{toolmem\_raw}, where the uncompressed arm is also weakest.
+
+\begin{table}[t]
+\caption{Per-source F1 on the extension set ($2{,}728$ cases, $r=0.50$).}
+\label{tab:app_persource_ext}
+\centering\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrr}
+\toprule
+Source & $n$ & \arm{full} & \textsc{DARK} & ABL \\
+\midrule
+\arm{pec\_home}        & 426 & 0.7816 & 0.6756 & 0.2859 \\
+\arm{privacylens}      & 600 & 0.5340 & 0.4671 & 0.3381 \\
+\arm{simuhome}         & 312 & 0.8686 & 0.6186 & 0.3910 \\
+\arm{smartbench\_tdcs} & 490 & 0.6449 & 0.5714 & 0.6367 \\
+\arm{toolmem}          & 300 & 0.5154 & 0.4933 & 0.3121 \\
+\arm{toolmem\_raw}     & 600 & 0.4401 & 0.2631 & 0.1624 \\
+\midrule
+overall                & 2728 & 0.6081 & 0.4937 & 0.3482 \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\paragraph{Main set ($112$ cases).}
+Same setting on the smaller set.
+
+\begin{table}[t]
+\caption{Per-source F1 on the main set ($112$ cases, $r=0.50$).}
+\label{tab:app_persource_main}
+\centering\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrr}
+\toprule
+Source & $n$ & \arm{full} & \textsc{DARK} & \arm{alias} \\
+\midrule
+\arm{pec\_home}        & 20 & 0.8750 & 0.8250 & 0.8250 \\
+\arm{privacylens}      & 20 & 0.6567 & 0.6400 & 0.4900 \\
+\arm{simuhome}         & 20 & 0.8500 & 0.7500 & 0.7500 \\
+\arm{smartbench\_tdcs} & 20 & 0.7000 & 0.7000 & 0.6500 \\
+\arm{toolmem}          & 12 & 0.4901 & 0.4167 & 0.4354 \\
+\arm{toolmem\_raw}     & 20 & 0.6500 & 0.4000 & 0.6500 \\
+\midrule
+overall                & 112 & 0.7189 & 0.6366 & 0.6475 \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\subsection{Anchor types covered}
+
+The anchor key is resolved differently depending on what the question names. All six forms
+occurring in the extension set are handled, and the anchor string is present in the context
+in every case ($2{,}728/2{,}728$).
+
+\begin{table}[htbp]
+\caption{Anchor key forms covered by the routing rule. All six occur in the extension set and
+the anchor string is present in the context in every case ($2{,}728/2{,}728$).}
+\label{tab:app_anchor}
+\centering\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{llr}
+\toprule
+\arm{anchor\_kind} & Example question form & $n$ \\
+\midrule
+none (entity field) & \emph{for account} \texttt{ACCT-\ldots} & 1500 \\
+\arm{id}            & \emph{for record id} \texttt{pec\_home\_\ldots} & 316 \\
+\arm{name}          & names an entity directly & 300 \\
+\arm{session}       & names a session & 300 \\
+\arm{entry}         & \emph{for entry 3} & 281 \\
+\arm{native}        & native identifier & 31 \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\subsection{Leakage counting}
+
+A case counts as leaking when any protected value, or a fragment of it, is recoverable from
+the concatenation of the rewritten question and the compressed context. Fragments are the
+pattern set of the published protocol. The count is per case, not per value, so the reported
+rate is the fraction of cases with at least one exposure; the per-value count is retained in
+the artifacts.
+
+\subsection{Reproduction notes}
+
+Every table in this paper is computed from per-case records that ship with the artifacts, one
+line per (case, arm). The uncompressed arm in each set is used as an identity check: a result
+set whose uncompressed arm does not reproduce the reference value is not part of this paper.
+Budget arms assert non-overshoot per case; a run that violates it is discarded rather than
+truncated. All arms of ours are keyed alias runs; an unkeyed assignment changes both the
+alias strings and the resulting score, so results are only comparable within one setting.

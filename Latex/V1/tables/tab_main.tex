@@ -1,0 +1,33 @@
+\begin{table}[t]
+\caption{Main comparison on the 112-case benchmark (Qwen2.5-7B-Instruct, $r=0.50$, seed
+20261015). All arms of ours are constructed without access to the reference answer.
+\emph{tokens} is the mean compressed-context length; \emph{leak} counts cases in which a
+protected value is recoverable from question plus context. Arrows give the preferred
+direction. $BCL$ $=$ \arm{budget\_cluster\_link}, $ABL$ $=$ \arm{alias\_budget\_link},
+$ALB$ $=$ \arm{alias\_budget}, $BC$ $=$ \arm{budget\_cluster}. Controlled comparison is the
+first three rows: compressing to $48.6\%$ of the original length costs $0.0109$ against the
+no-compression aliasing arm, which is not significant. The uncompressed arm is the reference
+value used to verify that a result set belongs to this benchmark.}
+\label{tab:main}
+\centering\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lrrr}
+\toprule
+Arm & F1 $\uparrow$ & tokens $\downarrow$ & leak $\downarrow$ \\
+\midrule
+\arm{full}                 & 0.7189 & 7964 & 112/112 \\
+\arm{alias}                & 0.6475 & 7824 & 0/112 \\
+\textbf{\textsc{DARK}} & \textbf{0.6366} & \textbf{3869} & \textbf{0/112} \\
+\arm{delete}               & 0.4916 & 7845 & 0/112 \\
+BCL                        & 0.4308 & 3683 & 47/112 \\
+ABL                        & 0.4219 & 3638 & 0/112 \\
+ALB                        & 0.2232 & --- & 0/112 \\
+BC                         & 0.2143 & --- & 8/112 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item[] Paired differences against \textsc{DARK}: \arm{alias} $-0.0109$
+$[-0.0824,+0.0612]$ (n.s.); \arm{full} $-0.0823$ $[-0.1610,-0.0041]$;
+ABL $+0.2147$ $[+0.1224,+0.3085]$.
+\end{tablenotes}
+\end{table}
