@@ -213,3 +213,54 @@ AI 生成的分析文档集中在 `docs/analysis/`，已与 `results/` 中的原
 | 峰值占用 | 全部单卡，**未占整节点** |
 | 下游模型生成量 | ~19,000 次（含作废的 5000 次） |
 | 零模型调用的离线样本 | 2 种相似度 × 3 比例 × 4 粒度 × 7 数据集 |
+
+---
+
+## 四象限重构实验（quad4）
+
+原始实现在压缩时读取了金标答案（`code/longctx/e2e_longctx_r5full.py` 的 `ans_of`），
+导致方法不可部署、且对外部基线不公平。`quad4` 是移除该依赖后的忠实实现。
+
+| 产物 | 位置 |
+|---|---|
+| 实现 | `code/longctx/e2e_quad.py`（由 `make_e2e_quad.py` 生成，**可逐字节重建**）|
+| 实验原始结果 | `results/percase/quad4/`（44 个分片，`.jsonl.gz`，共约 0.9 MB）|
+| 分析与校验脚本 | `code/analysis_quad4/` |
+| 设计与结论 | `docs/24`、`docs/27` |
+| 论文与代码一致性核查 | `docs/25` |
+
+### 一键复现校验
+
+```bash
+python code/analysis_quad4/reproduce.py
+```
+
+该脚本只读 `results/percase/` 下的原始结果，重算文档中全部报告数字（36 项）并逐项比对，
+全 PASS 表示仓库数据与文档一致。**不需要 GPU、不加载模型。**
+
+当前状态：**36/36 PASS**。
+
+### 重建实现
+
+```bash
+python code/analysis_quad4/make_e2e_quad.py   # 由 e2e_longctx_r5full.py 生成 e2e_quad.py
+```
+
+生成结果与仓库内 `code/longctx/e2e_quad.py` **逐字节一致**（已验证）。
+
+### 模型无关校验
+
+```bash
+python code/analysis_quad4/validate_fallback.py
+```
+
+检查四象限路由在四套数据上的模式判定、预算合规、答案留存与泄漏，不需要模型。
+
+### 主要数字
+
+| 规模 | quad4 F1 | 参照 |
+|---|---:|---|
+| 2,728 例 | **0.4937**（零泄漏）| quito_x 0.4831（泄漏 98%）；零泄漏基线 mask_llmlingua2 0.1712 |
+| 112 例 | **0.6366**（48.6% token）| 全文 0.7189；全文别名不压缩 0.6475 |
+| Type B | **0.9607** | 旧值 0.3100 |
+| Type C | **0.6733** | 旧值 0.2000 |
