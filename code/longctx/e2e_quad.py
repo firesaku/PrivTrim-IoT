@@ -566,18 +566,23 @@ def build_arm_texts(case, nt, budgets, arms, order_fn, seed=20261015):
 
         # 精确修剪：' '.join 会插入分隔符，真实 token 数可能大于逐单元之和
         forced_set = set(forced)
-        while True:
+        anchor_set = set(tgt_units)
+        while chosen:
             txt = ' '.join(out[i] for i in chosen if out[i])
             if nt(txt) <= B:
                 break
-            dropped = False
-            for i in reversed(chosen):
-                if i not in forced_set:
-                    chosen.remove(i)
-                    dropped = True
-                    break
-            if not dropped:
-                break
+            pool = [i for i in chosen if i not in forced_set]
+            if pool:
+                chosen.remove(pool[-1])
+                continue
+            pool = [i for i in chosen if i not in anchor_set]
+            if pool:
+                far = max(pool, key=lambda i: (min(abs(i - j) for j in anchor_set)
+                                               if anchor_set else i, i))
+                chosen.remove(far)
+                continue
+            chosen.pop()
+        chosen.sort()
         return ' '.join(out[i] for i in chosen if out[i])
 
     F = nt(full)
