@@ -164,6 +164,58 @@ for tag, pat, arm, want in (
     d = collect([(Q4, [pat])])
     check(tag, (stats(d, arm) or {}).get('f1'), want)
 
+
+# ---------------------------------------------------------------- 5) 预算曲线
+section('5) 预算曲线（112 例，5 个预算点，全部无金标）')
+
+
+def collect_ratio(pattern):
+    """按 (arm, ratio) 聚合，用于多预算点实验。"""
+    out = {}
+    for q in sorted(Q4.glob(pattern)):
+        for r in load(q):
+            m = out.setdefault((r.get('arm', ''), r.get('ratio')), {})
+            m[r['case_key']] = r
+    return out
+
+
+sw = collect_ratio('quad4_sweep112_*.jsonl.gz')
+RATIOS = [0.10, 0.15, 0.25, 0.50, 0.75]
+EXPECT_SW = {
+    'quad4':               [0.4357, 0.4681, 0.5116, 0.6366, 0.6158],
+    'quad4_del':           [0.3297, 0.3788, 0.3955, 0.5205, 0.5086],
+    'alias_budget_link':   [0.2304, 0.2052, 0.2488, 0.4219, 0.5512],
+    'budget_cluster_link': [0.2304, 0.2052, 0.2310, 0.4308, 0.5576],
+}
+for arm, wants in EXPECT_SW.items():
+    for ratio, want in zip(RATIOS, wants):
+        d = sw.get((arm, ratio)) or {}
+        got = (sum(f1(r) for r in d.values()) / len(d)) if d else None
+        check('%s @%.2f' % (arm, ratio), got, want)
+
+# ---------------------------------------------------------------- 6) 跨模型
+section('6) 跨模型（Mistral-7B，112 例 @0.50）')
+mis = collect([(Q4, ['quad4_mistral112_*.jsonl.gz'])])
+for arm, want in (('full', 0.6931), ('alias', 0.5931), ('delete', 0.4559),
+                  ('quad4', 0.6946), ('quad4_del', 0.5520),
+                  ('budget_cluster_link', 0.3837), ('alias_budget_link', 0.3748)):
+    check('Mistral %s' % arm, (stats(mis, arm) or {}).get('f1'), want)
+
+# ---------------------------------------------------------------- 7) 改述
+section('7) 改述鲁棒性（112 例 @0.50）')
+for tag, pat, expect in (
+    ('改述A', 'quad4_para112_*_paraA_*.jsonl.gz',
+     {'full': 0.6831, 'alias': 0.6297, 'delete': 0.4731, 'quad4': 0.6637,
+      'budget_cluster_link': 0.3926, 'alias_budget_link': 0.3926}),
+    ('改述B', 'quad4_para112_*_paraB_*.jsonl.gz',
+     {'full': 0.6575, 'alias': 0.6141, 'delete': 0.4705, 'quad4': 0.6023,
+      'budget_cluster_link': 0.4182, 'alias_budget_link': 0.4029}),
+):
+    print('  --- %s' % tag)
+    d = collect([(Q4, [pat])])
+    for arm, want in expect.items():
+        check('    %s' % arm, (stats(d, arm) or {}).get('f1'), want)
+
 # ---------------------------------------------------------------- 汇总
 print()
 print('=' * 78)
