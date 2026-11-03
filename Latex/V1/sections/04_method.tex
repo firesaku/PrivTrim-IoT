@@ -3,6 +3,12 @@
 
 \subsection{Overview}
 
+The design follows from one observation: the unit that must be hidden and the unit that
+carries the answer are the same record. Any operation applied to that record therefore has
+to do two things at once---keep it addressable, and stop it from stating the value---and none
+of the operations a compressor normally has does both. The rule below adds one that does, and
+routes every other unit to the cheapest operation that applies.
+
 Given an excerpt $C$, a question $q$, a budget ratio $r$, and the set $V$ of protected
 values, \textsc{DARK} produces a rewritten question $q'$ and a compressed context $P$
 such that $(q',P)$ fits the token budget and contains no value of $V$. The pipeline has four
@@ -18,15 +24,23 @@ pipeline end to end and the evidence for its one non-obvious choice.
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_method.pdf}
-\caption{The pipeline. (a) An excerpt is split into units inside record blocks; the block that
-mentions the entity named by the question is the relevant region, and every unit is then
-routed on (sensitivity, relevance) before the surviving set is fitted to the budget. The strip
-at the right reports a real 112-case run: $3{,}869$ tokens against $7{,}964$, and no protected
-value in any prompt. (b) The four cells and the operation attached to each. The top-right cell
-is the one that keeps a protected value addressable instead of removing it; the numbers on its
-right give the measured cost of replacing that operation by deletion. (c) Protecting the anchor
-\emph{line} does not close the gap; protecting the \emph{block} does. Bars give the fraction of
-the $2{,}728$ cases in which the answer-bearing record survives.}
+\caption{The \textsc{DARK} pipeline. (a) Five stages, all deterministic and model-free.
+(1)~An excerpt is split into units inside record blocks, \emph{one line = one unit}.
+(2)~Two labels are read off independently: sensitivity from the protected set $V$ that the
+operator already holds, relevance from whether the block mentions the entity the question
+names---no answer key and no model call enters either.
+(3)~The pair selects exactly one operation.
+(4)~A keyed map $\kappa$ aliases the protected values and is applied to the question as well;
+the entity block is never dropped, and the rest is fitted to $B=\lfloor r\,n_C\rfloor$ in the
+stated drop order, with refill units admitted by decreasing redundancy.
+(5)~The strip reports a real 112-case run: $3{,}869$ tokens against $7{,}964$, no protected
+value in any prompt, F1 $0.6366$.
+(b) Why the alias map is keyed. Handing out alias letters in value order makes every alias
+invertible from its rank alone; deriving the order from a key removes that signal, and the
+question is rewritten through the same map so the two halves still agree.
+(c) Protecting the anchor \emph{line} does not close the gap; protecting the \emph{block}
+does. Bars give the fraction of the $2{,}728$ cases in which the answer-bearing record
+survives.}
 \label{fig:pipeline}
 \end{figure*}
 

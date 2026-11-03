@@ -21,21 +21,31 @@ goals to be balanced.
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/fig0_teaser.pdf}
-\caption{The conflict, and where each strategy lands on it. (a) A question names an account,
-and the record that answers it also stores that account as a value to hide: the referent and
-the protected span coincide. (b) F1 against prompt leakage for ten arms on the $2{,}728$-case
-extension. Two clusters fail in opposite directions---the leak-free arms that drop protected
-spans lose the referent ($0.098$ to $0.348$), and the published compressors forward the value
-in $90.8\%$ to $100\%$ of cases. Only the marked point reaches $0.494$ without leaking.
-(c) The two standard remedies against the routing rule; labels give the F1 gained at each
-step, and the pills give the leakage that comes with it.}
+\caption{Three axes, four routes. The bar under each route is the share of the context that
+crosses to the model; compressed routes run to the same $r=0.50$ budget.
+(a)~The conventional remedies. Compressing keeps the handle and halves the context, but
+forwards the protected value, which the strongest such method leaves recoverable in $98.1\%$
+of cases. Redacting removes the value and, with it, the handle the reader needs, so the
+masking wrapper that does both loses the task. (b)~The two routes on our side. Aliasing every
+protected value stops the value and keeps the handle, but does not compress.
+\textsc{DARK} stops the value, keeps the handle, and fits the same budget. Only the fourth
+route holds all three. (c)~F1 against prompt leakage for ten arms on the $2{,}728$-case
+extension. The published compressors forward the value in $88.8\%$ to $100\%$ of cases, the
+other leak-free arms land between $0.147$ and $0.348$, and only the marked point reaches
+$0.494$ without leaking. (d)~The three policies on the same cases: \textsc{DARK} matches the
+strongest published compressor on F1, but that arm forwards a protected value in $98.1\%$ of
+cases, while the redaction baseline reaches $0\%$ leakage at $0.1712$.}
 \label{fig:teaser}
 \end{figure*}
 
-For this class of query, they need not compete. Figure~\ref{fig:teaser} states the conflict
-and the two ways of failing it; the rest of this paper is about the third option.
-The observation that makes this possible is
-layout. Records in these excerpts are grouped into blocks that hold an entity's identifying
+For this class of query, they need not compete. Figure~\ref{fig:teaser} sets out three
+axes---whether the protected value reaches the model, whether the handle the reader needs
+survives, and how much of the context crosses. Compression and redaction both halve the
+context, but compression forwards the value while redaction deletes the handle with it. A
+fourth route, which we develop here, stops the value and keeps the handle at the same half
+length.
+The observation that makes this possible is a layout property. Records in these excerpts are
+grouped into blocks that hold an entity's identifying
 line together with the attributes recorded for it, so the queried entity and the answer to
 the question about it sit in the \emph{same block} in $100\%$ of multi-entity cases and
 $99.7\%$ of needle cases. A pipeline that preserves that block, and replaces the protected
@@ -56,17 +66,20 @@ The four operations give the method its name, \textsc{DARK}: \textbf{D}elete,
 \textbf{A}lias, \textbf{R}efill, \textbf{K}eep.
 
 \paragraph{Evidence preview.}
-On a 112-case benchmark spanning six public datasets, \textsc{DARK} uses $48.6\%$ of the
-original tokens, leaves no protected value recoverable from the prompt, and scores F1
-$0.6366$. Aliasing the whole context without compressing it scores $0.6475$ on the same
-cases, a difference that is not significant; not compressing at all scores $0.7189$. The gap
-that matters is against pipelines that keep the same privacy guarantee. The strongest of
-those reaches $0.4308$, and in the multi-entity subset it still exposes protected values. On
-a $2{,}728$-case extension, \textsc{DARK} is level with the best query-aware compressor
-($0.4937$ vs.\ $0.4831$) at $0\%$ leakage against $98.1\%$. Removing the
-alias-instead-of-delete rule costs $0.1795$ F1 points overall and $0.3273$ on multi-entity
-cases. On the topical-question variant, where no entity can be located, it costs $+0.0013$
-and is not significant. The rule acts where it is designed to act and is inert elsewhere.
+The design is judged against pipelines that keep the same privacy guarantee, because that is
+the only comparison in which the privacy operation is held fixed. On a 112-case benchmark
+spanning six public datasets, \textsc{DARK} uses $48.6\%$ of the original tokens, leaves no
+protected value recoverable from the prompt, and scores F1 $0.6366$. Aliasing the whole
+context without compressing it scores $0.6475$ on the same cases, a difference that is not
+significant, so on this benchmark halving the prompt costs no measurable task quality. The
+strongest leak-free competitor reaches $0.4308$, and in the multi-entity subset it still
+exposes protected values. On a $2{,}728$-case extension, \textsc{DARK} is level with the best
+query-aware compressor ($0.4937$ vs.\ $0.4831$) at $0\%$ leakage against $98.1\%$: the
+compressor reaches the same F1 only by forwarding the value the question names, which is the
+one thing this setting forbids. Removing the alias-instead-of-delete rule costs $0.1795$ F1
+points overall and $0.3273$ on multi-entity cases. On the topical-question variant, where no
+entity can be located, it costs $+0.0013$ and is not significant. The rule acts where it is
+designed to act and is inert elsewhere.
 
 \paragraph{Contributions.}
 \begin{itemize}
@@ -76,10 +89,10 @@ about which record the question is about. We quantify it on $2{,}728$ cases ($47
 retention overall, $37.2\%$ on needle cases, both at a budget cut that would give an
 uninformative rule $50\%$) and show that protecting the anchor \emph{line} alone repairs only
 half of the gap ($57.6\%$).
-\item \textbf{A training-free routing rule that does.} Sensitive-and-relevant units are
-aliased rather than deleted, and relevance comes from the question by locating the record
-block that contains the queried entity. The rule needs no reference answer, no training, and
-no model access.
+\item \textbf{A training-free routing rule that closes the gap.} Sensitive-and-relevant units
+are aliased rather than deleted, and relevance comes from the question by locating the record
+block that contains the queried entity. The rule keeps a protected value addressable without
+ever stating it, and needs no reference answer, no training, and no model access.
 \item \textbf{An evaluation that separates privacy from utility at equal budget.} Across two
 benchmark sizes, three public-benchmark variants, five budgets, two models, and two
 paraphrases, \textsc{DARK} is compared with twelve published compressors and sanitizers

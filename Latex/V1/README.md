@@ -18,7 +18,7 @@ pdflatex main
 pdflatex main
 ```
 
-产物为 `main.pdf`，当前 19 页、6 图、7 表。
+产物为 `main.pdf`，当前 20 页、7 图、7 表。
 
 首次编译若报缺包，按 MiKTeX 提示安装，或 `tlmgr install <pkg>`。
 
@@ -50,9 +50,10 @@ Latex/V1/
 │   ├── tab_budget.tex
 │   ├── tab_ablation_alias.tex
 │   └── fig6_cases.tex
-└── figures/              # 5 张数据/示意图（PDF 矢量）
+└── figures/              # 6 张矢量图（PDF）
     ├── fig0_teaser.pdf
     ├── fig_method.pdf
+    ├── fig_persource.pdf
     ├── fig1_main.pdf
     ├── fig2_diagnostic.pdf
     └── fig3_alias.pdf
@@ -64,12 +65,13 @@ Latex/V1/
 
 | 编号 | 文件 | 位置 | 内容 |
 |---|---|---|---|
-| Fig. 1 | `fig0_teaser.pdf` | §1 | 冲突示意 + 隐私-效用平面 + 两种标准路线的代价 |
-| Fig. 2 | `fig_method.pdf` | §4.1 | DARK 流水线 + 四象限 + line-vs-block |
-| Fig. 3 | `fig1_main.pdf` | §7.3 | 预算曲线 + 泄漏 + 结果构成 + 跨模型/改述 |
-| Fig. 4 | `fig2_diagnostic.pdf` | §8.1 | 答案保留率 + 解离 + 分来源 |
-| Fig. 5 | `fig3_alias.pdf` | §8.4 | 别名 vs 删除 |
-| Fig. 6 | `fig6_cases.tex` | §8.4 | 两个真实案例（LaTeX 直排） |
+| Fig. 1 | `fig0_teaser.pdf` | §1 | 三条判据 × 四条路线：传统管线 / 本文管线 / 策略落点 / 各自代价 |
+| Fig. 2 | `fig_method.pdf` | §4.1 | DARK 流水线 + 键控别名 + line-vs-block |
+| Fig. 3 | `fig_persource.pdf` | §7.3 | 六个来源 × 三个指标（F1 / 泄漏 / 存活） |
+| Fig. 4 | `fig1_main.pdf` | §7.4 | 预算曲线 + 泄漏 + 结果构成 + 跨模型/改述 |
+| Fig. 5 | `fig2_diagnostic.pdf` | §8.1 | 答案保留率 + 解离 + 分来源 |
+| Fig. 6 | `fig3_alias.pdf` | §8.4 | 别名 vs 删除 |
+| Fig. 7 | `fig6_cases.tex` | §8.4 | 两个真实案例（LaTeX 直排） |
 
 | 表 | 文件 | 内容 |
 |---|---|---|
@@ -109,5 +111,5 @@ DARK 用四个操作处理 context unit：
 ## 修改指引
 
 - 改数字：只改 `sections/*.tex` 与 `tables/*.tex` 中的字面值；图表数据由外部脚本生成后导出到 `figures/`
-- 改配色/字号：`figures/*.pdf` 由 Python (matplotlib) 生成，图内文字统一 ≥10 pt，设计宽度等于 `\textwidth`（7.1 in）
+- 改配色/字号：`figures/*.pdf` 由 Python (matplotlib) 生成，图内文字统一 ≥10 pt、字体 Times New Roman，设计宽度等于 `\textwidth`（7.1 in）；配色只用红黑与灰阶（红黑 = 本文方法，红 = 泄漏/失败）
 - 增删章节：在 `main.tex` 的 `\input` 序列中调整

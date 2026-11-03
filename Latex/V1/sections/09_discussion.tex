@@ -1,15 +1,23 @@
 \section{Discussion}
 \label{sec:discussion}
 
-\paragraph{The scope the evidence supports.}
-The claim we support is bounded. For excerpts of IoT-style operational records, queried by a
-question that names an entity whose value must not reach the model, routing each unit on
-(sensitivity, relevance) and aliasing the sensitive-and-relevant cell preserves the task at
-half the tokens and at zero measured leakage. The three variants in
-Section~\ref{sec:analysis} delimit it: the rule is unnecessary when the question is topical,
-redundant when anchor and answer coincide in a single record, and dependent on the refill
-order when the answer lies outside the fallback window. We do not claim that it improves
-ordinary compression on ordinary prompts, and the topical variant shows that it does not.
+\paragraph{What the study establishes.}
+For excerpts of IoT-style operational records, queried by a question that names an entity
+whose value must not reach the model, the record that answers the question and the record
+that stores the value are the same block. Routing each unit on (sensitivity, relevance) and
+aliasing the sensitive-and-relevant cell therefore preserves the task at half the tokens and
+at zero measured leakage, without a reference answer and without touching the reader. The
+claim is that specific: it is a statement about queries whose referent is also the protected
+value, in a layout where the two coincide.
+
+\paragraph{Where the mechanism stops.}
+The three variants in Section~\ref{sec:analysis} delimit it. The rule is unnecessary when the
+question is topical and names no entity, since there is then no referent to protect or to
+recover. It is redundant when anchor and answer coincide in a single record, where protecting
+the anchor line already suffices. It depends on the refill order when the answer lies outside
+the fallback window, the one place where the ordering rather than the routing decides the
+outcome. We do not claim that it improves ordinary compression on ordinary prompts, and the
+topical variant shows that it does not.
 
 \paragraph{What the privacy claim covers.}
 Leakage is measured as recoverability of the protected values from the exact prompt text,
@@ -17,12 +25,11 @@ using the pattern set of the published protocol (full value plus fragments). Tha
 relevant quantity for a pipeline whose adversary is the model provider and whose prompts may
 be retained. It is not a formal guarantee. We derive no differential-privacy
 bound~\cite{dp} and no $k$-anonymity guarantee~\cite{kanon}; the alias map is assumed private,
-and an adversary who obtains it recovers the values. We fix the alias assignment from a keyed
-permutation precisely so that an adversary holding only the value set cannot invert the map
-by rank, which is a real attack on unkeyed assignment, but that mitigation is narrower than a
-guarantee. We also do not evaluate inference attacks---membership, attribute, or the
-reconstruction of a value from its alias's co-occurrence pattern---and none of them is
-addressed by the present evidence.
+and an adversary who obtains it recovers the values. Keying the assignment from a permutation
+removes the rank attack that an unkeyed assignment admits---an adversary holding only the
+value set can otherwise invert the map---but that mitigation is narrower than a guarantee. We
+do not evaluate inference attacks either: membership, attribute inference, and reconstruction
+of a value from its alias's co-occurrence pattern are all outside the present evidence.
 
 \paragraph{The refill order is a regularity.}
 The measured benefit of keeping repetitive units follows from an anti-correlation between

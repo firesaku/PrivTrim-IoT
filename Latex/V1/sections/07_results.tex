@@ -5,14 +5,13 @@
 
 \subsection{Compression costs little}
 
-Table~\ref{tab:main} answers the first question: at an equal $50\%$ budget, does the routing
-rule preserve the task? Aliasing the whole context without compressing scores $0.6475$;
-\textsc{DARK} scores $0.6366$ at $48.6\%$ of the tokens. The paired difference is
-$-0.0109$ with a $95\%$ interval of $[-0.0824,+0.0612]$, which does not exclude zero: on
-this benchmark, halving the context costs no measurable task quality relative to the
-leak-free uncompressed arm. Against not compressing and not sanitizing, the deficit is
-$-0.0823$ $[-0.1610,-0.0041]$, which is the price of the privacy constraint rather than of
-compression, since the aliasing arm pays it as well ($-0.0714$ against \arm{full}).
+Halving the prompt costs no measurable task quality. At an equal $50\%$ budget, aliasing the
+whole context without compressing scores $0.6475$ and \textsc{DARK} scores $0.6366$ at
+$48.6\%$ of the tokens. The paired difference is $-0.0109$ with a $95\%$ interval of
+$[-0.0824,+0.0612]$, which does not exclude zero. Against not compressing and not sanitizing,
+the deficit is $-0.0823$ $[-0.1610,-0.0041]$. That gap is the price of the privacy
+constraint rather than of compression, since the aliasing arm pays it as well ($-0.0714$
+against \arm{full}).
 
 The comparison specific to our design is the lower block of the table. Two arms are
 leak-free and compress to nearly the same length: \arm{alias\_budget\_link}, which aliases
@@ -38,6 +37,37 @@ as our rule at the same budget, but only by forwarding the value the question na
 that value must not be forwarded, the compressor loses the task, as the masking row shows,
 and the routing rule does not.
 
+Figure~\ref{fig:persource} qualifies the aggregate: the $0.4937$ is not uniform across
+sources. Deleting the anchor unit instead of aliasing it costs almost nothing on
+\texttt{privacylens} ($0.467$ against $0.437$) and collapses \texttt{simuhome} ($0.619$
+against $0.029$) and \texttt{pec\_home} ($0.676$ against $0.274$). A mean over six sources
+is what makes that look like one effect. \textsc{DARK} sits below the uncompressed arm
+everywhere but is the arm closest to it on four of six sources; on \texttt{smartbench\_tdcs}
+the anchor-protecting arm is closer, and on \texttt{toolmem} all four arms fall within
+$0.04$ of each other. On \texttt{toolmem\_raw} every arm is below $0.45$, so the source
+rather than the operation is the bottleneck. The privacy rows are the part that does not
+vary: the uncompressed prompt exposes a protected value in $100\%$ of cases on every source,
+\textsc{DARK} and the delete variant in none, and the anchor-protecting arm leaks in five of
+six because protecting the block keeps the neighbouring units that carry the value.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_persource.pdf}
+\caption{Per-source behaviour on the $2{,}728$-case extension at $r=0.50$, one panel per
+source and one row per metric; $n$ under each column is the number of cases.
+(a)~\textsc{DARK} sits below the uncompressed arm everywhere and is the closest arm to it on
+four of six sources, but the two effects that matter are local: on \texttt{simuhome} the
+delete variant falls to $0.029$ against \textsc{DARK}'s $0.619$, and on \texttt{toolmem\_raw}
+all arms are below $0.45$ because the answers themselves are hard. (b)~Leakage does not vary
+by source: the uncompressed arm exposes a protected value in every case, while \textsc{DARK}
+and the delete variant expose none on any source---a bar of zero height is a zero, not
+missing data---and the anchor-protecting arm leaks in five of six. (c)~The answer-bearing record survives in $100\%$ of cases for
+the uncompressed arm, \textsc{DARK} and the delete variant, and in $29$--$83\%$ for the
+anchor-protecting arm; the whole-vs-line distinction of Figure~\ref{fig:pipeline}(c) is what
+separates those three from the fourth.}
+\label{fig:persource}
+\end{figure*}
+
 \input{tables/tab_budget}
 
 \begin{figure*}[t]
@@ -50,22 +80,26 @@ delete variant and the global-alias arm stay at zero for the whole range, while 
 compresses raw text leaks in $35.7\%$ of cases at tight budgets and $50.0\%$ at $r=0.75$, so
 its apparent parity at loose budgets is bought with exposure. (c) Composition of case
 outcomes at $r=0.50$: solid is an exact answer, the pale band is a partial match, hatched is
-a wrong or \textsc{unknown} answer. (d) The same four arms under a second reader and two
-question paraphrases; the ordering of the arms is preserved in all four conditions.}
+a wrong or \textsc{unknown} answer. (d) The same four arms at $r=0.50$ under the original
+reader, a second reader, and two mechanical rewritings of the question. \textsc{DARK} is the
+only arm that gains from the reader change ($0.6366\to0.6946$) and draws level with the
+uncompressed arm there ($0.6931$); under both rewritings the ordering of the four arms is
+unchanged.}
 \label{fig:budget}
 \end{figure*}
 
 \subsection{The advantage holds across budgets}
 
-Table~\ref{tab:budget} varies the budget over five ratios. \textsc{DARK} is the strongest
-budget arm at every point: $+0.205$ at $r=0.10$, $+0.263$ at $r=0.25$, $+0.215$ at
-$r=0.50$, and $+0.065$ at $r=0.75$, all at zero leakage. Its own score is not monotone. It
-peaks at $r=0.50$ and drops by $0.021$ at $r=0.75$, because the additional refill text admitted
-at a loose budget is repetitive context that competes with the relevant block for the
-reader's attention. The competing arms keep improving with budget, so the margin narrows;
-at $r=0.75$ it is small. We report the non-monotonicity rather than describing the curve as
-monotone, and note that the half-budget setting used elsewhere is where the mechanism
-separates most clearly from the alternatives.
+Across five ratios \textsc{DARK} is the strongest budget arm at every point: $+0.205$ at
+$r=0.10$, $+0.263$ at $r=0.25$, $+0.215$ at $r=0.50$, and $+0.065$ at $r=0.75$, all at zero
+leakage. The margin narrows at the loose end, and the reason is the regime rather than the rule. At
+$r=0.75$ the budget stops binding: the arms that protect only the anchor line recover from
+$24.1\%$ retention at $r=0.10$ to $77.7\%$ here, so they approach the score the routing rule
+already reaches, and the gap closes. \textsc{DARK}'s own score also falls slightly ($0.6366$
+to $0.6158$), because the additional refill text admitted at a loose budget is repetitive
+context that competes with the relevant block for the reader's attention. The setting where
+the constraint binds is $r=0.50$, and that is where the mechanism separates most clearly from
+the alternatives.
 
 \subsection{Cross-model and phrasing stability}
 
