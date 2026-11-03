@@ -20,30 +20,86 @@ consequential. The strongest of these methods leaves $98.1\%$ of protected value
 recoverable in our benchmark, and it preserves the answer for a query that names a sensitive
 entity far less reliably than it preserves an ordinary answer span.
 
+A second design point compresses into continuous space instead of deleting tokens. Gist
+tokens~\cite{mu-gist-2023} and in-context autoencoders~\cite{ge-icae-2024} train the reader to
+consume a short learned prefix in place of the prompt, AutoCompressors~\cite{chevalier-autocomp-2023}
+summarise the context into soft prompt vectors, xRAG~\cite{cheng-xrag-2024} distils a retrieved
+passage into a single token, and COCOM~\cite{ren-cocom-2023} inserts sentinel tokens that stand
+for a span. Retrieval-side variants compress before the prompt is assembled at
+all~\cite{xu-recomp-2024,liu-tcra-2023}, and a parallel line reduces the KV cache rather than the
+input~\cite{zhang-h2o-2023,li-snapkv-2024}. Both lines raise the same question for us: what
+happens to a value that the question needs to name. Recent work measures how much information
+these compressors actually preserve~\cite{lajewska-infopres-2025} and finds the loss is not
+uniform across token types, which is consistent with what we report for identifier-dense text.
+
 \paragraph{Text sanitization for inference.}
 A second family rewrites protected spans before the prompt leaves the user side.
 DYNTEXT~\cite{dyntext} substitutes sensitive tokens with semantically similar non-sensitive
 neighbours drawn from a dynamic adjacency list, so that a fixed substitution table cannot be
-attacked; PromptGraph~\cite{promptgraph} guides the rewrite with a dependency graph;
-INTACT~\cite{intact} replaces identifiers with generalised candidates selected for
-resistance to LLM inference attacks. Masking wrappers around published compressors belong
+attacked; INTACT~\cite{intact} replaces identifiers with generalised candidates selected for
+resistance to inference attacks; PrivacyMind~\cite{xiao-privacymind-2024} trains a
+context-level privacy-preserving reader; PAPILLON~\cite{siyan-papillon-2025} keeps private
+spans on a local model and sends only the rest to the cloud; Portcullis~\cite{zhan-portcullis-2025}
+and RemoteRAG~\cite{cheng-remoterag-2025} interpose a sanitising gateway between the operator
+and a third-party inference service. Masking wrappers around published compressors belong
 here too. These methods decide per span what to hide and treat utility as whatever survives
 the rewrite. On our benchmark that framing has a measurable cost: a masking pipeline that
 achieves zero leakage scores $0.1712$ on the $2{,}728$-case extension, because the span it
-removes is the referent the question needs. Differential privacy~\cite{dp} and
-$k$-anonymity~\cite{kanon} supply formal guarantees, but neither offers the per-query
-referential behaviour this task requires; Section~\ref{sec:discussion} returns to that point.
+removes is the referent the question needs.
+
+\paragraph{Leakage from the inference channel.}
+A third body of work asks what a provider can recover from a prompt it receives and retains.
+ProPILE~\cite{kim-propile-2023} probes personally identifiable information directly; Staab et
+al.~\cite{staab-beyond-2024} show that a reader infers attributes that were never stated;
+ReCaLL~\cite{xie-recall-2024} and the lower-ranked-token attack of Zhou et
+al.~\cite{zhou-shadows-2025} mount membership inference; Debenedetti et
+al.~\cite{debenedetti-sidechannel-2024} catalogue side channels in deployed systems;
+Split-and-Denoise~\cite{mai-splitdenoise-2024} perturbs client-side representations under
+local differential privacy; and the survey of Das et al.~\cite{das-survey-2025} places these
+results in one frame. Our threat model is the narrowest of them: we ask only whether the
+protected value is recoverable from the prompt text, and we claim no resistance to attribute
+inference or to a provider that manipulates the reader.
+
+\paragraph{Guarantees and prompt-level sanitizers.}
+A separate line supplies formal guarantees rather than empirical measurements. Anonymisation
+of published microdata is surveyed from $k$-anonymity through $l$-diversity and
+$t$-closeness~\cite{carvalho-microdata-2023}; differential privacy is surveyed across the
+deployment scenarios in which it is actually applied~\cite{zhao-dp-2024}; and the
+prompt-specific end of this line covers privacy engineering for prompts in
+general~\cite{edemacu-prompt-2025} and utility-aware prompt sanitisation that, like us,
+trades on which span to replace~\cite{shen-prosan-2026}. Each of these bounds what an
+adversary can infer from a fixed release. None of them addresses what happens to the answer
+when the release must still identify one record per query, which is the behaviour
+Section~\ref{sec:discussion} returns to.
+
+\paragraph{IoT logs and their privacy.}
+The records we compress are device logs, and the IoT literature protects them at other
+layers: probabilistic encoding for aggregate analytics~\cite{zaman-encode-2024},
+privacy-preserving data mining with an incentive mechanism~\cite{gao-datamining-2024},
+asynchronous federated learning over distributed devices~\cite{yan-fedlearn-2023},
+privacy-enhanced role-based access control~\cite{zhang-rbac-2025}, fine-grained cloud-edge
+data sharing~\cite{sun-sharing-2025}, and location-aware offloading that keeps raw data at the
+edge~\cite{wang-offload-2024}. Log analytics on this data is mature as well, including online
+detection under drift~\cite{tian-omlog-2025} and cross-system detection over latent
+representations~\cite{zhou-logdlr-2025}, but both consume the log in place. Our unit of
+protection is neither the aggregate, the transport, nor the access rule; it is the prompt that
+an operator asks about a record, and that unit is what these mechanisms leave uncovered.
 
 \paragraph{Long-context question answering.}
 LongBench~\cite{longbench} supplies the passages from which we derive the public-benchmark
-variants, and SQuAD~v2~\cite{squad2} supplies the scoring function. Our contribution is
-orthogonal to the retrieval and long-context modelling literature: we do not modify the
-reader, only the text it receives, and we measure the effect at a fixed token budget.
+variants, and the standard SQuAD~v2 script supplies the scoring function. The evaluation side
+of this literature has since moved to harder and longer tasks~\cite{bai-longbenchv2-2025}, to
+stress tests that separate genuine long-context ability from retrieval at the right
+offset~\cite{hsieh-ruler-2024,yen-helmet-2025}, and to contexts beyond one hundred thousand
+tokens~\cite{zhang-infinitebench-2024}. Our contribution is orthogonal to the retrieval and
+long-context modelling literature: we do not modify the reader, only the text it receives, and
+we measure the effect at a fixed token budget.
 
 \paragraph{Where this study sits.}
-The two families above optimise different objectives, length and concealment, and each
-reports utility on prompts whose answer is ordinary text. We study the case where both
-objectives fall on the same span, and show that the resulting conflict is resolvable by
-changing \emph{which operation} acts on that span rather than by trading one objective
-against the other. We keep the compression interface of the first family and the
-per-span rewriting of the second, and modify the stage at which the operation is chosen.
+The families above optimise different objectives---length, concealment, and the leakage of
+everything else a reader can infer---and each reports utility on prompts whose answer is
+ordinary text. We study the case where both objectives fall on the same span, and show that
+the resulting conflict is resolvable by changing \emph{which operation} acts on that span
+rather than by trading one objective against the other. We keep the compression interface of
+the first family and the per-span rewriting of the second, and modify the stage at which the
+operation is chosen.

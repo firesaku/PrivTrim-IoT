@@ -18,7 +18,7 @@ pdflatex main
 pdflatex main
 ```
 
-产物为 `main.pdf`，当前 20 页、7 图、7 表。
+产物为 `main.pdf`，当前 18 页、7 图、7 表。
 
 首次编译若报缺包，按 MiKTeX 提示安装，或 `tlmgr install <pkg>`。
 
@@ -29,7 +29,7 @@ pdflatex main
 ```
 Latex/V1/
 ├── main.tex              # 入口：导言区 + \input 各章节
-├── refs.bib              # 参考文献（18 条）
+├── refs.bib              # 参考文献 51 条（2023--2026，49 条 CCF-A / JCR-Q1）
 ├── main.pdf              # 编译产物
 ├── sections/             # 12 个章节文件
 │   ├── 00_abstract.tex

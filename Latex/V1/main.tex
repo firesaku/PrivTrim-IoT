@@ -17,6 +17,10 @@
 
 \documentclass[10pt,twocolumn]{article}
 
+% 版心宽度锁定为 7.10 in，与所有图的 matplotlib 设计宽度一致：
+% 这样 \includegraphics[width=\textwidth] 是 1:1 放置，图内 10 pt 渲染出来就是 10 pt。
+\usepackage[letterpaper,left=0.70in,right=0.70in,top=0.75in,bottom=0.80in]{geometry}
+
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{times}

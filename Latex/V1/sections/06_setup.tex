@@ -6,7 +6,7 @@ The main reader is Qwen2.5-7B-Instruct~\cite{qwen25}; the cross-model check uses
 Mistral-7B-Instruct-v0.3~\cite{mistral7b}. Both run in fp16 with greedy decoding,
 $64$ new tokens, maximum context $24{,}576$ tokens and a strict policy that aborts rather
 than truncates when a prompt exceeds it. The random seed is fixed at \texttt{20261015}.
-Scoring uses the official SQuAD~v2 script~\cite{squad2}.
+Scoring uses the official SQuAD~v2 script, a fixed, model-independent procedure.
 
 \paragraph{Baselines.}
 We re-run eight published compressors through their reference implementations:

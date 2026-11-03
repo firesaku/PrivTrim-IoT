@@ -79,6 +79,91 @@
   year      = {2025}
 }
 
+% ---------- latent / soft / cache compression (2023-2025) ----------
+
+@inproceedings{mu-gist-2023,
+  author    = {Jesse Mu and Xiang Li and Noah Goodman},
+  title     = {Learning to Compress Prompts with Gist Tokens},
+  booktitle = {Advances in Neural Information Processing Systems 36 (NeurIPS)},
+  year      = {2023}
+}
+
+@inproceedings{chevalier-autocomp-2023,
+  author    = {Alexis Chevalier and Alexander Wettig and Anirudh Ajith and Danqi Chen},
+  title     = {Adapting Language Models to Compress Contexts},
+  booktitle = {Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  pages     = {3829--3846},
+  year      = {2023},
+  doi       = {10.18653/v1/2023.emnlp-main.232}
+}
+
+@inproceedings{liu-tcra-2023,
+  author    = {Junyi Liu and Liangzhi Li and Tong Xiang and Bowen Wang and Yiming Qian},
+  title     = {{TCRA-LLM}: Token Compression Retrieval Augmented Large Language Model for Inference Cost Reduction},
+  booktitle = {Findings of the Association for Computational Linguistics: EMNLP 2023},
+  pages     = {9796--9810},
+  year      = {2023},
+  doi       = {10.18653/v1/2023.findings-emnlp.655}
+}
+
+@inproceedings{xu-recomp-2024,
+  author    = {Fangyuan Xu and Weijia Shi and Eunsol Choi},
+  title     = {{RECOMP}: Improving Retrieval-Augmented {LM}s with Context Compression and Selective Augmentation},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2024}
+}
+
+@inproceedings{ge-icae-2024,
+  author    = {Tao Ge and Jing Hu and Lei Wang and Xun Wang and Si-Qing Chen and Furu Wei},
+  title     = {In-context Autoencoder for Context Compression in a Large Language Model},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2024}
+}
+
+@inproceedings{cheng-xrag-2024,
+  author    = {Xin Cheng and Xun Wang and Xingxing Zhang and Tao Ge and Si-Qing Chen and
+               Furu Wei and Huishuai Zhang and Dongyan Zhao},
+  title     = {{xRAG}: Extreme Context Compression for Retrieval-augmented Generation with One Token},
+  booktitle = {Advances in Neural Information Processing Systems 37 (NeurIPS)},
+  year      = {2024}
+}
+
+@inproceedings{lajewska-infopres-2025,
+  author    = {Weronika {\L}ajewska and Momchil Hardalov and Laura Aina and Neha Anna John and
+               Hang Su and Lluis Marquez},
+  title     = {Understanding and Improving Information Preservation in Prompt Compression for {LLM}s},
+  booktitle = {Findings of the Association for Computational Linguistics: EMNLP 2025},
+  pages     = {17520--17541},
+  year      = {2025},
+  doi       = {10.18653/v1/2025.findings-emnlp.949}
+}
+
+@inproceedings{ren-cocom-2023,
+  author    = {Siyu Ren and Qi Jia and Kenny Zhu},
+  title     = {Context Compression for Auto-regressive Transformers with Sentinel Tokens},
+  booktitle = {Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  pages     = {12860--12867},
+  year      = {2023},
+  doi       = {10.18653/v1/2023.emnlp-main.794}
+}
+
+@inproceedings{zhang-h2o-2023,
+  author    = {Zhenyu Zhang and Ying Sheng and Tianyi Zhou and Tianlong Chen and Lianmin Zheng and
+               Ruisi Cai and Zhao Song and Yuandong Tian and Christopher R{\'e} and Clark Barrett and
+               Zhangyang Wang and Beidi Chen},
+  title     = {{H$_2$O}: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models},
+  booktitle = {Advances in Neural Information Processing Systems 36 (NeurIPS)},
+  year      = {2023}
+}
+
+@inproceedings{li-snapkv-2024,
+  author    = {Yuhong Li and Yingbing Huang and Bowen Yang and Bharat Venkitesh and Acyr Locatelli and
+               Hanchen Ye and Tianle Cai and Patrick Lewis and Deming Chen},
+  title     = {{SnapKV}: {LLM} Knows What You are Looking for Before Generation},
+  booktitle = {Advances in Neural Information Processing Systems 37 (NeurIPS)},
+  year      = {2024}
+}
+
 % ---------- text sanitization / privacy ----------
 
 @inproceedings{dyntext,
@@ -90,47 +175,286 @@
   year      = {2025}
 }
 
-@article{promptgraph,
-  author  = {C. Gu and H. Wan and D. Hu and H. Wang and Z. Gu},
-  title   = {{PromptGraph}: Graph-Guided Prompt Sanitization for Balancing Privacy and Utility in {LLM} Inference},
-  journal = {arXiv preprint arXiv:2607.10709},
-  year    = {2026}
-}
-
 @article{intact,
   author  = {Ildik{\'o} Pil{\'a}n and Benet Manzanares-Salor and David S{\'a}nchez and Pierre Lison},
   title   = {Truthful Text Sanitization Guided by Inference Attacks},
-  journal = {arXiv preprint arXiv:2412.12928},
-  year    = {2024}
+  journal = {Applied Soft Computing},
+  pages   = {114013},
+  year    = {2025},
+  doi     = {10.1016/j.asoc.2025.114013}
 }
 
-@article{kanon,
-  author  = {Latanya Sweeney},
-  title   = {k-Anonymity: A Model for Protecting Privacy},
-  journal = {International Journal of Uncertainty, Fuzziness and Knowledge-Based Systems},
+@inproceedings{xie-recall-2024,
+  author    = {Roy Xie and Junlin Wang and Ruomin Huang and Minxing Zhang and Rong Ge and
+               Jian Pei and Neil Zhenqiang Gong and Bhuwan Dhingra},
+  title     = {{ReCaLL}: Membership Inference via Relative Conditional Log-Likelihoods},
+  booktitle = {Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  pages     = {8671--8689},
+  year      = {2024},
+  doi       = {10.18653/v1/2024.emnlp-main.493}
+}
+
+@inproceedings{cheng-remoterag-2025,
+  author    = {Yihang Cheng and Lan Zhang and Junyang Wang and Mu Yuan and Yunhao Yao},
+  title     = {{RemoteRAG}: A Privacy-Preserving {LLM} Cloud {RAG} Service},
+  booktitle = {Findings of the Association for Computational Linguistics: ACL 2025},
+  pages     = {3820--3837},
+  year      = {2025},
+  doi       = {10.18653/v1/2025.findings-acl.197}
+}
+
+@inproceedings{zhan-portcullis-2025,
+  author    = {Jiangou Zhan and Wenhui Zhang and Zheng Zhang and Huanran Xue and Yao Zhang and Ye Wu},
+  title     = {Portcullis: A Scalable and Verifiable Privacy Gateway for Third-Party {LLM} Inference},
+  booktitle = {Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume    = {39},
+  pages     = {1022--1030},
+  year      = {2025},
+  doi       = {10.1609/aaai.v39i1.32088}
+}
+
+@inproceedings{xiao-privacymind-2024,
+  author    = {Yijia Xiao and Yiqiao Jin and Yushi Bai and Yue Wu and Xianjun Yang and Xiao Luo and
+               Wenchao Yu and Xujiang Zhao and Yanchi Liu and Quanquan Gu and Haifeng Chen and
+               Wei Wang and Wei Cheng},
+  title     = {Large Language Models Can Be Contextual Privacy Protection Learners},
+  booktitle = {Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  pages     = {14179--14201},
+  year      = {2024},
+  doi       = {10.18653/v1/2024.emnlp-main.785}
+}
+
+@inproceedings{siyan-papillon-2025,
+  author    = {Li Siyan and Vethavikashini Chithrra Raghuram and Omar Khattab and Julia Hirschberg and Zhou Yu},
+  title     = {{PAPILLON}: Privacy Preservation from {I}nternet-based and Local Language Model Ensembles},
+  booktitle = {Proceedings of the 2025 Conference of the Nations of the Americas Chapter of the Association for Computational Linguistics: Human Language Technologies (NAACL), Volume 1: Long Papers},
+  pages     = {3371--3390},
+  year      = {2025},
+  doi       = {10.18653/v1/2025.naacl-long.173}
+}
+
+@inproceedings{zhou-shadows-2025,
+  author    = {Yuan Zhou and Zhuo Zhang and Xiangyu Zhang},
+  title     = {Exploiting the Shadows: Unveiling Privacy Leaks through Lower-Ranked Tokens in Large Language Models},
+  booktitle = {Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (ACL), Volume 1: Long Papers},
+  pages     = {8376--8386},
+  year      = {2025},
+  doi       = {10.18653/v1/2025.acl-long.410}
+}
+
+@inproceedings{staab-beyond-2024,
+  author    = {Robin Staab and Mark Vero and Mislav Balunovic and Martin Vechev},
+  title     = {Beyond Memorization: Violating Privacy via Inference with Large Language Models},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2024}
+}
+
+@inproceedings{mai-splitdenoise-2024,
+  author    = {Peihua Mai and Ran Yan and Zhe Huang and Youjia Yang and Yan Pang},
+  title     = {Split-and-Denoise: Protect Large Language Model Inference with Local Differential Privacy},
+  booktitle = {Proceedings of the 41st International Conference on Machine Learning (ICML)},
+  year      = {2024}
+}
+
+@inproceedings{kim-propile-2023,
+  author    = {Siwon Kim and Sangdoo Yun and Hwaran Lee and Martin Gubri and Sungroh Yoon and Seong Joon Oh},
+  title     = {{ProPILE}: Probing Privacy Leakage in Large Language Models},
+  booktitle = {Advances in Neural Information Processing Systems 36 (NeurIPS)},
+  year      = {2023}
+}
+
+@inproceedings{debenedetti-sidechannel-2024,
+  author    = {Edoardo Debenedetti and Giorgio Severi and Nicholas Carlini and Christopher A. Choquette-Choo and
+               Matthew Jagielski and Milad Nasr and Eric Wallace and Florian Tram{\`e}r},
+  title     = {Privacy Side Channels in Machine Learning Systems},
+  booktitle = {33rd USENIX Security Symposium (USENIX Security)},
+  year      = {2024}
+}
+
+@article{das-survey-2025,
+  author  = {Badhan Chandra Das and M. Hadi Amini and Yanzhao Wu},
+  title   = {Security and Privacy Challenges of Large Language Models: A Survey},
+  journal = {ACM Computing Surveys},
+  volume  = {57},
+  number  = {6},
+  pages   = {1--39},
+  year    = {2025},
+  doi     = {10.1145/3712001}
+}
+
+% ---------- IoT data privacy and log analytics ----------
+
+@article{zaman-encode-2024,
+  author  = {Zakia Zaman and Wanli Xue and Praveen Gauravaram and Wen Hu and Jiaojiao Jiang and Sanjay K. Jha},
+  title   = {Privacy-Preserving Probabilistic Data Encoding for {IoT} Data Analysis},
+  journal = {IEEE Transactions on Information Forensics and Security},
+  volume  = {19},
+  pages   = {9173--9187},
+  year    = {2024},
+  doi     = {10.1109/TIFS.2024.3468150}
+}
+
+@article{gao-datamining-2024,
+  author  = {Yuan Gao and Liquan Chen and Jinguang Han and Ge Wu and Willy Susilo},
+  title   = {{IoT} Privacy-Preserving Data Mining With Dynamic Incentive Mechanism},
+  journal = {IEEE Internet of Things Journal},
+  volume  = {11},
+  number  = {1},
+  pages   = {777--790},
+  year    = {2024},
+  doi     = {10.1109/JIOT.2023.3285894}
+}
+
+@article{yan-fedlearn-2023,
+  author  = {Xinru Yan and Yinbin Miao and Xinghua Li and Kim-Kwang Raymond Choo and Xiangdong Meng and Robert H. Deng},
+  title   = {Privacy-Preserving Asynchronous Federated Learning Framework in Distributed {IoT}},
+  journal = {IEEE Internet of Things Journal},
   volume  = {10},
-  number  = {5},
-  pages   = {557--570},
-  year    = {2002}
+  number  = {15},
+  pages   = {13281--13291},
+  year    = {2023},
+  doi     = {10.1109/JIOT.2023.3262546}
 }
 
-@book{dp,
-  author    = {Cynthia Dwork and Aaron Roth},
-  title     = {The Algorithmic Foundations of Differential Privacy},
-  series    = {Foundations and Trends in Theoretical Computer Science},
-  publisher = {Now Publishers},
-  year      = {2014}
+@article{zhang-rbac-2025,
+  author  = {Yawei Zhang and Lanxiang Chen and Yizhao Zhu and Xiangqian Kong},
+  title   = {Privacy-Enhanced Role-Based Access Control for {IoT} Systems},
+  journal = {IEEE Internet of Things Journal},
+  volume  = {12},
+  number  = {14},
+  pages   = {27269--27279},
+  year    = {2025},
+  doi     = {10.1109/JIOT.2025.3562155}
+}
+
+@article{wang-offload-2024,
+  author  = {Zhibo Wang and Yunan Sun and Defang Liu and Jiahui Hu and Xiaoyi Pang and Yuke Hu and Kui Ren},
+  title   = {Location Privacy-Aware Task Offloading in Mobile Edge Computing},
+  journal = {IEEE Transactions on Mobile Computing},
+  volume  = {23},
+  number  = {3},
+  pages   = {2269--2283},
+  year    = {2024},
+  doi     = {10.1109/TMC.2023.3254553}
+}
+
+@article{tian-omlog-2025,
+  author  = {Jiyu Tian and Mingchu Li and Zumin Wang and Liming Chen and Jing Qin and Runfa Zhang},
+  title   = {{OMLog}: Online Log Anomaly Detection for Evolving System With Meta-Learning},
+  journal = {IEEE Internet of Things Journal},
+  volume  = {12},
+  number  = {15},
+  pages   = {30142--30155},
+  year    = {2025},
+  doi     = {10.1109/JIOT.2025.3569628}
+}
+
+@article{zhou-logdlr-2025,
+  author  = {Junwei Zhou and Shaowen Ying and Shulan Wang and Dongdong Zhao and Jianwen Xiang and Kaitai Liang and Peng Liu},
+  title   = {{LogDLR}: Unsupervised Cross-System Log Anomaly Detection Through Domain-Invariant Latent Representation},
+  journal = {IEEE Transactions on Dependable and Secure Computing},
+  volume  = {22},
+  number  = {4},
+  pages   = {4456--4471},
+  year    = {2025},
+  doi     = {10.1109/TDSC.2025.3548050}
+}
+
+@article{sun-sharing-2025,
+  author  = {Jianfei Sun and Yangyang Bao and Weidong Qiu and Rongxing Lu and Songnian Zhang and Yunguo Guan and Xiaochun Cheng},
+  title   = {Privacy-Preserving Fine-Grained Data Sharing With Dynamic Service for the Cloud-Edge {IoT}},
+  journal = {IEEE Transactions on Dependable and Secure Computing},
+  volume  = {22},
+  number  = {2},
+  pages   = {1329--1346},
+  year    = {2025},
+  doi     = {10.1109/TDSC.2024.3432650}
+}
+
+% ---------- guarantees and prompt-level sanitizers ----------
+
+@article{carvalho-microdata-2023,
+  author  = {T{\^a}nia Carvalho and Nuno Moniz and Pedro Faria and Lu{\'i}s Antunes},
+  title   = {Survey on Privacy-Preserving Techniques for Microdata Publication},
+  journal = {ACM Computing Surveys},
+  volume  = {55},
+  number  = {14s},
+  pages   = {1--42},
+  year    = {2023},
+  doi     = {10.1145/3588765}
+}
+
+@article{zhao-dp-2024,
+  author  = {Ying Zhao and Jia Tina Du and Jinjun Chen},
+  title   = {Scenario-based Adaptations of Differential Privacy: A Technical Survey},
+  journal = {ACM Computing Surveys},
+  volume  = {56},
+  number  = {8},
+  pages   = {1--39},
+  year    = {2024},
+  doi     = {10.1145/3651153}
+}
+
+@article{edemacu-prompt-2025,
+  author  = {Kennedy Edemacu and Xintao Wu},
+  title   = {Privacy Preserving Prompt Engineering: A Survey},
+  journal = {ACM Computing Surveys},
+  volume  = {57},
+  number  = {10},
+  pages   = {1--36},
+  year    = {2025},
+  doi     = {10.1145/3729219}
+}
+
+@article{shen-prosan-2026,
+  author  = {Zhili Shen and Zihang Xi and Ying He and Wei Tong and Jingyu Hua and Sheng Zhong},
+  title   = {{ProSan}: Utility-Based Prompt Privacy Sanitizer},
+  journal = {IEEE Transactions on Information Forensics and Security},
+  volume  = {21},
+  pages   = {1198--1212},
+  year    = {2026},
+  doi     = {10.1109/TIFS.2026.3654397}
+}
+
+% ---------- long-context benchmarks ----------
+
+@inproceedings{bai-longbenchv2-2025,
+  author    = {Yushi Bai and Shangqing Tu and Jiajie Zhang and Hao Peng and Xiaozhi Wang and Xin Lv and
+               Shulin Cao and Jiazheng Xu and Lei Hou and Yuxiao Dong and Jie Tang and Juanzi Li},
+  title     = {{LongBench} v2: Towards Deeper Understanding and Reasoning on Realistic Long-context Multitasks},
+  booktitle = {Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (ACL), Volume 1: Long Papers},
+  pages     = {3639--3664},
+  year      = {2025},
+  doi       = {10.18653/v1/2025.acl-long.183}
+}
+
+@inproceedings{yen-helmet-2025,
+  author    = {Howard Yen and Tianyu Gao and Minmin Hou and Ke Ding and Daniel Fleischer and Peter Izsak and
+               Moshe Wasserblat and Danqi Chen},
+  title     = {{HELMET}: How to Evaluate Long-context Models Effectively and Thoroughly},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2025}
+}
+
+@inproceedings{zhang-infinitebench-2024,
+  author    = {Xinrong Zhang and Yingfa Chen and Shengding Hu and Zihang Xu and Junhao Chen and Moo Hao and
+               Xu Han and Zhen Thai and Shuo Wang and Zhiyuan Liu and Maosong Sun},
+  title     = {$\infty${Bench}: Extending Long Context Evaluation Beyond 100{K} Tokens},
+  booktitle = {Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (ACL), Volume 1: Long Papers},
+  pages     = {15262--15277},
+  year      = {2024},
+  doi       = {10.18653/v1/2024.acl-long.814}
+}
+
+@inproceedings{hsieh-ruler-2024,
+  author    = {Cheng-Ping Hsieh and Simeng Sun and Samuel Kriman and Shantanu Acharya and Dima Rekesh and
+               Fei Jia and Boris Ginsburg},
+  title     = {{RULER}: What's the Real Context Size of Your Long-Context Language Models?},
+  booktitle = {Conference on Language Modeling (COLM)},
+  year      = {2024}
 }
 
 % ---------- datasets ----------
-
-@inproceedings{squad2,
-  author    = {Pranav Rajpurkar and Robin Jia and Percy Liang},
-  title     = {Know What You Don't Know: Unanswerable Questions for {SQuAD}},
-  booktitle = {Proceedings of the 56th Annual Meeting of the Association for Computational Linguistics (ACL)},
-  pages     = {784--789},
-  year      = {2018}
-}
 
 @inproceedings{longbench,
   author    = {Yushi Bai and Xin Lv and Jiajie Zhang and Hongchang Lyu and Jiankai Tang and

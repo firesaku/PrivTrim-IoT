@@ -25,20 +25,21 @@ pipeline end to end and the evidence for its one non-obvious choice.
 \centering
 \includegraphics[width=\textwidth]{figures/fig_method.pdf}
 \caption{The \textsc{DARK} pipeline. (a) Five stages, all deterministic and model-free.
-(1)~An excerpt is split into units inside record blocks, \emph{one line = one unit}.
-(2)~Two labels are read off independently: sensitivity from the protected set $V$ that the
-operator already holds, relevance from whether the block mentions the entity the question
-names---no answer key and no model call enters either.
-(3)~The pair selects exactly one operation.
+(1)~Units are lines, grouped into per-entity blocks.
+(2)~The question names an entity $x_q$, matched to a line; sensitivity comes from the
+protected set $V$ the operator holds, relevance from whether the block contains $x_q$---no
+answer key and no model call enters either.
+(3)~The pair selects one operation; only the alias cell keeps the value out and the referent
+in.
 (4)~A keyed map $\kappa$ aliases the protected values and is applied to the question as well;
 the entity block is never dropped, and the rest is fitted to $B=\lfloor r\,n_C\rfloor$ in the
-stated drop order, with refill units admitted by decreasing redundancy.
-(5)~The strip reports a real 112-case run: $3{,}869$ tokens against $7{,}964$, no protected
-value in any prompt, F1 $0.6366$.
-(b) Why the alias map is keyed. Handing out alias letters in value order makes every alias
-invertible from its rank alone; deriving the order from a key removes that signal, and the
-question is rewritten through the same map so the two halves still agree.
-(c) Protecting the anchor \emph{line} does not close the gap; protecting the \emph{block}
+stated drop order, refill admitted by decreasing redundancy.
+(5)~A real 112-case run: $3{,}869$ tokens against $7{,}964$, no protected value in any
+prompt, F1 $0.6366$.
+(b)~Why the alias map is keyed. Alias letters handed out in value order are invertible from
+their rank alone; deriving the order from a key removes that signal, and the question is
+rewritten through the same map so the two halves still agree.
+(c)~Protecting the anchor \emph{line} does not close the gap; protecting the \emph{block}
 does. Bars give the fraction of the $2{,}728$ cases in which the answer-bearing record
 survives.}
 \label{fig:pipeline}

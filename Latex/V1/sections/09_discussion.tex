@@ -24,7 +24,8 @@ Leakage is measured as recoverability of the protected values from the exact pro
 using the pattern set of the published protocol (full value plus fragments). That is the
 relevant quantity for a pipeline whose adversary is the model provider and whose prompts may
 be retained. It is not a formal guarantee. We derive no differential-privacy
-bound~\cite{dp} and no $k$-anonymity guarantee~\cite{kanon}; the alias map is assumed private,
+bound~\cite{zhao-dp-2024} and no $k$-anonymity guarantee~\cite{carvalho-microdata-2023}; the
+alias map is assumed private,
 and an adversary who obtains it recovers the values. Keying the assignment from a permutation
 removes the rank attack that an unkeyed assignment admits---an adversary holding only the
 value set can otherwise invert the map---but that mitigation is narrower than a guarantee. We
