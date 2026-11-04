@@ -1,5 +1,5 @@
-HOST=gpu-0913-01.hpc.naitive.ai TASK=0 CFG=scatter DATE=2026-10-15T11:23:33+04:00
-NVIDIA H200, 143771 MiB, 0 MiB
+HOST=gpu-0913-01.cluster.internal TASK=0 CFG=scatter DATE=2026-10-15T11:23:33+04:00
+NVIDIA GPU, 143771 MiB, 0 MiB
 [11:23:51] config scatter device cuda modes ['sim_emb', 'cons_emb', 'imp_emb', 'cons_imp_emb', 'random_adj', 'random_far'] ratios [0.125, 0.25, 0.5]
 [11:23:56] progress 50  2.0s
 [11:23:57] progress 100  3.9s
@@ -12,7 +12,7 @@ NVIDIA H200, 143771 MiB, 0 MiB
 [11:24:34] progress 450  40.3s
 [11:24:36] progress 500  42.8s
 [11:24:37] progress 550  43.5s
-[11:24:37] wrote /dpc/kuex0095/100065732/privtrim_v2c_20261015/v3out/v3_scatter_report.txt
+[11:24:37] wrote /path/to/privtrim/runs/v2c/v3out/v3_scatter_report.txt
 V3 CONFIG=scatter  samples=frozen_samples_scattered.jsonl  granularity=sentence  records=550  cap=200  seed=20261015  dev=cuda
 
 mode           ratio     clusters  hit_answer    mix_sens   fuse_2sec

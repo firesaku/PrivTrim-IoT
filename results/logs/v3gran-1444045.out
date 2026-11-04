@@ -1,4 +1,4 @@
-HOST=gpu-0913-01.hpc.naitive.ai DATE=2026-10-15T11:29:29+04:00
+HOST=gpu-0913-01.cluster.internal DATE=2026-10-15T11:29:29+04:00
 [11:29:36] config gran device cuda modes ['sim_emb', 'imp_emb', 'cons_imp_emb', 'random_adj'] ratios [0.125, 0.25, 0.5]
 [11:29:41] progress 50  3.2s
 [11:29:44] progress 100  6.3s
@@ -9,7 +9,7 @@ HOST=gpu-0913-01.hpc.naitive.ai DATE=2026-10-15T11:29:29+04:00
 [11:29:56] progress 350  18.4s
 [11:29:58] progress 400  20.5s
 [11:30:00] progress 450  22.4s
-[11:30:00] wrote /dpc/kuex0095/100065732/privtrim_v2c_20261015/v3out/v3_gran_report.txt
+[11:30:00] wrote /path/to/privtrim/runs/v2c/v3out/v3_gran_report.txt
 V3 CONFIG=gran  samples=frozen_samples.jsonl  granularity=charwin  records=455  cap=200  seed=20261015  dev=cuda
 
 mode           ratio     clusters  hit_answer    mix_sens   fuse_2sec

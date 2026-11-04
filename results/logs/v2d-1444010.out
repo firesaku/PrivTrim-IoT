@@ -1,8 +1,8 @@
-HOST=gpu-0912-02.hpc.naitive.ai DATE=2026-10-15T11:02:53+04:00
-NVIDIA H200, 143771 MiB, 0 MiB
+HOST=gpu-0912-02.cluster.internal DATE=2026-10-15T11:02:53+04:00
+NVIDIA GPU, 143771 MiB, 0 MiB
 [11:03:11] device cuda cuda_count 1
-[11:03:11] gpu NVIDIA H200
-[11:03:11] loading encoder: /dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/models/models--microsoft--llmlingua-2-xlm-roberta-large-meetingbank/snapshots/ebaba9b0e874dadd3003ffcff828e4397e568089
+[11:03:11] gpu NVIDIA GPU
+[11:03:11] loading encoder: /path/to/privtrim/models/models--microsoft--llmlingua-2-xlm-roberta-large-meetingbank/snapshots/ebaba9b0e874dadd3003ffcff828e4397e568089
 [11:03:14] progress 25/581  1.2s
 [11:03:16] progress 50/581  2.4s
 [11:03:17] progress 75/581  3.7s
@@ -22,7 +22,7 @@ NVIDIA H200, 143771 MiB, 0 MiB
 [11:03:56] progress 425/581  42.6s
 [11:03:56] progress 450/581  43.0s
 [11:03:57] progress 475/581  43.4s
-[11:03:57] wrote /dpc/kuex0095/100065732/privtrim_v2c_20261015/v2d_report.txt
+[11:03:57] wrote /path/to/privtrim/runs/v2c/v2d_report.txt
 V2d GPU FEASIBILITY — real semantic embeddings vs char-3gram vs random
 samples=frozen_samples.jsonl records=494 cap=200 ratios=[0.125, 0.25, 0.5] model=ebaba9b0e874dadd3003ffcff828e4397e568089 device=cuda
 

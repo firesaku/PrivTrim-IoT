@@ -1,9 +1,9 @@
 HOST=gpu-11-2 DATE=2026-10-15T20:16:53+04:00
-Tesla V100-PCIE-32GB, 32768 MiB
-Tesla V100-PCIE-32GB, 32768 MiB
-Tesla V100-PCIE-32GB, 32768 MiB
-Tesla V100-PCIE-32GB, 32768 MiB
-[20:17:19] gpu Tesla V100-PCIE-32GB
+32 GB GPU, 32768 MiB
+32 GB GPU, 32768 MiB
+32 GB GPU, 32768 MiB
+32 GB GPU, 32768 MiB
+[20:17:19] gpu 32 GB GPU
 [20:17:21] dataset hotpotqa: pool=7405 use=500
 [20:17:21] dataset squad: pool=10570 use=500
 [20:17:21] total cases 1000
@@ -39,7 +39,7 @@ Tesla V100-PCIE-32GB, 32768 MiB
 [20:46:31] gen 5128/6000  1737.6s
 [20:47:01] gen 5448/6000  1767.2s
 [20:47:30] gen 5768/6000  1796.5s
-[20:47:53] wrote /dpc/kuex0095/100065732/privtrim_v2c_20261015/e2eout/e2e2_report.txt /dpc/kuex0095/100065732/privtrim_v2c_20261015/e2eout/e2e2_cells.json /dpc/kuex0095/100065732/privtrim_v2c_20261015/e2eout/e2e2_percase.jsonl
+[20:47:53] wrote /path/to/privtrim/runs/v2c/e2eout/e2e2_report.txt /path/to/privtrim/runs/v2c/e2eout/e2e2_cells.json /path/to/privtrim/runs/v2c/e2eout/e2e2_percase.jsonl
 E2E v2 — token-level vs sentence-level, deterministic case selection
 cases=1000  arms=['full', 'filtered_full', 'mask_extractive', 'mask_cluster', 'win_extractive', 'win_cluster']  win=16  budget_frac=0.50  dtype=fp16
 

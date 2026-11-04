@@ -1,4 +1,4 @@
-cases: /dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/run/qwen25_7b/cases.jsonl.gz
+cases: /path/to/privtrim/run/qwen25_7b/cases.jsonl.gz
 V1b DIAGNOSTIC — is redact_miss a true leak or a heuristic false positive?
 cases_scanned=17975
 
@@ -119,5 +119,5 @@ CASE 572a005f1d046914007796b7 | type=account value=ACCT-89cfd904ab46 marker=89cf
 CASE 5abdf68c5542993f32c2a06b | type=account value=ACCT-e279e9a7f24f marker=e279e9a7f24f
    HITS: digitchunk_d6_10:4
    REDACTED_CTX[0:129]=Private contact record: | Contact email: [REDACTED] | Contact phone: [REDACTED] | Account ID: [REDACTED] |  | Michael Herr | Michael David He
-wrote /dpc/kuex0095/100065732/privtrim_v2c_20261015/v1b_report.txt
+wrote /path/to/privtrim/runs/v2c/v1b_report.txt
 V1B_RC=0

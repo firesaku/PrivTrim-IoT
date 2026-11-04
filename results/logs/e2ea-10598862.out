@@ -1,9 +1,9 @@
 HOST=gpu-11-2 DATE=2026-10-15T17:11:53+04:00
-Tesla V100-PCIE-32GB, 32768 MiB
-Tesla V100-PCIE-32GB, 32768 MiB
-Tesla V100-PCIE-32GB, 32768 MiB
-Tesla V100-PCIE-32GB, 32768 MiB
-[17:12:15] gpu Tesla V100-PCIE-32GB
+32 GB GPU, 32768 MiB
+32 GB GPU, 32768 MiB
+32 GB GPU, 32768 MiB
+32 GB GPU, 32768 MiB
+[17:12:15] gpu 32 GB GPU
 [17:12:17] dataset hotpotqa: pool=7405 use=500
 [17:12:17] dataset squad: pool=10570 use=500
 [17:12:17] total cases 1000
@@ -52,7 +52,7 @@ Tesla V100-PCIE-32GB, 32768 MiB
 [17:37:08] gen 4648/5000  1478.6s
 [17:37:24] gen 4808/5000  1494.0s
 [17:37:42] gen 4968/5000  1511.9s
-[17:37:46] wrote /dpc/kuex0095/100065732/privtrim_v2c_20261015/e2eout/e2e_alm_report.txt
+[17:37:46] wrote /path/to/privtrim/runs/v2c/e2eout/e2e_alm_report.txt
 E2E RESULT — same cases / same 50%% budget / same model / same privacy frontend
 cases=1000  arms=['full', 'filtered_full', 'random_drop', 'mask_extractive', 'mask_cluster']  max_new=64  budget_frac=0.50
 

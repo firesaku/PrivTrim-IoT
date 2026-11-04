@@ -1,4 +1,4 @@
-cases file: /dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/run/qwen25_7b/cases.jsonl.gz
+cases file: /path/to/privtrim/run/qwen25_7b/cases.jsonl.gz
   cases 2000
   cases 4000
   cases 6000
@@ -9,7 +9,7 @@ cases file: /dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_2
   cases 16000
 variant-level sweep ...
 V1 PARAPHRASE-AWARE LEAK CHECKER — full-corpus coverage
-cases_file=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/run/qwen25_7b/cases.jsonl.gz
+cases_file=/path/to/privtrim/run/qwen25_7b/cases.jsonl.gz
 cases=17975  secrets=53925
 
 bucket                    n     hit_rate
@@ -26,5 +26,5 @@ redact_miss           53925        1.14%
   raw_var_tok = 变体枚举 + token 集合检查器的检出率（更严格）
   blind_spot  = 原版看不见、但更严格检查器看得见 -> 指标盲区
   redact_miss = 正则脱敏后，更严格检查器仍看得见 -> 正则漏删率
-wrote /dpc/kuex0095/100065732/privtrim_v2c_20261015/v1fix_report.txt
+wrote /path/to/privtrim/runs/v2c/v1fix_report.txt
 V1FIX_RC=0

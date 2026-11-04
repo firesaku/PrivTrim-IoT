@@ -1,5 +1,5 @@
-HOST=gpu-0913-01.hpc.naitive.ai TASK=1 CFG=guard DATE=2026-10-15T11:24:38+04:00
-NVIDIA H200, 143771 MiB, 0 MiB
+HOST=gpu-0913-01.cluster.internal TASK=1 CFG=guard DATE=2026-10-15T11:24:38+04:00
+NVIDIA GPU, 143771 MiB, 0 MiB
 [11:24:46] config guard device cuda modes ['sim_emb', 'cons_emb', 'imp_emb', 'cons_imp_emb', 'random_adj'] ratios [0.125, 0.25, 0.5]
 [11:24:50] progress 50  2.2s
 [11:24:53] progress 100  4.7s
@@ -10,7 +10,7 @@ NVIDIA H200, 143771 MiB, 0 MiB
 [11:25:24] progress 350  36.3s
 [11:25:28] progress 400  40.2s
 [11:25:30] progress 450  41.9s
-[11:25:31] wrote /dpc/kuex0095/100065732/privtrim_v2c_20261015/v3out/v3_guard_report.txt
+[11:25:31] wrote /path/to/privtrim/runs/v2c/v3out/v3_guard_report.txt
 V3 CONFIG=guard  samples=frozen_samples.jsonl  granularity=sentence  records=494  cap=200  seed=20261015  dev=cuda
 
 mode           ratio     clusters  hit_answer    mix_sens   fuse_2sec

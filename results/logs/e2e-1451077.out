@@ -1,6 +1,6 @@
-HOST=gpu-0913-01.hpc.naitive.ai DATE=2026-10-15T16:45:00+04:00
-NVIDIA H200, 143771 MiB
-[16:45:26] gpu NVIDIA H200
+HOST=gpu-0913-01.cluster.internal DATE=2026-10-15T16:45:00+04:00
+NVIDIA GPU, 143771 MiB
+[16:45:26] gpu NVIDIA GPU
 [16:45:28] dataset hotpotqa: pool=7405 use=500
 [16:45:28] dataset squad: pool=10570 use=500
 [16:45:28] total cases 1000
@@ -34,5 +34,5 @@ NVIDIA H200, 143771 MiB
 [16:51:04] gen 4496/5000  329.8s
 [16:51:10] gen 4816/5000  335.8s
 E2E_RC=1
-cat: /dpc/kuex0095/100065732/privtrim_v2c_20261015/e2eout/e2e_report.txt: No such file or directory
+cat: /path/to/privtrim/runs/v2c/e2eout/e2e_report.txt: No such file or directory
 E2E_DONE

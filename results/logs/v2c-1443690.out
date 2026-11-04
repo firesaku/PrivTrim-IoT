@@ -1,6 +1,6 @@
-HOST=cn-0903-08.hpc.naitive.ai DATE=2026-10-15T10:04:59+04:00
-PY=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/.venv-main/bin/python
-wrote /dpc/kuex0095/100065732/privtrim_v2c_20261015/v2c_report.txt and /dpc/kuex0095/100065732/privtrim_v2c_20261015/v2c_cells.json
+HOST=cn-0903-08.cluster.internal DATE=2026-10-15T10:04:59+04:00
+PY=/path/to/privtrim/.venv/bin/python
+wrote /path/to/privtrim/runs/v2c/v2c_report.txt and /path/to/privtrim/runs/v2c/v2c_cells.json
   similarity       r=0.125 clusters=   885 hitAns=  4.5% mixSens=  1.8% fuse2= 0.0%
   random_adjacent  r=0.125 clusters=  1011 hitAns=  3.8% mixSens= 17.0% fuse2= 1.5%
   random_far       r=0.125 clusters=  1006 hitAns=  3.7% mixSens= 18.8% fuse2= 0.0%

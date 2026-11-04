@@ -1,11 +1,11 @@
 HOST=gpu-11-2 DATE=2026-10-16T16:30:41+04:00
-Tesla V100-PCIE-32GB, 32768 MiB
-Tesla V100-PCIE-32GB, 32768 MiB
-Tesla V100-PCIE-32GB, 32768 MiB
-Tesla V100-PCIE-32GB, 32768 MiB
+32 GB GPU, 32768 MiB
+32 GB GPU, 32768 MiB
+32 GB GPU, 32768 MiB
+32 GB GPU, 32768 MiB
 [16:30:41] cases=112  arms=full,delete,alias,budget_cluster,budget_cluster_link,budget_random,delete_budget,alias_budget  budgets=[0.25, 0.5, 0.75]  sel=lex  dry_run=False
-[16:30:41] scorer=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/project/external/squad_v11/evaluate-v2.0.py
-[16:30:52] gpu Tesla V100-PCIE-32GB
+[16:30:41] scorer=/path/to/privtrim/project/external/squad_v11/evaluate-v2.0.py
+[16:30:52] gpu 32 GB GPU
 [16:30:52] loading LM fp16 maxlen=8192
 [16:30:58] selector=lex（model-free 词面 Jaccard 冗余度）
 [16:31:04] prepared 25/112  6.0s
@@ -39,13 +39,13 @@ Tesla V100-PCIE-32GB, 32768 MiB
 [17:35:16] gen 1844/2016  3857.7s
 [17:39:55] gen 1924/2016  4136.8s
 [17:44:20] gen 2004/2016  4402.3s
-[17:45:36] wrote /dpc/kuex0095/100065732/privtrim_v2c_20261015/longctx_r2_out/report.txt
-[17:45:36] wrote /dpc/kuex0095/100065732/privtrim_v2c_20261015/longctx_r2_out/cells.json
-[17:45:36] wrote /dpc/kuex0095/100065732/privtrim_v2c_20261015/longctx_r2_out/percase.jsonl
+[17:45:36] wrote /path/to/privtrim/runs/v2c/longctx_r2_out/report.txt
+[17:45:36] wrote /path/to/privtrim/runs/v2c/longctx_r2_out/cells.json
+[17:45:36] wrote /path/to/privtrim/runs/v2c/longctx_r2_out/percase.jsonl
 E2E LONGCTX — 长上下文压缩基准（gold 由真实源结构化记录确定性导出）
 cases=112  arms=full,delete,alias,budget_cluster,budget_cluster_link,budget_random,delete_budget,alias_budget  budgets=[0.25, 0.5, 0.75]  selector=lex  dtype=fp16  batch=4  max_new=64  maxlen=8192
-model=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/models/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28
-scorer=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/project/external/squad_v11/evaluate-v2.0.py
+model=/path/to/privtrim/models/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28
+scorer=/path/to/privtrim/project/external/squad_v11/evaluate-v2.0.py
 per-case budget B = round(ratio * nt(full_context))，由 tokenizer 实测
 
 [1] 预算对账（BUDGET ACCOUNTING）—— 预算臂实测 token 必须 <= 目标 B（超了直接 raise）
@@ -260,8 +260,8 @@ LONGCTX2_RC=0
 ===== REPORT =====
 E2E LONGCTX — 长上下文压缩基准（gold 由真实源结构化记录确定性导出）
 cases=112  arms=full,delete,alias,budget_cluster,budget_cluster_link,budget_random,delete_budget,alias_budget  budgets=[0.25, 0.5, 0.75]  selector=lex  dtype=fp16  batch=4  max_new=64  maxlen=8192
-model=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/models/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28
-scorer=/dpc/kuex0095/100065732/privtrim_iot_hpc_20261005/PrivTrim_IoT_HPC_20261005/project/external/squad_v11/evaluate-v2.0.py
+model=/path/to/privtrim/models/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28
+scorer=/path/to/privtrim/project/external/squad_v11/evaluate-v2.0.py
 per-case budget B = round(ratio * nt(full_context))，由 tokenizer 实测
 
 [1] 预算对账（BUDGET ACCOUNTING）—— 预算臂实测 token 必须 <= 目标 B（超了直接 raise）

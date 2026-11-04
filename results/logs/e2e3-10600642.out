@@ -1,9 +1,9 @@
 HOST=gpu-11-1 DATE=2026-10-15T23:58:44+04:00
-Tesla V100-PCIE-32GB, 32768 MiB
-Tesla V100-PCIE-32GB, 32768 MiB
-Tesla V100-PCIE-32GB, 32768 MiB
-Tesla V100-PCIE-32GB, 32768 MiB
-[23:59:06] gpu Tesla V100-PCIE-32GB
+32 GB GPU, 32768 MiB
+32 GB GPU, 32768 MiB
+32 GB GPU, 32768 MiB
+32 GB GPU, 32768 MiB
+[23:59:06] gpu 32 GB GPU
 [23:59:08] dataset hotpotqa use=500
 [23:59:08] dataset squad use=500
 [23:59:08] total cases 1000
@@ -36,7 +36,7 @@ Tesla V100-PCIE-32GB, 32768 MiB
 [00:16:06] gen 3208/4000  994.9s
 [00:16:36] gen 3528/4000  1025.2s
 [00:17:07] gen 3848/4000  1056.1s
-[00:17:23] wrote /dpc/kuex0095/100065732/privtrim_v2c_20261015/e2eout/e2e3_report.txt
+[00:17:23] wrote /path/to/privtrim/runs/v2c/e2eout/e2e3_report.txt
 E2E v3 — dual-constrained clustering stacked on mask_quito_x's PUBLISHED output
 cases=1000  reduce_frac=0.25  max_new=64  dtype=fp16
 
