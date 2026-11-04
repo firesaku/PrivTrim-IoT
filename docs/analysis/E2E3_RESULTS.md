@@ -1,6 +1,6 @@
 # E2E v3：把双约束聚类叠在 `mask_quito_x` 已发布输出之上
 
-> 2026-10-16 ｜ the GPU cluster 作业 **10600642**（`COMPLETED` exit 0:0，18:40，1×V100，FP16）
+> 2026-10-16 ｜ the GPU cluster 作业 **10600642**（`COMPLETED` exit 0:0，18:40，1×32 GB GPU，FP16）
 > 1000 例，直接读他们 DB 里存好的 `mask_quito_x @0.5` 压缩文本（**不重实现 QUITO-X**）
 
 ---

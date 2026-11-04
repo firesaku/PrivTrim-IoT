@@ -1,0 +1,132 @@
+# Reproduction
+
+Three levels. Levels 1 and 2 need **no GPU, no model weights and no network**; both run in this
+repository as shipped.
+
+| Level | Question it answers | Command | Cost |
+| --- | --- | --- | --- |
+| **1. Re-derive the numbers** | Do the archived per-case results still produce exactly the reported tables? | `python src/analysis_quad4/reproduce.py` | ~10 s, CPU |
+| **2. Rebuild the arms** | Is prompt construction — routing, aliasing, budget accounting, leakage — deterministic and correct without a model? | `python src/analysis_quad4/validate_fallback.py` + `python -m unittest discover -s tests` | ~5 s, CPU |
+| **3. Re-run the reader** | Do the F1 values themselves come back? | `src/longctx/e2e_quad.py` on a GPU | ~30 min per arm set |
+
+---
+
+## Level 1 — re-derive every reported number
+
+```bash
+python src/analysis_quad4/reproduce.py
+```
+
+This reads **only** `results/percase/` and, for each of the ~90 numbers stated in
+[Results](results.md), recomputes it from the raw per-case rows and diffs it against the expected
+value with a tolerance of 0.0015 (fp16 non-determinism level).
+
+```
+==============================================================================
+1) longctx_max extension, 2,728 cases (forward fill, no answer key)
+==============================================================================
+  PASS  full                                     got 0.6081  expected 0.6081
+  PASS  quad4                                    got 0.4937  expected 0.4937
+  ...
+  ---- quad4 leakage must be 0; measured 0.000
+  ...
+  ---- full arm identical case-by-case with the paper reference batch: 112 / 112
+  ---- quad4 mean tokens as a share of the full context: 48.6% (expected ~48.6%)
+  ...
+RESULT: all PASS - the archived results in this repository agree with every number stated in the docs
+```
+
+Exit code is **0 only when every item passes**; the script is usable as a gate. Two properties are
+worth calling out because they are the ones that catch silent corruption:
+
+- the **identity baseline** — the uncompressed arm must reproduce the reference batch *case by case*,
+  not just in the mean. A mismatch means the run differs in model, precision or data;
+- **zero leakage** is asserted as an exact equality, not rounded.
+
+If an item fails, the script names it and exits 1.
+
+## Level 2 — rebuild the arms without a model
+
+```bash
+# routing, forced-set sizing, budget compliance and leakage, on four datasets
+python src/analysis_quad4/validate_fallback.py
+
+# predicate and router unit tests
+python -m unittest discover -s tests -v      # 34 tests, no third-party dependency
+```
+
+`validate_fallback.py` walks the construction path of `e2e_quad.py` on 150 cases from each of the four
+shipped benchmarks and reports:
+
+```
+=== longctx_max (2,728 cases, record-block structure) ===
+  mode: {'entry': 150}
+  forced/budget: mean=0.398 max=0.493  cases over budget=0/150
+  emitted prompt over budget: 0 / 150
+  gold answer present in prompt: 150 / 150 (100.0%)
+  cases with a leaked canary: 0 / 150
+```
+
+The four rows are the four invariants: the mode selector picks `entry` when record markers exist and
+`window` when they do not; forced retention never exceeds the budget; the emitted prompt never exceeds
+the budget; and no canary survives. `gold answer present in prompt` is a model-independent upper bound
+on F1 — on Type A (topical) it drops to 16.0%, which is the honest ceiling for a rule that has no
+entity to route on.
+
+You can also build prompts for any benchmark without loading a model:
+
+```bash
+gunzip -k data/longctx_max.jsonl.gz
+python src/longctx/e2e_quad.py --dry-run --cases data/longctx_max.jsonl \
+    --out out/dry.txt --json out/dry.json --percase out/dry_percase.jsonl
+```
+
+`--dry-run` runs "read cases → build arms → reconcile budget → report" and prints the measured token
+count of every arm in every cell (mean, max absolute deviation, max percentage deviation), so a budget
+mismatch cannot hide. Token counts in dry-run are estimates (words × 1.33); a real run measures with
+the tokenizer.
+
+## Level 3 — re-run the reader
+
+Needs a 7B reader on one GPU; every case file it reads ships in `data/`. See
+[Evaluation](evaluation.md) for the exact invocation.
+
+---
+
+## What is verified and what is not
+
+| Claim | Status |
+| --- | --- |
+| Every F1 / leakage / token-share number in [Results](results.md) | ✅ re-derived from `results/percase/` on every run |
+| Prompt construction, budget accounting, zero leakage | ✅ re-executed on the shipped benchmarks |
+| Predicates, alias map, quadrant routing | ✅ unit-tested |
+| `e2e_quad.py` is byte-identical to what `make_e2e_quad.py` regenerates | ✅ `python src/analysis_quad4/make_e2e_quad.py`, compare hashes |
+| The manuscript builds from source | ✅ `pdflatex` ×2 + `bibtex`, 18 pages, no undefined references |
+| The F1 values themselves | 🔌 requires a GPU run; all inputs are present |
+| The V1–V3 mechanism results | 🔌 re-running needs the same GPU setup; the archives are in `results/` |
+
+## Regenerating `e2e_quad.py`
+
+`e2e_quad.py` is generated from `e2e_longctx_r5full.py` by a text transform, and the transform is
+byte-exact:
+
+```bash
+cp src/longctx/e2e_quad.py /tmp/before.py
+python src/analysis_quad4/make_e2e_quad.py
+diff /tmp/before.py src/longctx/e2e_quad.py     # no output = identical
+```
+
+This is why both files carry the same module docstring: editing either one alone breaks the identity
+check, which is the point — a claim of "this is the code that produced the numbers" is only meaningful
+if it can be re-derived.
+
+## Reproducibility controls baked into the harness
+
+The harness enforces two controls in every batch, described in the manuscript's experimental setup:
+
+1. the **uncompressed arm is recomputed** in every run and must reproduce its reference value;
+2. every **budget arm asserts non-overshoot at the case level**, and the harness raises rather than
+   truncating.
+
+Runs that fail either control are discarded rather than reported. `reproduce.py` re-checks both from
+the archived evidence.

@@ -1,0 +1,11 @@
+# Verification only (levels 1-2 in docs/reproduction.md): no third-party package.
+# The lines below are for re-running the reader (level 3) and the analysis scripts.
+
+torch>=2.4,<3
+transformers>=4.45,<5
+numpy>=1.24
+
+# Optional: sentence embeddings for `--sel emb`.  The default `--sel auto` falls
+# back to model-free lexical Jaccard, which is the setting used for the reported
+# numbers, so this is not required to reproduce anything.
+# sentence-transformers>=3.0

@@ -1,4 +1,4 @@
-# Long-context results (job 10601756, the GPU cluster V100, Qwen2.5-7B-Instruct fp16)
+# Long-context results (job 10601756, the GPU cluster 32 GB GPU, Qwen2.5-7B-Instruct fp16)
 
 112 cases x 18 (arm,ratio) = 2016 generations. ctx_tokens is the mean **achieved** context tokens; leak = sum(out_leak_value)/sum(n_canaries).
 

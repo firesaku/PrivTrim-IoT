@@ -1,19 +1,51 @@
-# 论文（IEEE S&P / IEEEtran conference 格式）
+# `paper/` — manuscript
 
-- `main.tex`：正文（完整稿）。`pdflatex main.tex` 连跑两遍即可；参考文献用 `thebibliography`，无需 bibtex。
-- `tabs.tex`：**由脚本生成**的表格（主结果 / 已发布方法 / 预算曲线 / 稳健性 / 逐来源），
-  在 `main.tex` 里用 `\input{tabs}` 引入。**不要手改 `tabs.tex`**，改 `tables/make_tables.py`。
-- `figs/make_figs.py`：图 2（F1–token 前沿）、图 3（机制：gic vs F1）、图 4（预算曲线 + 答案位置分层），
-  只读 `results/` 与 `fixres/` 下的真实产物。图 1（方法机制图）为 TikZ，直接写在 `main.tex`。
-- `main.pdf`：编译产物。
+**"Keeping the Referent in the DARK: Anchor-Preserving Token Compression for Privacy-Aware Inference
+on IoT Logs"** — Yukun Wen, Shijie Zeng (Khalifa University).
 
-重建全部：
+| Path | Content |
+| --- | --- |
+| `main.pdf` | the compiled manuscript (18 pages) — read this |
+| `main.tex` | entry point: preamble, title block, `\input`s, bibliography |
+| `sections/` | one file per section, `00_abstract` … `11_appendix` |
+| `tables/` | `tab_main`, `tab_external`, `tab_budget`, `tab_ablation_alias`, `fig6_cases` |
+| `figures/` | the vector figures (`fig0_teaser`, `fig_method`, `fig1_main`, `fig2_diagnostic`, `fig3_alias`, `fig_persource`) |
+| `refs.bib` | 51 references |
+
+## Build
 
 ```bash
-python paper/tables/make_tables.py --repo <repo> --fix <fixres> --base <review tmp> --out paper/tabs.tex
-python paper/figs/make_figs.py --repo <repo> --fix <fixres> --ext <extbl_multi> --outdir paper/figs
-cd paper && pdflatex -interaction=nonstopmode main.tex && pdflatex -interaction=nonstopmode main.tex
+cd paper
+pdflatex main && bibtex main && pdflatex main && pdflatex main
 ```
 
-数字纪律：正文数字与 `docs/17_证据汇总.md` 同源，由 `code/longctx/audit_docs17.py` 从原始产物
-重算校验（184 项）。**改数顺序：产物 → docs/17 → tabs/figs → 论文**，每步都跑审计。
+The tree is complete and self-contained: it builds cleanly from a fresh clone with 0 undefined
+references, 0 undefined citations and 0 overfull hboxes, and produces 18 pages.
+
+> `main.pdf` in this repository is the artifact as originally shipped, not the output of the command
+> above; a local rebuild differs from it by a few hundred bytes (PDF metadata), not in content. If you
+> edit the sources, rebuild rather than trusting the committed PDF.
+
+## Style notes
+
+- Two-column Letter, text block pinned to 7.10 in so figures designed at that width place 1:1.
+- Numbers in tables and body text use ↑ / ↓ to state the direction of "better" for each metric.
+- Arms are typeset with `\arm{...}`, metric names with `\msr{...}`, and the method as small caps
+  `\textsc{DARK}`.
+- Every paired difference is reported with a 95% percentile bootstrap interval over cases
+  (10,000 resamples); a difference is called significant only when the interval excludes zero.
+- No significance claim is ever attached to a comparison between the 112-case and 2,728-case sets,
+  because they draw different cases.
+
+## Where each number lives
+
+| Table | Section | Benchmarks |
+| --- | --- | --- |
+| `tab_main` | Results §2 | main set, 112 cases |
+| `tab_external` | Results §1 | extension, 2,728 cases, twelve baselines |
+| `tab_budget` | Results §4 | main set, five ratios |
+| `tab_ablation_alias` | Analysis | alias-vs-delete on five settings |
+| `fig6_cases` | Analysis | two failure modes at the level of one case |
+
+`docs/results.md` restates these tables with the same values; if the two ever disagree, the `.tex`
+files are authoritative and `docs/results.md` is the bug.

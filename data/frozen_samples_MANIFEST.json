@@ -65,13 +65,13 @@
   "frozen": true,
   "seed": 20261015,
   "source_paths": {
-    "squad": "C:\\Users\\ADMIN\\Documents\\ChatGPT\\Cybersec_IoT\\external\\squad_v11\\dev-v1.1.json",
-    "hotpotqa": "C:\\Users\\ADMIN\\Documents\\ChatGPT\\Cybersec_IoT\\external\\hotpotqa\\dev_distractor.parquet",
-    "privacylens": "C:\\Users\\ADMIN\\Documents\\ChatGPT\\Cybersec_IoT\\external\\PrivacyLens\\data\\main_data.json",
-    "pec_home": "C:\\Users\\ADMIN\\Documents\\ChatGPT\\Cybersec_IoT\\external\\PEC-Home\\data\\release",
-    "smartbench": "C:\\Users\\ADMIN\\Documents\\ChatGPT\\Cybersec_IoT\\external\\SmartBench\\context-dependent\\tdcs_rbe",
-    "simuhome": "C:\\Users\\ADMIN\\Documents\\ChatGPT\\Cybersec_IoT\\research\\simuhome_generated_tasks_v1\\tasks",
-    "toolmem": "C:\\Users\\ADMIN\\Documents\\ChatGPT\\Cybersec_IoT\\research\\mem2act_scope_v1\\data\\toolmem_conversation.jsonl"
+    "squad": "/path/to/external\\external\\squad_v11\\dev-v1.1.json",
+    "hotpotqa": "/path/to/external\\external\\hotpotqa\\dev_distractor.parquet",
+    "privacylens": "/path/to/external\\external\\PrivacyLens\\data\\main_data.json",
+    "pec_home": "/path/to/external\\external\\PEC-Home\\data\\release",
+    "smartbench": "/path/to/external\\external\\SmartBench\\context-dependent\\tdcs_rbe",
+    "simuhome": "/path/to/external\\research\\simuhome_generated_tasks_v1\\tasks",
+    "toolmem": "/path/to/external\\research\\mem2act_scope_v1\\data\\toolmem_conversation.jsonl"
   },
   "file_sha256": "cb44ab1745a9f72f76bb799a2e649541fc6fa79fd9b69717e9abce357cfd42ed"
 }

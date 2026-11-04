@@ -1,11 +1,15 @@
-# 统一换行符，保证「生成器重建 == 仓库文件」在任何平台上逐字节成立
+# Byte-level hygiene: everything textual is stored with LF so that generated
+# files compare byte-identically on any platform (see src/analysis_quad4/
+# make_e2e_quad.py, which regenerates src/longctx/e2e_quad.py and must produce
+# exactly the committed bytes).
 * text=auto eol=lf
 
-# 二进制文件不做转换
-*.gz   binary
-*.pdf  binary
-*.png  binary
-*.jpg  binary
-*.zip  binary
-*.pt   binary
-*.bin  binary
+# Binaries are never converted
+*.gz    binary
+*.pdf   binary
+*.png   binary
+*.jpg   binary
+*.zip   binary
+*.pt    binary
+*.bin   binary
+*.safetensors binary

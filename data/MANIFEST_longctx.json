@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "artifact": "longctx_cases.jsonl",
-  "artifact_path": "D:\\CodexData\\tmp\\privtrim-review-20261015\\longctx\\longctx_cases.jsonl",
+  "artifact_path": "/path/to/work\\longctx\\longctx_cases.jsonl",
   "file_sha256": "7d37588016b4cb75bb267317ad75476fc75a1d280d01c6aab29fa65231531183",
   "bytes": 3261456,
   "purpose": "long-context deterministically-scored QA built from the real IoT/agent sources (PrivTrim-IoT); gold answers are fields the source simulator/log itself emitted, never written by a model",
-  "build_command": "python build_longctx_cases.py --out D:\\CodexData\\tmp\\privtrim-review-20261015\\longctx\\longctx_cases.jsonl --manifest D:\\CodexData\\tmp\\privtrim-review-20261015\\longctx\\MANIFEST_longctx.json --min-words 800 --max-words 4800 --max-needle-words 1400 --min-distractors 3 --multi-entities 5 --n-needle-per-source 12 --n-multi-per-source 8 --sources pec_home,privacylens,simuhome,smartbench_tdcs,toolmem,toolmem_raw --seed 20261016",
+  "build_command": "python build_longctx_cases.py --out /path/to/work\\longctx\\longctx_cases.jsonl --manifest /path/to/work\\longctx\\MANIFEST_longctx.json --min-words 800 --max-words 4800 --max-needle-words 1400 --min-distractors 3 --multi-entities 5 --n-needle-per-source 12 --n-multi-per-source 8 --sources pec_home,privacylens,simuhome,smartbench_tdcs,toolmem,toolmem_raw --seed 20261016",
   "seed": 20261016,
   "min_words": 800,
   "max_words": 4800,
@@ -131,12 +131,12 @@
     "note": "词数 = 空白切分。est_ctx_tokens 只是 1.33 词/token 的粗估；真实 token 数由 e2e_longctx.py 用 tokenizer 实测并逐臂上报"
   },
   "source_paths": {
-    "frozen": "D:\\CodexData\\tmp\\privtrim-review-20261015\\crossdata\\frozen_samples.jsonl",
-    "toolmem_raw": "C:\\Users\\ADMIN\\Documents\\ChatGPT\\Cybersec_IoT\\research\\mem2act_scope_v1\\data\\toolmem_conversation.jsonl"
+    "frozen": "/path/to/work\\crossdata\\frozen_samples.jsonl",
+    "toolmem_raw": "/path/to/external\\research\\mem2act_scope_v1\\data\\toolmem_conversation.jsonl"
   },
   "source_schemas": {
     "crossdata/frozen_samples.jsonl": {
-      "path": "D:\\CodexData\\tmp\\privtrim-review-20261015\\crossdata\\frozen_samples.jsonl",
+      "path": "/path/to/work\\crossdata\\frozen_samples.jsonl",
       "format": "jsonl, 581 行, 3860859 bytes, sha256 cb44ab1745a9f72f76bb799a2e649541fc6fa79fd9b69717e9abce357cfd42ed",
       "fields": [
         "sid",
@@ -163,7 +163,7 @@
       "note": "5 个 IoT/agent 源的 answers 全为空数组 —— 这正是本构建器要解决的问题；hotpotqa/squad 有 gold，不在本构建器范围内"
     },
     "toolmem_conversation.jsonl（原始语料）": {
-      "path": "C:\\Users\\ADMIN\\Documents\\ChatGPT\\Cybersec_IoT\\research\\mem2act_scope_v1\\data\\toolmem_conversation.jsonl",
+      "path": "/path/to/external\\research\\mem2act_scope_v1\\data\\toolmem_conversation.jsonl",
       "format": "jsonl, 2029 行, 33361325 bytes（约 31.8 MB）",
       "fields": [
         "session_id",

@@ -1,4 +1,4 @@
-# 忽略：模型权重、大体积数据库、凭据
+# Never commit model weights, databases or credentials
 *.safetensors
 *.bin
 *.gguf
@@ -11,19 +11,35 @@
 *.zip
 *.tgz
 *.tar.gz
+
+# Python
 __pycache__/
 *.py[cod]
+.pytest_cache/
 .venv/
 .venv-*/
-.pytest_cache/
-# 凭据（绝不提交）
+venv/
+env/
+
+# Run outputs (regenerated, not evidence -- evidence lives in results/).
+# Anchored to the repository root on purpose: results/logs/ holds the real job
+# logs and must stay tracked.
+/out/
+/build/
+/dist/
+*.egg-info/
+
+# Decompressed benchmarks: the tracked form is .jsonl.gz
+data/longctx_max.jsonl
+data/public_lb.jsonl
+data/public_lb_typeb.jsonl
+data/public_lb_typec.jsonl
+
+# Credentials
 *.pem
 *.key
 *credentials*
-*.netrc
+.netrc
 _netrc
-KU_ZSJ*
-Madar.txt
-madar-key-pass.txt
 .env
 .env.*

@@ -1,256 +1,243 @@
-# PrivTrim-IoT — 无监督聚类去敏压缩：实验结果与台账
+# <img src="assets/logo.svg" alt="PrivTrim" width="52"/> PrivTrim
 
-> **本仓库是 2026-10-15 ~ 10-16 一轮完整实验工作的产物**：包含提出过的想法、验证方式、全部实验数字、被证否的结论、以及尚不确定的事项。
->
-> 目标方向：把 PACT（CVPR 2025，arXiv [2504.08966](https://arxiv.org/abs/2504.08966)）的"距离有界聚类"从视觉 token 压缩迁移到**文本日志的隐私感知压缩**，做成免训练插件。
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.10%2B-blue" alt="Python: 3.10+">
+  <img src="https://img.shields.io/badge/Framework-PyTorch-ee4c2c" alt="Framework: PyTorch">
+  <img src="https://img.shields.io/badge/GPU-none%20required%20to%20verify-success" alt="Verification runs on CPU">
+  <img src="https://img.shields.io/badge/status-private%20draft-lightgrey" alt="Status: private draft">
+</p>
+
+<p align="center">
+  📄 <a href="paper/main.pdf">Paper (PDF)</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+  🧪 <a href="demo/index.html">Interactive demo</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+  📚 <a href="docs/overview.md">Docs</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+  ✅ <a href="docs/reproduction.md">Reproducibility</a>
+</p>
+
+**Official repository for _"Keeping the Referent in the DARK: Anchor-Preserving Token Compression for
+Privacy-Aware Inference on IoT Logs_".**
+
+**Authors:** Yukun Wen, Shijie Zeng
+
+<sup>1</sup> Department of Computer Science, Khalifa University, Abu Dhabi, United Arab Emirates
+
+<a id="overview"></a>
+
+## Overview
+
+IoT device logs are long, identifier-dense, and routinely pasted into language-model prompts. Such a
+prompt is almost always a question about **one named entity** — which device is bound to this
+account, which persona id is stored for it. That is the difficulty: the entity the question names is
+also the value that must not reach the model.
+
+The two standard remedies each destroy the task in a different way. **Redaction** removes the value
+and, with it, the handle the reader needs to tell one of two hundred similar records apart.
+**Compression** keeps the handle but drops the record that carries the answer.
+
+PrivTrim shows that in this setting the two goals do not have to be traded. In log-shaped excerpts the
+record that *answers* the question and the record that *stores* the protected value are the **same
+block** — in 100% of multi-entity cases and 99.7% of needle cases. So keep that block and alias the
+values inside it.
+
+<p align="center">
+  <img src="assets/pipeline.png" alt="The DARK pipeline" width="100%">
+</p>
+
+The resulting rule is called **DARK** — **D**elete, **A**lias, **R**efill, **K**eep. It is training-free
+and model-free: it makes no gradient step, calls no model, and never reads the reference answer.
+Relevance is inferred from the question alone, by locating the record block that contains the queried
+entity.
+
+> **What is in here.** The complete project: the method, every benchmark (including the 112-case main
+> set and the frozen V1–V3 sample sets), the per-case evidence behind every reported number, the full
+> LaTeX source of the manuscript, and the earlier lab-notebook documentation in Chinese under
+> [`docs/`](docs/) (`00_执行摘要.md` … `28_…`, plus the original [`README_zh.md`](docs/README_zh.md)).
+> [`docs/status.md`](docs/status.md) is the inventory. Verifying the numbers and rebuilding the
+> manuscript both run on a CPU.
 
 ---
 
-## 一分钟结论
+<a id="start-here"></a>
 
-| | 结论 |
-|---|---|
-| ✅ | **聚类是有效机制**：同粒度下 4/4 比较全为正（+3.0~8.0pp）；真嵌入把敏感混合压到 **0.0%**（随机 15–19%）；"合并吃掉答案"的风险可被一个硬约束打到**精确 0.0%** |
-| ❌ | **但在这两个数据集上赢不了最强基线**：逐例对比落后 **15.6–27.3pp**；把聚类叠上去**掉 3.5pp** |
-| 🔴 | **根因是赛道已封顶**：`mask_quito_x` 用**正好 50% 的 token** 只比不压缩低 **0.75 分** → 做更准的压缩算法**没有空间可赢** |
-| ➡️ | **因此贡献要换到**：paraphrase 覆盖率（正则仅 9.1%）、冲突消解（零覆盖）、长上下文场景 |
+## Start here
 
----
+| I want to… | Go to |
+| --- | --- |
+| Read the paper | [`paper/main.pdf`](paper/main.pdf) |
+| Understand the method in two pages | [Method](docs/method.md) |
+| See the headline numbers | [Results](docs/results.md) |
+| Verify the reported numbers on my machine (no GPU) | [Reproduction](docs/reproduction.md) |
+| Re-run the reader end to end (GPU) | [Evaluation](docs/evaluation.md) |
+| Know what the data files contain | [Data reference](docs/data.md) |
+| Run this on a Slurm cluster | [Compute](docs/compute.md) |
+| Know what is in the repository | [Status](docs/status.md) |
+| Find a specific script | [Code reference](docs/reference.md) |
 
-## 最新进展（2026-10-22 ~ 10-27）：长上下文阶段收尾
+<a id="finding"></a>
 
-> 详见 [`docs/21_补充实验_秩泄漏与公开基准与2025基线.md`](docs/21_补充实验_秩泄漏与公开基准与2025基线.md)
-> 与 [`docs/附录_全量实验结果_20261021.md`](docs/附录_全量实验结果_20261021.md)
+## The finding, in one number
 
-| | 结论 |
-|---|---|
-| 🔴 | **发现并修复秩泄漏**：未设 `PT_ALIAS_KEY` 时别名按值升序发放，攻击者**100% 逆推**；设 key 后降到 19.1%（=随机）。修复对主臂 F1 **零代价**（0.9333→0.9333）|
-| ✅ | **全量重跑（keyfull）**：2,728 例 × 21 臂 = 57,288 条。`OURS@0.50 = 0.6520`（原 0.6372），`OURS@0.20 = 0.6870`（峰值仍在 0.20）。16 个不含别名的臂 Δ 精确为 0 |
-| ⚠️ | **公开基准（LongBench 300 例）**：我们与不压缩**统计等价**（−0.0007，CI 跨 0），**输给 CPC**（−0.0412 显著）。"压缩优于全上下文"仅在 Qwen2.5-7B 成立，**Mistral-7B 上方向相反** |
-| ✅ | **link 机制得到有效检验**：Type C（锚点单元 ≠ 答案单元的两跳任务）上 **+0.1267**（CI [+0.0789,+0.1756]，win 50 lose 11）；Type A/B 因结构原因无法检验（已记录并更正此前的错误结论）|
-| ✅ | **接入首个真 2025 基线**：Perception Compressor（NAACL 2025 Findings）300/300 例跑通，**F1 0.3772 / 泄漏 84.0%**，显著低于不压缩（−0.0402）|
-| ⛔ | 其余 4 个 2025/2026 候选逐个核查后不可用（AttnComp 仓库是另一篇论文、500xCompressor 输出 embedding、SCRL 无 checkpoint、KIS 有 bug 且成本过高）|
+A redundancy-ordered compressor keeps the record that carries the answer about **half** the time — and
+the score does not tell you so, because every arm still produces *an* answer:
 
-**论文表述必须修正三处**：删除/限定"压缩优于全上下文"；"显著优于 Perception"→"优于但未达显著"；零泄漏的前提是 `PT_ALIAS_KEY` 已启用。
+| Rule for choosing what survives | Answer record retained |
+| --- | ---: |
+| Redundancy ordering only | 47.5% |
+| …plus protecting the anchor **line** | 57.6% |
+| …plus protecting the record **block** (DARK) | **100%** |
 
----
+Protecting the line repairs the pointer, not the content: the account identifier and the answer sit on
+*different lines* in 100% of multi-entity cases. The relevant region is a **block**, not a unit.
 
-## 仓库结构
+<a id="results"></a>
+
+## Results
+
+**At scale (2,728 cases, 50% token budget).** DARK is level with the strongest query-aware compressor
+and the only arm that leaks nothing:
+
+| Arm | F1 | Protected values recoverable from the prompt |
+| --- | ---: | ---: |
+| Quito-X (strongest published compressor) | 0.4831 | 98.1% |
+| CPC | 0.4740 | 88.8% |
+| Provence | 0.4080 | — |
+| mask + LLMLingua-2 (nearest *leak-free* baseline) | 0.1712 | 0% |
+| **DARK (this work)** | **0.4937** | **0%** |
+
+The F1 gap against Quito-X is +0.0107 with a paired bootstrap interval of \[−0.0091, +0.0306\], i.e.
+not significant. The reading is deliberately narrow: a query-aware compressor reaches the same F1 by
+forwarding the very value the question names. Among **leak-free** arms DARK is ahead of the nearest
+competitor by **+0.3226** \[+0.3041, +0.3414\].
+
+**On the 112-case main set.** Keeping 48.6% of the tokens costs no measurable task quality:
+
+| Arm | F1 | Tokens | Leak |
+| --- | ---: | ---: | ---: |
+| `full` (no compression, no sanitisation) | 0.7189 | 100% | 100% |
+| `alias` (alias everything, no compression) | 0.6475 | 100% | 0% |
+| **DARK** | **0.6366** | **48.6%** | **0%** |
+| `alias_budget_link` (alias + protect the anchor *line*) | 0.4219 | ~50% | 0% |
+
+DARK vs. `alias` is −0.0109 \[−0.0824, +0.0612\]: halving the prompt costs nothing measurable.
+DARK vs. `alias_budget_link` is **+0.2147** \[+0.1224, +0.3085\] — the two differ only in *which
+region* survives.
+
+The ordering holds across five budgets (0.10 → 0.75), a second reader (Mistral-7B-Instruct-v0.3), and
+two mechanical paraphrases of the question. Full tables: [Results](docs/results.md).
+
+<a id="layout"></a>
+
+## Repository layout
 
 ```
 .
-├── README.md                      ← 本文件（索引）
-├── docs/
-│   ├── 00_执行摘要.md              ← 一页看懂
-│   ├── 01_想法台账.md              ← ★ 37 条想法 + 验证状态（核心）
-│   ├── 02_验证方法与证据.md         ← 每个想法是怎么验证的
-│   ├── 03_失败与不确定.md           ← 11 条失败 + 6 条部分成立 + 6 条不确定
-│   ├── 04_实验汇总.md              ← 全部数字
-│   ├── 06_数据资产.md              ← 样本集 sha256 / 复现步骤
-│   ├── 21_补充实验_秩泄漏与公开基准与2025基线.md   ← ★ 长上下文阶段收尾
-│   ├── 23_复现配置.md                              ← ★ 复现所需全部技术参数
-│   ├── 附录_全量实验结果_20261021.md               ← 16 节详细数字
-│   └── analysis/                  ← 阶段性分析文档（12 份）
+├── README.md
+├── paper/                     manuscript sources + compiled PDF
+├── docs/                      English guides + the Chinese lab notebook
+│                              (00_执行摘要 … 28_…, README_zh.md, analysis/)
+├── src/
+│   ├── longctx/               DARK harness, predicate library, quadrant router
+│   ├── analysis_quad4/        reproducibility checks (CPU-only)
+│   ├── external/              vendored official SQuAD v2 scorer
+│   ├── pc_stubs/              import-only stubs for a baseline checkout
+│   ├── data_build/            benchmark construction over the source corpora
+│   ├── paraphrase_probe/      the motivation study (9.1% paraphrase coverage)
+│   ├── mechanism/  tools/  verify/
+│   └── *.py                   harnesses, analysis passes, export helpers
+├── data/                      every benchmark + MANIFEST.sha256
 ├── results/
-│   ├── reports/                   ← 14 份实验报告（原文）
-│   ├── cells/                     ← 原始计数 JSON
-│   ├── percase/                   ← 逐例预测与分数（jsonl；新增批次为 .jsonl.gz）
-│   └── logs/                      ← 30 份作业日志（含失败与诊断）
-├── code/
-│   ├── *.py                       ← 主实验脚本（V1/V2/V3/E2E/join）
-│   ├── mechanism/                 ← 机制可行性与消融（v2/v2b 探针、mech.py、split*）
-│   ├── data_build/                ← 冻结样本集构建与数据集探测
-│   ├── paraphrase_probe/          ← 动机实验：9.1% 改述覆盖 / 40% 隐形泄漏的来源
-│   ├── longctx/                   ← 长上下文评测管线（e2e_longctx_r5full.py 等）
-│   ├── external/squad_v11/        ← SQuAD v2 官方评分器（算 F1/EM）
-│   ├── pc_stubs/                  ← Perception Compressor 的三个空壳依赖
-│   ├── tools/                     ← 结果导出
-│   └── verify/                    ← 独立复核脚本（见下方「复核」一节）
-└── data/                          ← 冻结样本集 + 公开基准（大文件为 .gz）
+│   ├── percase/               per-case predictions and scores (the evidence)
+│   ├── cells/                 per-cell aggregates
+│   ├── logs/                  the original job logs, including failures
+│   └── reports/               generated run reports
+├── demo/                      self-contained interactive demos (no server needed)
+├── slurm/                     cluster-neutral job template + shard splitter
+├── tests/                     34 CPU-only unit tests
+├── assets/                    figures used by this README
+├── archive/manuscript-v0/     the superseded earlier manuscript, kept for the record
+├── requirements.txt
+└── CITATION.cff
 ```
 
-> **注意**：`results/percase/` 与 `data/` 下体积较大的文件以 **`.jsonl.gz`** 存放，
-> 使用前 `gunzip -k` 解压即可。主实验基准为 `data/longctx_max.jsonl.gz`（2,728 例）。
-> 完整复现参数见 [`docs/23_复现配置.md`](docs/23_复现配置.md)。
->
-> 纯分析脚本（`analyze_*.py` 等）无此限制。
+<a id="quick-start"></a>
 
----
+## Quick start
 
-## 想法台账速览（完整见 `docs/01_想法台账.md`）
-
-| 判定 | 条数 | 占比 |
-|---|---:|---:|
-| ✅ 已验证成立 | 12 | 32% |
-| ❌ 已验证不成立 | 11 | 29% |
-| ⚠️ 部分成立 / 依赖条件 | 6 | 16% |
-| ⬜ 未验证 | 2 | 5% |
-| 引用项目既有结论 | 4 | 11% |
-| **合计** | **37** | 100% |
-
-**29% 的想法被实测证否**，其中 **3 条是本轮工作自身的错误或自我推翻**：
-
-1. "正则漏删 12.35%" → 诊断证明是**我自己的启发式 bug**，真值 **1.14%**
-2. "SQuAD answers 是字符串" → 实为**字典列表**，导致 EM 恒 0、**5000 次生成作废重跑**
-3. "隐私护栏冗余" → 换到 200 字符窗粒度后**变成必需**（自我推翻）
-
----
-
-## 关键数字
-
-### 机制层面（零下游模型调用）
-
-| 指标 | 相似度聚类 | 随机合并 | 倍数 |
-|---|---:|---:|---:|
-| `mix_sens`（敏感与非敏感混簇） | **0.0%** | 15.3–19% | **>10×** |
-| `fuse_2sec`（两个秘密混成一类） | **0.0–0.2%** | 0.9–8.5% | 5–40× |
-| `hit_answer`（+ 重要性护栏后） | **精确 0.0%** | 3.0–3.8% | — |
-
-### 端到端（Qwen2.5-7B / 50% 预算 / 1000 例）
-
-| 臂 | SQuAD F1 | HotpotQA F1 | 上下文 token |
-|---|---:|---:|---:|
-| `full`（不压缩） | 89.53 | 55.30 | 817.4 |
-| **`mask_quito_x`（已发布最强）** | **87.94** | **56.62** | **408.5** |
-| 我的最好臂 | 60.63 | 41.00 | — |
-| **与基线逐例差** | **−27.31** | **−15.62** | — |
-
-**最关键的三个数**：
-- `mask_quito_x` 用 **408.5 token（正好 50.0%）**，只比 `full`（817.4）低 **0.75 分**
-- 我的复现误差 **≤1 分**（87.54 vs 87.94；55.66 vs 56.62）→ **整条管线可信**
-- 正则去敏端到端代价 **≤0.4pp** → **隐私过滤几乎免费**
-
----
-
-## 复现
+Verification needs **no GPU, no model weights, no network and no third-party package** — only
+Python 3.10+:
 
 ```bash
-# 环境
-PY=<项目 .venv-main>/bin/python     # torch 2.6 + transformers 4.57
-
-# 1) 离线可行性（CPU，秒级）—— 验证"聚类会不会吃掉答案/混合敏感"
-$PY code/v2c_feasibility.py --samples data/frozen_samples.jsonl \
-     --out out/v2c.txt --json out/v2c.json --ratios 0.125,0.25,0.5 --cap 200
-
-# 2) 约束消融（单卡 GPU）
-$PY code/v3_batch.py --config guard --datadir data --outdir out --model <XLM-R>
-
-# 3) paraphrase 覆盖率（CPU，全语料）
-$PY code/v1_checker.py --out out/v1.txt --json out/v1.json
-
-# 4) 端到端 F1（单卡 GPU，~30 分钟）
-$PY code/e2e2.py --cases <cases.jsonl.gz> --lm <Qwen2.5-7B> --emb <XLM-R> \
-     --scorer <evaluate-v2.0.py> --n-per-dataset 500 --win 16 --dtype fp16
-
-# 5) 与已发布基线逐例 join（CPU，秒级）
-$PY code/join_baseline.py
-
-# 6) 复核：三个臂是否真在同一压缩预算上（CPU，秒级；见下方「复核」一节）
-$PY code/verify/check_merge_budget.py --samples data/frozen_samples.jsonl \
-     --v2c code/v2c_feasibility.py --ratios 0.125,0.25,0.5
+git clone https://github.com/Yukun-Wen/PrivTrim.git && cd PrivTrim
+python src/analysis_quad4/reproduce.py          # re-derive every reported number -> all PASS
+python src/analysis_quad4/validate_fallback.py  # model-free routing / budget / leakage check
+python -m unittest discover -s tests -v         # 34 predicate and router tests
 ```
 
-**详细步骤见 `docs/06_数据资产.md`。**
+`reproduce.py` reads only `results/percase/` and diffs each of the ~90 reported numbers against its
+expected value, so it answers one question precisely: *does the evidence shipped here still produce the
+numbers claimed?* It prints `RESULT: all PASS` and exits 0; any mismatch is named and exits 1.
 
----
-
-## 复核
-
-`code/verify/` 存放**独立复核脚本** —— 它们不产生新结果，只回答"已发布的数字站不站得住"。
-
-| 脚本 | 回答什么问题 | 当前结论 |
-|---|---|---|
-| `check_merge_budget.py` | V2 的 similarity / random 三个臂是否真的合并了同样多的内容？ | **FAIL** —— ratio=0.5 时 similarity 只拿到请求合并数的 **45.3%**，而随机臂拿满 100%。三个指标是按簇算的比率，分母不等则对比不成立。详见 `docs/07_代码复核与审计.md` |
-| `audit_driver_diag_e2e.py` | 原样执行 `diag_e2e.py` 并与原始 JSON 对账，验证其算术与契约 | 通过：聚合均值与生产者 `e2e.py` 契约一致 |
-
-`check_merge_budget.py` 刻意用 `importlib` **导入 `v2c_feasibility.py` 自身的函数**而不是重写一份。原因是本项目 `v1b_diag.py` 曾逐行复制 `v1_checker.py` 的判定逻辑，两份拷贝后来静默分叉（一份跑旧规则、一份跑修正规则）—— 重写的副本无法证明"产生已发布数字的那份代码"到底做了什么。脚本在臂未达预算时返回退出码 1，可直接用作重跑前的门禁。
-
----
-
-## 数据与代码来源说明
-
-| 来源 | 说明 |
-|---|---|
-| 本轮自建 | `code/`、`data/`、`results/` 全部内容 |
-| 项目既有（只读引用） | 压缩线全量跑批结果（1,653,700 逻辑条件）、能力线结果、官方 SQuAD 评分器、模型权重 |
-| 外部论文 | PACT（Dhouib et al., CVPR 2025, arXiv 2504.08966）—— 思路来源，**未复用其代码** |
-
-**未包含**：模型权重、项目私有大体积数据库（约 6 GB）、任何凭据或密钥。
-
----
-
-## AI 工具使用声明
-
-本轮工作使用了 AI 编码助手（DeepSeek Harness / deepseek-v4.1-flash）进行：
-实验脚本编写、结果提取与分析、文档起草。
-
-**所有实验结论均来自实际运行的作业**，作业号、日志、原始报告与逐例结果都在 `results/` 下可核。
-AI 生成的分析文档集中在 `docs/analysis/`，已与 `results/` 中的原始报告交叉核对。
-
-**已知的 AI 引入错误**（已在 `docs/03_失败与不确定.md` 中逐条记录并修正）：
-1. 启发式数字段检查用错类型 → 假报"漏删 12.35%"
-2. SQuAD `answers` 类型判断错误 → EM 恒 0、5000 次生成作废
-3. 评分函数名假设错误 → 一次作业 FAILED
-4. 粒度配置在归一化后的语料上无效 → `records=0`，补跑修正
-
----
-
-## 时间与规模
-
-| 项 | 数值 |
-|---|---|
-| 时间范围 | 2026-10-15 ~ 2026-10-16 |
-| 峰值占用 | 全部单卡，**未占整节点** |
-| 下游模型生成量 | ~19,000 次（含作废的 5000 次） |
-| 零模型调用的离线样本 | 2 种相似度 × 3 比例 × 4 粒度 × 7 数据集 |
-
----
-
-## 四象限重构实验（quad4）
-
-原始实现在压缩时读取了金标答案（`code/longctx/e2e_longctx_r5full.py` 的 `ans_of`），
-导致方法不可部署、且对外部基线不公平。`quad4` 是移除该依赖后的忠实实现。
-
-| 产物 | 位置 |
-|---|---|
-| 实现 | `code/longctx/e2e_quad.py`（由 `make_e2e_quad.py` 生成，**可逐字节重建**）|
-| 实验原始结果 | `results/percase/quad4/`（44 个分片，`.jsonl.gz`，共约 0.9 MB）|
-| 分析与校验脚本 | `code/analysis_quad4/` |
-| 设计与结论 | `docs/24`、`docs/27` |
-| 论文与代码一致性核查 | `docs/25` |
-
-### 一键复现校验
+To build prompts without a model:
 
 ```bash
-python code/analysis_quad4/reproduce.py
+gunzip -k data/longctx_max.jsonl.gz
+python src/longctx/e2e_quad.py --dry-run --cases data/longctx_max.jsonl \
+    --out out/dry.txt --json out/dry.json --percase out/dry_percase.jsonl --limit 20
 ```
 
-该脚本只读 `results/percase/` 下的原始结果，重算文档中全部报告数字（36 项）并逐项比对，
-全 PASS 表示仓库数据与文档一致。**不需要 GPU、不加载模型。**
+<a id="data"></a>
 
-当前状态：**36/36 PASS**。
+## Data
 
-### 重建实现
+| File | Cases | Role |
+| --- | ---: | --- |
+| [`data/longctx_cases.jsonl`](data/longctx_cases.jsonl) | 112 | **Main set** — main table, budget sweep, cross-model, paraphrases |
+| [`data/longctx_max.jsonl.gz`](data/longctx_max.jsonl.gz) | 2,728 | Extension set (scale check) |
+| [`data/public_lb.jsonl.gz`](data/public_lb.jsonl.gz) | 300 | LongBench-derived, **topical** questions (no entity named) |
+| [`data/public_lb_typeb.jsonl.gz`](data/public_lb_typeb.jsonl.gz) | 300 | LongBench-derived, **single-hop** (entity named) |
+| [`data/public_lb_typec.jsonl.gz`](data/public_lb_typec.jsonl.gz) | 300 | LongBench-derived, **two-hop** (answer 6 sentences from the anchor) |
+| `data/frozen_samples*.jsonl`, `data/conflict_cases.jsonl`, `data/inscope_*.jsonl` | 581 + slices | the V1–V3 mechanism benchmarks |
+| `data/longctx_paraA.jsonl`, `longctx_paraB.jsonl` | 112 each | the two question paraphrases |
 
-```bash
-python code/analysis_quad4/make_e2e_quad.py   # 由 e2e_longctx_r5full.py 生成 e2e_quad.py
+All injected sensitive values are **canaries** (`contact.example@…`, `+1-…`, `ACCT-…`), not real
+personal data, so leakage is measurable exactly. `data/MANIFEST.sha256` pins all 20 files. Schemas and
+caveats: [Data reference](docs/data.md).
+
+<a id="reproduction"></a>
+
+## Reproducing the paper
+
+Three levels, independent of each other:
+
+| Level | What it proves | Cost |
+| --- | --- | --- |
+| **1. Re-derive the numbers** | The archived per-case evidence yields exactly the reported tables | seconds, CPU |
+| **2. Rebuild the arms** | Prompt construction, budget accounting, aliasing and leakage are deterministic and checkable without a model | seconds, CPU |
+| **3. Re-run the reader** | The F1 values themselves | 1×7B GPU, ~30 min per arm set |
+
+Levels 1 and 2 run in this repository out of the box and are what CI-style checking would gate on.
+Level 3 needs model weights only — every case file it consumes is here. See
+[Evaluation](docs/evaluation.md).
+
+<a id="citation"></a>
+
+## Citation
+
+```bibtex
+@misc{wen2026dark,
+  title  = {Keeping the Referent in the DARK: Anchor-Preserving Token Compression
+            for Privacy-Aware Inference on IoT Logs},
+  author = {Wen, Yukun and Zeng, Shijie},
+  year   = {2026},
+  note   = {Preprint, Khalifa University},
+  url    = {https://github.com/Yukun-Wen/PrivTrim}
+}
 ```
 
-生成结果与仓库内 `code/longctx/e2e_quad.py` **逐字节一致**（已验证）。
+<a id="license"></a>
 
-### 模型无关校验
+## License and data use
 
-```bash
-python code/analysis_quad4/validate_fallback.py
-```
-
-检查四象限路由在四套数据上的模式判定、预算约束、答案留存与泄漏，不需要模型。
-
-### 主要数字
-
-| 规模 | quad4 F1 | 参照 |
-|---|---:|---|
-| 2,728 例 | **0.4937**（零泄漏）| quito_x 0.4831（泄漏 98%）；零泄漏基线 mask_llmlingua2 0.1712 |
-| 112 例 | **0.6366**（48.6% token）| 全文 0.7189；全文别名不压缩 0.6475 |
-| Type B | **0.9607** | 旧值 0.3100 |
-| Type C | **0.6733** | 旧值 0.2000 |
+No license has been chosen yet. The canary-bearing benchmarks may be redistributed for research use;
+the six source corpora they were built from remain under their own licenses. Open an issue before any
+commercial use.

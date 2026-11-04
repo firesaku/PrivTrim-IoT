@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite the entry below."
+title: "Keeping the Referent in the DARK: Anchor-Preserving Token Compression for Privacy-Aware Inference on IoT Logs"
+abstract: >-
+  IoT device logs are long, identifier-dense, and routinely pasted into
+  language-model prompts, where the entity a question names is also the value
+  that must not be forwarded. Redaction removes the value and the handle the
+  reader needs; compression keeps the handle and drops the record carrying the
+  answer. DARK keeps that record and aliases the values inside it: a
+  training-free, model-free routing rule over the pair (sensitive, relevant)
+  that is budget-bounded and leak-free.
+authors:
+  - family-names: Wen
+    given-names: Yukun
+    affiliation: "Department of Computer Science, Khalifa University, Abu Dhabi, United Arab Emirates"
+  - family-names: Zeng
+    given-names: Shijie
+    affiliation: "Department of Computer Science, Khalifa University, Abu Dhabi, United Arab Emirates"
+type: software
+license: null
+repository-code: "https://github.com/Yukun-Wen/PrivTrim"
+keywords:
+  - privacy
+  - prompt compression
+  - IoT logs
+  - differential privacy
+  - data minimisation
+  - training-free

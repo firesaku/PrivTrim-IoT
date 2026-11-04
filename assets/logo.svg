@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="PrivTrim">
+  <rect x="2" y="2" width="92" height="92" rx="20" fill="#7b1f2b"/>
+  <!-- context unit being kept -->
+  <rect x="22" y="26" width="40" height="8" rx="4" fill="#f3e2df"/>
+  <rect x="22" y="44" width="52" height="8" rx="4" fill="#f3e2df"/>
+  <!-- the part that is trimmed away -->
+  <rect x="62" y="62" width="12" height="8" rx="4" fill="#f3e2df" opacity="0.35"/>
+  <!-- anchor / alias marker -->
+  <circle cx="70" cy="30" r="7" fill="none" stroke="#f3e2df" stroke-width="4"/>
+  <circle cx="70" cy="30" r="2" fill="#f3e2df"/>
+  <!-- trim bracket -->
+  <path d="M28 58 v18 h18" fill="none" stroke="#f3e2df" stroke-width="4"
+        stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
