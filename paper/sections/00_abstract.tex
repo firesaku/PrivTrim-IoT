@@ -14,11 +14,14 @@ consults the reference answer.
 
 On $2{,}728$ cases at a $50\%$ budget \textsc{DARK} reaches F1 $0.4937$, level with the
 strongest query-aware compressor ($0.4831$; difference not significant) while leaving $0\%$
-of protected values recoverable against that method's $98.1\%$, and exceeds the only leak-free
-baseline by $0.3226$ points. On a 112-case set, keeping $48.6\%$ of the tokens is
+of protected values recoverable against that method's $98.1\%$. It exceeds the only leak-free
+published baseline by $0.3226$ and the strongest leak-free arm of any kind by $0.1456$
+$[+0.1249,+0.1668]$; those two arms differ only in which region survives, one line or the
+block that contains it. On a 112-case set, keeping $48.6\%$ of the tokens is
 statistically indistinguishable from aliasing the full context without compression ($0.6366$
 vs.\ $0.6475$). Removing the alias step costs $0.3273$ F1 where the anchor is itself a
-protected value and $0.0013$ where the question names no entity, so the rule acts where designed
-and is inert elsewhere. The ordering holds at every budget from $10\%$ to $75\%$,
+protected value and $0.0013$ where the question names no entity, and removing the
+question-side rewrite drives that same subset to exactly $0.0000$: the rule acts where
+designed and is inert elsewhere. The ordering holds at every budget from $10\%$ to $75\%$,
 across a second reader and two paraphrases.
 \end{abstract}

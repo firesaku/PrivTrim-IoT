@@ -21,16 +21,27 @@ which region survives: one line, or the block containing it.
 
 \input{tables/tab_external}
 
-\subsection{At scale, the comparison is a privacy comparison}
+\subsection{At scale, privacy is the only separation}
 
 Table~\ref{tab:external} reports the $2{,}728$-case extension. \textsc{DARK} scores
 $0.4937$, level with the strongest query-aware compressor (Quito-X, $0.4831$; difference
 $+0.0107$, interval $[-0.0091,+0.0306]$) and above CPC ($0.4740$) and Provence ($0.4080$).
 What separates the arms is leakage. Every published compressor leaves protected values in
 the prompt, in $88.8\%$ to $100\%$ of cases, because concealing them is not among its
-objectives. \textsc{DARK} leaves none. Among leak-free arms the nearest competitor is a
+objectives. \textsc{DARK} leaves none. Among published baselines the only leak-free one is a
 masking wrapper at $0.1712$, which \textsc{DARK} exceeds by $+0.3226$
-$[+0.3041,+0.3414]$.
+$[+0.3041,+0.3414]$. The nearest arm of any kind that also leaks nothing is our own
+global-alias ablation at $0.3482$, which \textsc{DARK} exceeds by $+0.1456$
+$[+0.1249,+0.1668]$; those two arms differ only in which region survives, one line or the
+block that contains it, so that margin is the routing rule and nothing else.
+
+The table also carries a 2026 rule-based compressor, run on CPU at its most aggressive preset~\cite{chokshi-lexical-2026}. It realises $5{,}817$ context tokens---more than we spend---scores $0.3696$, and leaks in $100\%$ of cases. Section~\ref{sec:analysis} isolates why: its rules delete the braces and rename the keys that make a record a record.
+
+The aggregate also hides a split. On needle cases, where the question names a record
+identifier rather than an account, \textsc{DARK} is statistically indistinguishable from not
+compressing at all ($+0.0160$, interval $[-0.0026,+0.0352]$) while sending half the tokens.
+The whole deficit sits on multi-entity cases ($-0.2212$), where six accounts share one
+question template and the question is the only thing that identifies the target.
 
 The reading we take from this table is narrow. A query-aware compressor reaches the same F1
 as our rule at the same budget, but only by forwarding the value the question names. When
@@ -88,7 +99,7 @@ unchanged.}
 \label{fig:budget}
 \end{figure*}
 
-\subsection{The advantage holds across budgets}
+\subsection{Budgets, readers and phrasing}
 
 Across five ratios \textsc{DARK} is the strongest budget arm at every point: $+0.205$ at
 $r=0.10$, $+0.263$ at $r=0.25$, $+0.215$ at $r=0.50$, and $+0.065$ at $r=0.75$, all at zero
@@ -101,7 +112,6 @@ context that competes with the relevant block for the reader's attention. The se
 the constraint binds is $r=0.50$, and that is where the mechanism separates most clearly from
 the alternatives.
 
-\subsection{Cross-model and phrasing stability}
 
 On Mistral-7B-Instruct-v0.3 at $r=0.50$, \textsc{DARK} scores $0.6946$ against $0.6366$
 on Qwen2.5-7B. Every other arm loses ground when the reader changes: \arm{full} $-0.0258$,

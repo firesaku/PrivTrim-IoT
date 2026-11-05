@@ -52,7 +52,7 @@ survives.}
 \Require excerpt $C$, question $q$, budget ratio $r$, protected values $V$
 \State $U \gets \textsc{Split}(C)$
 \State $A \gets \{u \in U : u \text{ mentions } e^\star(q)\}$
-\State $A \gets \textsc{RecordBlock}(U, A)$ \Comment{if $C$ has record markers}
+\State $A \gets \textsc{RecordBlock}(U, A)$ \Comment{if markers exist}
 \ForAll{$u \in U$}
   \If{$u \in A$}
      \If{$u$ is sensitive} \State alias($u$) \Comment{sensitive and relevant}
@@ -64,16 +64,16 @@ survives.}
   \EndIf
 \EndFor
 \State $P \gets \textsc{Fit}(\text{kept} \cup \text{aliased}, \text{refill}, B)$
-       \Comment{hard $B$; degrade rather than fail}
+       \Comment{hard $B$; degrade, not fail}
 \State $q' \gets \textsc{AliasQuestion}(q)$ with the same map
 \State \Return $(q', P)$
 \end{algorithmic}
 \end{algorithm}
 
-\subsection{Relevance from the question alone}
+\subsection{Relevance from the question}
 
 The relevance label decides which region must survive and which may be spent on the budget.
-We use a single signal: the region containing a mention of the entity the question names.
+We use one signal: the region that mentions the entity the question names.
 The signal takes two forms in our excerpts.
 
 \paragraph{Record blocks.}
@@ -96,7 +96,7 @@ deployable, and it changes what the method is. We avoid it, and
 Section~\ref{sec:analysis} measures how much a pipeline gains from having it, so that the
 comparison against an oracle-assisted pipeline is explicit rather than implicit.
 
-\subsection{Four cells, four operations}
+\subsection{The four operations and the rewritten question}
 
 Sensitivity is a property of the unit given $V$: a unit is sensitive when it contains a
 protected value. Crossing the two labels gives four cells, and each cell receives the
@@ -124,7 +124,6 @@ Remaining units hold no protected value and lie outside the relevant region. The
 for whatever budget is left, ordered by the redundancy score of
 Section~\ref{sec:method-budget}.
 
-\subsection{Question-side aliasing}
 
 Aliasing the context alone produces a prompt whose two halves use different names for the
 same entity: the context refers to \texttt{[ACCOUNT-A]} while the question still names

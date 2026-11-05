@@ -1,7 +1,7 @@
 \section{Related Work}
 \label{sec:related}
 
-\paragraph{Prompt compression.}
+\subsection{Prompt compression}
 One family reduces prompt length by scoring and removing tokens or sentences. \textsc{LLMLingua}~\cite{llmlingua} and \textsc{LongLLMLingua}~\cite{longllmlingua}
 use a small language model to estimate token informativeness; \textsc{LLMLingua-2}~\cite{llmlingua2}
 distils the decision into a token classifier for task-agnostic compression;
@@ -32,7 +32,13 @@ happens to a value that the question needs to name. Recent work measures how muc
 these compressors actually preserve~\cite{lajewska-infopres-2025} and finds the loss is not
 uniform across token types, which is consistent with what we report for identifier-dense text.
 
-\paragraph{Text sanitization for inference.}
+A 2026 line takes the opposite route to scoring: instead of a forward pass, it uses
+linguistic rules---filler removal, contraction, stop-word pruning, lemmatisation,
+synonym shortening---and is competitive under light to moderate compression at a
+fraction of the cost~\cite{ma-linguistic-2026,chokshi-lexical-2026}. Rules of this
+kind assume prose, and Section~\ref{sec:analysis} shows what they do to records.
+
+\subsection{Privacy-preserving inference}
 A second family rewrites protected spans before the prompt leaves the user side.
 DYNTEXT~\cite{dyntext} substitutes sensitive tokens with semantically similar non-sensitive
 neighbours drawn from a dynamic adjacency list, so that a fixed substitution table cannot be
@@ -47,7 +53,6 @@ the rewrite. On our benchmark that framing has a measurable cost: a masking pipe
 achieves zero leakage scores $0.1712$ on the $2{,}728$-case extension, because the span it
 removes is the referent the question needs.
 
-\paragraph{Leakage from the inference channel.}
 A third body of work asks what a provider can recover from a prompt it receives and retains.
 ProPILE~\cite{kim-propile-2023} probes personally identifiable information directly; Staab et
 al.~\cite{staab-beyond-2024} show that a reader infers attributes that were never stated;
@@ -60,7 +65,6 @@ results in one frame. Our threat model is the narrowest of them: we ask only whe
 protected value is recoverable from the prompt text, and we claim no resistance to attribute
 inference or to a provider that manipulates the reader.
 
-\paragraph{Guarantees and prompt-level sanitizers.}
 A separate line supplies formal guarantees rather than empirical measurements. Anonymisation
 of published microdata is surveyed from $k$-anonymity through $l$-diversity and
 $t$-closeness~\cite{carvalho-microdata-2023}; differential privacy is surveyed across the
@@ -72,7 +76,7 @@ adversary can infer from a fixed release. None of them addresses what happens to
 when the release must still identify one record per query, which is the behaviour
 Section~\ref{sec:discussion} returns to.
 
-\paragraph{IoT logs and their privacy.}
+\subsection{IoT logs and long-context question answering}
 The records we compress are device logs, and the IoT literature protects them at other
 layers: probabilistic encoding for aggregate analytics~\cite{zaman-encode-2024},
 privacy-preserving data mining with an incentive mechanism~\cite{gao-datamining-2024},
@@ -85,7 +89,6 @@ representations~\cite{zhou-logdlr-2025}, but both consume the log in place. Our 
 protection is neither the aggregate, the transport, nor the access rule; it is the prompt that
 an operator asks about a record, and that unit is what these mechanisms leave uncovered.
 
-\paragraph{Long-context question answering.}
 LongBench~\cite{longbench} supplies the passages from which we derive the public-benchmark
 variants, and the standard SQuAD~v2 script supplies the scoring function. The evaluation side
 of this literature has since moved to harder and longer tasks~\cite{bai-longbenchv2-2025}, to
@@ -95,7 +98,6 @@ tokens~\cite{zhang-infinitebench-2024}. Our contribution is orthogonal to the re
 long-context modelling literature: we do not modify the reader, only the text it receives, and
 we measure the effect at a fixed token budget.
 
-\paragraph{Where this study sits.}
 The families above optimise different objectives---length, concealment, and the leakage of
 everything else a reader can infer---and each reports utility on prompts whose answer is
 ordinary text. We study the case where both objectives fall on the same span, and show that

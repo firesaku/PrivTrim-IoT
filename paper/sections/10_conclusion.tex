@@ -16,7 +16,10 @@ Across a 112-case benchmark over six public datasets, \textsc{DARK} keeps $48.6\
 tokens at zero prompt-level leakage and is statistically indistinguishable from aliasing the
 full context without compression. On a $2{,}728$-case extension it matches the strongest
 query-aware compressor at $0\%$ leakage against $98.1\%$, and exceeds the nearest leak-free
-baseline by $0.3226$ F1 points. Replacing the alias operation with deletion is what moves
+baseline by $0.3226$ F1 points. The 2026 rule-based compressor we re-run needs no model at
+all, yet costs more tokens than we spend and still leaks in every case, because its
+rules delete the record syntax the question depends on. Replacing the alias operation
+with deletion is what moves
 those numbers: it costs $0.1795$ F1 overall, $0.3273$ on multi-entity cases, and nothing
 where no anchor exists, so the rule acts on the structure it was designed for.
 

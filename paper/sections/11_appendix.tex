@@ -8,11 +8,11 @@ F1 by source, budget $r=0.50$, all arms of ours constructed without the answer k
 routing rule is strongest on \arm{pec\_home} and \arm{smartbench\_tdcs} and weakest on
 \arm{toolmem\_raw}, where the uncompressed arm is also weakest.
 
-\begin{table}[t]
-\caption{Per-source F1 on the extension set ($2{,}728$ cases, $r=0.50$).}
-\label{tab:app_persource_ext}
-\centering\small
-\setlength{\tabcolsep}{3pt}
+\begin{center}
+{\footnotesize\textsc{Table V}\\[1pt]
+Per-source F1 on the extension set ($2{,}728$ cases, $r=0.50$).\par}
+\vspace{3pt}
+{\small\setlength{\tabcolsep}{3pt}%
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{lrrrr}
 \toprule
@@ -27,17 +27,18 @@ Source & $n$ & \arm{full} & \textsc{DARK} & ABL \\
 \midrule
 overall                & 2728 & 0.6081 & 0.4937 & 0.3482 \\
 \bottomrule
-\end{tabular}}
-\end{table}
+\end{tabular}}}
+\end{center}
+\vspace{2pt}
 
 \paragraph{Main set ($112$ cases).}
 Same setting on the smaller set.
 
-\begin{table}[t]
-\caption{Per-source F1 on the main set ($112$ cases, $r=0.50$).}
-\label{tab:app_persource_main}
-\centering\small
-\setlength{\tabcolsep}{3pt}
+\begin{center}
+{\footnotesize\textsc{Table VI}\\[1pt]
+Per-source F1 on the main set ($112$ cases, $r=0.50$).\par}
+\vspace{3pt}
+{\small\setlength{\tabcolsep}{3pt}%
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{lrrrr}
 \toprule
@@ -52,8 +53,9 @@ Source & $n$ & \arm{full} & \textsc{DARK} & \arm{alias} \\
 \midrule
 overall                & 112 & 0.7189 & 0.6366 & 0.6475 \\
 \bottomrule
-\end{tabular}}
-\end{table}
+\end{tabular}}}
+\end{center}
+\vspace{2pt}
 
 \subsection{Anchor types covered}
 
@@ -61,12 +63,11 @@ The anchor key is resolved differently depending on what the question names. All
 occurring in the extension set are handled, and the anchor string is present in the context
 in every case ($2{,}728/2{,}728$).
 
-\begin{table}[htbp]
-\caption{Anchor key forms covered by the routing rule. All six occur in the extension set and
-the anchor string is present in the context in every case ($2{,}728/2{,}728$).}
-\label{tab:app_anchor}
-\centering\small
-\setlength{\tabcolsep}{3pt}
+\begin{center}
+{\footnotesize\textsc{Table VII}\\[1pt]
+Anchor key forms covered by the routing rule. All six occur in the extension set and the anchor string is present in the context in every case ($2{,}728/2{,}728$).\par}
+\vspace{3pt}
+{\small\setlength{\tabcolsep}{3pt}%
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{llr}
 \toprule
@@ -79,8 +80,9 @@ none (entity field) & \emph{for account} \texttt{ACCT-\ldots} & 1500 \\
 \arm{entry}         & \emph{for entry 3} & 281 \\
 \arm{native}        & native identifier & 31 \\
 \bottomrule
-\end{tabular}}
-\end{table}
+\end{tabular}}}
+\end{center}
+\vspace{2pt}
 
 \subsection{Leakage counting}
 

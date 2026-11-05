@@ -4,7 +4,6 @@
 \input{tables/tab_ablation_alias}
 
 \subsection{Why redundancy ordering fails here}
-
 A redundancy ordering keeps the record that carries the answer about half the time. On the
 $2{,}728$-case extension the redundancy-only rule retains it in $47.5\%$ of cases ($56.0\%$
 multi-entity, $37.2\%$ needle); protecting the anchor line raises this to $57.6\%$, and
@@ -55,7 +54,6 @@ paired difference printed at each row.}
 \end{figure*}
 
 \subsection{Protecting the anchor line is not enough}
-
 A natural repair forbids dropping units that mention the queried entity. It does not close the
 gap, and where it helps it helps for the wrong reason. Overall retention moves from $47.5\%$
 to $57.6\%$, but the two families behave differently: multi-entity retention is unchanged
@@ -72,35 +70,7 @@ and $99.7\%$ of needle cases. Constraining the block instead of the line restore
 retention to $100\%$ on both families without consulting the answer key. This is the
 measurement that motivates the routing rule: the relevant region is a block, not a unit.
 
-\subsection{What the answer key is worth}
-
-A rule allowed to read the reference answer gains a great deal from it. On a 300-case
-stratified sample, handing the answer span to four redundancy-based arms raises F1 by
-$0.2617$ to $0.5917$, and the gain is largest for the two anchor-protected arms---the arms
-used in the main comparison.
-
-\begin{center}\small
-\setlength{\tabcolsep}{4pt}
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{lcc}
-\toprule
-Arm & $\Delta$ F1 from answer key $\uparrow$ & 95\% CI \\
-\midrule
-BC  & $+0.2617$ & $[+0.215,+0.310]$ \\
-ALB & $+0.2850$ & $[+0.233,+0.337]$ \\
-BCL & $+0.5583$ & $[+0.505,+0.613]$ \\
-ABL & $+0.5917$ & $[+0.535,+0.648]$ \\
-\bottomrule
-\end{tabular}}
-\end{center}
-
-\textsc{DARK} reports every number in this paper without that input, because a deployed
-pipeline holds no reference answer. Stating the size here fixes the scale of what the rule
-obtains from the question alone: the referential benefit is reachable at inference time, not
-only in an evaluation that still holds the key.
-
-\subsection{Alias, not delete}
-
+\subsection{The operation and the interface}
 Replacing the alias operation by deletion costs the task exactly where the design says it
 should. Holding the context construction fixed, the difference is large and significant where
 the anchor is itself a sensitive value: $+0.3273$ on multi-entity cases, $+0.7933$ on the
@@ -135,18 +105,76 @@ cannot use it, because the identifier saying which record it belongs to has been
 String-presence metrics do not detect this failure, which is why we report task quality and
 leakage as separate endpoints rather than as one utility score.
 
-\subsection{Question-side aliasing}
-
+\paragraph{The question side.}
 Aliasing the context without rewriting the question produces a prompt whose halves use
-different names for the same entity. On the 112-case set we measured both settings with the
-pipeline otherwise unchanged: \arm{alias} moves from $0.4933$ to $0.6719$ ($+0.1786$) and
-\arm{alias\_budget\_link} from $0.5048$ to $0.7450$ ($+0.2402$). The step costs nothing in
-privacy, since both halves stay free of the raw value, and it is the difference between a
-prompt the reader can use and one it cannot. We therefore treat the pair $(q',P)$ rather
-than $P$ alone as the object of study, and verify the mapping before generation.
+different names for the same entity. We measured both settings over the full $2{,}728$ cases
+with the pipeline otherwise unchanged; $\Delta$ is the original-question score minus the
+rewritten one, so a negative value is what the rewrite is worth. On the subset where the
+question names a protected entity, dropping the rewrite takes the score to exactly zero.
 
-\subsection{The direction of the refill traversal}
+\begin{center}\small
+\setlength{\tabcolsep}{4pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcccc}
+\toprule
+Benchmark & rewritten & original & $\Delta$ & 95\% CI \\
+\midrule
+extension ($2{,}728$)        & 0.4937 & 0.3132 & $-0.1806$ & $[-0.195,-0.167]$ \\
+\quad multi-entity ($1{,}500$) & 0.3273 & 0.0000 & $-0.3273$ & $[-0.351,-0.303]$ \\
+\quad needle ($1{,}228$)       & 0.6970 & 0.6957 & $-0.0014$ & $[-0.005,+0.002]$ (n.s.) \\
+\bottomrule
+\end{tabular}}
+\end{center}
 
+The damage is confined to the cases where the question names a protected entity. On
+multi-entity excerpts the unrewritten prompt scores exactly $0.0000$: the question asks about
+\texttt{ACCT-4cd0} while every record offers \texttt{[ACCT-A]}, so no record can be matched
+and the reader cannot answer no matter what survives compression. On needle excerpts, where
+the question names a record identifier rather than an account, the step is worth $0.0014$ and
+the interval includes zero. The other alias arms behave the same way: \arm{alias\_budget}
+loses $0.0444$ overall and \arm{alias\_budget\_link} $0.1272$, the latter falling by $0.2314$
+on multi-entity and by exactly $0.0000$ on needle.
+
+The step costs nothing in privacy---leakage is $0\%$ in both conditions---so its entire value
+is recovered utility. We therefore treat the pair $(q',P)$ rather than $P$ alone as the object
+of study, and verify the mapping before generation.
+
+\subsection{What the answer key would add}
+A rule allowed to read the reference answer gains a great deal from it. On the full
+$2{,}728$ cases, handing the answer span to four redundancy-based arms raises F1 by
+$0.157$ to $0.305$, and the gain is largest for the two anchor-protected arms---the arms used
+in the main comparison.
+
+\begin{center}\small
+\setlength{\tabcolsep}{4pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcc}
+\toprule
+Arm & $\Delta$ F1 from answer key $\uparrow$ & 95\% CI \\
+\midrule
+BC  & $+0.1571$ & $[+0.144,+0.171]$ \\
+ALB & $+0.1731$ & $[+0.159,+0.188]$ \\
+BCL & $+0.3046$ & $[+0.287,+0.322]$ \\
+ABL & $+0.3042$ & $[+0.287,+0.323]$ \\
+\bottomrule
+\end{tabular}}
+\end{center}
+
+The two groups gain in different places, and the split is diagnostic. On needle cases the
+redundancy-only arms gain $0.348$ and $0.349$, because the answer value repeats across
+distractor records and knowing it tells the rule which copy to keep. On multi-entity cases
+those same arms gain almost nothing ($0.001$ and $0.029$), while the anchor-protected arms
+gain $0.368$ and $0.367$---precisely the reverse. Each arm is helped where it was previously
+blind.
+
+\textsc{DARK} reports every number in this paper without that input, because a deployed
+pipeline holds no reference answer. Stating the size here fixes the scale of what the rule
+obtains from the question alone: the referential benefit is reachable at inference time, not
+only in an evaluation that still holds the key. The oracle is not a privacy repair either:
+the anchor-protected arm forwards a protected value in $0\%$ of cases with or without it, and
+the compress-only arm in $55.7\%$ with it against $55.4\%$ without.
+
+\subsection{Sensitivity and scope}
 Section~\ref{sec:method-budget} left the traversal direction of the refill queue as an
 empirical choice. Running both directions end to end settles it at one boundary and leaves it
 open everywhere else.
@@ -177,8 +205,10 @@ this section---rather than as a guarantee, which is why
 Section~\ref{sec:discussion} proposes widening the relevant region instead of relying on the
 ordering.
 
-\subsection{Where the rule applies}
+\paragraph{Rule-based compressors on records.}
+A 2026 line compresses without a model call at all: deterministic lexical rules delete filler, contractions, stop words and function words, then lemmatise what remains~\cite{chokshi-lexical-2026}. We ran its most aggressive preset over all $2{,}728$ cases on CPU. It realises $5{,}817$ context tokens against our $4{,}146$ and the uncompressed $8{,}482$, so it compresses less than we do, and it scores $0.3696$ F1 against our $0.4937$, a paired difference of $-0.1242$ $[-0.1462,-0.1016]$ at $100\%$ leakage against our $0\%$. The mechanism is visible in the text. The rules strip braces and rename keys---\texttt{device} to \texttt{twist} in one case---so the number of parseable JSON objects in the corpus falls from $273{,}209$ of $299{,}408$ ($91.2\%$) to zero, and the reader receives a word salad in which the record boundaries that anchor the question no longer exist. A compressor tuned on prose is not a compressor for records.
 
+\paragraph{Where the rule applies.}
 The three LongBench-derived variants locate the boundary.
 
 \begin{center}\small

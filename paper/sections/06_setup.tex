@@ -8,35 +8,34 @@ $64$ new tokens, maximum context $24{,}576$ tokens and a strict policy that abor
 than truncates when a prompt exceeds it. The random seed is fixed at \texttt{20261015}.
 Scoring uses the official SQuAD~v2 script, a fixed, model-independent procedure.
 
-\paragraph{Baselines.}
-We re-run eight published compressors through their reference implementations:
+\paragraph{Baselines and fairness.}
+We re-run six published compressors through their reference implementations:
 LLMLingua-2~\cite{llmlingua2}, LongLLMLingua~\cite{longllmlingua}, Selective
-Context~\cite{selective_context}, Provence~\cite{provence}, CPC~\cite{cpc},
-Quito-X~\cite{quitox}, DAC~\cite{dac}, and the Perception
-Compressor~\cite{perception_compressor}. Where a method exposes both a budget-matched and a
-native configuration we report both; the budget-matched one is used for the headline
-comparison, since published defaults vary in length. We additionally run two
-sanitization-oriented baselines, INTACT~\cite{intact} and a masking wrapper around
+Context~\cite{selective_context}, Provence~\cite{provence}, CPC~\cite{cpc}, and
+Quito-X~\cite{quitox}. We also run a 2026 rule-based compressor that needs no model at
+compression time~\cite{chokshi-lexical-2026}, the release that accompanies the
+peer-reviewed study of linguistic rules as compressors~\cite{ma-linguistic-2026};
+it is a preprint arm and is labelled as such. Where a method exposes both a
+budget-matched and a native configuration we report both; the budget-matched one is used for the headline comparison,
+since published defaults vary in length. We additionally run a masking wrapper around
 LLMLingua-2, and our own non-routing arms: \arm{full},
 \arm{alias} (alias all protected values, no compression), \arm{delete} (redact all, no
 compression), \arm{alias\_budget} and \arm{alias\_budget\_link} (global alias, then
 redundancy-based selection without and with anchor protection), and the corresponding
 \arm{budget\_cluster} pair on raw text.
 
-\paragraph{What each baseline receives.}
 All compressors receive the question and the context and nothing else. We verified in the
 runner that the reference answer is never passed to any baseline, and that no baseline
 consumes the anchor set. This is the fairness condition for the comparison: the
 contribution we claim is precisely the ability to obtain the referential benefit without
 the answer key.
 
-\paragraph{Equal-budget comparison.}
+\paragraph{Budgets and statistics.}
 Budget arms are anchored at $r=0.5$ for the main comparison and swept over
 $r\in\{0.10,0.15,0.25,0.50,0.75\}$ for the budget curve. Published compressors are
 evaluated at their own $50\%$ setting, with the token accounting reported in every table so
 that a method that realises a different length is visible as such.
 
-\paragraph{Statistics.}
 All comparisons between two arms on the same cases are paired. We report the mean paired
 difference and a $95\%$ percentile bootstrap interval with $10{,}000$ resamples over cases.
 A difference is called significant when the interval excludes zero. We deliberately do not

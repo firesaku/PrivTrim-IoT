@@ -1,52 +1,29 @@
 % =====================================================================
-%  Keeping the Referent in the DARK: Anchor-Preserving Token
-%  Compression for Privacy-Aware Inference on IoT Logs
+%  Keeping the Referent in the DARK
+%  IEEE S&P format (IEEEtran conference, two-column, 10 pt)
 %
-%  LaTeX V1 -- sectioned draft
-%
-%  Build (Overleaf, or a local TeX Live):
-%     pdflatex main
-%     bibtex   main
-%     pdflatex main
-%     pdflatex main
-%
-%  Sections live in sections/, tables in tables/, figures in figures/.
-%  Bracketed placeholders such as [TODO: ...] mark evidence or
-%  bibliographic data not yet settled; each must be resolved before
-%  submission.
+%  Build:  pdflatex main ; bibtex main ; pdflatex main ; pdflatex main
 % =====================================================================
 
-\documentclass[10pt,twocolumn]{article}
-
-% The text block is pinned to 7.10 in, matching the design width of every
-% matplotlib figure: a 1:1 placement then renders 10 pt inside the figure as
-% 10 pt on the page.
-\usepackage[letterpaper,left=0.70in,right=0.70in,top=0.75in,bottom=0.80in]{geometry}
+\documentclass[conference]{IEEEtran}
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage{times}
 \usepackage{microtype}
 \usepackage{amsmath,amssymb}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{threeparttable}
-\usepackage[numbers,sort&compress]{natbib}
+\usepackage{cite}
 \usepackage{xcolor}
 \usepackage{url}
-\usepackage[hidelinks]{hyperref}
-\usepackage{caption}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{balance}
+\usepackage[hidelinks]{hyperref}
 
-\captionsetup{font=small,labelfont=bf}
-\setlength{\textfloatsep}{9pt plus 2pt minus 2pt}
-\setlength{\floatsep}{8pt plus 2pt minus 2pt}
-\setlength{\intextsep}{8pt plus 2pt minus 2pt}
-
-% headroom for two-column full-width floats
+% 浮标放置余量（IEEEtran 下需在正文前重设）
 \renewcommand{\dbltopfraction}{0.92}
 \renewcommand{\dblfloatpagefraction}{0.72}
 \renewcommand{\topfraction}{0.90}
@@ -56,24 +33,69 @@
 \setcounter{topnumber}{3}
 \setcounter{totalnumber}{5}
 
-% Metric direction convention: body text and table heads use ↑ for "higher is
-% better" and ↓ for "lower is better".
+% 指标方向约定：正文与表头统一用 ↑ 表示越高越好、↓ 表示越低越好
 \newcommand{\msr}[1]{\textsc{#1}}
 \newcommand{\arm}[1]{\texttt{#1}}
 
+% 窄栏内避免零星 overfull
+\setlength{\emergencystretch}{2.5em}
+\tolerance=3000
+\hbadness=10000
+
 \begin{document}
 
-\title{\bf Keeping the Referent in the DARK: Anchor-Preserving\\ Token Compression for Privacy-Aware Inference on IoT Logs}
+\title{Keeping the Referent in the DARK: Anchor-Preserving Token Compression for Privacy-Aware Inference on IoT Logs}
 
 \author{%
-\begin{tabular}{cc}
-Yukun Wen & Shijie Zeng \\[7pt]
-\multicolumn{2}{c}{\small Department of Computer Science, Khalifa University, Abu Dhabi, United Arab Emirates}
-\end{tabular}}
-\date{}
-\maketitle
+\IEEEauthorblockN{Yukun Wen}
+\IEEEauthorblockA{Department of Computer Science\\
+Khalifa University\\
+Abu Dhabi, United Arab Emirates\\
+100069961@ku.ac.ae}
+\and
+\IEEEauthorblockN{Shijie Zeng}
+\IEEEauthorblockA{Department of Computer Science\\
+Khalifa University\\
+Abu Dhabi, United Arab Emirates\\
+100065732@ku.ac.ae}
+}
 
-\input{sections/00_abstract}
+% 摘要与 Fig. 1 与标题同处第 1 页（整页宽），正文从第 2 页开始。
+% IEEEtran 把 \@maketitle 作为 \twocolumn[...] 的参数排版，因此把摘要、关键词和图
+% 追加到 \@maketitle 末尾即可获得整页宽效果。挂钩必须在 \maketitle 之前完成，
+% 因为 \maketitle 执行时会把 \@maketitle 置为 \relax。
+\makeatletter
+\let\DARK@titleblock\@maketitle
+\renewcommand{\@maketitle}{%
+  \DARK@titleblock
+  \vspace{2pt}%
+  \input{sections/00_abstract}%
+  \begin{IEEEkeywords}
+  prompt compression, privacy-preserving inference, large language models,
+  IoT logs, token budget
+  \end{IEEEkeywords}%
+  \vspace{4pt}%
+  {\centering\includegraphics[width=\textwidth]{figures/fig_why.pdf}\par}%
+  \vspace{-4pt}%
+  {\footnotesize
+  % IEEEtran 会把 \@maketitle 排版两次用于测量，\refstepcounter 会被执行两次，
+  % 因此这里不用计数器自增，直接钉死标签值为 1；计数器在 \maketitle 之后补设。
+  \makeatletter\def\@currentlabel{1}\makeatother\label{fig:why}%
+  \textbf{Fig.~1.} Why \textsc{DARK} matters. The question names exactly the value that must
+  not be sent, so redaction removes the handle the reader needs while compression forwards the
+  value it must hide; both destroy the task, for opposite reasons. \textsc{DARK} keeps the
+  record that holds the queried entity and aliases the values inside it, which makes it the
+  only arm that is accurate, leak-free and half length at once. The annotation \emph{same
+  block} marks the layout that makes this possible: in $100\%$ of multi-entity and $99.7\%$ of
+  needle cases the record answering the question and the record storing the protected value
+  are the same block. All numbers are from the $2{,}728$-case extension at $r=0.50$.\par}%
+}
+\makeatother
+
+\maketitle
+\setcounter{figure}{1}
+
+\clearpage
 
 \input{sections/01_introduction}
 \input{sections/02_related_work}
@@ -86,9 +108,16 @@ Yukun Wen & Shijie Zeng \\[7pt]
 \input{sections/09_discussion}
 \input{sections/10_conclusion}
 
+% 先把正文里所有待排的浮动体全部吐出，参考文献才能从干净的一页开始
+\clearpage
+
 \balance
-\bibliographystyle{plainnat}
-\bibliography{refs}
+{\raggedright
+\bibliographystyle{IEEEtran}
+\bibliography{refs}}
+
+% 附录的表格不得挤进参考文献：再次清空浮动队列，附录从新页开始
+\clearpage
 
 \appendix
 \input{sections/11_appendix}
