@@ -101,6 +101,7 @@ and the only arm that leaks nothing:
 | Quito-X (strongest published compressor) | 0.4831 | 98.1% |
 | CPC | 0.4740 | 88.8% |
 | Provence | 0.4080 | — |
+| LexComp, 2026 rule-based compressor | 0.3696 | 100% |
 | mask + LLMLingua-2 (nearest *leak-free* baseline) | 0.1712 | 0% |
 | **DARK (this work)** | **0.4937** | **0%** |
 
@@ -108,6 +109,13 @@ The F1 gap against Quito-X is +0.0107 with a paired bootstrap interval of \[−0
 not significant. The reading is deliberately narrow: a query-aware compressor reaches the same F1 by
 forwarding the very value the question names. Among **leak-free** arms DARK is ahead of the nearest
 competitor by **+0.3226** \[+0.3041, +0.3414\].
+
+The 2026 rule-based arm is a preprint re-run from its released implementation; its
+reproduction is `src/longctx/run_lexcomp.py` (CPU, no model) followed by
+`slurm/eval_lexcomp.slurm`. It realises 5,817 context tokens against DARK's 4,146 and
+still leaks in every case, because its lexical rules delete the record syntax the
+question depends on. That is quantified in Section VIII of the paper: the share of
+parseable JSON objects falls from 91.2% to 0%.
 
 **On the 112-case main set.** Keeping 48.6% of the tokens costs no measurable task quality:
 

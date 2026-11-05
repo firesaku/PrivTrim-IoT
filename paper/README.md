@@ -5,12 +5,12 @@ on IoT Logs"** — Yukun Wen, Shijie Zeng (Khalifa University).
 
 | Path | Content |
 | --- | --- |
-| `main.pdf` | the compiled manuscript (18 pages) — read this |
+| `main.pdf` | the compiled manuscript (19 pages) — read this |
 | `main.tex` | entry point: preamble, title block, `\input`s, bibliography |
 | `sections/` | one file per section, `00_abstract` … `11_appendix` |
 | `tables/` | `tab_main`, `tab_external`, `tab_budget`, `tab_ablation_alias`, `fig6_cases` |
-| `figures/` | the vector figures (`fig0_teaser`, `fig_method`, `fig1_main`, `fig2_diagnostic`, `fig3_alias`, `fig_persource`) |
-| `refs.bib` | 51 references |
+| `figures/` | the vector figures (`fig0_teaser`, `fig_method`, `fig1_main`, `fig2_diagnostic`, `fig3_alias`, `fig_persource`, `fig_why`) |
+| `refs.bib` | 53 references |
 
 ## Build
 
@@ -20,7 +20,7 @@ pdflatex main && bibtex main && pdflatex main && pdflatex main
 ```
 
 The tree is complete and self-contained: it builds cleanly from a fresh clone with 0 undefined
-references, 0 undefined citations and 0 overfull hboxes, and produces 18 pages.
+references, 0 undefined citations and 0 overfull hboxes, and produces 19 pages.
 
 > `main.pdf` in this repository is the artifact as originally shipped, not the output of the command
 > above; a local rebuild differs from it by a few hundred bytes (PDF metadata), not in content. If you
