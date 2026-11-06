@@ -19,6 +19,33 @@ assume no adversarial manipulation of the model and no side channel beyond the p
 and we do not model an adversary who holds the alias map; Section~\ref{sec:discussion}
 states what that leaves out.
 
+Figure~\ref{fig:concept} fixes three things that the rest of the paper depends on. Panel~(a)
+is the reason the operation matters: the answer text is identical in all three rows, and only
+the first column separates a value that can still be addressed from one that cannot. Deleting a
+sensitive unit keeps the answer and destroys the statement of whose answer it is, which is why
+redaction and routing are not two settings of one knob. Panel~(b) is the boundary the privacy
+claim is written against: the prompt is the only thing that crosses, the alias map stays on the
+operator's side, and the three adversaries at the bottom have very different reach. Panel~(c)
+is the plane we report in: a compressor moves along the frontier, buying utility with privacy,
+and the corner where both are high is empty. Our argument is that reaching it is a change of
+operation rather than a better point on that curve.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_concept.pdf}
+\caption{The three premises of the evaluation. (a)~The referent is a link, not a string: all
+three rows carry the same answer text, and only the first column decides whether the reader can
+tell which record it belongs to. Deletion produces the second row, aliasing the third; the
+answer survives either way, so an endpoint that measures only the answer cannot see the
+difference. (b)~What crosses the trust boundary: the prompt only, with the keyed alias map
+retained by the operator. The three adversaries named at the bottom differ in what they can
+reach, and the privacy claim is stated against the first of them. (c)~The plane the results live
+in, drawn conceptually here and measured in Figure~\ref{fig:frontier}. Compression today trades
+one axis for the other along the curve; the shaded corner is where both are high, and it is
+empty for every method that moves along that curve.}
+\label{fig:concept}
+\end{figure*}
+
 \paragraph{The queried entity.}
 Each question names an entity $e^\star$, which may be an account, a device, or a record
 identifier. The \emph{anchor} $A\subseteq U(C)$ is the set of units containing a mention of
