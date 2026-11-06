@@ -81,15 +81,17 @@ Abu Dhabi, United Arab Emirates\\
   % IEEEtran 会把 \@maketitle 排版两次用于测量，\refstepcounter 会被执行两次，
   % 因此这里不用计数器自增，直接钉死标签值为 1；计数器在 \maketitle 之后补设。
   \makeatletter\def\@currentlabel{1}\makeatother\label{fig:why}%
-  \textbf{Fig.~1.} Why \textsc{DARK} matters. The question names exactly the value that must
-  not be sent, so redaction removes the handle the reader needs while compression forwards the
-  value it must hide; both destroy the task, for opposite reasons. \textsc{DARK} keeps the
-  record that holds the queried entity and aliases the values inside it, which makes it the
-  only arm that is accurate, leak-free and half length at once. The annotation \emph{same
-  block} marks the layout that makes this possible: the record answering the question and the
-  record storing the protected value are the same block in every case of the benchmark, as the
-  annotations record and Table~\ref{tab:dataset} reports. All numbers are from the
-  $2{,}728$-case extension at $r=0.50$.\par}%
+  \textbf{Fig.~1.} Why \textsc{DARK} matters. Top: the question names exactly the value that
+must not be sent, so every pipeline in this setting faces the same conflict. Bottom left: one
+record holds both the value to hide and the answer, which is why the two cannot be separated by
+deleting one of them. Bottom centre: the two conventional choices fail in different directions
+rather than by different amounts---redaction loses the handle the reader needs, compression
+forwards the value it was supposed to protect. Bottom right: \textsc{DARK} reaches
+$0.4937$ F1 at a $50\%$ budget against the strongest published compressor's $0.4831$, a
+difference this experiment does not resolve, while measured leakage is $0\%$ against $98.1\%$
+for that compressor. Leakage is measured protected-value recoverability under the published
+pattern set, not a claim that the prompt is safe under every attack. All numbers are from the
+$2{,}728$-case extension at $r=0.50$.\par}%
 }
 \makeatother
 
