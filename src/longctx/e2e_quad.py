@@ -84,16 +84,16 @@ import v4_router                                          # noqa: E402  四象�
 ARMS_ALL = ['full', 'delete', 'alias',
             'budget_cluster', 'budget_cluster_link', 'budget_random',
             'delete_budget', 'alias_budget', 'alias_budget_link',
-            'quad4', 'quad4_del']
+            'quad4', 'quad4_del', 'quad4_win', 'quad4_win_del']
 ARMS_BUDGET = ['budget_cluster', 'budget_cluster_link', 'budget_random',
                'delete_budget', 'alias_budget', 'alias_budget_link',
-               'quad4', 'quad4_del']
+               'quad4', 'quad4_del', 'quad4_win', 'quad4_win_del']
 
 # --- 实验开关 ---
 NO_ORACLE = False      # True: ans_of 恒 False（关闭金标答案 oracle）
 ARMS_LENGTH = ['full', 'delete', 'alias']
 # 会改写实体表面串的臂：只有这些臂才谈得上「问题与上下文必须一致地被别名化」
-ARMS_ALIAS = ['alias', 'alias_budget', 'alias_budget_link', 'quad4']
+ARMS_ALIAS = ['alias', 'alias_budget', 'alias_budget_link', 'quad4', 'quad4_win']
 ARMS_CLASSIC = ['full', 'budget_cluster', 'budget_random', 'delete', 'alias']
 
 
@@ -102,9 +102,9 @@ def log(*a):
 
 
 def arm_style(arm):
-    if arm in ('delete', 'delete_budget', 'quad4_del'):
+    if arm in ('delete', 'delete_budget', 'quad4_del', 'quad4_win_del'):
         return 'delete'
-    if arm in ('alias', 'alias_budget', 'alias_budget_link', 'quad4'):
+    if arm in ('alias', 'alias_budget', 'alias_budget_link', 'quad4', 'quad4_win'):
         return 'alias'
     return 'none'
 
@@ -480,7 +480,7 @@ def build_arm_texts(case, nt, budgets, arms, order_fn, seed=20261015):
         return any(nz(c['value']) in nu or
                    (c.get('marker') and nz(c['marker']) in nu) for c in cans)
 
-    def build_quad4(redact_rel, B, order_f):
+    def build_quad4(redact_rel, B, order_f, window=None):
         """按象限施加不同操作。
 
         相关区域两种确定模式：
@@ -498,14 +498,16 @@ def build_arm_texts(case, nt, budgets, arms, order_fn, seed=20261015):
         tgt_units = [i for i, u in enumerate(us) if any(k and k in u for k in akeys)]
 
         has_marker = any(re.match(r'^-{3,}\s*entry\s+\d+', u.strip(), re.I) for u in us)
-        if has_marker:
+        # window 给定时忽略记录块结构，一律用「锚点前后各 window 个单元」——
+        # 这是「粒度」这一因素的中间档，用于比较 line / window / block。
+        if has_marker and window is None:
             tgt_ents = set(ents[i] for i in tgt_units)
             rel_set = set(i for i in range(len(us)) if ents[i] in tgt_ents)
         else:
+            w = QUAD_WINDOW if window is None else window
             rel_set = set()
             for i in tgt_units:
-                for j in range(max(0, i - QUAD_WINDOW),
-                               min(len(us), i + QUAD_WINDOW + 1)):
+                for j in range(max(0, i - w), min(len(us), i + w + 1)):
                     rel_set.add(j)
         if not rel_set:
             rel_set = set(tgt_units)      # 兜底：至少保住锚点本身

@@ -155,3 +155,17 @@ arm changes by $-0.0614$ over the same rewritings. The margin over
 \arm{alias\_budget\_link} remains significant in all three conditions ($+0.2147$, $+0.2711$,
 $+0.1994$). The check is relevant because the rule keys on a mention of the queried entity,
 and a rewriting could in principle disturb that mention; in these variants it does not.
+
+\input{tables/tab_crossreader}
+
+\paragraph{The cost of the rule does not depend on the reader.}
+Table~\ref{tab:crossreader} repeats the comparison on a second reader from a different family.
+The two readers do not agree on absolute F1---Granite is $0.03$ below Qwen on the uncompressed
+arm---so the absolute numbers cannot be pooled. The quantity that does carry over is the
+\emph{cost} of the rule: on identical inputs, \textsc{DARK} gives up $0.1144$ on the first reader
+and $0.1118$ on the second. The difference between those two costs is $+0.0026$
+$[-0.0201,+0.0245]$, which does not exclude zero, and we report it that way. What the experiment
+supports is that the mechanism is not tuned to one tokenizer or one instruction set: it is the
+same construction, the same prompts and the same cost, on a reader trained by a different
+organisation. What it does not support is a claim about readers larger than the two tested; we
+say so again in Section~\ref{sec:discussion}.

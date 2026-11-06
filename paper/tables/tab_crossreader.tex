@@ -1,0 +1,24 @@
+\begin{table}[t]
+\caption{Two readers, same $2{,}728$ cases, same prompts. The quantity of interest is not the
+absolute F1---the readers differ in it---but the \emph{cost} of the rule, the paired difference
+between \textsc{DARK} and the uncompressed arm on identical inputs. That cost is
+$-0.1144$ on the first reader and $-0.1118$ on the second, and the difference between the two
+costs is $+0.0026$ with an interval that contains zero. We report that as ``the two readers were
+not distinguished on this quantity'', not as a demonstration that the cost is equal: an interval
+containing zero bounds what this experiment can claim, and a non-inferiority statement would
+need a margin fixed in advance.}
+\label{tab:crossreader}
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrrr}
+\toprule
+Reader & $n$ & full F1 & \textsc{DARK} F1 & \textsc{DARK}$-$full [95\% CI] & leak \\
+\midrule
+Qwen2.5-7B-Instruct      & 2{,}728 & 0.6081 & 0.4937 & $-0.1144$ $[-0.1326,-0.0971]$ & $0\%$ \\
+Granite-3.1-8B-Instruct  & 2{,}728 & 0.5764 & 0.4647 & $-0.1118$ $[-0.1293,-0.0941]$ & $0\%$ \\
+\midrule
+difference of the costs  &         &        &        & $+0.0026$ $[-0.0201,+0.0245]$ & \\
+\bottomrule
+\end{tabular}}
+\end{table}
