@@ -35,6 +35,31 @@ global-alias ablation at $0.3482$, which \textsc{DARK} exceeds by $+0.1456$
 $[+0.1249,+0.1668]$; those two arms differ only in which region survives, one line or the
 block that contains it, so that margin is the routing rule and nothing else.
 
+Figure~\ref{fig:frontier} puts the same numbers on both axes at once, because a compressor is
+only usable if it answers the question \emph{and} forwards nothing. The picture is a single
+sentence: \textsc{DARK} sits alone in the upper-left corner. The strongest published
+compressor reaches a comparable F1 ($0.4831$ against our $0.4937$) but at $98.1\%$ leakage,
+and every arm that leaks nothing else pays for it in the other coordinate---the nearest
+leak-free arm is $0.1456$ F1 behind, and the masking baseline, which is the only leak-free
+published option, is $0.32$ behind. Between those two clusters there is nothing: no arm at this
+scale trades one axis for the other gradually, which is why we describe the result as a change
+of operation rather than a better point on an existing curve.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_frontier.pdf}
+\caption{Leakage against utility for every arm evaluated on the same $2{,}728$ cases. The
+horizontal axis is the share of cases in which a protected value is recoverable from the
+prompt; the vertical axis is F1. Only arms run at this scale are plotted, so no point comes
+from a different sample. \textsc{DARK} (star) is the only arm in the upper-left region: it
+matches the strongest published compressor on F1 and is the only arm above $0.40$ that exposes
+nothing. Markers are coloured by provenance---grey for the uncompressed reference and the
+published compressors, dark red for the ablations of our own design, black for the full
+rule---so the reader can separate "another method" from "our method with one part removed".
+The middle of the plot is empty: an arm either forwards the value or loses the answer.}
+\label{fig:frontier}
+\end{figure*}
+
 The table also carries a 2026 rule-based compressor, run on CPU at its most aggressive preset~\cite{chokshi-lexical-2026}. It realises $5{,}817$ context tokens---more than we spend---scores $0.3696$, and leaks in $100\%$ of cases. Section~\ref{sec:analysis} isolates why: its rules delete the braces and rename the keys that make a record a record.
 
 The aggregate also hides a split. On needle cases, where the question names a record
