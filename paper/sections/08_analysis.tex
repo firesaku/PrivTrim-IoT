@@ -296,3 +296,42 @@ hexadecimal strings differing in a few characters, so replacing them with short 
 tokens makes the task \emph{easier} for the reader. Privacy and utility move in the same
 direction here, a useful counterpoint to the usual framing, though the effect belongs to the
 identifier surface form rather than to the routing rule.
+
+\subsection{Where the rule stops}
+\label{sec:failuremap}
+
+Figure~\ref{fig:failure} maps the two structural conditions that decide whether the rule helps, on
+the cases we have. Distance is the one the referential claim depends on, and it is not a slope but
+a cliff. On single-entity cases F1 falls from $0.896$ when the answer shares the anchor's line to
+$0.325$ beyond thirty lines, staying inside the usable band until eleven. On multi-entity cases it
+reaches \emph{exactly} $0.000$ past thirty lines over $192$ cases: the block is still in the prompt
+and the answer is still in the block, but nothing in the surviving text tells the reader which of
+the six entities the answer belongs to. That is the failure this paper is about, seen from the
+other side.
+
+Block size acts independently, which is why the panel holds distance fixed: at distances of one to
+four lines, F1 is $0.650$ inside a 6--10 line block and $0.194$ inside one of more than forty. The
+cause is not referential but budgetary---a large block spends the budget on one entity and leaves
+nothing for the rest---and Section~\ref{sec:analysis} reported the same effect from the retention
+side.
+
+Two caveats belong with the figure. The three regions are a reporting choice, not a property of
+the method: the boundaries at $0.45$ and $0.15$ are stated in the legend so that a reader can
+redraw them. And the benchmark does not populate every cell---20--40 line blocks do not occur, and
+the cell at multi-entity $11$--$30$ lines holds five cases---so the map bounds where the rule was
+\emph{observed} to work, not where it must.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_failure.pdf}
+\caption{The structural failure map. (a)~\textsc{DARK}'s F1 against the distance between the anchor
+mention and the answer, split by case kind, with $n$ in each cell. Single-entity cases degrade
+gradually; multi-entity cases reach exactly zero beyond thirty lines, on $192$ cases, because the
+answer is present but its owner is not. (b)~Block size at a fixed distance of one to four lines:
+the same distance performs worse inside a larger block, which is a budget effect rather than a
+referential one. The region boundaries are a reporting choice, stated in the legend; cells with
+fewer than ten cases are hatched and not interpreted, and a dotted cell is a configuration this
+benchmark does not contain. Every number is a measured mean over real cases from the $2{,}728$-case
+extension at $r=0.50$.}
+\label{fig:failure}
+\end{figure*}
