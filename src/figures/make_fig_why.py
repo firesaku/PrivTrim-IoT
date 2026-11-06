@@ -16,6 +16,7 @@ DRAWIO = Path(r'D:\HPC\drawio\fig_why.drawio')
 EXE = r'C:\Users\Yuki\AppData\Local\Programs\draw.io\draw.io.exe'
 
 INK, RED = '#141414', '#8E2A22'
+GREEN_ = '#007A5E'   # 仅用于 DARK 的 0% 泄漏，与新版一致
 G_D, G_M, G_L, PALE = '#555555', '#9A9A9A', '#D4D4D2', '#EFEFEF'
 FF = 'Times New Roman'
 FM = 'Courier New'
@@ -113,113 +114,143 @@ def hline(x, y, w, color=G_M, lw=0.8):
     add('line;strokeWidth=%s;html=1;fillColor=none;strokeColor=%s;' % (lw, color), x, y, w, 0)
 
 
-# ======================================================================
-# Layout: three narrative tiers, unequal weight.
-#   A  the problem        four stages, thin separators, no cards
-#   B  the argument       example (narrow) | two failures | DARK (widest)
-#   C  evidence/boundary  one line, secondary
-# ======================================================================
-W, H = 710, 302
-
-# add() writes in flipped y, so wrap the primitives to take "distance from the top".
-_F = lambda y, h: H - y - h
-_rect_o, _txt_o, _ic_o, _hline_o, _arrow_o = rect, txt, ic, hline, arrow
-def rect(x, y, w, h, *a, **k):   return _rect_o(x, _F(y, h), w, h, *a, **k)
-def txt(x, y, w, h, *a, **k):    return _txt_o(x, _F(y, h), w, h, *a, **k)
-def ic(n, x, y, size=26, color=INK): return _ic_o(n, x, _F(y, size), size, color)
-def hline(x, y, w, *a, **k):     return _hline_o(x, _F(y, 0), w, *a, **k)
-def arrow(x, y, w=10, h=10, *a, **k): return _arrow_o(x, _F(y, h), w, h, *a, **k)
-INK   = '#1F2937'
-G_D   = '#64748B'
-G_M   = '#697586'
-G_L   = '#D8DEE6'
-RED   = '#B6403A'
-BLUE  = '#0072B2'
-GREEN = '#009E73'
-GOLD  = '#D69A35'
-
+# ------------------------------------------------------------------ frame
 add('rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;', 0, 0, W, H)
+rect(4, 4, W - 8, H - 8, color=RED, fill='none', lw=1.1)
+ic('moon', 24, 398, 20)
+txt(50, 397, 70, 22, 'DARK', 11, INK, bold=True, align='left')
 
-# ---------------------------------------------------------------- A  problem
-AY = 10
-stages = [
-    (8,   'analyst request', 'which device is bound', 'to ACCT-4cd0?', 'terminal'),
-    (186, 'log store',       '19,838 tokens',        '6 entries per line', 'database'),
-    (364, 'the conflict',    'redact: no handle',    'compress: value sent', 'alert'),
-    (542, 'cloud reader',    'receives (q-prime, P)', 'returns one answer', 'cloud'),
-]
-for x, title, l1, l2, ic_name in stages:
-    txt(x, AY, 168, 12, title.upper(), 8, G_D, bold=True, align='left')
-    ic(ic_name, x, AY + 13, 15, RED if title == 'the conflict' else G_M)
-    txt(x + 21, AY + 12, 145, 10, l1, 9, INK, align='left')
-    col = RED if title == 'the conflict' else G_D
-    txt(x + 21, AY + 23, 145, 10, l2, 9, col, align='left')
-for gx in (176, 354, 532):
-    arrow(gx, AY + 17, 8, 9, G_L)
+# ------------------------------------------------------------------ bands
+TY, TH = 284, 108
+BY, BH = 52, 222
+tops = [(4, 172), (180, 172), (356, 172), (532, 174)]
+bots = [(4, 136), (144, 136), (284, 136), (424, 136), (564, 142)]
 
-hline(8, AY + 40, W - 16, G_L, 0.8)
+for x, w in tops:
+    rect(x, TY, w, TH)
+for x, w in bots:
+    rect(x, BY, w, BH)
+for gx in (176, 352, 528):
+    arrow(gx + 1, TY + TH // 2 - 5, 9, 11)
 
-# ---------------------------------------------------------------- B  argument
-BY = 62
-BH = 176
-# widths are deliberately unequal: 168 / 208 / 302
-rect(8,   BY, 168, BH, G_L, '#FFFFFF', 0.9)
-rect(184, BY, 208, BH, G_L, '#FFFFFF', 0.9)
-rect(400, BY, 302, BH, GREEN, '#FFFFFF', 1.1)     # the payoff gets the accent
+rect(5, 47, W - 10, 1.2, color=G_L, fill=G_L, lw=0, arc=0)
+txt(6, 10, W - 12, 30,
+    'DARK matches the strongest compressor on F1 at zero measured leakage, on half the tokens.',
+    10.5, INK, bold=True)
 
-# --- B1 the example (auxiliary)
-txt(16, BY + 7, 152, 11, 'THE EXAMPLE', 8, G_D, bold=True, align='left')
-rect(16, BY + 22, 152, 74, G_L, '#FAFBFC', 0.8)
-txt(22, BY + 26, 140, 15, 'ACCT-4cd0', 10, RED, bold=True, align='left', family='Courier New')
-txt(22, BY + 43, 140, 15, 'media_player', 10, GREEN, bold=True, align='left', family='Courier New')
-txt(22, BY + 60, 140, 14, 'temp 21.4', 9, G_D, align='left', family='Courier New')
-txt(22, BY + 76, 140, 14, 'status active', 9, G_D, align='left', family='Courier New')
-txt(16, BY + 101, 152, 10, 'one record holds both', 8, G_D, align='left', italic=True)
-txt(16, BY + 113, 152, 26,
-    'the value to hide is also the anchor that locates the answer', 7.5, G_D, align='left')
+# ------------------------------------------------------------------ top panels
+x, w = tops[0]
+txt(x, TY + TH - 24, w, 18, 'ANALYST REQUEST', 10.5, RED, bold=True)
+ic('terminal', x + w // 2 - 20, TY + 34, 40)
+ic('chat', x + 6, TY + 12, 16, RED)
+txt(x + 26, TY + 2, w - 32, 32, 'which device is bound to ACCT-4cd0?', 10, INK, align='left')
 
-# --- B2 two failures (strengthened, qualitative only)
-txt(192, BY + 7, 192, 11, 'TWO WAYS TO FAIL', 8, RED, bold=True, align='left')
-for i, (op, what, why) in enumerate([
-        ('redact', 'handle lost', 'the reader cannot tell\nwhich record is meant'),
-        ('compress', 'value exposed', 'the handle arrives\ntogether with the value')]):
-    yy = BY + 26 + i * 62
-    txt(192, yy, 90, 11, op, 10, INK, bold=True, align='left')
-    txt(192, yy + 13, 190, 10, what, 9, RED, align='left')
-    txt(192, yy + 24, 190, 22, why.replace('\n', ' '), 7.5, G_D, align='left')
-hline(192, BY + 150, 190, G_L, 0.8)
-txt(192, BY + 156, 190, 14, 'each keeps one and loses the other', 7.5, G_D,
-    align='left', italic=True)
+x, w = tops[1]
+txt(x, TY + TH - 24, w, 18, 'LOG STORE', 10.5, INK, bold=True)
+ic('database', x + w // 2 - 20, TY + 34, 40)
+txt(x, TY + 16, w, 16, '19,838 tokens', 10, INK)
+txt(x, TY + 2, w, 14, '6 entities on every line', 10, G_D)
 
-# --- B3 DARK (the visual centre)
-txt(410, BY + 7, 280, 11, 'DARK', 9, INK, bold=True, align='left')
-txt(410, BY + 20, 120, 34, '0.4937', 22, GREEN, bold=True, align='left')
-txt(410, BY + 54, 120, 10, 'F1 at 50% budget', 8, G_D, align='left')
+x, w = tops[2]
+txt(x, TY + TH - 24, w, 18, 'THE CONFLICT', 10.5, RED, bold=True)
+ic('scissors', x + 36, TY + 34, 38, RED)
+hline(x + w // 2, TY + 38, 1, G_L)
+ic('filter', x + w - 74, TY + 34, 38, RED)
+txt(x, TY + 16, w, 16, 'redact \u2192 no handle', 10, RED, bold=True)
+txt(x, TY + 2, w, 14, 'compress \u2192 88.8\u2013100% leak', 10, RED)
 
-txt(536, BY + 24, 156, 20, '0.4831', 15, G_M, bold=True, align='left')
-txt(536, BY + 44, 156, 10, 'strongest compressor', 8, G_D, align='left')
-txt(536, BY + 55, 156, 10, 'difference not significant', 7.5, G_D, align='left', italic=True)
+x, w = tops[3]
+txt(x, TY + TH - 24, w, 18, 'CLOUD READER', 10.5, INK, bold=True)
+ic('cloud', x + w // 2 - 22, TY + 32, 44)
+txt(x, TY + 16, w, 16, "receives (q', P)", 10, INK)
+txt(x, TY + 2, w, 14, 'one short answer', 10, G_D)
 
-hline(410, BY + 74, 282, G_L, 0.8)
-txt(410, BY + 80, 140, 10, 'MEASURED LEAKAGE', 8, G_D, bold=True, align='left')
-txt(410, BY + 92, 60, 24, '0%', 17, GREEN, bold=True, align='left')
-txt(452, BY + 99, 60, 12, 'vs 98.1%', 10, RED, align='left')
-txt(516, BY + 99, 176, 12, 'for that compressor', 8, G_D, align='left')
+# ------------------------------------------------------------------ I
+x, w = bots[0]
+txt(x, BY + BH - 30, w, 16, 'I.  DATA EXAMPLE', 10, INK, bold=True)
+ic('layers', x + 6, BY + BH - 66, 25, G_D)
+ic('key', x + 35, BY + BH - 66, 25, INK)
+ic('link', x + 64, BY + BH - 66, 23, INK)
+rect(x + 6, BY + 62, w - 12, 62, color=G_M, fill=PALE, lw=0.7)
+txt(x + 6, BY + 96, w - 12, 16, 'media_player', 10, INK, family=FM)
+txt(x + 6, BY + 80, w - 12, 16, 'ACCT-4cd0', 10, INK, bold=True, family=FM)
+txt(x + 6, BY + 64, w - 12, 16, 'temp 21.4', 10, INK, family=FM)
+txt(x + 6, BY + 42, w - 12, 16, 'same block', 10, G_D)
+txt(x + 6, BY + 26, w - 12, 16, 'in every case', 10, INK)
+txt(x + 6, BY + 10, w - 12, 14, 'multi / needle', 10, G_D)
 
-txt(410, BY + 124, 282, 10, 'REFERENT', 8, G_D, bold=True, align='left')
-txt(410, BY + 136, 282, 11, 'retained, not deleted', 9, INK, align='left')
-txt(410, BY + 150, 282, 22,
-    'the record stays, the value inside it is replaced', 7.5, G_D, align='left')
+# ------------------------------------------------------------------ II
+x, w = bots[1]
+txt(x, BY + BH - 30, w, 16, 'II.  COVERAGE', 10, INK, bold=True)
+ic('grid', x + 8, BY + BH - 66, 25, G_D)
+ic('layers', x + 39, BY + BH - 66, 25, G_D)
+rows = [('6', 'corpora'), ('2,728', 'cases'), ('112', 'main'), ('3\u00d7300', 'variants')]
+for k, (num, cap) in enumerate(rows):
+    yy = BY + 128 - k * 32
+    txt(x + 4, yy, 58, 18, num, 12, INK, bold=True, align='right')
+    txt(x + 66, yy, w - 70, 18, cap, 10, G_D, align='left')
 
-# ---------------------------------------------------------------- C  evidence
-CY = 252
-hline(8, CY, W - 16, G_L, 0.8)
-txt(8, CY + 6, 350, 11,
-    '2,728 cases  |  6 corpora  |  50% token budget  |  no answer key  |  no training',
-    8, G_D, align='left')
-txt(360, CY + 6, 342, 22,
-    'boundary: the gain tracks the record layout, and Section VIII measures where it stops',
-    7.5, G_D, align='left', italic=True)
+# ------------------------------------------------------------------ III
+x, w = bots[2]
+txt(x, BY + BH - 30, w, 16, 'III.  NO SAFE', 10, RED, bold=True)
+txt(x, BY + BH - 48, w, 16, 'CHOICE', 10, RED, bold=True)
+ic('shield', x + 8, BY + BH - 84, 25, G_D)
+ic('scale', x + w // 2 - 12, BY + BH - 84, 25, G_D)
+ic('alert', x + w - 33, BY + BH - 84, 25, RED)
+txt(x, BY + 104, w, 16, 'two failures, one cause', 9, G_D, italic=True)
+rect(x + 10, BY + 90, w - 20, 1.8, color=G_M, fill=G_M, lw=0, arc=0)
+add('shape=ellipse;whiteSpace=wrap;html=1;fillColor=%s;strokeColor=none;' % G_M,
+    x + 26, BY + 86, 9, 9)
+add('shape=ellipse;whiteSpace=wrap;html=1;fillColor=%s;strokeColor=none;' % RED,
+    x + w - 35, BY + 86, 9, 9)
+txt(x + 2, BY + 68, 64, 18, '0.1712', 10, INK, bold=True)
+txt(x + w - 66, BY + 68, 64, 18, '0.4831', 10, RED, bold=True)
+txt(x + 2, BY + 50, 64, 18, 'mask', 10, G_D)
+txt(x + w - 66, BY + 50, 64, 18, 'Quito-X', 10, G_D)
+txt(x + 2, BY + 32, 64, 18, '0%', 10, G_D)
+txt(x + w - 66, BY + 32, 64, 18, '98.1%', 10, RED)
+txt(x, BY + 12, w, 16, 'leak rate', 10, G_D, italic=True)
+
+# ------------------------------------------------------------------ IV  leaderboard
+x, w = bots[3]
+txt(x, BY + BH - 30, w, 16, 'IV.  DARK', 10, INK, bold=True)
+ic('lock', x + 8, BY + BH - 62, 20, INK)
+ic('scale', x + w // 2 - 10, BY + BH - 62, 20, G_D)
+ic('book', x + w - 30, BY + BH - 62, 20, G_D)
+board = [('DARK', '0.4937', True), ('Quito-X', '0.4831', False),
+         ('CPC', '0.4740', False), ('Provence', '0.4080', False),
+         ('LLMLingua-2', '0.2651', False)]
+for k, (name, val, ours) in enumerate(board):
+    ry = BY + 132 - k * 17
+    if ours:
+        rect(x + 4, ry - 2, w - 8, 17, color=INK, fill=INK, lw=0.6)
+        txt(x + 6, ry, 90, 15, name, 10, '#FFFFFF', bold=True, align='left')
+        txt(x + w - 40, ry, 38, 15, val, 11, '#FFFFFF', bold=True, align='right')
+    else:
+        txt(x + 6, ry, 90, 15, name, 10, G_D, align='left')
+        txt(x + w - 40, ry, 38, 15, val, 10, G_D, align='right')
+txt(x + 4, BY + 48, w - 8, 12, 'vs Quito-X: tie (n.s.)', 8, G_D, italic=True, align='left')
+txt(x + 4, BY + 30, w - 8, 13, 'leak', 9, G_D, align='left')
+txt(x + 28, BY + 29, 26, 15, '0%', 10, GREEN_, bold=True, align='left')
+txt(x + 50, BY + 30, 84, 13, 'vs 98.1%', 9, RED, align='left')
+txt(x + 4, BY + 14, w - 8, 12, 'others: 88.8-100%', 8, RED, align='left')
+
+# ------------------------------------------------------------------ V
+x, w = bots[4]
+txt(x, BY + BH - 30, w, 16, 'V.  WHERE IT', 10, INK, bold=True)
+txt(x, BY + BH - 48, w, 16, 'STAYS HARD', 10, INK, bold=True)
+ic('bars', x + 8, BY + BH - 84, 25, G_D)
+ic('alert', x + w - 33, BY + BH - 84, 25, RED)
+base, maxh = BY + 84, 46
+for k, (val, col, lab) in enumerate([(0.3273, RED, 'multi'), (0.6970, G_M, 'needle')]):
+    bx = x + 12 + k * 62
+    hgt = int(maxh * val / 0.70)
+    rect(bx, base, 50, hgt, color='#FFFFFF', fill=col, lw=0.6)
+    txt(bx, base + hgt // 2 - 8, 50, 16, '%.4f' % val, 10,
+        '#FFFFFF' if k == 0 else INK, bold=True)
+    txt(bx, base - 14, 50, 14, lab, 10, G_D)
+txt(x + 6, BY + 46, w - 12, 16, 'toolmem_raw 0.263', 10, G_D)
+txt(x + 6, BY + 28, w - 12, 16, 'every arm < 0.45', 10, G_D)
 
 # ------------------------------------------------------------------ write
 body = '\n'.join(
@@ -257,4 +288,3 @@ for fmt, target in (('pdf', OUT / 'fig_why.pdf'), ('png', OUT / 'fig_why.png')):
     subprocess.run(cmd, check=False, capture_output=True)
     print(fmt, 'exported' if target.exists() else 'FAILED', target.stat().st_size
           if target.exists() else '')
-
