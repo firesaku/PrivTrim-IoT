@@ -32,7 +32,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 
-INK, RED = "#141414", "#8E2A22"
+INK, RED = "#4A1412", "#8E2A22"
 G_D, G_M, G_L, PALE = "#555555", "#9A9A9A", "#D4D4D2", "#EFEFEF"
 W, H = 7.10, 4.20
 

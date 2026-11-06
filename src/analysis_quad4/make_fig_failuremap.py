@@ -35,8 +35,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 
-INK = "#141414"
-GREEN, AMBER, RED = "#007A5E", "#D69A35", "#8E2A22"
+INK = "#4A1412"
+USABLE, DEGRADING, FAIL = "#D4D4D2", "#9A9A9A", "#8E2A22"   # 全文色板：灰阶 + 红
 G_D, G_L = "#555555", "#D4D4D2"
 W, H = 7.10, 2.55
 
@@ -83,10 +83,15 @@ def load(pattern):
 
 def region(m):
     if m >= 0.45:
-        return GREEN
+        return USABLE
     if m >= 0.15:
-        return AMBER
-    return RED
+        return DEGRADING
+    return FAIL
+
+
+def text_on(m):
+    """Red is the only fill dark enough to need white type; greys take ink."""
+    return "#FFFFFF" if m < 0.15 else INK
 
 
 def main(argv=None):
@@ -123,14 +128,14 @@ def main(argv=None):
                 continue
             n, m = len(v), statistics.mean(v)
             if n < 10:
-                ax.add_patch(Rectangle((x - .5, y - .5), 1, 1, facecolor="#F2F3F5",
+                ax.add_patch(Rectangle((x - .5, y - .5), 1, 1, facecolor="#EFEFEF",
                                        edgecolor=G_L, lw=0.7, hatch="///"))
                 ax.text(x, y, "%.3f\nn=%d sparse" % (m, n), fontsize=10, color=G_D,
                         ha="center", va="center", linespacing=1.15)
                 continue
             ax.add_patch(Rectangle((x - .5, y - .5), 1, 1, facecolor=region(m),
                                    edgecolor="white", lw=1.5))
-            ax.text(x, y, "%.3f\nn=%d" % (m, n), fontsize=10, color="#FFFFFF",
+            ax.text(x, y, "%.3f\nn=%d" % (m, n), fontsize=10, color=text_on(m),
                     ha="center", va="center", linespacing=1.15, fontweight="bold")
 
     ax.set_xlim(-0.5, len(BINS) - 0.5)
@@ -166,7 +171,7 @@ def main(argv=None):
             ns.append(len(v))
     ys = list(range(len(labels)))[::-1]
     for y, m, n in zip(ys, means, ns):
-        col = region(m) if n >= 10 else "#F2F3F5"
+        col = region(m) if n >= 10 else "#FFFFFF"
         bx.barh(y, m, height=0.55, color=col, edgecolor="white", lw=1.0)
         bx.text(m + 0.015, y, "%.3f  (n=%d)" % (m, n), fontsize=10, va="center",
                 color=INK, fontweight="bold" if n >= 10 else "normal")
@@ -181,9 +186,9 @@ def main(argv=None):
                  fontweight="bold")
     bx.grid(axis="x", color=G_L, lw=0.5, zorder=0)
 
-    handles = [Rectangle((0, 0), 1, 1, facecolor=GREEN, edgecolor="white"),
-               Rectangle((0, 0), 1, 1, facecolor=AMBER, edgecolor="white"),
-               Rectangle((0, 0), 1, 1, facecolor=RED, edgecolor="white")]
+    handles = [Rectangle((0, 0), 1, 1, facecolor=USABLE, edgecolor=G_L),
+               Rectangle((0, 0), 1, 1, facecolor=DEGRADING, edgecolor=G_L),
+               Rectangle((0, 0), 1, 1, facecolor=FAIL, edgecolor=G_L)]
     ax.legend(handles, ["usable (F1 $\\geq$ 0.45)", "degrading (0.15$-$0.45)",
                         "unusable (F1 $<$ 0.15)"],
               loc="upper center", bbox_to_anchor=(0.5, -0.24), ncol=3, frameon=False,

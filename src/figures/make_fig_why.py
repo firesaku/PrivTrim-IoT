@@ -15,8 +15,8 @@ OUT = Path(r'D:\KU-Assignment\CyberSecurity\Paper\Latex V1\figures')
 DRAWIO = Path(r'D:\HPC\drawio\fig_why.drawio')
 EXE = r'C:\Users\Yuki\AppData\Local\Programs\draw.io\draw.io.exe'
 
-INK, RED = '#141414', '#8E2A22'
-GREEN_ = '#007A5E'   # 仅用于 DARK 的 0% 泄漏，与新版一致
+INK, RED = '#4A1412', '#8E2A22'
+GREEN_ = '#4A1412'   # 与全文统一：黑色代表我们的结果，红色代表泄漏
 G_D, G_M, G_L, PALE = '#555555', '#9A9A9A', '#D4D4D2', '#EFEFEF'
 FF = 'Times New Roman'
 FM = 'Courier New'
