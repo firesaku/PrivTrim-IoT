@@ -83,6 +83,10 @@ def main(argv=None):
 
     arms = sorted({a for (_, a) in new})
     print()
+    # NOTE: `full` and `quad4` here are the control arms re-run inside the lexcomp batch, not
+    # the main run. They can differ from the main numbers in the fourth decimal because batched
+    # fp16 inference is not bit-exact. The paired block below correctly uses `base` (the main run)
+    # for the reference arm, so those comparisons are against the published numbers.
     print("%-16s %6s %8s %8s %8s %8s" % ("arm", "n", "F1", "leak%", "GIC%", "tokens"))
     for arm in arms:
         rows = [r for (_, a), r in new.items() if a == arm]
