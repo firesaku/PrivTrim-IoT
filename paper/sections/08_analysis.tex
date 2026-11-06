@@ -335,3 +335,47 @@ benchmark does not contain. Every number is a measured mean over real cases from
 extension at $r=0.50$.}
 \label{fig:failure}
 \end{figure*}
+
+\subsection{What moves each arm}
+\label{sec:landscape}
+
+Figure~\ref{fig:failure} varies structure for one arm. Figure~\ref{fig:landscape} varies it for
+four at once, holding the cases fixed, which turns the map into a comparison: the question is no
+longer whether structure moves \textsc{DARK}, but whether it moves everything equally.
+
+It does not. On single-entity cases the two arms that keep the whole block---\textsc{DARK} and
+block-with-deletion---track each other within $0.05$ at every distance, while both alias-less
+ablations sit well below. That is the operation being irrelevant, and the reason is structural: on
+these cases the question names a record identifier rather than a protected handle, so removing the
+handle costs nothing and the block alone carries the task. On multi-entity cases the same
+comparison reverses. At a distance of one to four lines \textsc{DARK} scores $0.595$ against
+$0.308$ for the anchor-line arm, $0.274$ for the global-alias arm and exactly $0.000$ for
+block-with-deletion, which now has no handle to keep. The operation is the entire difference here,
+and it is the difference the paper is about.
+
+Block size separates the arms the same way. At a fixed distance of one to four lines
+\textsc{DARK} is highest in every populated bin, and in the largest bin---more than forty
+lines---it is the only arm that scores at all ($0.194$ against $0.000$ for the other three).
+A large block is not fatal in itself; it is fatal in combination with losing the handle.
+
+We do not draw a leakage panel next to these, as one might expect. Leakage in these arms is a
+property of the operation and not of the case: over all $2{,}728$ cases it is $0.00\%$ for
+\textsc{DARK}, $0.00\%$ for global alias, $0.00\%$ for block-with-deletion and $55.39\%$ for the
+anchor-line arm, with no variation by distance or by block size. A heatmap over structure would be
+four constant rows, so the rates are in the legend and the variation is left to the axes that
+have it.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_landscape.pdf}
+\caption{The same case population under four operations. (a)~Single-entity cases: the two arms
+that keep the block (dark maroon and dark grey) track each other, because the question names a
+record identifier and the protected handle is not the anchor. (b)~Multi-entity cases: the same
+comparison reverses, and \textsc{DARK} is the only arm above $0.31$ at short distances while
+block-with-deletion is exactly zero throughout. (c)~Block size at a fixed distance: \textsc{DARK}
+is highest in every populated bin, and beyond forty lines it is the only arm still scoring. Open
+markers flag bins holding fewer than twenty cases. A leakage panel is deliberately absent: in
+these four arms leakage is $0.00$, $0.00$, $0.00$ and $55.39\%$ and does not vary with structure,
+so those rates belong in the legend rather than in a flat heatmap.}
+\label{fig:landscape}
+\end{figure*}
