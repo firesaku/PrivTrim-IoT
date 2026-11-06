@@ -139,7 +139,7 @@
         <mxCell id="c46" value="same block" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=13.89;fontFamily=Times New Roman;fontColor=#555555;fontStyle=0;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry x="10" y="320" width="124" height="16" as="geometry"/>
         </mxCell>
-        <mxCell id="c47" value="100% / 99.7%" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=13.89;fontFamily=Times New Roman;fontColor=#141414;fontStyle=0;whiteSpace=wrap;" vertex="1" parent="1">
+        <mxCell id="c47" value="every case" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=13.89;fontFamily=Times New Roman;fontColor=#141414;fontStyle=0;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry x="10" y="336" width="124" height="16" as="geometry"/>
         </mxCell>
         <mxCell id="c48" value="multi / needle" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=13.89;fontFamily=Times New Roman;fontColor=#555555;fontStyle=0;whiteSpace=wrap;" vertex="1" parent="1">

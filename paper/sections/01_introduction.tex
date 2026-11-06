@@ -18,6 +18,17 @@ needle cases, where the answer value repeats across distractor records and the s
 no priority. Both remedies treat protecting the value and keeping the reference as competing
 goals to be balanced.
 
+The literature on this setting asks three questions: which content is sensitive, which is
+relevant to the question, and which can be dropped to save tokens. We argue that a fourth
+question decides whether the answers to the first three are usable, and that it is not the same
+question: \emph{after the identifier has been removed or replaced, can the reader still tell
+which entity a surviving value belongs to?} A pipeline can answer all three of the usual
+questions correctly and still fail this one---it can drop exactly the right units, keep exactly
+the right span, and hand the model a prompt in which the answer is present but unattributable.
+We call the property \emph{referential integrity}, define it so that it can be measured
+(Section~\ref{sec:problem}), and show that on our benchmark it separates the four operations a
+compressor can apply, where a single scalar such as F1 does not.
+
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/fig0_teaser.pdf}

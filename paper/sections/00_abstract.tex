@@ -1,27 +1,25 @@
 \begin{abstract}
-IoT device logs are long, identifier-dense, and routinely copied into language-model
-prompts. A question about an account names exactly the value that must not reach the model,
-so the queried entity is also the entity under protection. Redaction removes the value and,
-with it, the handle the reader needs; compression keeps the handle but drops the record that
-carries the answer. We show that the two goals need not be traded against each other. In
-these logs the record that answers the question and the record that stores the protected
-value are the same block, so \textsc{DARK} keeps that block and aliases the values inside it.
+Prompt compression for privacy asks three questions: which content is sensitive, which is
+relevant to the question, and which can be dropped to save tokens. This paper argues that a
+fourth question decides whether the answers to the other three are usable. Once the identifier
+has been removed or replaced, can the reader still tell which entity a surviving value belongs
+to? We call that property \emph{referential integrity} and treat it as the object of design
+rather than a side effect. On $2{,}728$ cases it factors into three conditions---the answer
+survives, distinct entities do not collapse onto one surface token, and the question names the
+same entity as the context---and each condition is zeroed by exactly one configuration of our
+benchmark, with the task lost ($0.3132$ and $0.3142$ F1 against $0.4937$).
 
-The rule is training-free: it labels each unit on sensitivity and relevance, applies
-one of four operations---delete, alias, refill, keep---and writes the same alias map
-into the question. Relevance is read from the question alone, so the compressor never
-consults the reference answer.
+\textsc{DARK} preserves the property without keeping the value. Each unit is routed on
+(sensitivity, relevance) to delete, alias, refill or keep, and the same alias map is written
+into the question so that both halves keep a referent. The rule is training-free, reads
+relevance from the question alone, and never consults the reference answer.
 
-On $2{,}728$ cases at a $50\%$ budget \textsc{DARK} reaches F1 $0.4937$, level with the
-strongest query-aware compressor ($0.4831$; difference not significant) while leaving $0\%$
-of protected values recoverable against that method's $98.1\%$. It exceeds the only leak-free
-published baseline by $0.3226$ and the strongest leak-free arm of any kind by $0.1456$
-$[+0.1249,+0.1668]$; those two arms differ only in which region survives, one line or the
-block that contains it. On a 112-case set, keeping $48.6\%$ of the tokens is
-statistically indistinguishable from aliasing the full context without compression ($0.6366$
-vs.\ $0.6475$). Removing the alias step costs $0.3273$ F1 where the anchor is itself a
-protected value and $0.0013$ where the question names no entity, and removing the
-question-side rewrite drives that same subset to exactly $0.0000$: the rule acts where
-designed and is inert elsewhere. The ordering holds at every budget from $10\%$ to $75\%$,
-across a second reader and two paraphrases.
+At a $50\%$ budget \textsc{DARK} reaches F1 $0.4937$, not distinguishable from the strongest
+query-aware compressor ($0.4831$; the interval includes zero), while leaving $0\%$ of protected
+values recoverable against that method's $98.1\%$, with an upper bound of $0.14\%$. Against
+every leak-free alternative it is ahead by at least $0.1456$ $[+0.1253,+0.1662]$, and those
+arms differ only in which region survives, a line or the block that contains it. Replacing the
+alias operation by deletion costs $0.3273$ F1 where the anchor is itself protected and $0.0013$
+where the question names no entity, and dropping the question-side rewrite drives that subset
+to exactly $0.0000$: the rule acts where designed and is inert elsewhere.
 \end{abstract}

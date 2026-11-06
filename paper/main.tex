@@ -44,7 +44,7 @@
 
 \begin{document}
 
-\title{Keeping the Referent in the DARK: Anchor-Preserving Token Compression for Privacy-Aware Inference on IoT Logs}
+\title{Keeping the Referent in the DARK: Referential Integrity under Privacy Constraints in IoT Logs}
 
 \author{%
 \IEEEauthorblockN{Yukun Wen}
@@ -86,9 +86,10 @@ Abu Dhabi, United Arab Emirates\\
   value it must hide; both destroy the task, for opposite reasons. \textsc{DARK} keeps the
   record that holds the queried entity and aliases the values inside it, which makes it the
   only arm that is accurate, leak-free and half length at once. The annotation \emph{same
-  block} marks the layout that makes this possible: in $100\%$ of multi-entity and $99.7\%$ of
-  needle cases the record answering the question and the record storing the protected value
-  are the same block. All numbers are from the $2{,}728$-case extension at $r=0.50$.\par}%
+  block} marks the layout that makes this possible: the record answering the question and the
+  record storing the protected value are the same block in every case of the benchmark, as the
+  annotations record and Table~\ref{tab:dataset} reports. All numbers are from the
+  $2{,}728$-case extension at $r=0.50$.\par}%
 }
 \makeatother
 
