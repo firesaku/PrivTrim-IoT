@@ -53,6 +53,58 @@ paired difference printed at each row.}
 \label{fig:survival}
 \end{figure*}
 
+\subsection{The layout the rule depends on}
+
+The routing rule rests on two structural claims, and until now both were quoted as survival
+percentages rather than measured. We measured them from the case text alone: segment each
+excerpt on its record markers, take the first line that mentions the queried entity and the
+first line that carries the reference answer, and report their distance
+(Figure~\ref{fig:structure}). No model is involved, so the measurement is independent of the
+reader.
+
+Both claims hold, and the split between the two case kinds is sharper than the aggregate
+suggested. On the $1{,}500$ multi-entity cases the anchor and the answer always land in the
+same block---$1{,}500$ of $1{,}500$---and never on the same line: the anchor sits on the
+private-contact lines and the answer inside the record line beneath it, two or five lines
+away in $87\%$ of cases. On the $1{,}228$ needle cases the answer is again inside the
+anchor's block in $99.8\%$ of cases, but in $56\%$ of them it shares the anchor's line. This
+asymmetry is the mechanism behind Figure~\ref{fig:aliasdelete}: protecting the anchor
+\emph{line} rescues the needle cases and cannot rescue the multi-entity ones, because only
+in the latter is the content the question needs on a different line from the handle.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_structure.pdf}
+\caption{The structure the rule depends on, measured from the case text without a model.
+(a)~Inside one record block the anchor sits on the private-contact line and the answer inside
+the record line, five lines below it. (b)~The anchor-answer line distance per case kind: the
+multi-entity cases are never closer than two lines, the needle cases usually share the line.
+(c)~Five retention strategies scored on the only three things that can break---the answer
+span, exposure of the raw protected value, and collision of distinct entities onto one
+surface token. Reading left to right, each step of the design changes exactly one of the
+three columns. (d)~DARK's F1 against the size of the block it has to keep; numbers above the
+bars are case counts. Once the anchor block exceeds twenty lines the rule degrades, which is
+where the fallback window stops being able to carry the answer.}
+\label{fig:structure}
+\end{figure*}
+
+Panel~(c) is what separates the three design choices, because reading it left to right each
+step moves exactly one column and leaves the other two where they were. Replacing the raw
+text with aliases at a fixed selection takes raw exposure from $55.4\%$ to $0\%$ while answer
+retention stays at $57.6\%$. Widening the protected region from the line to the block takes
+answer retention from $57.6\%$ to $100\%$ while exposure stays at $0\%$. Deleting instead of
+aliasing inside that block leaves both columns untouched---the answer still survives and
+nothing is exposed---and instead takes collision from $0\%$ to $100\%$, because every
+sensitive value becomes the same string and the reader can no longer tell which record the
+question is about. That single column is the whole difference between F1 $0.4937$ and
+$0.3142$, and it is why the operation and not merely the region is load-bearing.
+
+Panel~(d) marks the boundary. Keeping the block is enough while the block is compact; past
+roughly twenty lines DARK's F1 on multi-entity cases falls from $0.370$ to $0.257$, and on
+needle cases from $0.724$ to $0.395$, because a large block spends the budget on itself and
+the answer drifts outside the fallback window. The rule does not fail gracefully here: it
+still emits a prompt within budget, and the loss appears only in the score.
+
 \subsection{Protecting the anchor line is not enough}
 A natural repair forbids dropping units that mention the queried entity. It does not close the
 gap, and where it helps it helps for the wrong reason. Overall retention moves from $47.5\%$
