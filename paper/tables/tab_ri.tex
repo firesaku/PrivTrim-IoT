@@ -1,0 +1,26 @@
+\begin{table}[t]
+\caption{Referential integrity and its three factors, measured on the same $2{,}728$ cases.
+\emph{$A_s$}: the answer span survives. \emph{$E_c$}: distinct entities do not collapse onto one
+surface token. \emph{$M_r$}: the alias in the question and the alias in the context name the
+same entity. $RI$ is the conjunction, $A_s\cdot E_c\cdot M_r$, because the task needs all three
+and each one alone is not enough. Two configurations zero exactly one factor and both lose the
+task; the row that keeps all three is the only one that also answers it. $RI$ is necessary, not
+sufficient---the uncompressed arm and \textsc{DARK} both score $100$ and still differ in F1,
+which is why the two endpoints are reported separately.}
+\label{tab:ri}
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrrr}
+\toprule
+Configuration & $A_s$ & $E_c$ & $M_r$ & $RI$ & F1 \\
+\midrule
+uncompressed                        & 100.00 & 100.00 & 100 & 100 & 0.6081 \\
+\textbf{\textsc{DARK}}              & \textbf{100.00} & \textbf{100.00} & \textbf{100} & \textbf{100} & \textbf{0.4937} \\
+\quad alias replaced by delete      & 100.00 &   0.00 & 100 &   0 & 0.3142 \\
+\quad question not rewritten        & 100.00 & 100.00 &   0 &   0 & 0.3132 \\
+anchor line kept                    &  57.55 & 100.00 & 100 &  57.55 & 0.3352 \\
+global alias                        &  57.59 & 100.00 & 100 &  57.59 & 0.3482 \\
+\bottomrule
+\end{tabular}}
+\end{table}

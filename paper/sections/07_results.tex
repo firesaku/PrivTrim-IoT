@@ -35,28 +35,32 @@ global-alias ablation at $0.3482$, which \textsc{DARK} exceeds by $+0.1456$
 $[+0.1249,+0.1668]$; those two arms differ only in which region survives, one line or the
 block that contains it, so that margin is the routing rule and nothing else.
 
-Figure~\ref{fig:frontier} puts the same numbers on both axes at once, because a compressor is
-only usable if it answers the question \emph{and} forwards nothing. The picture is a single
-sentence: \textsc{DARK} sits alone in the upper-left corner. The strongest published
-compressor reaches a comparable F1 ($0.4831$ against our $0.4937$) but at $98.1\%$ leakage,
-and every arm that leaks nothing else pays for it in the other coordinate---the nearest
-leak-free arm is $0.1456$ F1 behind, and the masking baseline, which is the only leak-free
-published option, is $0.32$ behind. Between those two clusters there is nothing: no arm at this
-scale trades one axis for the other gradually, which is why we describe the result as a change
-of operation rather than a better point on an existing curve.
+Figure~\ref{fig:frontier} puts the same numbers on both axes at once, and attaches an interval
+to each of them, because a point estimate in the corner of a plot invites the reading that the
+axes were chosen after the fact. Panel~(a) is the frontier: \textsc{DARK} sits alone in the
+upper-left, and the interval on its leakage is $[0,0.14]\%$ rather than a bare zero. Panel~(b) is
+the part that keeps the figure honest. Paired against each comparator on the same cases,
+\textsc{DARK} is ahead of every arm that leaks nothing by at least $0.14$ F1, and ahead of
+Provence and LongLLMLingua by $0.086$ and $0.071$---all intervals clearing zero. Against
+Quito-X ($+0.0107$, $[-0.0091,+0.0304]$) and CPC ($+0.0198$, $[-0.0008,+0.0397]$) the interval
+contains zero, and we report those two rows as unresolved rather than as a win. That is the
+whole claim: on F1 this experiment does not separate us from the best compressor, and on leakage
+it separates us from every one of them.
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_frontier.pdf}
-\caption{Leakage against utility for every arm evaluated on the same $2{,}728$ cases. The
-horizontal axis is the share of cases in which a protected value is recoverable from the
-prompt; the vertical axis is F1. Only arms run at this scale are plotted, so no point comes
-from a different sample. \textsc{DARK} (star) is the only arm in the upper-left region: it
-matches the strongest published compressor on F1 and is the only arm above $0.40$ that exposes
-nothing. Markers are coloured by provenance---grey for the uncompressed reference and the
-published compressors, dark red for the ablations of our own design, black for the full
-rule---so the reader can separate "another method" from "our method with one part removed".
-The middle of the plot is empty: an arm either forwards the value or loses the answer.}
+\caption{Where each arm sits, and which of the differences the experiment resolves. (a)~Every
+arm run at $2{,}728$ cases, with a $95\%$ interval on both coordinates. F1 uses a percentile
+bootstrap over cases. Leakage is a proportion and several arms sit at exactly $0\%$ or $100\%$,
+where the bootstrap is degenerate, so it uses a Wilson score interval instead; an arm that leaks
+nothing in $2{,}728$ cases then has an upper bound of $0.14\%$, which is what a measured zero
+looks like. Markers are coloured by provenance: grey for the uncompressed reference and the
+published compressors, dark red for ablations of our own design, black for the full rule.
+(b)~\textsc{DARK} minus each comparator, paired on the same cases, with a $95\%$ bootstrap
+interval; a filled marker has an interval that excludes zero and a hollow one does not.
+The two hollow rows are the load-bearing ones: against Quito-X and CPC the interval contains
+zero, so we call those differences unresolved.}
 \label{fig:frontier}
 \end{figure*}
 

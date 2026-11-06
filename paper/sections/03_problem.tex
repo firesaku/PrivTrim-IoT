@@ -69,15 +69,20 @@ from question plus compressed context. Lower is better.
 compression. It is model-free, and therefore an upper bound on what the reader can achieve;
 it is also blind to whether the surviving span is still interpretable, which is why we report
 task quality as a separate endpoint.
-\item \textbf{Referential integrity}. A case has it when the answer span survives
-\emph{and} the surviving prompt still tells the reader which record the answer belongs to. It is
-the conjunction that matters, not either half: a unit can keep the answer and still destroy the
-task by collapsing every sensitive value onto one surface string, so that the reader cannot
-tell which record is being asked about. We score the two halves separately---answer survival as
-GIC, collapse as the collision indicator---because they fail independently and one of them
-(Figure~\ref{fig:structure}c) is what separates aliasing from deletion.
+\item \textbf{Referential integrity}. A case satisfies it when three conditions hold together:
+the answer span survives ($A_s$), distinct entities do not collapse onto one surface token
+($E_c$), and the handle in the question names the same entity as the handle in the context
+($M_r$). We write $RI=A_s\cdot E_c\cdot M_r$, a conjunction rather than a score, because the
+task needs all three and none substitutes for another. Table~\ref{tab:ri} measures each factor
+and shows why the conjunction is the right form: two configurations zero exactly one factor and
+both lose the task, while the configuration that keeps all three is the only one that also
+answers it. We report the three factors separately alongside $RI$ so that a zero can be
+attributed; a product that hid which factor failed would be uninformative here, since the
+failures have different remedies.
 \item \textbf{Overshoot}. Indicator that a budget arm exceeded $B$ on a case.
 \end{itemize}
+
+\input{tables/tab_ri}
 
 \paragraph{The condition we study.}
 The setting is narrow and we state it as such: long, identifier-dense operational text; a

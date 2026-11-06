@@ -1,19 +1,21 @@
 #!/usr/bin/env python3
-"""Leakage-utility frontier over every arm evaluated at the same scale.
+"""Leakage-utility frontier with intervals, and a forest plot of the paired differences.
 
-The paper's argument is a two-dimensional one: an arm is only usable if it answers the
-question *and* forwards nothing. Tables report the two coordinates separately; this figure
-puts every arm on both axes at once, so the trade-off is visible rather than assembled by the
-reader.
+Two panels, because the two questions are different:
 
-Only arms evaluated on the full 2,728-case extension are plotted, so no point comes from a
-different sample. The numbers are recomputed from the per-case records rather than copied
-from the table.
+  (a) where does each arm sit, and how much of that position is noise? Both axes carry an
+      interval. F1 gets a percentile bootstrap over cases. Leakage is a proportion and several
+      arms sit at exactly 0% or 100%, where the bootstrap is degenerate, so it gets a Wilson
+      score interval instead; an arm that leaks nothing over 2,728 cases then has an upper bound
+      near 0.1%, which is the honest way to draw "zero".
+  (b) which differences are actually resolved? Each row is DARK minus one comparator on the same
+      cases, with a paired bootstrap interval. This separates "we are ahead" from "this
+      experiment did not distinguish us".
+
+Only arms evaluated on the full 2,728-case extension are used.
 
 Usage
-    python src/analysis_quad4/make_fig_frontier.py \
-        --percase 'results/percase/*_percase.gz' \
-        --out paper/figures/fig_frontier.pdf
+    python src/analysis_quad4/make_fig_frontier.py --out paper/figures/fig_frontier.pdf
 """
 from __future__ import annotations
 
@@ -23,6 +25,8 @@ import glob
 import gzip
 import io
 import json
+import math
+import random
 import statistics
 
 import matplotlib
@@ -31,7 +35,7 @@ import matplotlib.pyplot as plt
 
 INK, RED = "#141414", "#8E2A22"
 G_D, G_M, G_L, PALE = "#555555", "#9A9A9A", "#D4D4D2", "#EFEFEF"
-W, H = 7.10, 3.40
+W, H = 7.10, 3.20
 
 plt.rcParams.update({
     "font.family": "serif",
@@ -44,7 +48,6 @@ plt.rcParams.update({
     "axes.linewidth": 0.8, "xtick.major.width": 0.8, "ytick.major.width": 0.8,
 })
 
-# display name, group. Group decides colour and marker.
 LABELS = {
     "full": ("uncompressed", "reference"),
     "quad4": ("DARK (ours)", "ours"),
@@ -64,13 +67,8 @@ COLOUR = {"reference": G_M, "published": G_D, "sanitised": G_M,
 MARKER = {"reference": "s", "published": "o", "sanitised": "^",
           "ours-ablation": "D", "ours": "*"}
 
-
-
-# label offset per arm: (dx, dy, horizontal alignment). The right-hand cluster holds five
-# points within 0.08 F1 of each other, so those labels are stacked to the right of the marks
-# and the canvas is widened to make room.
 OFFSET = {
-    "uncompressed": (2.0, 0.008, "left"),
+    "uncompressed": (-2.6, 0.006, "right"),
     "Quito-X": (2.6, 0.010, "left"),
     "CPC": (-2.6, 0.018, "right"),
     "LongLLMLingua": (2.0, 0.008, "left"),
@@ -84,6 +82,7 @@ OFFSET = {
     "mask + LLMLingua-2": (1.6, 0.000, "left"),
 }
 
+
 def open_maybe_gz(path):
     if str(path).endswith(".gz"):
         return gzip.open(path, "rt", encoding="utf-8")
@@ -91,12 +90,6 @@ def open_maybe_gz(path):
 
 
 def collect(patterns, target_n):
-    """arm -> (n, f1, leak%), keeping only arms with exactly `target_n` distinct cases.
-
-    Several arms appear in more than one run, so a row is keyed by (arm, case_key) and the
-    first occurrence wins. Pass the canonical run for each arm family; a glob that pulls in a
-    different sample size will make that arm drop out rather than silently mix sets.
-    """
     acc = collections.defaultdict(dict)
     for pattern in patterns:
         for path in sorted(glob.glob(pattern)):
@@ -107,16 +100,24 @@ def collect(patterns, target_n):
                         continue
                     r = json.loads(line)
                     acc[r["arm"]].setdefault(r["case_key"], r)
-    out = {}
-    for arm, by_key in acc.items():
-        if len(by_key) != target_n:
-            continue
-        rows = list(by_key.values())
-        leak = sum(1 for r in rows
-                   if (r.get("ctx_leak_value") or 0) > 0 or (r.get("out_leak_value") or 0) > 0)
-        out[arm] = (len(rows), statistics.mean(r["f1"] for r in rows),
-                    100.0 * leak / len(rows))
-    return out
+    return {a: v for a, v in acc.items() if len(v) == target_n}
+
+
+def wilson(k, n, z=1.96):
+    """Wilson score interval for a proportion; well behaved at 0 and 1."""
+    if n == 0:
+        return 0.0, 0.0
+    p = k / n
+    d = 1 + z * z / n
+    c = (p + z * z / (2 * n)) / d
+    h = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d
+    return max(0.0, 100 * (c - h)), min(100.0, 100 * (c + h))
+
+
+def boot_ci(vals, reps=4000, seed=7):
+    rng = random.Random(seed)
+    bs = sorted(statistics.mean(rng.choices(vals, k=len(vals))) for _ in range(reps))
+    return bs[int(0.025 * len(bs))], bs[int(0.975 * len(bs))]
 
 
 def main(argv=None):
@@ -132,47 +133,110 @@ def main(argv=None):
     args = ap.parse_args(argv)
 
     data = collect(args.percase, args.target_n)
-    rows = [(LABELS[a][0], LABELS[a][1], v[1], v[2])
-            for a, v in data.items() if a in LABELS]
-    if not rows:
-        raise SystemExit("no arms matched; check --percase glob and --target-n")
-    rows.sort(key=lambda r: (r[3], -r[2]))
+    rows = []
+    for arm, by_key in data.items():
+        if arm not in LABELS:
+            continue
+        recs = list(by_key.values())
+        k = sum(1 for r in recs
+                if (r.get("ctx_leak_value") or 0) > 0 or (r.get("out_leak_value") or 0) > 0)
+        f1 = [r["f1"] for r in recs]
+        lo, hi = boot_ci(f1)
+        llo, lhi = wilson(k, len(recs))
+        rows.append({"arm": arm, "name": LABELS[arm][0], "group": LABELS[arm][1],
+                     "n": len(recs), "f1": statistics.mean(f1), "f1_lo": lo, "f1_hi": hi,
+                     "leak": 100.0 * k / len(recs), "leak_lo": llo, "leak_hi": lhi})
+    rows.sort(key=lambda r: (r["leak"], -r["f1"]))
 
-    fig, ax = plt.subplots(figsize=(W, H))
-    # the region an operator would accept: few leaks, high F1
-    ax.axvspan(-2, 5, color=PALE, zorder=0)
-    ax.text(1.0, 0.02, "usable region", fontsize=10, color=G_D, ha="center", va="bottom")
+    diffs = []
+    dark = data.get("quad4")
+    if dark:
+        for arm, by_key in data.items():
+            if arm == "quad4" or arm not in LABELS:
+                continue
+            keys = sorted(k for k in dark if k in by_key)
+            if not keys:
+                continue
+            d = [dark[k]["f1"] - by_key[k]["f1"] for k in keys]
+            lo, hi = boot_ci(d)
+            diffs.append({"arm": arm, "name": LABELS[arm][0], "group": LABELS[arm][1],
+                          "n": len(keys), "mean": statistics.mean(d), "lo": lo, "hi": hi})
+        diffs.sort(key=lambda d: d["mean"])
 
-    for name, group, f1, leak in rows:
-        ax.scatter(leak, f1, s=180 if group == "ours" else 70,
-                   marker=MARKER[group], facecolor=COLOUR[group],
-                   edgecolor="white", linewidth=0.8, zorder=5)
-        dx, dy, ha = OFFSET.get(name, (1.6, 0.008, "left"))
-        ax.text(leak + dx, f1 + dy, name, fontsize=10, ha=ha, va="bottom",
-                color=COLOUR[group], zorder=6,
-                fontweight="bold" if group == "ours" else "normal")
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(W, H),
+                                   gridspec_kw={"width_ratios": [1.18, 1.0], "wspace": 0.30})
 
-    ax.set_xlabel("protected values recoverable from the prompt (%)  $\\downarrow$")
-    ax.set_ylabel("F1 $\\uparrow$")
-    ax.set_xlim(-3, 133)
-    ax.set_ylim(0, 0.68)
-    ax.grid(axis="both", color=G_L, lw=0.5, zorder=0)
+    ax1.axvspan(-2, 5, color=PALE, zorder=0)
+    ax1.text(1.0, 0.02, "usable", fontsize=10, color=G_D, ha="center", va="bottom")
+    for r in rows:
+        ours = r["group"] == "ours"
+        ax1.errorbar(r["leak"], r["f1"],
+                     xerr=[[max(0.0, r["leak"] - r["leak_lo"])],
+                           [max(0.0, r["leak_hi"] - r["leak"])]],
+                     yerr=[[max(0.0, r["f1"] - r["f1_lo"])],
+                           [max(0.0, r["f1_hi"] - r["f1"])]],
+                     fmt="none", ecolor=COLOUR[r["group"]], elinewidth=0.8,
+                     capsize=1.8, zorder=4)
+        ax1.scatter(r["leak"], r["f1"], s=190 if ours else 70, marker=MARKER[r["group"]],
+                    facecolor=COLOUR[r["group"]], edgecolor="white", lw=0.8, zorder=5)
+        dx, dy, ha = OFFSET.get(r["name"], (1.6, 0.008, "left"))
+        ax1.text(r["leak"] + dx, r["f1"] + dy, r["name"], fontsize=10, ha=ha, va="bottom",
+                 color=COLOUR[r["group"]], zorder=6,
+                 fontweight="bold" if ours else "normal")
+    ax1.set_xlabel("protected values recoverable (%)  DOWN")
+    ax1.set_ylabel("F1  UP")
+    ax1.set_xlim(-3, 133)
+    ax1.set_ylim(0, 0.68)
+    ax1.grid(color=G_L, lw=0.5, zorder=0)
     for s in ("top", "right"):
-        ax.spines[s].set_visible(False)
-    fig.tight_layout()
+        ax1.spines[s].set_visible(False)
+    ax1.set_title("(a) the frontier, 95% intervals", fontsize=10, loc="left",
+                  fontweight="bold")
+
+    ax2.axvline(0, color=G_D, lw=0.9, ls="--", zorder=1)
+    ys = list(range(len(diffs)))
+    for y, d in zip(ys, diffs):
+        col = COLOUR[d["group"]]
+        sig = (d["lo"] > 0) or (d["hi"] < 0)
+        ax2.plot([d["lo"], d["hi"]], [y, y], color=col, lw=1.2, zorder=4)
+        ax2.scatter(d["mean"], y, s=70 if sig else 46, marker="o",
+                    facecolor=col if sig else "white", edgecolor=col, lw=1.0, zorder=5)
+        ax2.text(-0.58, y, "%+.3f" % d["mean"], fontsize=10, va="center", ha="left",
+                 color=col if sig else G_D,
+                 fontweight="bold" if sig else "normal")
+    ax2.set_yticks(ys)
+    ax2.set_yticklabels([d["name"] for d in diffs])
+    ax2.yaxis.tick_right()
+    ax2.set_xlabel("F1, DARK minus the arm")
+    ax2.set_xlim(-0.62, 0.95)
+    ax2.grid(axis="x", color=G_L, lw=0.5, zorder=0)
+    for s in ("top", "left"):
+        ax2.spines[s].set_visible(False)
+    ax2.tick_params(axis="y", length=0, pad=3)
+    ax2.set_title("(b) what is resolved", fontsize=10, loc="left", fontweight="bold")
+
+
+    fig.subplots_adjust(left=0.075, right=0.855, top=0.88, bottom=0.16)
     fig.savefig(args.out, bbox_inches="tight", pad_inches=0.02)
     print("wrote", args.out)
 
     if args.json_out:
         with io.open(args.json_out, "w", encoding="utf-8", newline="\n") as fh:
-            json.dump([{"arm": k, "n": v[0], "f1": v[1], "leak": v[2]}
-                       for k, v in sorted(data.items())], fh, indent=1)
+            json.dump({"arms": rows, "paired_vs_dark": diffs}, fh, indent=1)
         print("wrote", args.json_out)
 
     print()
-    print("%-22s %6s %8s %8s" % ("arm", "n", "F1", "leak%"))
-    for name, group, f1, leak in rows:
-        print("%-22s %6d %8.4f %8.1f   [%s]" % (name, args.target_n, f1, leak, group))
+    print("%-22s %6s %8s %16s %9s %16s" % ("arm", "n", "F1", "F1 95%", "leak%", "leak 95%"))
+    for r in rows:
+        print("%-22s %6d %8.4f  [%.3f,%.3f] %8.2f  [%.2f,%.2f]"
+              % (r["name"], r["n"], r["f1"], r["f1_lo"], r["f1_hi"], r["leak"],
+                 r["leak_lo"], r["leak_hi"]))
+    print()
+    print("paired, DARK minus arm:")
+    for d in diffs:
+        sig = "sig" if (d["lo"] > 0 or d["hi"] < 0) else "n.s."
+        print("  %-22s %+.4f  [%+.4f,%+.4f]  %s"
+              % (d["name"], d["mean"], d["lo"], d["hi"], sig))
     return 0
 
 
