@@ -213,6 +213,27 @@ caveats: [Data reference](docs/data.md).
 
 <a id="reproduction"></a>
 
+### The 2026 lexical-rule baseline
+
+`results/ext_lexcomp.jsonl.gz` is the compressed context for all 2,728 extension cases,
+produced by **Yukun Wen** on 2026-11-04 with `src/longctx/run_lexcomp.py` (CPU only, the
+`maximum` preset of Chokshi, arXiv:2609.13154). It is stored gzipped because the raw JSONL
+is 50.6 MB; `gunzip` restores it byte for byte
+(SHA256 `5b24bdea111c7807fcbe813ab6a0e0d91beab599d04a78ae88b873c25df7143b`, 2,728 lines).
+
+```bash
+gunzip -k results/ext_lexcomp.jsonl.gz
+export PRIVTRIM_EXT_ARMS=$PWD/results/ext_lexcomp.jsonl
+sbatch slurm/eval_lexcomp.slurm          # scores lexcomp + the full/quad4 controls
+python src/analyze_lexcomp.py \
+    --results 'out/lexcomp/shard*_percase.jsonl' \
+    --baseline 'results/percase/quadfull_s*_percase.gz'
+```
+
+Expected on 2,728 cases: `full` 0.6078, `quad4` 0.4937, `lexcomp` 0.3696 at 100% leak
+and 5,817 context tokens. If the two controls do not reproduce, the batch is not comparable
+and should be discarded rather than reported.
+
 ## Reproducing the paper
 
 Three levels, independent of each other:
