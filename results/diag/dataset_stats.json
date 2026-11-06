@@ -1,0 +1,90 @@
+{
+ "sources": {
+  "pec_home": {
+   "cases": 426,
+   "median_words": 948.0,
+   "median_tokens": 2151.0,
+   "records_per_case": 5.01,
+   "median_block_chars": 1444.0,
+   "canaries_per_case": 15.03,
+   "mean_entities_multi": 5.01,
+   "multi_cases": 300,
+   "needle_cases": 126,
+   "same_block_pct": 100.0
+  },
+  "privacylens": {
+   "cases": 600,
+   "median_words": 2596.0,
+   "median_tokens": 5024.0,
+   "records_per_case": 4.5,
+   "median_block_chars": 4994.0,
+   "canaries_per_case": 13.5,
+   "mean_entities_multi": 5,
+   "multi_cases": 300,
+   "needle_cases": 300,
+   "same_block_pct": 100.0
+  },
+  "simuhome": {
+   "cases": 312,
+   "median_words": 1324.0,
+   "median_tokens": 6090.0,
+   "records_per_case": 3.03,
+   "median_block_chars": 6138.0,
+   "canaries_per_case": 9.09,
+   "mean_entities_multi": 3,
+   "multi_cases": 300,
+   "needle_cases": 12,
+   "same_block_pct": 100.0
+  },
+  "smartbench_tdcs": {
+   "cases": 490,
+   "median_words": 2913.0,
+   "median_tokens": 18239.0,
+   "records_per_case": 4.61,
+   "median_block_chars": 8138.0,
+   "canaries_per_case": 13.84,
+   "mean_entities_multi": 5,
+   "multi_cases": 300,
+   "needle_cases": 190,
+   "same_block_pct": 100.0
+  },
+  "toolmem": {
+   "cases": 300,
+   "median_words": 4012.0,
+   "median_tokens": 7061.0,
+   "records_per_case": 4,
+   "median_block_chars": 6670.0,
+   "canaries_per_case": 12,
+   "mean_entities_multi": null,
+   "multi_cases": 0,
+   "needle_cases": 300,
+   "same_block_pct": 100.0
+  },
+  "toolmem_raw": {
+   "cases": 600,
+   "median_words": 4791.0,
+   "median_tokens": 10808.0,
+   "records_per_case": 4,
+   "median_block_chars": 8894.0,
+   "canaries_per_case": 12,
+   "mean_entities_multi": 5,
+   "multi_cases": 300,
+   "needle_cases": 300,
+   "same_block_pct": 100.0
+  }
+ },
+ "totals": {
+  "cases": 2728,
+  "median_tokens": 7005.0,
+  "multi_cases": 1500,
+  "needle_cases": 1228
+ },
+ "parser_vs_canonical": {
+  "agree": 2726,
+  "disagree": 2,
+  "examples": [
+   "longctx-toolmem-needle-0177",
+   "longctx-toolmem-needle-0253"
+  ]
+ }
+}

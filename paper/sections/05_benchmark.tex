@@ -1,28 +1,82 @@
-\section{Benchmark}
+\section{Benchmark Construction and Validation}
 \label{sec:benchmark}
 
-\paragraph{Construction.}
+\subsection{Sources and excerpts}
+
 We build the benchmark from six public IoT and smart-home corpora that appear in the
-retrieval and long-context literature. For each source we assemble excerpts in which
-records for several entities of the same type are interleaved, and we inject synthetic
-protected values (account identifiers, contact addresses, phone numbers) into the records
-that already exist, rather than into separate carriers. Reference answers are derived
-deterministically from the injected structure, so no answer is authored by hand.
+retrieval and long-context literature, all redistributed for research use: \arm{pec\_home},
+\arm{privacylens}, \arm{simuhome}, \arm{smartbench\_tdcs}, \arm{toolmem} and
+\arm{toolmem\_raw}. For each source we assemble excerpts in which records for several
+entities of the same type are interleaved, and we inject synthetic protected values into the
+records that already exist, rather than into separate carrier documents. Table~\ref{tab:dataset}
+reports what each source contributes: the $2{,}728$ cases run from a median of $2{,}151$
+tokens (\arm{pec\_home}) to $18{,}239$ (\arm{smartbench\_tdcs}), with a median of $4.27$
+record blocks per case.
+
+The excerpts differ in a way that matters for what the rule can be expected to do.
+\arm{simuhome} has the fewest blocks per case ($3.03$) and \arm{pec\_home} the smallest
+blocks ($1{,}444$ characters at the median), while \arm{toolmem\_raw} carries the largest
+blocks ($8{,}894$) against a comparable token budget. Section~\ref{sec:analysis} shows that
+block size, not token count, is what bounds the rule.
+
+\input{tables/tab_dataset}
+
+\subsection{Protected values}
 
 The injected values are canaries, not real personal data: public corpora cannot carry real
-PII, and using a canary makes leakage measurable exactly. The consequence is that our
-privacy claim concerns the recoverability of \emph{these} values, not of arbitrary
-personal information that may co-occur in real logs.
+PII, and a canary makes leakage measurable exactly. Each case carries $12.8$ of them on
+average, drawn in equal thirds from three families---account handles, contact addresses and
+phone numbers---for $34{,}917$ values in total. Every value has a \emph{marker} (the part
+that identifies it) and a \emph{fragment length}: account and address markers are twelve hex
+characters with fragment length six, phone markers are eleven digits with fragment length
+eight. The two-part design is what lets Section~\ref{sec:problem} count whole-value and
+fragment exposure separately instead of collapsing them into one bit.
 
-\paragraph{Question form.}
-Each case poses an entity-resolving question: the question names an account and asks for an
-attribute recorded for it (which device is associated, which persona identifier is stored,
-and so on). Two families of excerpts are included. In \emph{multi-entity} excerpts the same
-question template applies to six accounts and the target account is distinguished only by
-its identifier. In \emph{needle} excerpts the question names a specific record identifier
-and asks for a field value inside it.
+The values come from a pool: there are $1{,}781$ distinct values, so the same account handle
+recurs in about twenty cases. This is deliberate and it is uncomfortable for a design that
+pseudonymises globally---a single cloud provider seeing many prompts could link occurrences
+of the same handle---so \textsc{DARK} assigns aliases per prompt rather than maintaining a
+global map. Section~\ref{sec:analysis} reports the consequence for cross-prompt linkage as a
+threat-model boundary rather than a guarantee.
 
-\paragraph{Sizes.}
+The consequence of using canaries is that our privacy claim concerns the recoverability of
+\emph{these} values, not of arbitrary personal information that may co-occur in real logs.
+We state this here and again where the claim is made.
+
+\subsection{Questions and answers}
+
+Each case poses an entity-resolving question. The $2{,}728$ cases are generated from $74$
+distinct templates; the spread comes from the attribute being asked about, not from
+paraphrase. Two families of excerpts are included. In \emph{multi-entity} excerpts ($1{,}500$
+cases) the same question template applies to six accounts and the target account is
+distinguished only by its identifier. In \emph{needle} excerpts ($1{,}228$ cases) the
+question names a specific record identifier, or an entry index, and asks for a field value
+inside it; the anchor takes six distinct surface forms across the sources, which we list and
+verify in the appendix.
+
+Reference answers are derived deterministically from the injected structure, so no answer is
+authored by hand, and the derivation leaves no ambiguity to score: in all $2{,}728$ cases the
+answer string occurs inside exactly one record block. This is checked rather than assumed, and
+it is the reason an exact-match reading of the score is meaningful here.
+
+\subsection{The layout condition}
+
+The benchmark is constructed so that the record which answers the question is the record that
+mentions the queried entity. Table~\ref{tab:dataset} reports this as \emph{co-located}, and it
+is $100\%$ in every source. We want to be explicit that this is a \emph{design condition of the
+construction}, not a discovery about logs in the wild: it is what an operational log looks
+like when records are grouped by the entity they describe, and it is the condition under which
+the routing rule is defined. Section~\ref{sec:analysis} measures what happens as the condition
+weakens---larger blocks, answers outside the fallback window, and the two-hop variant in which
+the answer sits six sentences from the anchor.
+
+Within that condition the two case families differ structurally, and the difference is the
+mechanism: on multi-entity cases the anchor and the answer are always in the same block and
+never on the same line, while on needle cases they usually share the line. That asymmetry is
+measured directly in Figure~\ref{fig:structure}.
+
+\subsection{Sizes, splits and key hygiene}
+
 We report three sets. The \emph{main} set contains $112$ cases, $20$ from each of five
 sources and $12$ from a sixth, and is used for the main table, the budget curve, the
 cross-model and the paraphrasing experiments. The \emph{extension} set contains $2{,}728$
@@ -37,7 +91,8 @@ reported here (i) resolves results within a single set, and (ii) verifies the jo
 comparing the uncompressed-context arm against a reference value computed from the same set.
 The check is reported alongside each table.
 
-\paragraph{Public-benchmark variants.}
+\subsection{Public-benchmark variants}
+
 To test the rule outside our own construction we derive three variants from LongBench
 passages, $300$ cases each, with the same injected canaries. \emph{Topical} leaves the
 original questions, which name no entity. \emph{Single-hop} replaces the question with one

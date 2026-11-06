@@ -1,0 +1,29 @@
+\begin{table*}[t]
+\caption{What the extension benchmark contains, per source. Every column is recomputed from the
+case annotations and the per-case records, not inferred from the case counts. \emph{Tokens} is
+the median context length under the reader's tokenizer, taken from the uncompressed arm;
+\emph{records} is the mean number of entry blocks per case; \emph{block} is the median
+character length of a block; \emph{values} is the mean number of protected values injected per
+case. \emph{Co-located} is the share of cases whose annotation places the reference answer in
+the block that mentions the queried entity: it is $100\%$ in every source, because the
+constructor builds the benchmark that way. That is a design condition, not a finding about
+logs in the wild---Section~\ref{sec:benchmark} states why it holds and
+Section~\ref{sec:analysis} measures what breaks when it does not.}
+\label{tab:dataset}
+\centering\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{lrrrrrr}
+\toprule
+Source & Cases & Tokens & Records/case & Block (chars) & Values/case & Co-located \\
+\midrule
+\arm{pec\_home}        & 426 & 2{,}151 & 5.01 & 1{,}444 & 15.0 & 100\% \\
+\arm{privacylens}      & 600 & 5{,}024 & 4.50 & 4{,}994 & 13.5 & 100\% \\
+\arm{simuhome}         & 312 & 6{,}090 & 3.03 & 6{,}138 &  9.1 & 100\% \\
+\arm{smartbench\_tdcs} & 490 & 18{,}239 & 4.61 & 8{,}138 & 13.8 & 100\% \\
+\arm{toolmem}          & 300 & 7{,}061 & 4.00 & 6{,}670 & 12.0 & 100\% \\
+\arm{toolmem\_raw}     & 600 & 10{,}808 & 4.00 & 8{,}894 & 12.0 & 100\% \\
+\midrule
+overall                & 2{,}728 & 7{,}005 & 4.27 & --- & 12.8 & 100\% \\
+\bottomrule
+\end{tabular}
+\end{table*}
