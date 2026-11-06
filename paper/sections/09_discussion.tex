@@ -1,6 +1,8 @@
 \section{Discussion}
 \label{sec:discussion}
 
+\input{tables/tab_scope}
+
 \paragraph{What the study establishes.}
 For excerpts of IoT-style operational records, queried by a question that names an entity
 whose value must not reach the model, the record that answers the question and the record
@@ -18,6 +20,23 @@ the anchor line already suffices. It depends on the refill order when the answer
 the fallback window, the one place where the ordering rather than the routing decides the
 outcome. We do not claim that it improves ordinary compression on ordinary prompts, and the
 topical variant shows that it does not.
+
+\paragraph{The adversary we assume.}
+The adversary is the model provider: it receives the prompt, may retain it, and may hold many
+prompts from the same deployment. It does not hold the alias map, does not observe the raw log,
+and does not observe the local construction, which runs inside the operator's boundary. Under
+that model the quantity we bound is the recoverability of a protected value from the prompt
+text, and the routing rule reduces it to zero on this benchmark.
+
+Three properties of the construction belong in this paragraph rather than in the evidence,
+because they are choices and not measurements. Aliases are assigned per prompt, not from a
+global table: the value pool in Section~\ref{sec:benchmark} is small enough that a handle
+recurs in roughly twenty cases, so a global pseudonym would let one provider link those cases
+to each other. Per-prompt assignment removes that link at the cost of making the map
+prompt-local. The assignment is keyed, which removes the rank attack that an unkeyed
+assignment admits, but a keyed assignment is still an assignment: whoever holds the key
+recovers every value. And nothing here prevents the reader from \emph{inferring} a protected
+attribute that the context still implies, because answering such questions is the task.
 
 \paragraph{What the privacy claim covers.}
 Leakage is measured as recoverability of the protected values from the exact prompt text,
@@ -40,6 +59,12 @@ ordering. In the two-hop variant the answer lies at a fixed distance of six sent
 the anchor, so a window of that width would protect it explicitly and remove the dependence.
 We have not run that configuration, and the present results should be read as depending on
 the fallback width.
+
+Table~\ref{tab:scope} collects the conditions under which the rule weakens. Four of the eight
+rows are measured; we list the other four because they bound the claim more than the measured
+ones do. The two that a reader should weigh first are the cross-prompt one, which our threat
+model assumes away rather than defeats, and the block-size one, where the rule does not fail
+gracefully: it still returns a prompt inside budget and the loss appears only in the score.
 
 \paragraph{Cost and threats.}
 Prompt construction is lexical and model-free: one pass over the units to label them, one

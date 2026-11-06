@@ -67,10 +67,18 @@ suggested. On the $1{,}500$ multi-entity cases the anchor and the answer always 
 same block---$1{,}500$ of $1{,}500$---and never on the same line: the anchor sits on the
 private-contact lines and the answer inside the record line beneath it, two or five lines
 away in $87\%$ of cases. On the $1{,}228$ needle cases the answer is again inside the
-anchor's block in $99.8\%$ of cases, but in $56\%$ of them it shares the anchor's line. This
-asymmetry is the mechanism behind Figure~\ref{fig:aliasdelete}: protecting the anchor
-\emph{line} rescues the needle cases and cannot rescue the multi-entity ones, because only
-in the latter is the content the question needs on a different line from the handle.
+anchor's block in every case by annotation---an independent text-based re-derivation recovers
+$99.8\%$, the two exceptions being cases where the answer string also occurs in an earlier
+block---but in $56\%$ of them it shares the anchor's line.
+
+This asymmetry decides which of the two design choices carries the gain, and the two are not
+interchangeable. Widening the protected region from the anchor \emph{line} to the whole
+\emph{block} lifts F1 on both families---$0.4802$ to $0.6473$ on needle, $0.2165$ to $0.3487$
+on multi-entity---because in both the answer lives in the block and not always on the line.
+Switching the operation from deletion to aliasing, by contrast, pays only where the anchor is
+itself the protected value: $0.0000$ to $0.3487$ on multi-entity, and $0.6416$ to $0.6473$ on
+needle, where the record identifier that the question names is not a canary and survives
+either way.
 
 \begin{figure*}[t]
 \centering
@@ -117,8 +125,8 @@ answer are different units in $100\%$ of multi-entity cases and in $65.4\%$ of n
 Preserving the identifier preserves the pointer, not the content.
 
 The repair becomes effective one level up. The excerpt is laid out in record blocks, and the
-block containing the anchor mention also contains the answer in $100\%$ of multi-entity cases
-and $99.7\%$ of needle cases. Constraining the block instead of the line restores answer
+block containing the anchor mention also contains the answer in every case of the
+benchmark, as its annotations record. Constraining the block instead of the line restores answer
 retention to $100\%$ on both families without consulting the answer key. This is the
 measurement that motivates the routing rule: the relevant region is a block, not a unit.
 

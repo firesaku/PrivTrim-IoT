@@ -49,8 +49,7 @@ length.
 The observation that makes this possible is a layout property. Records in these excerpts are
 grouped into blocks that hold an entity's identifying
 line together with the attributes recorded for it, so the queried entity and the answer to
-the question about it sit in the \emph{same block} in $100\%$ of multi-entity cases and
-$99.7\%$ of needle cases. A pipeline that preserves that block, and replaces the protected
+the question about it sit in the \emph{same block} in every case, by construction. A pipeline that preserves that block, and replaces the protected
 values inside it with stable aliases, keeps a referential handle while never exposing the
 value. Finding the block requires no answer key: the question already names the entity, and
 the block is whatever contains that mention.

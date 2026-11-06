@@ -78,9 +78,9 @@ The signal takes two forms in our excerpts.
 
 \paragraph{Record blocks.}
 When the excerpt is segmented into blocks headed by a record marker, the whole block that
-contains the anchor mention is relevant. This is the common case for log-shaped benchmarks:
-$100\%$ of multi-entity cases and $99.7\%$ of needle cases place the reference answer inside
-the same block as the anchor mention. A rule defined on blocks therefore keeps the answer
+contains the anchor mention is relevant. This is the common case for log-shaped benchmarks: the
+benchmark's own annotation places the reference answer inside the same block as the anchor
+mention in every one of its cases (Table~\ref{tab:dataset}). A rule defined on blocks therefore keeps the answer
 without inspecting it.
 
 \paragraph{Sentence windows.}

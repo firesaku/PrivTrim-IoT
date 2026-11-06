@@ -1,0 +1,25 @@
+\begin{table}[t]
+\caption{Where the rule stops and what is not measured. Each row is a condition under which the
+rule is expected to weaken or to be the wrong tool; \emph{measured} gives the endpoint we have
+for it in this paper, and a dash means we did not run that configuration. We list the
+unmeasured rows on purpose: they bound what the evidence supports more than the measured ones
+do.}
+\label{tab:scope}
+\centering\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lll}
+\toprule
+Condition & Current behaviour & Measured \\
+\midrule
+Question names no entity (topical)   & rule not needed            & $+0.0013$ (n.s.) \\
+Anchor is not itself protected       & operation barely matters  & $0.6416$ vs $0.6473$ \\
+Answer outside the fallback window   & refill order decides       & $0.6733$ two-hop \\
+Anchor block larger than 20 lines    & block spends the budget    & $0.257$ multi \\
+Anchor and answer in different blocks& routing keeps wrong block  & --- \\
+Two entities share one identifier    & anchor is ambiguous        & --- \\
+Alias map disclosed to the reader    & full recovery by design    & --- \\
+Many prompts seen by one provider    & cross-prompt linkage       & --- \\
+\bottomrule
+\end{tabular}}
+\end{table}
