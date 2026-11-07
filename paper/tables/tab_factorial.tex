@@ -1,0 +1,23 @@
+\begin{table}[t]
+\caption{The two design choices, crossed. Granularity (which region survives) and operation
+(what happens inside it) are varied independently on the same $2{,}728$ cases. Both move the
+score on their own and they are close to additive: the alias effect is $+0.157$ and $+0.179$ at
+the two granularities, the block effect $+0.079$ and $+0.057$ under the two operations. The
+interaction is $+0.0217$ $[+0.0106,+0.0325]$, small but not zero: the two choices reinforce each
+other slightly rather than trading off. The operation dominates---it is worth two to three times
+what the granularity is worth---which is the paper's central claim stated as a number.}
+\label{tab:factorial}
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrr}
+\toprule
+Granularity & alias (ours) & delete & alias effect \\
+\midrule
+window, anchor $\pm 2$ lines & 0.4144 & 0.2570 & $+0.1574$ $[+0.1434,+0.1714]$ \\
+block, whole record          & 0.4934 & 0.3142 & $+0.1792$ $[+0.1640,+0.1944]$ \\
+\midrule
+block effect                 & $+0.0790$ $[+0.0638,+0.0937]$ & $+0.0572$ $[+0.0457,+0.0685]$ & $+0.0217$ $[+0.0106,+0.0325]$ \\
+\bottomrule
+\end{tabular}}
+\end{table}

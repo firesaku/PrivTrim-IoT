@@ -611,6 +611,10 @@ def build_arm_texts(case, nt, budgets, arms, order_fn, seed=20261015):
                 t = build_quad4(False, B, order_fn)
             elif arm == 'quad4_del':
                 t = build_quad4(True, B, order_fn)
+            elif arm == 'quad4_win':
+                t = build_quad4(False, B, order_fn, window=2)
+            elif arm == 'quad4_win_del':
+                t = build_quad4(True, B, order_fn, window=2)
             else:
                 continue
             texts[(arm, ratio)] = t

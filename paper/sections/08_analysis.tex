@@ -379,3 +379,27 @@ these four arms leakage is $0.00$, $0.00$, $0.00$ and $55.39\%$ and does not var
 so those rates belong in the legend rather than in a flat heatmap.}
 \label{fig:landscape}
 \end{figure*}
+
+\subsection{The two choices, crossed}
+\label{sec:factorial}
+
+The sections above vary one choice at a time. Table~\ref{tab:factorial} crosses them: the region
+that survives (a window around the anchor, or the whole record) against the operation applied
+inside it (aliasing, or deletion), on all $2{,}728$ cases.
+
+Both matter and neither substitutes for the other. Aliasing is worth $+0.1574$
+$[+0.1434,+0.1714]$ inside a window and $+0.1792$ $[+0.1640,+0.1944]$ inside a block; keeping the
+whole block is worth $+0.0790$ $[+0.0638,+0.0937]$ when the operation is aliasing and $+0.0572$
+$[+0.0457,+0.0685]$ when it is deletion. Every one of those intervals clears zero.
+
+The interaction is $+0.0217$ $[+0.0106,+0.0325]$: small, positive, and not zero. Read plainly, a
+wider surviving region makes aliasing slightly more valuable and vice versa, which is what one
+would expect if both are acting on the same referential relation rather than on unrelated
+quantities. It is not large enough to argue that the two must be adopted together---each pays on
+its own---but it is large enough that we do not claim strict additivity either.
+
+The magnitudes are the part we would underline. The operation is worth two to three times what the
+granularity is worth. A reader who takes one number from this paper should take that ratio: getting
+the region right helps, and getting the operation right is what makes the task possible.
+
+\input{tables/tab_factorial}
