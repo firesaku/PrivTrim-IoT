@@ -1,0 +1,32 @@
+\begin{table*}[t]
+\caption{The same arms as Table~\ref{tab:external}, split by whether the question names a
+protected value. A \emph{multi-entity} question names an account that is itself a protected value;
+a \emph{needle} question names a record identifier that is not. $\Delta$ is the paired difference
+\textsc{DARK} minus that row's method on the same cases, with a $95\%$ percentile bootstrap interval
+over $4{,}000$ resamples (seed 7); positive means \textsc{DARK} is ahead, and a blank cell is the
+\textsc{DARK} row itself. Leakage is recomputed inside each half. The aggregate in
+Table~\ref{tab:external} averages these two columns, and they move in opposite directions.}
+\label{tab:split}
+\centering\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrrrr}
+\toprule
+ & \multicolumn{2}{c}{multi-entity ($n=1{,}500$)} & \multicolumn{2}{c}{needle ($n=1{,}228$)} & \multicolumn{2}{c}{$\Delta$ vs \textsc{DARK}} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+Method & F1 $\uparrow$ & leak $\downarrow$ & F1 $\uparrow$ & leak $\downarrow$ & multi & needle \\
+\midrule
+\arm{full} & 0.5485 & 100.0\% & 0.6810 & 100.0\% & $\mathbf{-0.221}$ {\scriptsize$[-0.248,-0.195]$} & $+0.016$ {\scriptsize$[-0.003,+0.035]$} \\
+\textbf{\textsc{DARK}} & 0.3273 & 0.0\% & 0.6970 & 0.0\% & --- & --- \\
+Quito-X & 0.4587 & 100.0\% & 0.5129 & 95.7\% & $\mathbf{-0.131}$ {\scriptsize$[-0.159,-0.105]$} & $\mathbf{+0.184}$ {\scriptsize$[+0.156,+0.212]$} \\
+CPC & 0.3893 & 100.0\% & 0.5775 & 83.6\% & $\mathbf{-0.062}$ {\scriptsize$[-0.093,-0.031]$} & $\mathbf{+0.120}$ {\scriptsize$[+0.094,+0.145]$} \\
+LongLLMLingua & 0.4083 & 100.0\% & 0.4409 & 100.0\% & $\mathbf{-0.081}$ {\scriptsize$[-0.110,-0.053]$} & $\mathbf{+0.256}$ {\scriptsize$[+0.229,+0.284]$} \\
+Provence & 0.3503 & 89.5\% & 0.4783 & 92.4\% & $-0.023$ {\scriptsize$[-0.054,+0.007]$} & $\mathbf{+0.219}$ {\scriptsize$[+0.192,+0.247]$} \\
+LexComp \arm{\_preprint} & 0.4044 & 100.0\% & 0.3270 & 100.0\% & $\mathbf{-0.077}$ {\scriptsize$[-0.107,-0.048]$} & $\mathbf{+0.370}$ {\scriptsize$[+0.341,+0.401]$} \\
+\arm{quad4\_del} & 0.0000 & 0.0\% & 0.6980 & 0.0\% & $\mathbf{+0.327}$ {\scriptsize$[+0.305,+0.351]$} & $-0.001$ {\scriptsize$[-0.011,+0.008]$} \\
+LLMLingua-2 & 0.2552 & 100.0\% & 0.2772 & 100.0\% & $\mathbf{+0.072}$ {\scriptsize$[+0.041,+0.101]$} & $\mathbf{+0.420}$ {\scriptsize$[+0.391,+0.447]$} \\
+\arm{mask\_llmlingua2} & 0.0000 & 0.0\% & 0.3803 & 0.0\% & $\mathbf{+0.327}$ {\scriptsize$[+0.305,+0.351]$} & $\mathbf{+0.317}$ {\scriptsize$[+0.289,+0.344]$} \\
+\arm{alias\_budget} & 0.0907 & 0.0\% & 0.2155 & 0.0\% & $\mathbf{+0.237}$ {\scriptsize$[+0.210,+0.263]$} & $\mathbf{+0.482}$ {\scriptsize$[+0.453,+0.511]$} \\
+\arm{budget\_cluster} & 0.0007 & 0.2\% & 0.2171 & 0.9\% & $\mathbf{+0.327}$ {\scriptsize$[+0.304,+0.350]$} & $\mathbf{+0.480}$ {\scriptsize$[+0.452,+0.510]$} \\
+\bottomrule
+\end{tabular}
+\end{table*}

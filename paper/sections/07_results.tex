@@ -75,6 +75,9 @@ it separates us from every one of them.
 \subsection{Which half the aggregate hides}
 \label{sec:regimes}
 
+\input{tables/tab_split}
+
+
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig_regimes.pdf}
@@ -97,13 +100,16 @@ sensitive account, the reader has to resolve an invented token before it can ans
 resolution costs F1. When the question names a record identifier that carries no protected value,
 there is nothing to alias and the cost does not arise.
 
-Figure~\ref{fig:regimes} separates the two. On the $1{,}500$ multi-entity cases (panel a), every
-compressor that beats us on F1 leaks on $84$--$100\%$ of those same cases: Quito-X gains $+0.1314$
-over us and forwards a protected value in all $1{,}500$. Among the arms that leak nothing we are
+Table~\ref{tab:split} and Figure~\ref{fig:regimes} separate the two. On the $1{,}500$ multi-entity
+cases, every compressor that beats us on F1 leaks on $84$--$100\%$ of those same cases: Quito-X
+gains $+0.1314$ over us and forwards a protected value in all $1{,}500$, and the uncompressed
+prompt gains $+0.2212$. Among the arms that leak nothing we are
 the only one that answers at all, at $0.3273$ against $0.0007$ for the next leak-free arm, a gap of
-$+0.3267$ $[+0.3040,+0.3500]$. On the $1{,}228$ needle cases (panel b) the order reverses: we lead
-the two strongest compressors by $+0.1842$ $[+0.1558,+0.2124]$ and $+0.1196$ $[+0.0943,+0.1451]$,
-and match the uncompressed prompt ($+0.0160$ $[-0.0032,+0.0348]$) at half its length.
+$+0.3267$ $[+0.3040,+0.3500]$. On the $1{,}228$ needle cases the order reverses, and it reverses
+against every arm in the table: we lead the two strongest compressors by $+0.1842$
+$[+0.1558,+0.2124]$ and $+0.1196$ $[+0.0943,+0.1451]$, the 2026 rule-based compressor by $+0.3699$,
+LLMLingua-2 by $+0.4198$, and we match the uncompressed prompt ($+0.0160$ $[-0.0032,+0.0348]$) at
+half its length.
 
 One mechanism produces both halves. The F1 cost is what it takes to make the referent unreadable,
 so it is paid exactly where the referent is the secret and nowhere else. The aggregate tie is
@@ -131,11 +137,8 @@ zero, so we call those differences unresolved.}
 
 The table also carries a 2026 rule-based compressor, run on CPU at its most aggressive preset~\cite{chokshi-lexical-2026}. It realises $5{,}817$ context tokens---more than we spend---scores $0.3696$, and leaks in $100\%$ of cases. Section~\ref{sec:analysis} isolates why: its rules delete the braces and rename the keys that make a record a record.
 
-The aggregate also hides a split. On needle cases, where the question names a record
-identifier rather than an account, \textsc{DARK} is statistically indistinguishable from not
-compressing at all ($+0.0160$, interval $[-0.0026,+0.0352]$) while sending half the tokens.
-The whole deficit sits on multi-entity cases ($-0.2212$), where six accounts share one
-question template and the question is the only thing that identifies the target.
+The aggregate also hides a split, which Section~\ref{sec:regimes} and
+Table~\ref{tab:split} take up: the two halves move in opposite directions.
 
 The reading we take from this table is narrow. A query-aware compressor reaches the same F1
 as our rule at the same budget, but only by forwarding the value the question names. When
