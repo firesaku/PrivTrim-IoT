@@ -101,9 +101,38 @@ Needs a 7B reader on one GPU; every case file it reads ships in `data/`. See
 | Prompt construction, budget accounting, zero leakage | ✅ re-executed on the shipped benchmarks |
 | Predicates, alias map, quadrant routing | ✅ unit-tested |
 | `e2e_quad.py` is byte-identical to what `make_e2e_quad.py` regenerates | ✅ `python src/analysis_quad4/make_e2e_quad.py`, compare hashes |
-| The manuscript builds from source | ✅ `pdflatex` ×2 + `bibtex`, 18 pages, no undefined references |
+| The manuscript builds from source | ✅ `pdflatex` ×2 + `bibtex`, 25 pages, no undefined references |
 | The F1 values themselves | 🔌 requires a GPU run; all inputs are present |
 | The V1–V3 mechanism results | 🔌 re-running needs the same GPU setup; the archives are in `results/` |
+
+## Runs archived after the first release
+
+Four result families were produced after the initial archive and are now committed, because the
+manuscript quotes numbers that cannot be re-derived without them. All are compressed per-case
+records, the same format as the older families.
+
+| Family in `results/percase/` | Job | What it backs |
+| --- | --- | --- |
+| `window2_s*_percase.gz` | 1557997 | Table VIII and Fig. 14 — the 2×2 over granularity × operation |
+| `granite_s*_percase.gz` | 1557517 | Table VI — the second reader |
+| `lexcomp_eval_s*_percase.gz` | LexComp eval batch | the 2026 rule-based compressor comparison |
+| `mprobe_*_percase.gz` | 1557495 | the reader-selection probe quoted in Section IX |
+
+Each derived summary can be rebuilt and checked against what the manuscript printed:
+
+```bash
+python src/analysis_quad4/make_factorial.py --check     # Table VIII / Fig. 14
+python src/analyze_xmodel.py \
+    --results 'results/percase/granite_s*_percase.gz' \
+    --baseline 'results/percase/quadfull_s*_percase.gz' # Table VI, granite row
+python src/analyze_lexcomp.py \
+    --results 'results/percase/lexcomp_eval_s*_percase.gz' \
+    --baseline 'results/percase/quadfull_s*_percase.gz' # the LexComp row
+```
+
+`make_factorial.py --check` exits non-zero on any mismatch at 1e-9, which is how the figure, the
+table and the text are kept from drifting apart. All bootstrap intervals use 4,000 resamples with
+seed 7 for the same reason.
 
 ## Regenerating `e2e_quad.py`
 

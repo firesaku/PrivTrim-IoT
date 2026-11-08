@@ -11,7 +11,7 @@ The `full` arm is the control: on Qwen2.5-7B it must reproduce 0.6078. A model w
 does not reproduce is reported as such rather than silently included.
 
 Usage
-    python src/analyze_xmodel.py --results 'D:/path/xmodel_*_percase.jsonl' \
+    python src/analyze_xmodel.py --results 'results/percase/granite_s*_percase.gz' \
                                  --baseline 'results/percase/quadfull_s*_percase.gz'
 """
 from __future__ import annotations
@@ -36,7 +36,9 @@ def load(pattern):
     """model_tag -> {(case_key, arm): row}"""
     out = {}
     for path in sorted(glob.glob(pattern)):
-        m = re.search(r"xmodel_([A-Za-z0-9]+)_s\d+_percase", path)
+        # The tag is whatever precedes the shard index: `xmodel_qwen14b_s0` and `granite_s0` both
+        # resolve, so the script works on the naming the jobs actually use.
+        m = re.search(r"([A-Za-z0-9]+)_s\d+_percase", path)
         tag = m.group(1) if m else "unknown"
         rows = out.setdefault(tag, {})
         with open_maybe_gz(path) as fh:
@@ -53,7 +55,7 @@ def leaked(r):
     return ((r.get("ctx_leak_value") or 0) > 0) or ((r.get("out_leak_value") or 0) > 0)
 
 
-def ci(diffs, reps=4000, seed=11):
+def ci(diffs, reps=4000, seed=7):
     rng = random.Random(seed)
     boot = sorted(statistics.mean(rng.choices(diffs, k=len(diffs))) for _ in range(reps))
     return boot[int(0.025 * len(boot))], boot[int(0.975 * len(boot))]
@@ -64,8 +66,9 @@ def main(argv=None):
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--results", required=True)
     ap.add_argument("--baseline", default="results/percase/quadfull_s*_percase.gz")
-    ap.add_argument("--control-f1", type=float, default=0.6078,
-                    help="value the full arm must reproduce on the original reader")
+    ap.add_argument("--control-f1", type=float, default=None,
+                    help="expected F1 of the full arm, for a regression check. Leave unset for a "
+                         "different reader: the uncompressed baseline is model-specific.")
     ap.add_argument("--json-out", default="")
     args = ap.parse_args(argv)
 
@@ -110,8 +113,9 @@ def main(argv=None):
 
         ctrl = per.get("full", {}).get("f1")
         flag = ""
-        if ctrl is not None and abs(ctrl - args.control_f1) > 0.02:
-            flag = "  <-- control off by %.3f" % (ctrl - args.control_f1)
+        if args.control_f1 is not None and ctrl is not None:
+            if abs(ctrl - args.control_f1) > 0.02:
+                flag = "  <-- control off by %.3f" % (ctrl - args.control_f1)
         for arm in arms:
             p = per[arm]
             print("%-12s %-6s %6d %8.4f %8.2f %8s %9s"
