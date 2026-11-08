@@ -218,6 +218,10 @@ for cx, cy, label, icon_name, hero in grid_cells:
         txt(cx + 6, cy + 12, 20, 22, initial, 17, INK, bold=True, align='left')
         txt(cx + 22, cy + 10, CW - 26, 20, rest, 8.5, G_D, align='left')
 
+# the rule in one breath: seven words, under the grid
+txt(x, BY + 25, w, 13, 'two labels per unit,', 8, INK)
+txt(x, BY + 11, w, 13, 'four operations, no training', 8, INK)
+
 
 # ------------------------------------------------------------------ III
 x, w = bots[1]
