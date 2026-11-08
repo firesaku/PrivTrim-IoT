@@ -177,16 +177,19 @@ txt(x, TY + 2, w, 14, 'one short answer', 10, G_D)
 # ------------------------------------------------------------------ I
 x, w = bots[0]
 txt(x, BY + BH - 30, w, 16, 'I.  DATA EXAMPLE', 10, INK, bold=True)
-ic('layers', x + 6, BY + BH - 66, 25, G_D)
-ic('key', x + 35, BY + BH - 66, 25, INK)
-ic('link', x + 64, BY + BH - 66, 23, INK)
-rect(x + 6, BY + 62, w - 12, 62, color=INK, fill=PALE, lw=0.7)
-txt(x + 6, BY + 96, w - 12, 16, 'media_player', 10, INK, family=FM)
-txt(x + 6, BY + 80, w - 12, 16, 'ACCT-4cd0', 10, INK, bold=True, family=FM)
-txt(x + 6, BY + 64, w - 12, 16, 'temp 21.4', 10, INK, family=FM)
-txt(x + 6, BY + 42, w - 12, 16, 'same block', 10, G_D)
-txt(x + 6, BY + 26, w - 12, 16, 'in every case', 10, INK)
-txt(x + 6, BY + 10, w - 12, 14, 'multi / needle', 10, G_D)
+
+# the record sits in a stream: faded neighbours above and below, the block that matters between
+txt(x + 10, BY + 178, w - 20, 12, '\u22ef  other records  \u22ef', 8, G_L)
+rect(x + 10, BY + 170, w - 20, 1.0, color=G_L, fill=G_L, lw=0, arc=0)
+rect(x + 10, BY + 106, w - 20, 56, color=INK, fill=PALE, lw=1.0)
+txt(x + 10, BY + 144, w - 20, 15, 'media_player', 10, INK, family=FM)
+txt(x + 10, BY + 128, w - 20, 15, 'ACCT-4cd0', 10, INK, bold=True, family=FM)
+txt(x + 10, BY + 112, w - 20, 15, 'temp 21.4', 10, INK, family=FM)
+rect(x + 10, BY + 80, w - 20, 1.0, color=G_L, fill=G_L, lw=0, arc=0)
+txt(x + 10, BY + 94, w - 20, 12, '\u22ef  other records  \u22ef', 8, G_L)
+txt(x + 10, BY + 64, w - 20, 15, 'same block', 10, G_D)
+txt(x + 10, BY + 48, w - 20, 15, 'in every case', 10, INK, bold=True)
+txt(x + 10, BY + 32, w - 20, 13, 'multi / needle', 9.5, G_D)
 
 # ------------------------------------------------------------------ II  the rule
 x, w = bots[2]
@@ -197,26 +200,29 @@ GX = x + 14
 ROW_TOP = BY + 104
 ROW_BOT = BY + 38
 grid_cells = [
-    (GX,                 ROW_TOP, 'DELETE', 'scissors', False),
-    (GX + CW + GP,       ROW_TOP, 'ALIAS',  'key',      True),
-    (GX,                 ROW_BOT, 'REFILL', 'layers',   False),
-    (GX + CW + GP,       ROW_BOT, 'KEEP',   'shield',   False),
+    (GX,                 ROW_TOP, 'Delete', 'scissors', False),
+    (GX + CW + GP,       ROW_TOP, 'Alias',  'key',      True),
+    (GX,                 ROW_BOT, 'Refill', 'layers',   False),
+    (GX + CW + GP,       ROW_BOT, 'Keep',   'shield',   False),
 ]
 for cx, cy, label, icon_name, hero in grid_cells:
+    initial, rest = label[0], label[1:]
     if hero:
         rect(cx, cy, CW, CH, color=INK, fill=INK, lw=1.0)
         ic('star', cx + CW // 2 - 7, cy + CH - 15, 14, '#FFFFFF')
-        txt(cx, cy + 21, CW, 18, 'DARK', 11, '#FFFFFF', bold=True)
-        txt(cx, cy + 6, CW, 11, 'alias', 8, '#FFFFFF')
-    elif label == 'KEEP':
+        txt(cx + 6, cy + 12, 20, 22, initial, 17, '#FFFFFF', bold=True, align='left')
+        txt(cx + 22, cy + 10, CW - 26, 20, rest, 8.5, '#FFFFFF', align='left')
+    elif label == 'Keep':
         # the cell that keeps a unit untouched: present, but not the story
         rect(cx, cy, CW, CH, color=INK, fill='#FFFFFF', lw=0.9)
         ic(icon_name, cx + CW // 2 - 7, cy + CH - 20, 15, G_L)
-        txt(cx, cy + 10, CW, 13, label, 8, G_L, bold=True)
+        txt(cx + 6, cy + 12, 20, 22, initial, 17, G_L, bold=True, align='left')
+        txt(cx + 22, cy + 10, CW - 26, 20, rest, 8.5, G_L, align='left')
     else:
         rect(cx, cy, CW, CH, color=INK, fill='#FBFBFB', lw=0.9)
         ic(icon_name, cx + CW // 2 - 7, cy + CH - 20, 15, G_M)
-        txt(cx, cy + 10, CW, 13, label, 8, G_D, bold=True)
+        txt(cx + 6, cy + 12, 20, 22, initial, 17, INK, bold=True, align='left')
+        txt(cx + 22, cy + 10, CW - 26, 20, rest, 8.5, G_D, align='left')
 
 
 # ------------------------------------------------------------------ III
