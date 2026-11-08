@@ -64,6 +64,10 @@ ICONS = {
              '<path d="M5 7l-3 6a3 3 0 0 0 6 0z"/><path d="M19 7l-3 6a3 3 0 0 0 6 0z"/>'
              '<path d="M8 21h8"/>',
     'arrow-down': '<line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/>',
+    'user': '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>'
+            '<circle cx="12" cy="7" r="4"/>',
+    'unlock': '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>'
+              '<path d="M7 11V7a5 5 0 0 1 9.9-1"/>',
 }
 
 
@@ -144,7 +148,7 @@ txt(6, 4, W - 12, 12,
 # ------------------------------------------------------------------ top panels
 x, w = tops[0]
 txt(x, TY + TH - 24, w, 18, 'ANALYST REQUEST', 10.5, RED, bold=True)
-ic('terminal', x + w // 2 - 20, TY + 34, 40)
+ic('user', x + w // 2 - 20, TY + 34, 40)
 ic('chat', x + 6, TY + 12, 16, RED)
 txt(x + 26, TY + 2, w - 32, 32, 'which device is bound to ACCT-4cd0?', 10, INK, align='left')
 
@@ -156,9 +160,9 @@ txt(x, TY + 2, w, 14, '6 entities on every line', 10, G_D)
 
 x, w = tops[2]
 txt(x, TY + TH - 24, w, 18, 'THE CONFLICT', 10.5, RED, bold=True)
-ic('scissors', x + 36, TY + 34, 38, RED)
-hline(x + w // 2, TY + 38, 1, G_L)
-ic('filter', x + w - 74, TY + 34, 38, RED)
+ic('scissors', x + 30, TY + 40, 34, RED)
+hline(x + w // 2, TY + 34, 1, G_L)
+ic('unlock', x + w - 64, TY + 40, 34, RED)
 txt(x, TY + 16, w, 16, 'redact \u2192 no handle', 10, RED, bold=True)
 txt(x, TY + 2, w, 14, 'compress \u2192 88.8\u2013100% leak', 10, RED)
 
@@ -199,15 +203,19 @@ grid_cells = [
 for cx, cy, label, icon_name, hero in grid_cells:
     if hero:
         rect(cx, cy, CW, CH, color=INK, fill=INK, lw=1.0)
-        ic(icon_name, cx + CW // 2 - 7, cy + CH - 21, 15, '#FFFFFF')
-        txt(cx, cy + 7, CW, 13, label, 9, '#FFFFFF', bold=True)
+        ic(icon_name, cx + CW // 2 - 7, cy + CH - 20, 15, '#FFFFFF')
+        txt(cx, cy + 15, CW, 13, label, 9, '#FFFFFF', bold=True)
+        txt(cx, cy + 4, CW, 11, '\u2605 DARK', 7.5, '#FFFFFF', bold=True)
+    elif label == 'KEEP':
+        # the cell that keeps a unit untouched: present, but not the story
+        rect(cx, cy, CW, CH, color=G_L, fill='#FFFFFF', lw=0.7)
+        ic(icon_name, cx + CW // 2 - 7, cy + CH - 20, 15, G_L)
+        txt(cx, cy + 8, CW, 13, label, 9, G_L, bold=True)
     else:
         rect(cx, cy, CW, CH, color=G_L, fill='#FBFBFB', lw=0.8)
-        ic(icon_name, cx + CW // 2 - 7, cy + CH - 21, 15, G_M)
-        txt(cx, cy + 7, CW, 13, label, 9, G_D, bold=True)
+        ic(icon_name, cx + CW // 2 - 7, cy + CH - 20, 15, G_M)
+        txt(cx, cy + 8, CW, 13, label, 9, G_D, bold=True)
 
-txt(x + 1, ROW_TOP + CH // 2 - 6, 31, 12, 'high', 7.5, G_D, align='left')
-txt(x + 1, ROW_BOT + CH // 2 - 6, 31, 12, 'low',  7.5, G_D, align='left')
 txt(GX, BY + 48, 2 * CW + GP, 12, 'relevance   low \u2192 high', 7.5, G_D)
 
 # ------------------------------------------------------------------ III
