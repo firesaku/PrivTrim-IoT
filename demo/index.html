@@ -2,28 +2,50 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Zeal × PrivTrim-IoT — interactive demos</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Keeping the Referent in the DARK — demos</title>
 <style>
-  body{font-family:"Segoe UI","Calibri",sans-serif;max-width:760px;margin:40px auto;padding:0 20px;color:#222;}
-  h1{color:#2f5d8a;font-size:22px;}
-  h2{color:#2f5d8a;font-size:16px;margin-top:26px;}
-  a{display:block;padding:11px 14px;margin:6px 0;border:1.5px solid #2f5d8a;border-radius:7px;
-     color:#2f5d8a;text-decoration:none;font-size:14.5px;}
-  a:hover{background:#2f5d8a;color:#fff;}
-  a small{display:block;font-size:11.5px;opacity:.75;margin-top:2px;}
-  p{color:#666;font-size:13px;line-height:1.6;}
+  body{font:16px/1.6 "Times New Roman",Georgia,serif;max-width:780px;margin:44px auto;
+       padding:0 22px;color:#111;background:#fff}
+  h1{color:#4A1412;font-size:24px;margin:0 0 6px}
+  .sub{color:#555;font-size:15px;margin-bottom:26px}
+  a.card{display:block;padding:16px 18px;margin:12px 0;border:1px solid #D4D4D2;
+         border-left:4px solid #4A1412;text-decoration:none;color:inherit}
+  a.card:hover{background:#EFEFEF}
+  a.card b{color:#4A1412;font-size:16px}
+  a.card span{display:block;color:#555;font-size:14px;margin-top:4px}
+  .stale{border-left-color:#9A9A9A}
+  .stale b{color:#555}
+  footer{margin-top:34px;padding-top:14px;border-top:1px solid #D4D4D2;
+         font-size:13.5px;color:#555}
+  code{font-family:Consolas,"Courier New",monospace;font-size:13px}
 </style>
 </head>
 <body>
-<h1>Zeal × PrivTrim-IoT — interactive demos</h1>
-<p>Self-contained pages — no server, no dependencies. Open any link below; everything runs in the browser.</p>
+<h1>Keeping the Referent in the DARK</h1>
+<p class="sub">Self-contained pages. No server, no dependencies, no network calls.</p>
 
-<h2>Zeal — what the public shift Ā solves & what it can't</h2>
-<a href="zeal_demo_en.html">zeal_demo_en.html <small>ε &amp; Ā sliders, shared-bit dropping, float-reachability holes, the four CAN'T walls</small></a>
+<a class="card" href="dark_demo.html">
+  <b>dark_demo.html — the demo to open</b>
+  <span>An IoT operator asks a cloud model about a log. The question names an account, and that
+  account is the value that must not be sent. Four policies on the same three real cases, with the
+  prompts the paper's construction actually produces and the answers the reader actually gave:
+  send it raw (answers, leaks), compress (cannot answer), delete in place (cannot answer), DARK
+  (answers, no leak). Plus the 2,728-case results and the gold-in-context heatmap.</span>
+</a>
 
-<h2>PrivTrim-IoT — anchor protection × hard-budget pruning</h2>
-<a href="privtrim_demo_en.html">privtrim_demo_en.html <small>clickable quadrants, alias map, --alias-question, full arm matrix (F1 0.7450 · leak 0/112)</small></a>
+<a class="card stale" href="zeal_demo_en.html">
+  <b>zeal_demo_en.html — separate exploration</b>
+  <span>An interactive note on a different mechanism (a public shift with shared-bit dropping) and
+  the configurations it cannot reach. Not part of this paper's results.</span>
+</a>
 
-<p>Numbers cited: F1 0.7189 / 0.4688 / 0.7182 / 0.7450 · counterexample ent 0.00 · gold 1.00 · 39/40 UNKNOWN · question-side leak 40/112 → 0/112.</p>
+<footer>
+Every number in <a href="dark_demo.html">dark_demo.html</a> is re-derived from
+<code>results/percase/</code> in the repository and regenerates with
+<code>python src/make_demo.py</code>. An earlier PrivTrim demo in this folder predated the
+benchmark expansion and quoted figures that no longer matched the paper; it has been removed
+rather than left to mislead.
+</footer>
 </body>
 </html>

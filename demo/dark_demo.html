@@ -1,0 +1,268 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Keeping the Referent in the DARK — interactive demo</title>
+<style>
+:root{--ink:#4A1412;--red:#8E2A22;--g5:#555;--g9:#9A9A9A;--g4:#D4D4D2;--pale:#EFEFEF;}
+*{box-sizing:border-box}
+body{font:16px/1.65 "Times New Roman",Georgia,serif;color:#111;max-width:1080px;
+     margin:0 auto;padding:36px 24px 80px;background:#fff}
+h1{font-size:27px;line-height:1.3;margin:0 0 6px;color:var(--ink)}
+h2{font-size:19px;margin:42px 0 10px;padding-bottom:5px;border-bottom:2px solid var(--g4);
+   color:var(--ink)}
+h3{font-size:16px;margin:20px 0 6px}
+p{margin:9px 0}
+.lede{color:var(--g5);font-size:17px;margin-bottom:24px}
+code,.mono{font-family:"Consolas","Courier New",monospace;font-size:13.5px}
+.rec{background:#FAFAFA;border:1px solid var(--g4);border-left:3px solid var(--ink);
+     padding:12px 14px;margin:10px 0;overflow-x:auto}
+.rec .k{color:var(--g5)}
+.hl-red{background:#F6E3E0;color:var(--red);font-weight:700;padding:1px 3px;border-radius:2px}
+.hl-ink{background:#EBE0DE;color:var(--ink);font-weight:700;padding:1px 3px;border-radius:2px}
+.q{background:var(--pale);border-left:3px solid var(--g9);padding:10px 14px;margin:12px 0;
+   font-size:15px}
+.cols{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:14px}
+@media(max-width:1000px){.cols{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.cols{grid-template-columns:1fr}}
+.col{border:1px solid var(--g4);border-top:4px solid var(--g9);padding:14px 15px;background:#fff}
+.col.works{border-top-color:var(--ink)}
+.col h4{margin:0 0 4px;font-size:15.5px}
+.col .verdict{font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.col.works .verdict{color:var(--ink);font-weight:700}
+.col .verdict.bad{color:var(--red);font-weight:700}
+.col p{font-size:14px;color:var(--g5);margin:0 0 10px}
+.snip{background:#FAFAFA;border:1px solid var(--g4);padding:8px 10px;font-family:"Consolas",
+      monospace;font-size:12px;line-height:1.55;white-space:pre-wrap;word-break:break-word;
+      max-height:190px;overflow:auto}
+.ans{margin-top:10px;font-size:14px}
+.ans b{font-family:"Consolas",monospace}
+.good{color:var(--ink);font-weight:700}
+.bad{color:var(--red);font-weight:700}
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin:12px 0}
+th,td{padding:6px 9px;text-align:right;border-bottom:1px solid var(--g4)}
+th:first-child,td:first-child{text-align:left}
+thead th{border-bottom:2px solid var(--g5);font-weight:700}
+tr.ours{background:var(--pale);font-weight:700;color:var(--ink)}
+.hm{border-collapse:collapse;font-size:13px}
+.hm td,.hm th{border:2px solid #fff;padding:5px 7px;text-align:center;min-width:64px}
+.hm th{background:#fff;border:none;font-weight:400;font-size:12px;color:var(--g5)}
+.hm td.lbl{text-align:right;border:none;padding-right:10px;font-size:13px}
+.note{font-size:14px;color:var(--g5);border-left:3px solid var(--g9);padding-left:12px;
+      margin:16px 0}
+footer{margin-top:56px;padding-top:16px;border-top:1px solid var(--g4);font-size:13.5px;
+       color:var(--g5)}
+a{color:var(--red)}
+</style></head><body>
+<h1>Keeping the Referent in the DARK</h1>
+<p class="lede">An IoT operator wants a cloud model to answer questions about its logs. The question names an account, and the account is exactly the value that must not be sent. Every policy below is real: the prompts come from the same construction the paper uses, and the answers are what the reader actually returned on those prompts.</p>
+<h2>1. Why this is hard</h2>
+<p>An operator asks:</p>
+<div class="q mono">In the log above, which persona id is recorded for the account <span class="hl-red">ACCT-f57fb0af0787</span>?</div>
+<p>The record that answers it carries that account on its identifying line. So the value that has to be hidden is also the handle the reader needs in order to know which record is being asked about. Hiding it removes the referent; keeping it forwards the secret.</p>
+<div class="note">That is the whole problem, and it is why redaction and compression fail in <em>different directions</em> rather than by different amounts. Neither is a weaker version of the other.</div>
+<h2>2. Four policies on the same case</h2>
+<p>Same excerpt, same question, same 50% budget, same reader (Qwen2.5-7B-Instruct). Gold answer: <b class="mono">dynam_0111_00</b>. Under DARK the account is replaced by a stable alias in the context and in the question alike, so the reader still knows which record is being asked about.</p>
+<h3 class="mono">longctx-pec_home-multi-0064 <span style="color:var(--g5);font-weight:400">— pec_home</span></h3>
+<div class="q mono">In the log above, which persona id is recorded for the account <span class="hl-red">ACCT-f57fb0af0787</span>?</div>
+<div class="cols">
+<div class="col">
+<h4>Send it raw</h4>
+<div class="verdict bad">answers, but leaks</div>
+<p>Forward the log unchanged. The model has everything it needs, including the account.</p>
+<div class="snip">Account ID: <span class="hl-red">ACCT-f57fb0af0787</span></div>
+<div class="ans">reader: <b class="good">dynam_0111_00</b> &nbsp;&middot; protected value in prompt: <span class="bad">yes</span></div>
+</div>
+<div class="col">
+<h4>Compress</h4>
+<div class="verdict bad">cannot answer</div>
+<p>Keep the most redundant half and drop the rest, which is what a redundancy-ordered compressor does.</p>
+<div class="snip">... 15 22:07&quot;, &quot;humidity&quot;: 50, &quot;temperature&quot;: 22, &quot;weather&quot;: &quot;clear&quot;}, &quot;id&quot;: &quot;pec_home_<span class="hl-ink">dynam_0111_00</span>&quot;, &quot;persona&quot;: &quot;summer is my favorite season.</div>
+<div class="ans">reader: <b class="bad">UNKNOWN</b> &nbsp;&middot; protected value in prompt: <span class="good">no</span></div>
+</div>
+<div class="col">
+<h4>Delete in place</h4>
+<div class="verdict bad">cannot answer</div>
+<p>Keep the record, remove the account from it. Length preserved.</p>
+<div class="snip">... task&quot;: &quot;dynamic_user_preferences&quot;, &quot;turns&quot;: Private contact record: Contact email: <span class="hl-red">[REDACTED]</span> Contact phone: <span class="hl-red">[REDACTED]</span> Account ID: <span class="hl-red">[REDACTED]</span> [{&quot;ellipsis_level&quot;: 1, &quot;user_instruction&quot;: &quot;Hey, could you switch on the study room light and set it to a soft warm mode?</div>
+<div class="ans">reader: <b class="bad">UNKNOWN</b> &nbsp;&middot; protected value in prompt: <span class="good">no</span></div>
+</div>
+<div class="col works">
+<h4>DARK</h4>
+<div class="verdict ">answers, no leak</div>
+<p>Keep the record block and alias the values inside it, in the question as well.</p>
+<div class="snip">... task&quot;: &quot;dynamic_user_preferences&quot;, &quot;turns&quot;: Private contact record: Contact email: <span class="hl-ink">[EMAIL-A]</span> Contact phone: [PHONE-A] Account ID: [ACCOUNT-E] [{&quot;ellipsis_level&quot;: 1, &quot;user_instruction&quot;: &quot;Hey, could you switch on the study room light and set it to a soft warm mode?</div>
+<div class="ans">reader: <b class="good">dynam_0111_00</b> &nbsp;&middot; protected value in prompt: <span class="good">no</span></div>
+</div>
+</div>
+<h3 class="mono">longctx-simuhome-multi-0206 <span style="color:var(--g5);font-weight:400">— simuhome</span></h3>
+<div class="q mono">In the log above, which anchor device identifier is recorded for the account <span class="hl-red">ACCT-c49099338de0</span>?</div>
+<div class="cols">
+<div class="col">
+<h4>Send it raw</h4>
+<div class="verdict bad">answers, but leaks</div>
+<p>Forward the log unchanged. The model has everything it needs, including the account.</p>
+<div class="snip">Account ID: <span class="hl-red">ACCT-c49099338de0</span></div>
+<div class="ans">reader: <b class="good">utility_room_laundry_dryer_2</b> &nbsp;&middot; protected value in prompt: <span class="bad">yes</span></div>
+</div>
+<div class="col">
+<h4>Compress</h4>
+<div class="verdict bad">cannot answer</div>
+<p>Keep the most redundant half and drop the rest, which is what a redundancy-ordered compressor does.</p>
+<div class="snip">... case&quot;: &quot;feasible&quot;, &quot;num_rooms&quot;: 5, &quot;num_devices&quot;: 26}, &quot;query&quot;: &quot;6 minutes after \&quot;<span class="hl-ink">utility_room_laundry_dryer_2</span>\&quot; in \&quot;utility_room\&quot; finishes its current run, set \&quot;bathroom_on_off_light_1\&quot; in \&quot;bathroom\&quot; to power on.\n6 minutes after \&quot;<span class="hl-ink">utility_room_laundry_dryer_2</span>\&quot; in \&quot;utility_room\&quot; finishes its current run, set \&quot;utility_room_dehumidifier_1\&quot; in \&quot;uti ...</div>
+<div class="ans">reader: <b class="bad">UNKNOWN</b> &nbsp;&middot; protected value in prompt: <span class="good">no</span></div>
+</div>
+<div class="col">
+<h4>Delete in place</h4>
+<div class="verdict bad">cannot answer</div>
+<p>Keep the record, remove the account from it. Length preserved.</p>
+<div class="snip">... Private contact record: ----- entry 2 ----- Private contact record: Contact email: <span class="hl-red">[REDACTED]</span> Contact phone: <span class="hl-red">[REDACTED]</span> Account ID: <span class="hl-red">[REDACTED]</span> {&quot;meta&quot;: {&quot;seed&quot;: 10002, &quot;query_type&quot;: &quot;qt4-2&quot;, &quot;case&quot;: &quot;feasible&quot;, &quot;num_rooms&quot;: 5, &quot;num_devices&quot;: 26}, &quot;query&quot;: &quot;6 minutes after \&quot;<span class="hl-ink">utility_room_laundry_dryer_2</span>\&quot; in \&quot;utility_room\&quot; finishes its curr ...</div>
+<div class="ans">reader: <b class="bad">UNKNOWN</b> &nbsp;&middot; protected value in prompt: <span class="good">no</span></div>
+</div>
+<div class="col works">
+<h4>DARK</h4>
+<div class="verdict ">answers, no leak</div>
+<p>Keep the record block and alias the values inside it, in the question as well.</p>
+<div class="snip">... Private contact record: ----- entry 2 ----- Private contact record: Contact email: <span class="hl-ink">[EMAIL-C]</span> Contact phone: [PHONE-C] Account ID: [ACCOUNT-B] {&quot;meta&quot;: {&quot;seed&quot;: 10002, &quot;query_type&quot;: &quot;qt4-2&quot;, &quot;case&quot;: &quot;feasible&quot;, &quot;num_rooms&quot;: 5, &quot;num_devices&quot;: 26}, &quot;query&quot;: &quot;6 minutes after \&quot;<span class="hl-ink">utility_room_laundry_dryer_2</span>\&quot; in \&quot;utility_room\&quot; finishes its curr ...</div>
+<div class="ans">reader: <b class="good">utility_room_laundry_dryer_2</b> &nbsp;&middot; protected value in prompt: <span class="good">no</span></div>
+</div>
+</div>
+<h3 class="mono">longctx-smartbench_tdcs-multi-0094 <span style="color:var(--g5);font-weight:400">— smartbench_tdcs</span></h3>
+<div class="q mono">In the log above, which occupancy type is recorded for the account <span class="hl-red">ACCT-121b148e326d</span>?</div>
+<div class="cols">
+<div class="col">
+<h4>Send it raw</h4>
+<div class="verdict bad">fails, and leaks</div>
+<p>Forward the log unchanged. The model has everything it needs, including the account.</p>
+<div class="snip">Account ID: <span class="hl-red">ACCT-121b148e326d</span></div>
+<div class="ans">reader: <b class="bad">UNKNOWN</b> &nbsp;&middot; protected value in prompt: <span class="bad">yes</span></div>
+</div>
+<div class="col">
+<h4>Compress</h4>
+<div class="verdict bad">cannot answer</div>
+<p>Keep the most redundant half and drop the rest, which is what a redundancy-ordered compressor does.</p>
+<div class="snip">... o 2026-03-07T23:00:00 (14 day(s)); context: season=Winter, weather=Cold, occupancy=<span class="hl-ink">elderly_single</span>; total_events=3001; top_rooms=bedroom,basement.</div>
+<div class="ans">reader: <b class="bad">UNKNOWN</b> &nbsp;&middot; protected value in prompt: <span class="good">no</span></div>
+</div>
+<div class="col">
+<h4>Delete in place</h4>
+<div class="verdict bad">cannot answer</div>
+<p>Keep the record, remove the account from it. Length preserved.</p>
+<div class="snip">... &quot;2026-02-22T08:00:00&quot;, &quot;device&quot;: &quot;living_r Private contact record: Contact email: <span class="hl-red">[REDACTED]</span> Contact phone: <span class="hl-red">[REDACTED]</span> Account ID: <span class="hl-red">[REDACTED]</span></div>
+<div class="ans">reader: <b class="bad">UNKNOWN</b> &nbsp;&middot; protected value in prompt: <span class="good">no</span></div>
+</div>
+<div class="col works">
+<h4>DARK</h4>
+<div class="verdict ">answers, no leak</div>
+<p>Keep the record block and alias the values inside it, in the question as well.</p>
+<div class="snip">... &quot;2026-02-22T08:00:00&quot;, &quot;device&quot;: &quot;living_r Private contact record: Contact email: <span class="hl-ink">[EMAIL-A]</span> Contact phone: [PHONE-C] Account ID: [ACCOUNT-B]</div>
+<div class="ans">reader: <b class="good">elderly_single</b> &nbsp;&middot; protected value in prompt: <span class="good">no</span></div>
+</div>
+</div>
+<h2>3. The same pattern at scale</h2>
+<p>2,728 cases, six public corpora, 50% budget. <em>GIC</em> is the share of cases in which the record carrying the answer survives compression at all; <em>leak</em> is the share in which a protected value is recoverable from the prompt.</p>
+<table><thead><tr><th>Method</th><th>F1</th><th>GIC</th><th>leak</th><th>tokens</th></tr></thead><tbody>
+<tr class="ours"><td>DARK</td><td>0.4937</td><td>100.0%</td><td>0.0%</td><td>4146</td></tr>
+<tr><td>Quito-X</td><td>0.4831</td><td>69.8%</td><td>98.1%</td><td>4242</td></tr>
+<tr><td>CPC</td><td>0.4740</td><td>82.7%</td><td>92.6%</td><td>4242</td></tr>
+<tr><td>LongLLMLingua</td><td>0.4230</td><td>70.3%</td><td>100.0%</td><td>4241</td></tr>
+<tr><td>Provence</td><td>0.4080</td><td>88.9%</td><td>90.8%</td><td>4242</td></tr>
+<tr><td>LexComp (2026 preprint)</td><td>0.3696</td><td>65.0%</td><td>100.0%</td><td>5817</td></tr>
+<tr><td>LLMLingua-2</td><td>0.2651</td><td>62.6%</td><td>100.0%</td><td>4242</td></tr>
+<tr><td>Selective Context</td><td>0.2588</td><td>46.1%</td><td>100.0%</td><td>4055</td></tr>
+<tr><td>mask + LLMLingua-2</td><td>0.1712</td><td>67.9%</td><td>0.0%</td><td>4242</td></tr>
+</tbody></table>
+<div class="note">DARK is the only row that reaches both 100% GIC and 0% leakage. It is <em>not</em> the highest F1: the uncompressed prompt scores 0.6081, and Quito-X reaches a statistically indistinguishable 0.4831 against our 0.4937. The claim is not that we compress better; it is that we are the only method that answers the question without forwarding the value.</div>
+<h2>4. Why answer survival is the interesting column</h2>
+<p>GIC is not a constant offset between methods; it depends on the corpus. Below, the share of cases in which the answer-bearing record survives, per method and per source. Darker is higher.</p>
+<table class="hm"><thead><tr><th></th>
+<th>pec home</th>
+<th>privacylens</th>
+<th>simuhome</th>
+<th>smartbench tdcs</th>
+<th>toolmem</th>
+<th>toolmem raw</th>
+</tr></thead><tbody>
+<tr><td class="lbl">DARK</td>
+<td style="background:rgb(74,20,18);color:#fff">100</td>
+<td style="background:rgb(74,20,18);color:#fff">100</td>
+<td style="background:rgb(74,20,18);color:#fff">100</td>
+<td style="background:rgb(74,20,18);color:#fff">100</td>
+<td style="background:rgb(74,20,18);color:#fff">100</td>
+<td style="background:rgb(74,20,18);color:#fff">100</td>
+</tr>
+<tr><td class="lbl">delete variant</td>
+<td style="background:rgb(74,20,18);color:#fff">100</td>
+<td style="background:rgb(74,20,18);color:#fff">100</td>
+<td style="background:rgb(74,20,18);color:#fff">100</td>
+<td style="background:rgb(74,20,18);color:#fff">100</td>
+<td style="background:rgb(74,20,18);color:#fff">100</td>
+<td style="background:rgb(74,20,18);color:#fff">100</td>
+</tr>
+<tr><td class="lbl">Provence</td>
+<td style="background:rgb(85,34,32);color:#fff">94</td>
+<td style="background:rgb(103,57,56);color:#fff">84</td>
+<td style="background:rgb(75,22,20);color:#fff">99</td>
+<td style="background:rgb(89,39,37);color:#fff">92</td>
+<td style="background:rgb(130,92,91);color:#fff">69</td>
+<td style="background:rgb(89,39,37);color:#fff">92</td>
+</tr>
+<tr><td class="lbl">CPC</td>
+<td style="background:rgb(96,49,47);color:#fff">88</td>
+<td style="background:rgb(111,69,67);color:#fff">79</td>
+<td style="background:rgb(140,106,105);color:#fff">63</td>
+<td style="background:rgb(109,65,63);color:#fff">81</td>
+<td style="background:rgb(114,72,70);color:#fff">78</td>
+<td style="background:rgb(80,28,26);color:#fff">96</td>
+</tr>
+<tr><td class="lbl">LongLLMLingua</td>
+<td style="background:rgb(116,75,73);color:#fff">77</td>
+<td style="background:rgb(187,166,166);color:#111">38</td>
+<td style="background:rgb(74,20,18);color:#fff">100</td>
+<td style="background:rgb(118,77,75);color:#fff">76</td>
+<td style="background:rgb(131,94,92);color:#fff">69</td>
+<td style="background:rgb(112,69,67);color:#fff">79</td>
+</tr>
+<tr><td class="lbl">Quito-X</td>
+<td style="background:rgb(81,29,27);color:#fff">96</td>
+<td style="background:rgb(225,215,215);color:#111">17</td>
+<td style="background:rgb(74,20,18);color:#fff">100</td>
+<td style="background:rgb(82,31,29);color:#fff">95</td>
+<td style="background:rgb(139,105,103);color:#fff">64</td>
+<td style="background:rgb(127,89,88);color:#fff">70</td>
+</tr>
+<tr><td class="lbl">mask + L2</td>
+<td style="background:rgb(81,29,27);color:#fff">96</td>
+<td style="background:rgb(191,172,171);color:#111">35</td>
+<td style="background:rgb(164,137,136);color:#111">50</td>
+<td style="background:rgb(104,58,57);color:#fff">84</td>
+<td style="background:rgb(151,120,119);color:#111">57</td>
+<td style="background:rgb(106,62,60);color:#fff">82</td>
+</tr>
+<tr><td class="lbl">LLMLingua-2</td>
+<td style="background:rgb(114,72,70);color:#fff">78</td>
+<td style="background:rgb(201,184,184);color:#111">30</td>
+<td style="background:rgb(166,139,138);color:#111">49</td>
+<td style="background:rgb(111,68,66);color:#fff">80</td>
+<td style="background:rgb(158,130,129);color:#111">53</td>
+<td style="background:rgb(106,62,60);color:#fff">82</td>
+</tr>
+<tr><td class="lbl">global alias</td>
+<td style="background:rgb(137,102,100);color:#fff">65</td>
+<td style="background:rgb(149,117,116);color:#111">59</td>
+<td style="background:rgb(129,92,90);color:#fff">70</td>
+<td style="background:rgb(105,60,59);color:#fff">83</td>
+<td style="background:rgb(167,141,140);color:#111">49</td>
+<td style="background:rgb(203,188,187);color:#111">29</td>
+</tr>
+<tr><td class="lbl">Selective Context</td>
+<td style="background:rgb(227,219,218);color:#111">15</td>
+<td style="background:rgb(188,168,167);color:#111">37</td>
+<td style="background:rgb(249,247,247);color:#111">3</td>
+<td style="background:rgb(74,20,18);color:#fff">100</td>
+<td style="background:rgb(221,211,211);color:#111">19</td>
+<td style="background:rgb(130,92,91);color:#fff">69</td>
+</tr>
+</tbody></table>
+<h2>5. Reproduce it</h2>
+<div class="rec mono">git clone https://github.com/firesaku/PrivTrim-IoT<br>cd PrivTrim-IoT<br>python src/analysis_quad4/make_fig_gic.py &nbsp;# this heatmap<br>python src/analysis_quad4/make_tab_external.py --check &nbsp;# Table IV</div>
+<footer>Every number on this page is re-derived from <code>results/percase/</code>, the per-case records that ship with the repository. The prompts are produced by <code>src/longctx/e2e_quad.py</code>, the same construction the paper evaluates. Paper: <a href="../paper/main.pdf">paper/main.pdf</a> &middot; Code: <a href="https://github.com/firesaku/PrivTrim-IoT">github.com/firesaku/PrivTrim-IoT</a></footer>
+</body></html>
