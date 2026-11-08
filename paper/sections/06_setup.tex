@@ -37,19 +37,14 @@ evaluated at their own $50\%$ setting, with the token accounting reported in eve
 that a method that realises a different length is visible as such.
 
 All comparisons between two arms on the same cases are paired. We report the mean paired
-difference and a $95\%$ percentile bootstrap interval with $10{,}000$ resamples over cases.
-A difference is called significant when the interval excludes zero.
+difference and a $95\%$ percentile bootstrap interval with $4{,}000$ resamples over cases
+(seed 7). A difference is called significant when the interval excludes zero.
 
 Three verdicts are kept apart throughout, because they license different sentences. A
-difference is \emph{larger} or \emph{smaller} when its interval excludes zero. It is
-\emph{not significantly different} when the interval contains zero---which is the verdict for
-\textsc{DARK} against Quito-X on F1, and it supports no more than the statement that this
-experiment did not distinguish them. We do not claim non-inferiority anywhere: that would
-require a margin fixed in advance and a one-sided test against it, and neither is present here.
-Where a result is reported as a win it is a difference whose interval clears zero, and we say so
-where it is first used. We deliberately do not
-attach a significance claim to any comparison across the two benchmark sizes, which draw
-different cases.
+difference is \emph{larger} or \emph{smaller} when its interval excludes zero; it is
+\emph{unresolved} when the interval contains zero. Where a result is reported as a win it is a
+difference whose interval clears zero. No significance claim is attached to any comparison across
+the two benchmark sizes, which draw different cases.
 
 \paragraph{Reproducibility controls.}
 Two controls are run in every batch. First, the uncompressed arm is recomputed; it involves

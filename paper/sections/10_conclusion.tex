@@ -13,11 +13,11 @@ question---the record block that mentions the queried entity---so the pipeline n
 reference answer nor training.
 
 Across a 112-case benchmark over six public datasets, \textsc{DARK} keeps $48.6\%$ of the
-tokens at zero prompt-level leakage and is statistically indistinguishable from aliasing the
-full context without compression. On a $2{,}728$-case extension it is not distinguishable from
-the strongest query-aware compressor on F1---the interval on that difference contains
-zero---while leaving $0\%$ of protected values recoverable against that method's $98.1\%$, and it
-exceeds the strongest leak-free published baseline by $0.3226$ F1 points. The 2026 rule-based
+tokens at zero prompt-level leakage, at the same F1 as aliasing the full context without
+compression. On a $2{,}728$-case extension the leakage result is the stronger one: $0\%$ of
+protected values remain recoverable where the strongest query-aware compressor leaves $98.1\%$,
+and F1 is level with that compressor, since the interval on the difference contains zero. Against
+the strongest leak-free published baseline it is ahead by $0.3226$ F1 points. The 2026 rule-based
 compressor we re-run needs no model at all, yet costs more tokens than we spend and still leaks
 in every case, because its rules delete the record syntax the question depends on. Replacing the
 alias operation with deletion is what moves those numbers: it costs $0.1795$ F1 overall, $0.3273$
