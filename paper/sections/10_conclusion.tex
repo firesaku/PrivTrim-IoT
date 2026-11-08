@@ -14,14 +14,21 @@ reference answer nor training.
 
 Across a 112-case benchmark over six public datasets, \textsc{DARK} keeps $48.6\%$ of the
 tokens at zero prompt-level leakage and is statistically indistinguishable from aliasing the
-full context without compression. On a $2{,}728$-case extension it matches the strongest
-query-aware compressor at $0\%$ leakage against $98.1\%$, and exceeds the nearest leak-free
-baseline by $0.3226$ F1 points. The 2026 rule-based compressor we re-run needs no model at
-all, yet costs more tokens than we spend and still leaks in every case, because its
-rules delete the record syntax the question depends on. Replacing the alias operation
-with deletion is what moves
-those numbers: it costs $0.1795$ F1 overall, $0.3273$ on multi-entity cases, and nothing
-where no anchor exists, so the rule acts on the structure it was designed for.
+full context without compression. On a $2{,}728$-case extension it is not distinguishable from
+the strongest query-aware compressor on F1---the interval on that difference contains
+zero---while leaving $0\%$ of protected values recoverable against that method's $98.1\%$, and it
+exceeds the strongest leak-free published baseline by $0.3226$ F1 points. The 2026 rule-based
+compressor we re-run needs no model at all, yet costs more tokens than we spend and still leaks
+in every case, because its rules delete the record syntax the question depends on. Replacing the
+alias operation with deletion is what moves those numbers: it costs $0.1795$ F1 overall, $0.3273$
+on multi-entity cases, and nothing where no anchor exists, so the rule acts on the structure it
+was designed for.
+
+Crossing the two decisions isolates which of them carries the result. Aliasing is worth $+0.157$
+and $+0.179$ at the two granularities, keeping the whole block $+0.079$ and $+0.057$ under the two
+operations, and the interaction is small and positive. The operation is worth two to three times
+the region. That ratio is the practical summary of this work: getting the surviving region right
+is a precondition, and choosing the operation is what makes the task possible.
 
 Two questions remain open. The fallback window is the weakest part of the mechanism: when the
 answer lies outside it, as in the two-hop variant, recovery depends on the refill order, and

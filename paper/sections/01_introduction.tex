@@ -114,6 +114,12 @@ comparison is deliberately two-sided: at equal budget \textsc{DARK} is level wit
 query-aware compressor on F1 and $98.1$ points below it on leakage, and $+0.1456$
 $[+0.1253,+0.1662]$ above the strongest leak-free arm, which differs from it only in which
 region of the record survives.
+\item \textbf{A separation of the two design choices.} The rule makes two decisions at once---which
+region survives, and what happens inside it---and it is fair to ask which of them matters. Crossing
+them on the same $2{,}728$ cases answers it: aliasing is worth $+0.157$ and $+0.179$ at the two
+granularities, keeping the whole block $+0.079$ and $+0.057$ under the two operations, and the
+interaction is $+0.0217$ $[+0.0106,+0.0325]$. The operation is worth two to three times the region,
+and the two are close to additive rather than substitutable.
 \end{itemize}
 
 Figure~\ref{fig:why} states the setting, the conflict it creates, and the position our rule
