@@ -35,6 +35,11 @@ data/public_lb.jsonl
 data/public_lb_typeb.jsonl
 data/public_lb_typec.jsonl
 
+# Derived case files for the detection-recall sweep. Regenerated deterministically by
+# src/longctx/imperfect_detector.py (subset seed 20261108, per-case seed key|rho) from
+# data/longctx_max.jsonl.gz, so the generator is the tracked artefact, not the 94 MB of output.
+data/recall/
+
 # Credentials
 *.pem
 *.key

@@ -146,6 +146,7 @@ def check_question_alias(cases, keys, arm_txt, alias_question):
     if not alias_question:
         return 0, 0, [], 0, 0
     n_checked = n_skipped = 0
+    n_target_missing = 0
     bad = []
     delivered = undelivered = 0
     ali_cache = {}
@@ -169,6 +170,12 @@ def check_question_alias(cases, keys, arm_txt, alias_question):
         cmap = {x['value']: x for x in cans if x['type'] == 'account'}
         tok = al.token(cmap[raw]) if raw in cmap else None
         if tok is None:
+            # 目标实体不在 canaries 里。带 canaries_eval 的案例表示"检测器漏掉了这个值"：
+            # 此时问题原样发出、上下文也保留原值，这是降级检测器下**应有的**行为，不是
+            # 映射错误。只有缺少 canaries_eval 时才是真正的数据缺陷。
+            if c.get('canaries_eval'):
+                n_target_missing += 1
+                continue
             bad.append((c['key'], arm, 'no canary for target_entity'))
             continue
         if raw in q1:
@@ -184,7 +191,7 @@ def check_question_alias(cases, keys, arm_txt, alias_question):
             delivered += 1
         else:
             undelivered += 1
-    return n_checked, n_skipped, bad, delivered, undelivered
+    return n_checked, n_skipped, bad, delivered, undelivered, n_target_missing
 
 
 def make_prompt(q, ctx):
@@ -337,10 +344,20 @@ def alias_text(text, canaries):
     return v4_router.apply_replacements(text, canaries, v4_router.Aliaser('alias'))
 
 
+def eval_canaries(case):
+    """计分用的 canary 集合 —— 与路由用的 canaries 分开。
+
+    默认二者相同。当案例带 canaries_eval 时，canaries 是"检测器认为敏感"的子集，
+    canaries_eval 是"实际注入"的完整集合：路由只能保护检测到的那部分，而计分必须按
+    完整集合算，否则漏检的值会既不被保护也不被记为泄漏，得到假的零泄漏。
+    """
+    return case.get('canaries_eval') or case.get('canaries') or []
+
+
 def leak_of(case, text):
     """(整值泄漏数, 片段泄漏数, canary 总数)；谓词全部来自 privcheck。"""
     v = f = 0
-    cans = case.get('canaries') or []
+    cans = eval_canaries(case)
     for c in cans:
         full, frag = privcheck.exposure_basic(c, text)
         v += 1 if full else 0
@@ -872,11 +889,14 @@ def main():
                 '\n'.join(json.dumps(d, ensure_ascii=False) for d in arm_dump) + '\n')
 
     # ---- 跑前断言：问题别名与上下文别名必须指向同一实体 ----
-    n_qalias, n_qskip, qbad, n_deliv, n_undeliv = check_question_alias(
+    n_qalias, n_qskip, qbad, n_deliv, n_undeliv, n_tgt_missing = check_question_alias(
         cases, keys, arm_txt, a.alias_question)
     if a.alias_question:
         log('问题同步别名：映射检查 %d 处（跳过 %d 处问题未提及目标实体）；映射不一致 %d 处'
             % (n_qalias, n_qskip, len(qbad)))
+        if n_tgt_missing:
+            log('问题同步别名：目标实体未被检测到 %d 处（问题原样发出，属降级检测器观察）'
+                % n_tgt_missing)
         log('问题同步别名：别名 token 在压缩后文本中的投递率 %d/%d = %.1f%%'
             '（未投递 = 该臂把实体所在单元丢了，属实验观察，不是映射错误）'
             % (n_deliv, n_deliv + n_undeliv,
@@ -947,7 +967,7 @@ def main():
         f1 = max(smod.compute_f1(g, pred) for g in golds) if smod else 0.0
         ctx_text = arm_txt[i]
         cv, cf, cn = leak_of(c, ctx_text)
-        ov = sum(1 for x in (c.get('canaries') or []) if privcheck.exposure_hit(x, pred))
+        ov = sum(1 for x in eval_canaries(c) if privcheck.exposure_hit(x, pred))
         ed = entity_diag(c, ctx_text, arm_style(arm))
         # ctx_text 就是进入提示词的文本；因为没有截断，它等同模型实际收到的上下文。
         # prompt_tokens 逐例记录，任何未来的意外截断都会在产物里可见。
