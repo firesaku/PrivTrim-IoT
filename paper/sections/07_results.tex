@@ -35,6 +35,31 @@ global-alias ablation at $0.3482$, which \textsc{DARK} exceeds by $+0.1456$
 $[+0.1253,+0.1662]$; those two arms differ only in which region survives, one line or the
 block that contains it, so that margin is the routing rule and nothing else.
 
+The GIC column of Table~\ref{tab:external} is worth a figure of its own, because it varies with
+the source in a way the aggregate hides. Figure~\ref{fig:gic} breaks it out. The two arms that keep
+the anchor block are flat at $100\%$ on all six sources. Every published compressor is a patchwork:
+Quito-X retains the record in $17\%$ of \arm{privacylens} cases and $100\%$ of \arm{simuhome} ones,
+Selective Context in $3\%$ of \arm{simuhome} and $100\%$ of \arm{smartbench\_tdcs}. A rule tuned on
+one corpus and reported on another would move by tens of points without its F1 budget changing.
+
+The same figure is the reason we do not treat GIC as the headline: the delete variant is equally
+flat. Keeping the block is what determines the column, and the operation is invisible to it. That
+is the separation Table~\ref{tab:ri} exists to make.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_gic.pdf}
+\caption{Gold-in-context by arm and source: the share of cases in which the record carrying the
+reference answer survives compression at all. Darker is higher. The two arms that keep the anchor
+block are flat at $100\%$ across six corpora; every published compressor is patchwork, and some
+cells are near zero---Selective Context retains the answer record in $3\%$ of \arm{simuhome} cases,
+Quito-X in $17\%$ of \arm{privacylens} cases. A number reported on one corpus would not transfer to
+another. The figure also shows why GIC alone does not justify our design: the delete variant is as
+flat as \textsc{DARK}, so this column measures the surviving region and says nothing about the
+operation applied inside it. Table~\ref{tab:ri} makes that second distinction.}
+\label{fig:gic}
+\end{figure*}
+
 Figure~\ref{fig:frontier} puts the same numbers on both axes at once, and attaches an interval
 to each of them, because a point estimate in the corner of a plot invites the reading that the
 axes were chosen after the fact. Panel~(a) is the frontier: \textsc{DARK} sits alone in the

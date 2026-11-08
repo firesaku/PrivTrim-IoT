@@ -1,0 +1,422 @@
+[
+ {
+  "arm": "quad4",
+  "source": "pec_home",
+  "gic": 100.0,
+  "n": 426
+ },
+ {
+  "arm": "quad4",
+  "source": "privacylens",
+  "gic": 100.0,
+  "n": 600
+ },
+ {
+  "arm": "quad4",
+  "source": "simuhome",
+  "gic": 100.0,
+  "n": 312
+ },
+ {
+  "arm": "quad4",
+  "source": "smartbench_tdcs",
+  "gic": 100.0,
+  "n": 490
+ },
+ {
+  "arm": "quad4",
+  "source": "toolmem",
+  "gic": 100.0,
+  "n": 300
+ },
+ {
+  "arm": "quad4",
+  "source": "toolmem_raw",
+  "gic": 100.0,
+  "n": 600
+ },
+ {
+  "arm": "quad4",
+  "source": "overall",
+  "gic": 100.0,
+  "n": 2728
+ },
+ {
+  "arm": "quad4_del",
+  "source": "pec_home",
+  "gic": 100.0,
+  "n": 426
+ },
+ {
+  "arm": "quad4_del",
+  "source": "privacylens",
+  "gic": 100.0,
+  "n": 600
+ },
+ {
+  "arm": "quad4_del",
+  "source": "simuhome",
+  "gic": 100.0,
+  "n": 312
+ },
+ {
+  "arm": "quad4_del",
+  "source": "smartbench_tdcs",
+  "gic": 100.0,
+  "n": 490
+ },
+ {
+  "arm": "quad4_del",
+  "source": "toolmem",
+  "gic": 100.0,
+  "n": 300
+ },
+ {
+  "arm": "quad4_del",
+  "source": "toolmem_raw",
+  "gic": 100.0,
+  "n": 600
+ },
+ {
+  "arm": "quad4_del",
+  "source": "overall",
+  "gic": 100.0,
+  "n": 2728
+ },
+ {
+  "arm": "ext_provence",
+  "source": "pec_home",
+  "gic": 93.89671361502347,
+  "n": 426
+ },
+ {
+  "arm": "ext_provence",
+  "source": "privacylens",
+  "gic": 84.16666666666667,
+  "n": 600
+ },
+ {
+  "arm": "ext_provence",
+  "source": "simuhome",
+  "gic": 99.35897435897436,
+  "n": 312
+ },
+ {
+  "arm": "ext_provence",
+  "source": "smartbench_tdcs",
+  "gic": 91.83673469387755,
+  "n": 490
+ },
+ {
+  "arm": "ext_provence",
+  "source": "toolmem",
+  "gic": 69.33333333333333,
+  "n": 300
+ },
+ {
+  "arm": "ext_provence",
+  "source": "toolmem_raw",
+  "gic": 91.83333333333333,
+  "n": 600
+ },
+ {
+  "arm": "ext_provence",
+  "source": "overall",
+  "gic": 88.85630498533725,
+  "n": 2728
+ },
+ {
+  "arm": "ext_cpc",
+  "source": "pec_home",
+  "gic": 87.79342723004694,
+  "n": 426
+ },
+ {
+  "arm": "ext_cpc",
+  "source": "privacylens",
+  "gic": 79.33333333333333,
+  "n": 600
+ },
+ {
+  "arm": "ext_cpc",
+  "source": "simuhome",
+  "gic": 63.46153846153846,
+  "n": 312
+ },
+ {
+  "arm": "ext_cpc",
+  "source": "smartbench_tdcs",
+  "gic": 80.81632653061224,
+  "n": 490
+ },
+ {
+  "arm": "ext_cpc",
+  "source": "toolmem",
+  "gic": 78.0,
+  "n": 300
+ },
+ {
+  "arm": "ext_cpc",
+  "source": "toolmem_raw",
+  "gic": 96.5,
+  "n": 600
+ },
+ {
+  "arm": "ext_cpc",
+  "source": "overall",
+  "gic": 82.73460410557185,
+  "n": 2728
+ },
+ {
+  "arm": "ext_longllmlingua",
+  "source": "pec_home",
+  "gic": 76.7605633802817,
+  "n": 426
+ },
+ {
+  "arm": "ext_longllmlingua",
+  "source": "privacylens",
+  "gic": 37.666666666666664,
+  "n": 600
+ },
+ {
+  "arm": "ext_longllmlingua",
+  "source": "simuhome",
+  "gic": 100.0,
+  "n": 312
+ },
+ {
+  "arm": "ext_longllmlingua",
+  "source": "smartbench_tdcs",
+  "gic": 75.91836734693878,
+  "n": 490
+ },
+ {
+  "arm": "ext_longllmlingua",
+  "source": "toolmem",
+  "gic": 68.66666666666667,
+  "n": 300
+ },
+ {
+  "arm": "ext_longllmlingua",
+  "source": "toolmem_raw",
+  "gic": 79.16666666666667,
+  "n": 600
+ },
+ {
+  "arm": "ext_longllmlingua",
+  "source": "overall",
+  "gic": 70.30791788856305,
+  "n": 2728
+ },
+ {
+  "arm": "ext_quito_x",
+  "source": "pec_home",
+  "gic": 96.0093896713615,
+  "n": 426
+ },
+ {
+  "arm": "ext_quito_x",
+  "source": "privacylens",
+  "gic": 16.833333333333332,
+  "n": 600
+ },
+ {
+  "arm": "ext_quito_x",
+  "source": "simuhome",
+  "gic": 100.0,
+  "n": 312
+ },
+ {
+  "arm": "ext_quito_x",
+  "source": "smartbench_tdcs",
+  "gic": 95.3061224489796,
+  "n": 490
+ },
+ {
+  "arm": "ext_quito_x",
+  "source": "toolmem",
+  "gic": 64.0,
+  "n": 300
+ },
+ {
+  "arm": "ext_quito_x",
+  "source": "toolmem_raw",
+  "gic": 70.5,
+  "n": 600
+ },
+ {
+  "arm": "ext_quito_x",
+  "source": "overall",
+  "gic": 69.79472140762464,
+  "n": 2728
+ },
+ {
+  "arm": "ext_mask_llmlingua2",
+  "source": "pec_home",
+  "gic": 96.0093896713615,
+  "n": 426
+ },
+ {
+  "arm": "ext_mask_llmlingua2",
+  "source": "privacylens",
+  "gic": 35.333333333333336,
+  "n": 600
+ },
+ {
+  "arm": "ext_mask_llmlingua2",
+  "source": "simuhome",
+  "gic": 50.32051282051282,
+  "n": 312
+ },
+ {
+  "arm": "ext_mask_llmlingua2",
+  "source": "smartbench_tdcs",
+  "gic": 83.6734693877551,
+  "n": 490
+ },
+ {
+  "arm": "ext_mask_llmlingua2",
+  "source": "toolmem",
+  "gic": 57.333333333333336,
+  "n": 300
+ },
+ {
+  "arm": "ext_mask_llmlingua2",
+  "source": "toolmem_raw",
+  "gic": 82.16666666666667,
+  "n": 600
+ },
+ {
+  "arm": "ext_mask_llmlingua2",
+  "source": "overall",
+  "gic": 67.92521994134897,
+  "n": 2728
+ },
+ {
+  "arm": "ext_llmlingua2",
+  "source": "pec_home",
+  "gic": 77.93427230046949,
+  "n": 426
+ },
+ {
+  "arm": "ext_llmlingua2",
+  "source": "privacylens",
+  "gic": 30.0,
+  "n": 600
+ },
+ {
+  "arm": "ext_llmlingua2",
+  "source": "simuhome",
+  "gic": 49.35897435897436,
+  "n": 312
+ },
+ {
+  "arm": "ext_llmlingua2",
+  "source": "smartbench_tdcs",
+  "gic": 79.59183673469387,
+  "n": 490
+ },
+ {
+  "arm": "ext_llmlingua2",
+  "source": "toolmem",
+  "gic": 53.333333333333336,
+  "n": 300
+ },
+ {
+  "arm": "ext_llmlingua2",
+  "source": "toolmem_raw",
+  "gic": 82.16666666666667,
+  "n": 600
+ },
+ {
+  "arm": "ext_llmlingua2",
+  "source": "overall",
+  "gic": 62.646627565982406,
+  "n": 2728
+ },
+ {
+  "arm": "alias_budget_link",
+  "source": "pec_home",
+  "gic": 65.25821596244131,
+  "n": 426
+ },
+ {
+  "arm": "alias_budget_link",
+  "source": "privacylens",
+  "gic": 58.666666666666664,
+  "n": 600
+ },
+ {
+  "arm": "alias_budget_link",
+  "source": "simuhome",
+  "gic": 69.55128205128206,
+  "n": 312
+ },
+ {
+  "arm": "alias_budget_link",
+  "source": "smartbench_tdcs",
+  "gic": 82.85714285714286,
+  "n": 490
+ },
+ {
+  "arm": "alias_budget_link",
+  "source": "toolmem",
+  "gic": 48.666666666666664,
+  "n": 300
+ },
+ {
+  "arm": "alias_budget_link",
+  "source": "toolmem_raw",
+  "gic": 28.666666666666668,
+  "n": 600
+ },
+ {
+  "arm": "alias_budget_link",
+  "source": "overall",
+  "gic": 57.58797653958944,
+  "n": 2728
+ },
+ {
+  "arm": "ext_selective_context",
+  "source": "pec_home",
+  "gic": 15.492957746478874,
+  "n": 426
+ },
+ {
+  "arm": "ext_selective_context",
+  "source": "privacylens",
+  "gic": 37.0,
+  "n": 600
+ },
+ {
+  "arm": "ext_selective_context",
+  "source": "simuhome",
+  "gic": 3.2051282051282053,
+  "n": 312
+ },
+ {
+  "arm": "ext_selective_context",
+  "source": "smartbench_tdcs",
+  "gic": 99.79591836734694,
+  "n": 490
+ },
+ {
+  "arm": "ext_selective_context",
+  "source": "toolmem",
+  "gic": 18.666666666666668,
+  "n": 300
+ },
+ {
+  "arm": "ext_selective_context",
+  "source": "toolmem_raw",
+  "gic": 69.16666666666667,
+  "n": 600
+ },
+ {
+  "arm": "ext_selective_context",
+  "source": "overall",
+  "gic": 46.11436950146628,
+  "n": 2728
+ }
+]
