@@ -337,7 +337,7 @@ def main():
     w('<footer>Every number on this page is re-derived from <code>results/percase/</code>, the '
       'per-case records that ship with the repository. The prompts are produced by '
       '<code>src/longctx/e2e_quad.py</code>, the same construction the paper evaluates. '
-      'Paper: <a href="../paper/main.pdf">paper/main.pdf</a> &middot; '
+      'Paper: <a href="https://github.com/firesaku/PrivTrim-IoT/blob/main/paper/main.pdf">paper/main.pdf</a> &middot; '
       'Code: <a href="https://github.com/firesaku/PrivTrim-IoT">'
       'github.com/firesaku/PrivTrim-IoT</a></footer>')
     w('</body></html>')
