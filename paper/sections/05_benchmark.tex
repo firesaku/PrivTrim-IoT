@@ -85,11 +85,28 @@ an order-of-magnitude increase in size and a different source mix. The six sourc
 $426$, $600$, $312$, $490$, $300$ and $600$ cases respectively, so no single source exceeds
 $22\%$ of the extension. Both sets share the same question templates.
 
-A note on key hygiene: the two sets reuse the same case identifiers for different content,
-and joining results across them by identifier silently mixes records. Every analysis
-reported here (i) resolves results within a single set, and (ii) verifies the join by
-comparing the uncompressed-context arm against a reference value computed from the same set.
-The check is reported alongside each table.
+A note on key hygiene: the two sets reuse the same case identifiers, and joining results across
+them by identifier silently mixes records. Every analysis reported here (i) resolves results
+within a single set, and (ii) verifies the join by comparing the uncompressed-context arm against
+a reference value computed from the same set. The check is reported alongside each table.
+
+\paragraph{What is trained, and what is tested.}
+Nothing is trained. The rule has no fitted parameter: it labels units by pattern, routes them by
+two categorical properties, and aliases with a keyed map. The only learned components in the
+pipeline are the reader models, which are used exactly as released and never fine-tuned. There is
+therefore no training set, no validation set and no train/test split, and a reader looking for one
+should read this paragraph as the statement that it does not exist.
+
+Both benchmarks are evaluation sets, generated independently from the same six sources and the
+same templates. They share an identifier namespace, and the overlap is not only nominal: all $112$
+keys of the main set occur in the extension, $100$ of them with different content and $12$ with
+content that coincides exactly. That is $10.7\%$ of the main set. Every conclusion we draw is
+computed within a single set, and no number in this paper is produced by pooling the two.
+
+Two settings are choices rather than fits, and both are reported over a range rather than at the
+chosen point: the token budget $r$, which is swept from $10\%$ to $75\%$ in
+Figure~\ref{fig:budget} with $r=0.50$ used for the headline numbers, and the sentence window of
+$\pm2$ units, which is used only when a corpus carries no record markers.
 
 \subsection{Public-benchmark variants}
 
