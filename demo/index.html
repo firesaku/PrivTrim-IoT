@@ -25,13 +25,19 @@
 <h1>Keeping the Referent in the DARK</h1>
 <p class="sub">Self-contained pages. No server, no dependencies, no network calls.</p>
 
+<a class="card" href="interactive.html">
+  <b>interactive.html — click through it</b>
+  <span>Sixty real cases from the benchmark. Pick one, see the four policies side by side, and
+  <em>drop lines yourself</em>: the leak indicator re-scans what you leave on screen and turns red
+  the moment a protected value survives. Includes a "hide the answer" switch if you want to guess
+  first, and a filter for the cases where DARK answers and both alternatives fail.</span>
+</a>
+
 <a class="card" href="dark_demo.html">
-  <b>dark_demo.html — the demo to open</b>
-  <span>An IoT operator asks a cloud model about a log. The question names an account, and that
-  account is the value that must not be sent. Four policies on the same three real cases, with the
-  prompts the paper's construction actually produces and the answers the reader actually gave:
-  send it raw (answers, leaks), compress (cannot answer), delete in place (cannot answer), DARK
-  (answers, no leak). Plus the 2,728-case results and the gold-in-context heatmap.</span>
+  <b>dark_demo.html — the short version</b>
+  <span>Three cases laid out to be read rather than clicked, with a walkthrough of the conflict,
+  the 2,728-case results and the gold-in-context heatmap. Start here if you have two minutes; use
+  the interactive page if you want to take it apart.</span>
 </a>
 
 <a class="card stale" href="zeal_demo_en.html">
@@ -41,9 +47,9 @@
 </a>
 
 <footer>
-Every number in <a href="dark_demo.html">dark_demo.html</a> is re-derived from
-<code>results/percase/</code> in the repository and regenerates with
-<code>python src/make_demo.py</code>. An earlier PrivTrim demo in this folder predated the
+Everything here is generated: <code>python src/make_demo_interactive.py</code> and
+<code>python src/make_demo.py</code> read <code>results/percase/</code> and the benchmark itself, so
+the pages cannot drift from the paper. An earlier PrivTrim demo in this folder predated the
 benchmark expansion and quoted figures that no longer matched the paper; it has been removed
 rather than left to mislead.
 </footer>
