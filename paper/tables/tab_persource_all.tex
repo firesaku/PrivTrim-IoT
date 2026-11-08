@@ -1,0 +1,33 @@
+\begin{table*}[t]
+\caption{Per-source F1 for every arm on the extension set ($r=0.50$). The aggregate in Table~\ref{tab:external} hides the spread: \textsc{DARK} ranges from $0.2631$ on \arm{toolmem\_raw}, where every arm is weak, to $0.6756$ on \arm{pec\_home}. No source reverses the ordering between \textsc{DARK} and the strongest leak-free published baseline.}
+\label{tab:persource_all}
+\centering\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrrrrr}
+\toprule
+Method & \arm{pec\_home} & \arm{privacylens} & \arm{simuhome} & \arm{smartbench\_tdcs} & \arm{toolmem} & \arm{toolmem\_raw} & overall \\
+\midrule
+\arm{full}                     & 0.7816 & 0.5340 & 0.8686 & 0.6449 & 0.5154 & 0.4401 & 0.6081 \\
+\arm{ext\_full}                & 0.7793 & 0.5357 & 0.8686 & 0.6449 & 0.5154 & 0.4384 & 0.6078 \\
+\textbf{\textsc{DARK}}         & \textbf{0.6756} & \textbf{0.4671} & \textbf{0.6186} & \textbf{0.5714} & \textbf{0.4933} & \textbf{0.2631} & \textbf{0.4937} \\
+Quito-X                        & 0.8505 & 0.1793 & 0.6026 & 0.6163 & 0.4097 & 0.3918 & 0.4831 \\
+Quito-X \arm{\_native}         & 0.8520 & 0.1859 & 0.5609 & 0.6408 & 0.4193 & 0.3952 & 0.4862 \\
+CPC                            & 0.5523 & 0.4414 & 0.4872 & 0.4571 & 0.4445 & 0.4725 & 0.4740 \\
+CPC \arm{\_native}             & 0.5453 & 0.4439 & 0.1218 & 0.5816 & 0.4194 & 0.4772 & 0.4523 \\
+LongLLMLingua                  & 0.6864 & 0.3366 & 0.4808 & 0.4401 & 0.2276 & 0.3759 & 0.4230 \\
+Provence                       & 0.5630 & 0.4529 & 0.1122 & 0.4755 & 0.3020 & 0.4045 & 0.4080 \\
+Provence \arm{\_native}        & 0.5328 & 0.4359 & 0.1058 & 0.4633 & 0.3601 & 0.4126 & 0.4047 \\
+LexComp \arm{\_preprint}       & 0.5958 & 0.2719 & 0.0673 & 0.4816 & 0.2912 & 0.4115 & 0.3696 \\
+\arm{alias\_budget\_link}      & 0.2859 & 0.3381 & 0.3910 & 0.6367 & 0.3121 & 0.1624 & 0.3482 \\
+\arm{budget\_cluster\_link}    & 0.2531 & 0.3342 & 0.3269 & 0.6367 & 0.3154 & 0.1624 & 0.3352 \\
+\arm{quad4\_del}               & 0.2742 & 0.4366 & 0.0288 & 0.3776 & 0.4970 & 0.2255 & 0.3142 \\
+LLMLingua-2                    & 0.4117 & 0.1784 & 0.0641 & 0.2660 & 0.1668 & 0.4009 & 0.2651 \\
+Selective Context              & 0.0215 & 0.1190 & 0.0321 & 0.6388 & 0.2447 & 0.3817 & 0.2588 \\
+LLMLingua-2 \arm{\_native}     & 0.2782 & 0.1694 & 0.0545 & 0.2789 & 0.1578 & 0.4041 & 0.2433 \\
+\arm{mask\_llmlingua2}         & 0.2709 & 0.2000 & 0.0224 & 0.1418 & 0.1827 & 0.1671 & 0.1712 \\
+\arm{mask\_llmlingua2\_native} & 0.2681 & 0.1938 & 0.0214 & 0.1279 & 0.1881 & 0.1622 & 0.1663 \\
+\arm{alias\_budget}            & 0.1286 & 0.0668 & 0.3910 & 0.2449 & 0.1626 & 0.0250 & 0.1469 \\
+\arm{budget\_cluster}          & 0.1122 & 0.0651 & 0.0160 & 0.2265 & 0.1657 & 0.0250 & 0.0981 \\
+\bottomrule
+\end{tabular}
+\end{table*}

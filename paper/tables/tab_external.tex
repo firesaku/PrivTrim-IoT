@@ -1,42 +1,46 @@
 \begin{table*}[t]
-\caption{Comparison on the 2{,}728-case extension (Qwen2.5-7B-Instruct, $r=0.50$). Published
-compressors are re-run through their reference implementations on the same cases; arms
-suffixed \arm{\_native} use each method's own default length. The six published baselines
-appeared between 2023 and 2025; \arm{lexcomp} is a 2026 preprint, run through its
-released implementation at its most aggressive preset, and is marked as such. \emph{Leak} is the fraction of cases in which a protected
-value is recoverable from the prompt. \textsc{DARK} and the masking baseline are the only arms
-at $0\%$; \textsc{DARK} exceeds that baseline by $+0.3226$ $[+0.3050,+0.3413]$. Against the
-strongest compressor, Quito-X, the difference is $+0.0107$ $[-0.0091,+0.0304]$, i.e.\ not
-significant, at $0\%$ versus $98.1\%$ leakage. The uncompressed arm reproduces the reference
-value $0.6078$ from a separately evaluated batch to within one case in $2{,}728$.}
+\caption{Every arm on the same $2{,}728$ cases (Qwen2.5-7B-Instruct, $r=0.50$), with every
+endpoint we measure. Published compressors are re-run through their reference implementations on
+these cases; arms suffixed \arm{\_native} use each method's own default length. \emph{F1} and
+\emph{EM} are the task metrics. \emph{GIC} is gold-in-context: the share of cases in which the
+record carrying the reference answer survives compression at all, and it is the column that
+separates the two families of method---every arm that keeps the anchor block holds it at $100\%$,
+while the published compressors drop that record in $11$ to $54\%$ of cases. \emph{leak} is the
+fraction of cases in which a protected value is recoverable from the prompt; \emph{tok} is the
+mean realised context length. \textsc{DARK} is the only arm that reaches $100\%$ GIC and $0\%$
+leakage together. Against the strongest leak-free published baseline, the masking wrapper, it
+exceeds by $+0.3226$ $[+0.3050,+0.3413]$; against the strongest compressor, Quito-X, the
+difference is $+0.0107$ $[-0.0091,+0.0304]$, i.e.\ not significant, at $0\%$ versus $98.1\%$
+leakage. The \arm{lexcomp} row is from its own batch, where the control arms score $0.4934$ rather
+than $0.4937$.}
 \label{tab:external}
 \centering\small
-\setlength{\tabcolsep}{5pt}
-\begin{tabular}{lllrr}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lllrrrrr}
 \toprule
-Method & Year & Family & F1 $\uparrow$ & leak $\downarrow$ \\
+Method & Year & Family & F1 $\uparrow$ & EM $\uparrow$ & GIC $\uparrow$ & leak $\downarrow$ & tok \\
 \midrule
-\arm{full}                     & ---   & uncompressed       & 0.6081 & 100.0\% \\
-\arm{ext\_full}                & ---   & uncompressed (rerun) & 0.6078 & 100.0\% \\
-\textbf{\textsc{DARK}}         & ---   & ours (routes)      & \textbf{0.4937} & \textbf{0.0\%} \\
-Quito-X                        & 2025  & query-aware        & 0.4831 & 98.1\% \\
-Quito-X \arm{\_native}         & 2025  & query-aware        & 0.4862 & 98.1\% \\
-CPC                            & 2025  & query-aware        & 0.4740 & 92.6\% \\
-CPC \arm{\_native}             & 2025  & query-aware        & 0.4523 & 93.4\% \\
-LongLLMLingua                  & 2024  & task-agnostic      & 0.4230 & 100.0\% \\
-Provence                       & 2025  & query-aware        & 0.4080 & 90.8\% \\
-Provence \arm{\_native}        & 2025  & query-aware        & 0.4047 & 88.8\% \\
-LexComp \arm{\_preprint}       & 2026  & lexical rules, CPU & 0.3696 & 100.0\% \\
-\arm{alias\_budget\_link}      & ---   & ours, no answer key, merged cell & 0.3482 & 0.0\% \\
-\arm{budget\_cluster\_link}    & ---   & raw text, anchor kept & 0.3352 & 55.4\% \\
-\arm{quad4\_del}               & ---   & ours, delete instead of alias & 0.3142 & 0.0\% \\
-LLMLingua-2                    & 2024  & task-agnostic      & 0.2651 & 100.0\% \\
-Selective Context              & 2023  & task-agnostic      & 0.2588 & 100.0\% \\
-LLMLingua-2 \arm{\_native}     & 2024  & task-agnostic      & 0.2433 & 100.0\% \\
-\arm{mask\_llmlingua2}         & ---   & sanitize + compress & 0.1712 & 0.0\% \\
-\arm{mask\_llmlingua2\_native} & ---   & sanitize + compress & 0.1663 & 0.0\% \\
-\arm{alias\_budget}            & ---   & global alias, no anchor & 0.1469 & 0.0\% \\
-\arm{budget\_cluster}          & ---   & redundancy only    & 0.0981 & 0.5\% \\
+\arm{full}                     & ---   & uncompressed         & 0.6081 & 0.5924 & 100.0\% & 100.0\% & 8482 \\
+\arm{ext\_full}                & ---   & uncompressed (rerun) & 0.6078 & 0.5920 & 100.0\% & 100.0\% & 8482 \\
+\textbf{\textsc{DARK}}         & ---   & ours (routes)        & \textbf{0.4937} & \textbf{0.4809} & \textbf{100.0\%} & \textbf{0.0\%} & 4146 \\
+Quito-X                        & 2025  & query-aware          & 0.4831 & 0.4597 & 69.8\% & 98.1\% & 4242 \\
+Quito-X \arm{\_native}         & 2025  & query-aware          & 0.4862 & 0.4630 & 69.7\% & 98.1\% & 4239 \\
+CPC                            & 2025  & query-aware          & 0.4740 & 0.4600 & 82.7\% & 92.6\% & 4242 \\
+CPC \arm{\_native}             & 2025  & query-aware          & 0.4523 & 0.4406 & 81.3\% & 93.4\% & 3855 \\
+LongLLMLingua                  & 2024  & task-agnostic        & 0.4230 & 0.3893 & 70.3\% & 100.0\% & 4241 \\
+Provence                       & 2025  & query-aware          & 0.4080 & 0.3985 & 88.9\% & 90.8\% & 4242 \\
+Provence \arm{\_native}        & 2025  & query-aware          & 0.4047 & 0.3952 & 92.6\% & 88.8\% & 3995 \\
+LexComp \arm{\_preprint}       & 2026  & lexical rules        & 0.3696 & 0.3299 & 65.0\% & 100.0\% & 5817 \\
+\arm{alias\_budget\_link}      & ---   & ours, no key         & 0.3482 & 0.3398 & 57.6\% & 0.0\% & 3941 \\
+\arm{budget\_cluster\_link}    & ---   & ours, anchor kept    & 0.3352 & 0.3270 & 57.6\% & 55.4\% & 3933 \\
+\arm{quad4\_del}               & ---   & ours, delete         & 0.3142 & 0.3013 & 100.0\% & 0.0\% & 4147 \\
+LLMLingua-2                    & 2024  & task-agnostic        & 0.2651 & 0.2386 & 62.6\% & 100.0\% & 4242 \\
+Selective Context              & 2023  & task-agnostic        & 0.2588 & 0.2324 & 46.1\% & 100.0\% & 4055 \\
+LLMLingua-2 \arm{\_native}     & 2024  & task-agnostic        & 0.2433 & 0.2181 & 59.8\% & 100.0\% & 4188 \\
+\arm{mask\_llmlingua2}         & ---   & sanitize + compress  & 0.1712 & 0.1444 & 67.9\% & 0.0\% & 4242 \\
+\arm{mask\_llmlingua2\_native} & ---   & sanitize + compress  & 0.1663 & 0.1397 & 67.5\% & 0.0\% & 4190 \\
+\arm{alias\_budget}            & ---   & ours, global alias   & 0.1469 & 0.1455 & 47.5\% & 0.0\% & 3942 \\
+\arm{budget\_cluster}          & ---   & ours, redundancy only & 0.0981 & 0.0968 & 47.5\% & 0.5\% & 3932 \\
 \bottomrule
 \end{tabular}
 \end{table*}

@@ -6,31 +6,11 @@
 \paragraph{Extension set ($2{,}728$ cases).}
 F1 by source, budget $r=0.50$, all arms of ours constructed without the answer key. The
 routing rule is strongest on \arm{pec\_home} and \arm{smartbench\_tdcs} and weakest on
-\arm{toolmem\_raw}, where the uncompressed arm is also weakest.
+\arm{toolmem\_raw}, where the uncompressed arm is also weakest. The full breakdown, every arm
+against every source, is Table~\ref{tab:persource_all} at the end of this appendix; it is set
+full-width because a per-source table with twenty-one arms does not fit a column.
 
-\begin{center}
-{%
-\refstepcounter{table}\label{tab:app_persource_ext}%
-\footnotesize\textsc{Table \thetable}\\[1pt]
-Per-source F1 on the extension set ($2{,}728$ cases, $r=0.50$).\par}
-\vspace{3pt}
-{\small\setlength{\tabcolsep}{3pt}%
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{lrrrr}
-\toprule
-Source & $n$ & \arm{full} & \textsc{DARK} & ABL \\
-\midrule
-\arm{pec\_home}        & 426 & 0.7816 & 0.6756 & 0.2859 \\
-\arm{privacylens}      & 600 & 0.5340 & 0.4671 & 0.3381 \\
-\arm{simuhome}         & 312 & 0.8686 & 0.6186 & 0.3910 \\
-\arm{smartbench\_tdcs} & 490 & 0.6449 & 0.5714 & 0.6367 \\
-\arm{toolmem}          & 300 & 0.5154 & 0.4933 & 0.3121 \\
-\arm{toolmem\_raw}     & 600 & 0.4401 & 0.2631 & 0.1624 \\
-\midrule
-overall                & 2728 & 0.6081 & 0.4937 & 0.3482 \\
-\bottomrule
-\end{tabular}}}
-\end{center}
+
 \vspace{2pt}
 
 \paragraph{Main set ($112$ cases).}
@@ -106,3 +86,5 @@ set whose uncompressed arm does not reproduce the reference value is not part of
 Budget arms assert non-overshoot per case; a run that violates it is discarded rather than
 truncated. All arms of ours are keyed alias runs; an unkeyed assignment changes both the
 alias strings and the resulting score, so results are only comparable within one setting.
+
+\input{tables/tab_persource_all}
