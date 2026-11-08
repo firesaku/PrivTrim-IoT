@@ -42,11 +42,30 @@ attribute that the context still implies, because answering such questions is th
 Leakage is measured as recoverability of the protected values from the exact prompt text,
 using the pattern set of the published protocol (full value plus fragments). That is the
 relevant quantity for a pipeline whose adversary is the model provider and whose prompts may
-be retained. It is not a formal guarantee. We derive no differential-privacy
+be retained.
+
+Pattern matching answers whether a value is \emph{present}; it does not answer whether a model can
+\emph{find} it, so we also run the extraction attack the same adversary would run. A model is given
+each arm's passage with no question and asked to enumerate any account identifiers, addresses or
+telephone numbers it can recover. On the uncompressed prompt it recovers $36.4\%$ of the protected
+values and returns at least one in $82.0\%$ of cases ($[80.6,83.4]$). On \textsc{DARK} it returns
+none: $0.0\%$ of cases, with a $95\%$ upper bound of $0.1\%$. The zero is not an artifact of the
+pattern set; a model actively searching for the values finds nothing to look at.
+
+It is not a formal guarantee. We derive no differential-privacy
 bound~\cite{zhao-dp-2024} and no $k$-anonymity
 guarantee~\cite{carvalho-microdata-2023}; the alias map is assumed private, and an adversary who
 obtains it recovers the values. Keying the assignment removes the rank attack an unkeyed
 assignment admits---an adversary holding only the value set can otherwise invert the map.
+
+Both zeros are conditional on knowing which values to protect, and that condition is measurable
+rather than assumed. Holding the $500$ case set fixed and keeping each protected value with
+probability $\rho$, a detector that misses one value in a hundred already leaves a value
+recoverable in $7.8\%$ of cases; missing one in twenty reaches $36.4\%$, and missing one in ten
+reaches $58.4\%$. The task metric barely moves across that range ($0.491$ to $0.510$) while leakage
+grows by more than an order of magnitude, which makes detector recall the operating requirement for
+a deployment rather than a secondary detail. Below $\rho=0.9$ the rule stops protecting what it
+cannot see, and the F1 gain in that regime is the arithmetic of protecting less.
 
 The measured benefit of keeping repetitive units follows from an anti-correlation between
 redundancy and answer-bearing in this data. It is not derived from the definition of the

@@ -63,8 +63,13 @@ def open_maybe_gz(path):
 
 
 def load(tag):
+    """Exact filename, not a prefix: `recall_0p9*` would also match 0p95/0p98/0p99 and silently
+    pool four runs into one point."""
     rows = []
-    for path in sorted(glob.glob(str(ROOT / "results" / "percase" / ("recall_%s*" % tag)))):
+    for pattern in ("recall_%s_percase.jsonl", "recall_%s_percase.jsonl.gz"):
+        path = ROOT / "results" / "percase" / (pattern % tag)
+        if not path.exists():
+            continue
         with open_maybe_gz(path) as fh:
             for line in fh:
                 line = line.strip()
@@ -107,10 +112,10 @@ def main(argv=None):
             continue
         s["rho"] = RHO[tag]
         table.append(s)
-        # expected leak rate under an independent per-value detector
+        # expected leak rate under an independent per-value detector: a case escapes only if
+        # every one of its m values was detected, which happens with probability rho^m
         q = [r for r in rows if r.get("arm") == "quad4"]
-        exp = sum((1.0 - RHO[tag]) ** 0 * (1.0 - (RHO[tag] ** (r.get("n_canaries") or 0)))
-                  for r in q) / max(1, len(q))
+        exp = sum(1.0 - (RHO[tag] ** (r.get("n_canaries") or 0)) for r in q) / max(1, len(q))
         expected.append({"rho": RHO[tag], "expected_leak_case_pct": 100.0 * exp})
 
     if not table:
@@ -133,7 +138,9 @@ def main(argv=None):
         return 0
 
     fig, ax = plt.subplots(figsize=(W, H))
-    xs = [100.0 * t["rho"] for t in table]
+    # x is the MISS rate, not the recall rate: recall lives in 99--100% and would squeeze every
+    # point against the right edge, which is where the interesting part is.
+    xs = [100.0 * (1.0 - t["rho"]) for t in table]
     ys = [t["leak_case_pct"] for t in table]
     ex = [100.0 * e["expected_leak_case_pct"] for e in expected]
 
@@ -144,9 +151,9 @@ def main(argv=None):
     for x, y, t in zip(xs, ys, table):
         ax.annotate("%.0f" % y, (x, y), textcoords="offset points", xytext=(0, 6),
                     ha="center", fontsize=7, color=INK)
-    ax.set_xlabel("share of protected values the detector finds (%)")
+    ax.set_xlabel("share of protected values the detector misses (%)")
     ax.set_ylabel("cases with a value recoverable (%)")
-    ax.set_xlim(min(xs) - 1.0, 100.6)
+    ax.set_xlim(-0.5, max(12.0, max(xs) * 1.15))
     ax.set_ylim(-2, 102)
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
