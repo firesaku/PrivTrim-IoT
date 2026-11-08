@@ -72,6 +72,46 @@ contains zero, and we report those two rows as unresolved rather than as a win. 
 whole claim: on F1 this experiment does not separate us from the best compressor, and on leakage
 it separates us from every one of them.
 
+\subsection{Which half the aggregate hides}
+\label{sec:regimes}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_regimes.pdf}
+\caption{The same comparison, split by whether the question names a protected value. Bars are F1,
+and the number after each bar is F1 followed by the share of cases in which a protected value is
+recoverable from the prompt. (a)~When the question names a sensitive account, the arms above us on
+F1 are exactly the arms that leak on $84$--$100\%$ of these cases, and the only leak-free arms that
+answer at all are ours. (b)~When the question names a record identifier that carries no protected
+value, aliasing is unnecessary, the cost disappears, and \textsc{DARK} leads every compressor.
+Panel~(a) is the honest cost of the design and panel~(b) is where it is free; both come from the
+same rule, applied without a flag that says which regime it is in.}
+\label{fig:regimes}
+\end{figure}
+
+
+The headline comparison is a tie, $0.4937$ against $0.4831$ over all $2{,}728$ cases. That tie
+averages two populations that move in opposite directions, and the split between them is not a
+reporting convenience: it is the distinction the paper is about. When the question names a
+sensitive account, the reader has to resolve an invented token before it can answer, and that
+resolution costs F1. When the question names a record identifier that carries no protected value,
+there is nothing to alias and the cost does not arise.
+
+Figure~\ref{fig:regimes} separates the two. On the $1{,}500$ multi-entity cases (panel a), every
+compressor that beats us on F1 leaks on $84$--$100\%$ of those same cases: Quito-X gains $+0.1314$
+over us and forwards a protected value in all $1{,}500$. Among the arms that leak nothing we are
+the only one that answers at all, at $0.3273$ against $0.0007$ for the next leak-free arm, a gap of
+$+0.3267$ $[+0.3040,+0.3500]$. On the $1{,}228$ needle cases (panel b) the order reverses: we lead
+the two strongest compressors by $+0.1842$ $[+0.1558,+0.2124]$ and $+0.1196$ $[+0.0943,+0.1451]$,
+and match the uncompressed prompt ($+0.0160$ $[-0.0032,+0.0348]$) at half its length.
+
+One mechanism produces both halves. The F1 cost is what it takes to make the referent unreadable,
+so it is paid exactly where the referent is the secret and nowhere else. The aggregate tie is
+therefore not a compromise between two mediocre outcomes: it is a large loss in one regime and a
+large win in the other, and only one of those regimes involves a choice. Where the anchor is not
+sensitive, leaking buys nothing, and the compressors pay it anyway.
+
+
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_frontier.pdf}
@@ -194,3 +234,20 @@ supports is that the mechanism is not tuned to one tokenizer or one instruction 
 same construction, the same prompts and the same cost, on a reader trained by a different
 organisation. What it does not support is a claim about readers larger than the two tested; we
 say so again in Section~\ref{sec:discussion}.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig2_diagnostic.pdf}
+\caption{Answer retention and what it does not explain. (a) Fraction of the 112 benchmark
+cases in which the record carrying the reference answer survives compression, as the budget
+varies. \textsc{DARK} and the delete variant coincide almost exactly: the
+alias-instead-of-delete rule does not change \emph{which} units survive. (b) Survival against
+F1 on the $2{,}728$-case extension; circles are multi-entity cases and squares are needle
+cases, and the four arms are the redundancy-only rule, the same rule with the anchor line
+protected, \textsc{DARK}, and the delete variant. The delete variant sits at $100\%$ survival
+and $0.0000$ F1 on multi-entity cases: the information is in the prompt and cannot be
+located. (c) Retention within each source at
+$r=0.50$. (d) Per-source F1, \textsc{DARK} against the anchor-protected arm, with the
+paired difference printed at each row.}
+\label{fig:survival}
+\end{figure*}
