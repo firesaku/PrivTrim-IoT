@@ -134,9 +134,12 @@ for gx in (176, 352, 528):
     arrow(gx + 1, TY + TH // 2 - 5, 9, 11)
 
 rect(5, 47, W - 10, 1.2, color=G_L, fill=G_L, lw=0, arc=0)
-txt(6, 10, W - 12, 30,
+txt(6, 16, W - 12, 20,
     'DARK matches the strongest compressor on F1 at zero measured leakage, on half the tokens.',
     10.5, INK, bold=True)
+txt(6, 4, W - 12, 12,
+    '6 corpora \u00b7 2,728 evaluation cases \u00b7 112 main \u00b7 3 \u00d7 300 public variants',
+    7.5, G_D)
 
 # ------------------------------------------------------------------ top panels
 x, w = tops[0]
@@ -179,16 +182,33 @@ txt(x + 6, BY + 42, w - 12, 16, 'same block', 10, G_D)
 txt(x + 6, BY + 26, w - 12, 16, 'in every case', 10, INK)
 txt(x + 6, BY + 10, w - 12, 14, 'multi / needle', 10, G_D)
 
-# ------------------------------------------------------------------ II
+# ------------------------------------------------------------------ II  the rule
 x, w = bots[1]
-txt(x, BY + BH - 30, w, 16, 'II.  COVERAGE', 10, INK, bold=True)
-ic('grid', x + 8, BY + BH - 66, 25, G_D)
-ic('layers', x + 39, BY + BH - 66, 25, G_D)
-rows = [('6', 'corpora'), ('2,728', 'cases'), ('112', 'main'), ('3\u00d7300', 'variants')]
-for k, (num, cap) in enumerate(rows):
-    yy = BY + 128 - k * 32
-    txt(x + 4, yy, 58, 18, num, 12, INK, bold=True, align='right')
-    txt(x + 66, yy, w - 70, 18, cap, 10, G_D, align='left')
+txt(x, BY + BH - 30, w, 16, 'II.  THE RULE', 10, INK, bold=True)
+
+CW, CH, GP = 48, 54, 4
+GX = x + 34
+ROW_TOP = BY + 124
+ROW_BOT = BY + 66
+grid_cells = [
+    (GX,                 ROW_TOP, 'DELETE', 'scissors', False),
+    (GX + CW + GP,       ROW_TOP, 'ALIAS',  'key',      True),
+    (GX,                 ROW_BOT, 'KEEP',   'shield',   False),
+    (GX + CW + GP,       ROW_BOT, 'REFILL', 'layers',   False),
+]
+for cx, cy, label, icon_name, hero in grid_cells:
+    if hero:
+        rect(cx, cy, CW, CH, color=INK, fill=INK, lw=1.0)
+        ic(icon_name, cx + CW // 2 - 7, cy + CH - 21, 15, '#FFFFFF')
+        txt(cx, cy + 7, CW, 13, label, 9, '#FFFFFF', bold=True)
+    else:
+        rect(cx, cy, CW, CH, color=G_L, fill='#FBFBFB', lw=0.8)
+        ic(icon_name, cx + CW // 2 - 7, cy + CH - 21, 15, G_M)
+        txt(cx, cy + 7, CW, 13, label, 9, G_D, bold=True)
+
+txt(x + 1, ROW_TOP + CH // 2 - 6, 31, 12, 'high', 7.5, G_D, align='left')
+txt(x + 1, ROW_BOT + CH // 2 - 6, 31, 12, 'low',  7.5, G_D, align='left')
+txt(GX, BY + 48, 2 * CW + GP, 12, 'relevance   low \u2192 high', 7.5, G_D)
 
 # ------------------------------------------------------------------ III
 x, w = bots[2]
