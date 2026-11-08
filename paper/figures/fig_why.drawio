@@ -190,16 +190,16 @@
         <mxCell id="c63" value="efill" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11.81;fontFamily=Times New Roman;fontColor=#555555;fontStyle=0;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry x="320" y="310" width="26" height="20" as="geometry"/>
         </mxCell>
-        <mxCell id="c64" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#4A1412;strokeWidth=0.9;" vertex="1" parent="1">
+        <mxCell id="c64" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FBFBFB;strokeColor=#4A1412;strokeWidth=0.9;" vertex="1" parent="1">
           <mxGeometry x="354" y="278" width="52" height="62" as="geometry"/>
         </mxCell>
-        <mxCell id="c65" value="" style="shape=image;image=data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23D4D4D2%22 stroke-width=%221.7%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z%22/%3E%3C/svg%3E;aspect=fixed;html=1;" vertex="1" parent="1">
+        <mxCell id="c65" value="" style="shape=image;image=data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%239A9A9A%22 stroke-width=%221.7%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z%22/%3E%3C/svg%3E;aspect=fixed;html=1;" vertex="1" parent="1">
           <mxGeometry x="373" y="283" width="15" height="15" as="geometry"/>
         </mxCell>
-        <mxCell id="c66" value="K" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=23.61;fontFamily=Times New Roman;fontColor=#D4D4D2;fontStyle=1;whiteSpace=wrap;" vertex="1" parent="1">
+        <mxCell id="c66" value="K" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=23.61;fontFamily=Times New Roman;fontColor=#4A1412;fontStyle=1;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry x="360" y="306" width="20" height="22" as="geometry"/>
         </mxCell>
-        <mxCell id="c67" value="eep" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11.81;fontFamily=Times New Roman;fontColor=#D4D4D2;fontStyle=0;whiteSpace=wrap;" vertex="1" parent="1">
+        <mxCell id="c67" value="eep" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11.81;fontFamily=Times New Roman;fontColor=#555555;fontStyle=0;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry x="376" y="310" width="26" height="20" as="geometry"/>
         </mxCell>
         <mxCell id="c68" value="II.  NO SAFE" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=13.89;fontFamily=Times New Roman;fontColor=#8E2A22;fontStyle=1;whiteSpace=wrap;" vertex="1" parent="1">

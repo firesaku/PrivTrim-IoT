@@ -212,12 +212,6 @@ for cx, cy, label, icon_name, hero in grid_cells:
         ic('star', cx + CW // 2 - 7, cy + CH - 15, 14, '#FFFFFF')
         txt(cx + 6, cy + 12, 20, 22, initial, 17, '#FFFFFF', bold=True, align='left')
         txt(cx + 22, cy + 10, CW - 26, 20, rest, 8.5, '#FFFFFF', align='left')
-    elif label == 'Keep':
-        # the cell that keeps a unit untouched: present, but not the story
-        rect(cx, cy, CW, CH, color=INK, fill='#FFFFFF', lw=0.9)
-        ic(icon_name, cx + CW // 2 - 7, cy + CH - 20, 15, G_L)
-        txt(cx + 6, cy + 12, 20, 22, initial, 17, G_L, bold=True, align='left')
-        txt(cx + 22, cy + 10, CW - 26, 20, rest, 8.5, G_L, align='left')
     else:
         rect(cx, cy, CW, CH, color=INK, fill='#FBFBFB', lw=0.9)
         ic(icon_name, cx + CW // 2 - 7, cy + CH - 20, 15, G_M)
