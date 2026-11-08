@@ -64,6 +64,8 @@ ICONS = {
              '<path d="M5 7l-3 6a3 3 0 0 0 6 0z"/><path d="M19 7l-3 6a3 3 0 0 0 6 0z"/>'
              '<path d="M8 21h8"/>',
     'arrow-down': '<line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/>',
+    'star': '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 '
+            '5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
     'user': '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>'
             '<circle cx="12" cy="7" r="4"/>',
     'unlock': '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>'
@@ -120,7 +122,7 @@ def hline(x, y, w, color=G_M, lw=0.8):
 
 # ------------------------------------------------------------------ frame
 add('rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;', 0, 0, W, H)
-rect(4, 4, W - 8, H - 8, color=RED, fill='none', lw=1.1)
+rect(4, 4, W - 8, H - 8, color=INK, fill='none', lw=1.1)
 ic('moon', 24, 398, 20)
 txt(50, 397, 70, 22, 'DARK', 11, INK, bold=True, align='left')
 
@@ -178,7 +180,7 @@ txt(x, BY + BH - 30, w, 16, 'I.  DATA EXAMPLE', 10, INK, bold=True)
 ic('layers', x + 6, BY + BH - 66, 25, G_D)
 ic('key', x + 35, BY + BH - 66, 25, INK)
 ic('link', x + 64, BY + BH - 66, 23, INK)
-rect(x + 6, BY + 62, w - 12, 62, color=G_M, fill=PALE, lw=0.7)
+rect(x + 6, BY + 62, w - 12, 62, color=INK, fill=PALE, lw=0.7)
 txt(x + 6, BY + 96, w - 12, 16, 'media_player', 10, INK, family=FM)
 txt(x + 6, BY + 80, w - 12, 16, 'ACCT-4cd0', 10, INK, bold=True, family=FM)
 txt(x + 6, BY + 64, w - 12, 16, 'temp 21.4', 10, INK, family=FM)
@@ -187,40 +189,39 @@ txt(x + 6, BY + 26, w - 12, 16, 'in every case', 10, INK)
 txt(x + 6, BY + 10, w - 12, 14, 'multi / needle', 10, G_D)
 
 # ------------------------------------------------------------------ II  the rule
-x, w = bots[1]
-txt(x, BY + BH - 30, w, 16, 'II.  THE RULE', 10, INK, bold=True)
+x, w = bots[2]
+txt(x, BY + BH - 30, w, 16, 'III.  THE RULE', 10, INK, bold=True)
 
-CW, CH, GP = 48, 54, 4
-GX = x + 34
-ROW_TOP = BY + 124
-ROW_BOT = BY + 66
+CW, CH, GP = 52, 62, 4
+GX = x + 14
+ROW_TOP = BY + 104
+ROW_BOT = BY + 38
 grid_cells = [
     (GX,                 ROW_TOP, 'DELETE', 'scissors', False),
     (GX + CW + GP,       ROW_TOP, 'ALIAS',  'key',      True),
-    (GX,                 ROW_BOT, 'KEEP',   'shield',   False),
-    (GX + CW + GP,       ROW_BOT, 'REFILL', 'layers',   False),
+    (GX,                 ROW_BOT, 'REFILL', 'layers',   False),
+    (GX + CW + GP,       ROW_BOT, 'KEEP',   'shield',   False),
 ]
 for cx, cy, label, icon_name, hero in grid_cells:
     if hero:
         rect(cx, cy, CW, CH, color=INK, fill=INK, lw=1.0)
-        ic(icon_name, cx + CW // 2 - 7, cy + CH - 20, 15, '#FFFFFF')
-        txt(cx, cy + 15, CW, 13, label, 9, '#FFFFFF', bold=True)
-        txt(cx, cy + 4, CW, 11, '\u2605 DARK', 7.5, '#FFFFFF', bold=True)
+        ic('star', cx + CW // 2 - 7, cy + CH - 15, 14, '#FFFFFF')
+        txt(cx, cy + 21, CW, 18, 'DARK', 11, '#FFFFFF', bold=True)
+        txt(cx, cy + 6, CW, 11, 'alias', 8, '#FFFFFF')
     elif label == 'KEEP':
         # the cell that keeps a unit untouched: present, but not the story
-        rect(cx, cy, CW, CH, color=G_L, fill='#FFFFFF', lw=0.7)
+        rect(cx, cy, CW, CH, color=INK, fill='#FFFFFF', lw=0.9)
         ic(icon_name, cx + CW // 2 - 7, cy + CH - 20, 15, G_L)
-        txt(cx, cy + 8, CW, 13, label, 9, G_L, bold=True)
+        txt(cx, cy + 10, CW, 13, label, 8, G_L, bold=True)
     else:
-        rect(cx, cy, CW, CH, color=G_L, fill='#FBFBFB', lw=0.8)
+        rect(cx, cy, CW, CH, color=INK, fill='#FBFBFB', lw=0.9)
         ic(icon_name, cx + CW // 2 - 7, cy + CH - 20, 15, G_M)
-        txt(cx, cy + 8, CW, 13, label, 9, G_D, bold=True)
+        txt(cx, cy + 10, CW, 13, label, 8, G_D, bold=True)
 
-txt(GX, BY + 48, 2 * CW + GP, 12, 'relevance   low \u2192 high', 7.5, G_D)
 
 # ------------------------------------------------------------------ III
-x, w = bots[2]
-txt(x, BY + BH - 30, w, 16, 'III.  NO SAFE', 10, RED, bold=True)
+x, w = bots[1]
+txt(x, BY + BH - 30, w, 16, 'II.  NO SAFE', 10, RED, bold=True)
 txt(x, BY + BH - 48, w, 16, 'CHOICE', 10, RED, bold=True)
 ic('shield', x + 8, BY + BH - 84, 25, G_D)
 ic('scale', x + w // 2 - 12, BY + BH - 84, 25, G_D)
