@@ -1,0 +1,45 @@
+{
+ "runs": [
+  {
+   "arm": "quad4",
+   "n": 500,
+   "leak_case_pct": 0.0,
+   "leak_value_pct": 0.0,
+   "f1": 0.49314529351485875,
+   "gic_pct": 100.0,
+   "rho": 1.0
+  },
+  {
+   "arm": "quad4",
+   "n": 500,
+   "leak_case_pct": 3.2,
+   "leak_value_pct": 0.2499218994064355,
+   "f1": 0.4938119601815254,
+   "gic_pct": 100.0,
+   "rho": 0.995
+  },
+  {
+   "arm": "quad4",
+   "n": 500,
+   "leak_case_pct": 7.8,
+   "leak_value_pct": 0.6248047485160887,
+   "f1": 0.49114529351485875,
+   "gic_pct": 100.0,
+   "rho": 0.99
+  }
+ ],
+ "expected": [
+  {
+   "rho": 1.0,
+   "expected_leak_case_pct": 0.0
+  },
+  {
+   "rho": 0.995,
+   "expected_leak_case_pct": 6.209635684841456
+  },
+  {
+   "rho": 0.99,
+   "expected_leak_case_pct": 12.049178209977326
+  }
+ ]
+}

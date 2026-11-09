@@ -275,22 +275,53 @@ $r\approx0.10$ there is no longer enough budget to restructure the prompt and ke
 oriented, so the two properties stop being additive: the arms that hold their F1 are the arms that
 leave the identifier in place.
 
+The published compressors add a third reading, and it is the one that settles what the crossing
+means. Neither of them crosses \textsc{DARK}: on the $341$ paired cases they were run on, \textsc{DARK}
+scores $0.3410$ at $r=0.05$ against CPC's $0.2181$ and Quito-X's $0.0679$, and $0.4194$ at $r=0.15$
+against $0.3032$ and $0.2035$. They do not fall slightly behind at tight budgets; they fall away
+from the task, while leaking on $56\%$ to $98\%$ of the cases where they do it
+(b). The only arm that ever scores above \textsc{DARK} below $r=0.10$ is our own anchor-kept
+variant, and panel~(b) is what it pays.
+
 That crossing is the price of the property this paper measures, written as a number rather than as a
 caveat, and it is why the operation is treated as the contribution and the region as its
 precondition. Above $r=0.10$ the rule buys $0.15$ to $0.16$ F1 over pruning alone at no measured
 leakage; below it, a deployment that must keep both properties accepts a lower F1 rather than a
 forwarded identifier, and the figure states exactly how much lower.
 
+\subsection{Why a strong compressor is not a substitute for the operation}
+\label{sec:frontend}
+
+The design choice can be stated as a comparison a reviewer will want: if the identifier is aliased
+anyway, does the strongest compressor match the routing rule? The composed arm is built by taking
+the passage \textsc{DARK} would send, running a published compressor over it at the same budget, and
+evaluating on the same cases, so the only thing that varies is what happens after the alias map is
+written.
+
+It does not match, and the gap is the selection step. Aliasing alone reproduces \textsc{DARK}
+exactly ($0.4963$ against $0.4963$ on $682$ paired cases), which is the check that the composed
+passage is the one the rule would have sent. Adding Quito-X on top costs $0.0371$ F1
+($0.4592$; $0.4637$ at its native length), and adding CPC costs $0.0961$ ($0.4002$; $0.4083$
+native). Every composed arm leaks nothing, because the passage never carried the values---so the
+entire difference is task accuracy, and it runs against the compressor.
+
+The reason is the one Section~\ref{sec:regimes} established. A content compressor ranks units by
+what the question is about and drops the rest; on these records the answer rides in the block that
+carries the identifier, and the ranking has no way to know that. The routing rule does know, because
+the region is decided by the entity rather than by similarity. Aliasing makes a compressor
+\emph{safe}; it does not make it \emph{adequate}, and the two are worth $0.04$ to $0.10$ F1 apart.
+
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_budget_all.pdf}
-\caption{The price of the property, on all $2{,}728$ cases. (a)~F1 against the budget ratio;
+\caption{The price of the property, and who pays it. (a)~F1 against the budget ratio;
 (b)~the share of cases in which a protected value is recoverable from the prompt, on the same arms
-and the same ratios. \textsc{DARK} rises with the budget and stays at $0\%$ throughout. The
-anchor-kept redundancy arm overtakes it below $r\approx0.10$ and pays for that with leakage that
-grows from $21\%$ to $55\%$; the redundancy arm that protects nothing stays leak-free by dropping
-the record that carries the value, and its F1 never exceeds $0.28$. The two panels are the same
-experiment: reading (a) without (b) would make protection look optional at tight budgets, and
-reading (b) without (a) would make it look free.}
+and the same ratios. The internal arms are measured on all $2{,}728$ cases; the two published
+compressors on $341$ paired cases at the two tight ratios and on all $2{,}728$ at $r=0.50$.
+\textsc{DARK} rises with the budget and stays at $0\%$ throughout. The anchor-kept redundancy arm
+overtakes it below $r\approx0.10$ and pays for that with leakage that grows from $21\%$ to $55\%$;
+the published compressors do not overtake it at all below $r=0.10$, falling to $0.0679$ and
+$0.2181$ while leaking on $73\%$ and $56\%$ of cases. Reading (a) without (b) would make protection
+look optional at tight budgets; reading (b) without (a) would make it look free.}
 \label{fig:budgetall}
 \end{figure*}

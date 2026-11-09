@@ -66,10 +66,10 @@ SERIES = [
     # from the archived 0.5 run so the curve closes: quito_x and cpc are the two strongest
     # published baselines, and whether they also cross DARK is the question that job exists to
     # answer. Absent files are skipped rather than fatal, so this figure builds before and after.
-    ("Quito-X",                 ["budgetext_s*_percase.jsonl", "extevfull_s*_percase.gz",
+    ("Quito-X",                 ["budgetext_*_percase.jsonl", "extevfull_s*_percase.gz",
                                  "extnew2_s*_percase.gz"],
      "ext_quito_x",          "#B5645C", "-.", "D"),
-    ("CPC",                     ["budgetext_s*_percase.jsonl", "extevfull_s*_percase.gz",
+    ("CPC",                     ["budgetext_*_percase.jsonl", "extevfull_s*_percase.gz",
                                  "extnew2_s*_percase.gz"],
      "ext_cpc",              "#C98F86", "-.", "v"),
 ]
@@ -177,8 +177,8 @@ def main(argv=None):
         ax.grid(axis="y", color="#EFEFEF", linewidth=0.8)
         ax.set_axisbelow(True)
 
-    axes[0].set_ylim(0.15, max(0.70, (full_f1 or 0.6) + 0.06))
-    axes[1].set_ylim(-3, 62)
+    axes[0].set_ylim(-0.03, max(0.72, (full_f1 or 0.6) + 0.06))
+    axes[1].set_ylim(-4, 104)
     axes[0].legend(frameon=False, loc="lower right")
 
     fig.tight_layout(pad=0.3, w_pad=1.4)
