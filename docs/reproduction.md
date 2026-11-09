@@ -134,6 +134,51 @@ python src/analyze_lexcomp.py \
 table and the text are kept from drifting apart. All bootstrap intervals use 4,000 resamples with
 seed 7 for the same reason.
 
+## Runs added for the second round of experiments
+
+Five more families were produced for the experiments added after the first submission. They extend
+the same per-case format, so every analysis script reads them without changes.
+
+| Family in `results/percase/` | Job | What it backs |
+| --- | --- | --- |
+| `recall_{1,0p995,0p99,0p98,0p95,0p9}_percase.jsonl` | 1561909 | the detection-recall curve in Section IX |
+| `budgetdark_s*_percase.jsonl` | 1561910 | `quad4` at r = 0.05/0.10/0.15, the missing half of the budget sweep |
+| `budgetext_{0p05,0p15}_s0_percase.jsonl` | 1562592 | published compressors at the two tight budgets |
+| `frontend_s*_percase.jsonl` | 1562593 | DARK as a front end, Section VII |
+| `reid_s*_percase.jsonl` | 1561924 | the extraction attack, Section IX |
+
+Two of these need a note on how the code they call was prepared, because the published compressors
+are not shipped here:
+
+**The ratio patch.** `batch1` hard-codes `budget = n // 2`. For the low-budget sweep, a copy of the
+published code sits at `code/batch1_ratio/` whose only difference from the original is that one
+expression, which now reads `PT_EXT_RATIO` and defaults to `0.5`. A smoke job (1561925) confirmed
+both halves: at `PT_EXT_RATIO=0.5` Quito-X reproduces `n // 2` exactly (2254 -> 1127) and at `0.1`
+it yields 225. The original code is untouched.
+
+**The detector sweep.** `data/recall/` is generated, not stored: `src/longctx/imperfect_detector.py`
+writes six case files from `data/longctx_max.jsonl.gz`, keeping each protected value with
+probability rho. The subset of 500 cases and the per-case RNG seed are both fixed, so the files are
+reproducible byte for byte.
+
+Because the sweep varies what the router is *told* to protect, two small hooks were added to
+`e2e_quad.py`: `canaries_eval` (scoring counts the full injected set while routing sees only the
+detected subset, otherwise a missed value would be neither protected nor counted) and a carve-out in
+`check_question_alias` for an undetected target entity (the question then goes out unaliased, which
+is what a real system would do). Both are no-ops when the field is absent, which the committed
+`--check` outputs confirm byte for byte.
+
+Rebuild and check:
+
+```bash
+python src/analysis_quad4/make_fig_recall.py --check          # the recall curve
+python src/analysis_quad4/make_fig_budget_all.py --json-out results/diag/budget_all.json
+python src/analysis_quad4/make_tab_split.py --check           # Table V, the by-kind main table
+```
+
+All of these read only `results/percase/`, so a reader without a GPU can re-derive every number the
+manuscript prints from these experiments.
+
 ## Regenerating `e2e_quad.py`
 
 `e2e_quad.py` is generated from `e2e_longctx_r5full.py` by a text transform, and the transform is
