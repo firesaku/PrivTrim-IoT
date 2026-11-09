@@ -13,16 +13,18 @@ question---the record block that mentions the queried entity---so the pipeline n
 reference answer nor training.
 
 Across a 112-case benchmark over six public datasets, \textsc{DARK} keeps $48.6\%$ of the
-tokens at zero prompt-level leakage, at the same F1 as aliasing the full context without
-compression. On a $2{,}728$-case extension the leakage result is the stronger one: $0\%$ of
-protected values remain recoverable where the strongest query-aware compressor leaves $98.1\%$,
-and F1 is level with that compressor, since the interval on the difference contains zero. Against
-the strongest leak-free published baseline it is ahead by $0.3226$ F1 points. The 2026 rule-based
-compressor we re-run needs no model at all, yet costs more tokens than we spend and still leaks
-in every case, because its rules delete the record syntax the question depends on. Replacing the
-alias operation with deletion is what moves those numbers: it costs $0.1795$ F1 overall, $0.3273$
-on multi-entity cases, and nothing where no anchor exists, so the rule acts on the structure it
-was designed for.
+tokens at zero prompt-level leakage. On the $2{,}728$-case extension the privacy result is the
+stronger one: $0\%$ of protected values remain recoverable where the strongest query-aware
+compressor leaves $98.1\%$, and a model asked to extract them recovers $36.4\%$ from the
+uncompressed prompt and none from ours. The utility result depends on which question is asked, and
+the split is the finding rather than a qualification: on the $1{,}228$ questions that name a record
+identifier, \textsc{DARK} leads every compressor by $0.12$ to $0.42$ and matches the uncompressed
+prompt at half its length; on the $1{,}500$ that name a protected account it scores below the
+compressors, every one of which leaks on $89.5$--$100\%$ of those same cases. Aliasing makes a
+compressor safe and does not make it adequate: Quito-X on the aliased passage costs $0.0371$ F1
+rather than gaining any. The 2026 rule-based compressor we re-run needs no model at all, yet costs
+more tokens than we spend and still leaks in every case, because its rules delete the record syntax
+the question depends on.
 
 Crossing the two decisions isolates which of them carries the result. Aliasing is worth $+0.157$
 and $+0.179$ at the two granularities, keeping the whole block $+0.079$ and $+0.057$ under the two
@@ -30,9 +32,8 @@ operations, and the interaction is small and positive. The operation is worth tw
 the region. That ratio is the practical summary of this work: getting the surviving region right
 is a precondition, and choosing the operation is what makes the task possible.
 
-Two questions remain open. The fallback window is the weakest part of the mechanism: when the
-answer lies outside it, as in the two-hop variant, recovery depends on the refill order, and
-widening the relevant region to cover the answer is the first configuration to test. The
-second concerns the privacy claim. A pipeline of this shape would be considerably stronger
-with a guarantee that survives an adversary holding the alias map, and establishing one is a
-different piece of work from the one reported here.
+Two directions follow directly from the evidence. The first is to make the relevant region cover
+the answer instead of relying on the fallback window: the two-hop variant shows that when the answer
+lies outside it, recovery falls to the refill order, and widening the region is the configuration to
+test next. The second is a guarantee that survives an adversary holding the alias map. Both extend
+the same construction rather than replacing it.

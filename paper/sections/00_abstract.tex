@@ -16,18 +16,19 @@ into the question so that both halves keep a referent. The rule is training-free
 relevance from the question alone, and never consults the reference answer. Figure~1 states the
 problem, the rule and the result on one page.
 
-At a $50\%$ budget \textsc{DARK} reaches F1 $0.4937$, not distinguishable from the strongest
-query-aware compressor ($0.4831$; the interval includes zero)---a tie that averages a loss where the
-question names a protected value against a win where it does not---while leaving $0\%$ of protected
-values recoverable against that method's $98.1\%$, with an upper bound of $0.14\%$. Against
-every leak-free alternative it is ahead by at least $0.1456$ $[+0.1253,+0.1662]$, and those
-arms differ only in which region survives, a line or the block that contains it. Replacing the
-alias operation by deletion costs $0.3273$ F1 where the anchor is itself protected and $0.0013$
-where the question names no entity, and dropping the question-side rewrite drives that subset
-to exactly $0.0000$: the rule acts where designed and is inert elsewhere. Crossing the two
-design choices---which region survives, and what happens inside it---shows that both pay on their
-own but that the operation is worth two to three times the region, which is why we treat the
-operation as the contribution and the region as its precondition. Code, prompts and per-case
-records for every table and figure are at
+At a $50\%$ budget \textsc{DARK} reaches F1 $0.4937$ against $0.4831$ for the strongest
+query-aware compressor, at $0\%$ recoverable against that method's $98.1\%$. The aggregate hides which half is which. On the $1{,}228$
+questions that name a record identifier, \textsc{DARK} leads every compressor by $+0.1196$ to
+$+0.4198$ and matches the uncompressed prompt at half its length; on the $1{,}500$ that name a
+protected account, every compressor above it leaks on $89.5$--$100\%$ of those cases.
+The zero is not an artifact of the pattern set: a model asked to recover the values returns
+$36.4\%$ of them from the uncompressed prompt and none from \textsc{DARK}. Aliasing buys that, and
+aliasing alone does not make a compressor competitive---Quito-X on the aliased passage costs
+$0.0371$ F1---which is why the routing decision, not the compressor, is the contribution.
+Across budgets it is the only arm that improves as the budget grows without ever leaking; below
+$r\approx0.10$ the one arm above it forwards a protected value in $21\%$ of cases.
+Crossing the two design choices shows the operation is worth two to three times the region: it is the
+contribution, and the region is its precondition. Code, prompts and
+per-case records for every table and figure are at
 \url{https://github.com/firesaku/PrivTrim-IoT}.
 \end{abstract}

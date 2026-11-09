@@ -84,7 +84,7 @@ it separates us from every one of them.
 \caption{The same comparison, split by whether the question names a protected value. Bars are F1,
 and the number after each bar is F1 followed by the share of cases in which a protected value is
 recoverable from the prompt. (a)~When the question names a sensitive account, the arms above us on
-F1 are exactly the arms that leak on $84$--$100\%$ of these cases, and the only leak-free arms that
+F1 are exactly the arms that leak on $89.5$--$100\%$ of these cases, and the only leak-free arms that
 answer at all are ours. (b)~When the question names a record identifier that carries no protected
 value, aliasing is unnecessary, the cost disappears, and \textsc{DARK} leads every compressor.
 Panel~(a) is the honest cost of the design and panel~(b) is where it is free; both come from the
@@ -101,7 +101,7 @@ resolution costs F1. When the question names a record identifier that carries no
 there is nothing to alias and the cost does not arise.
 
 Table~\ref{tab:split} and Figure~\ref{fig:regimes} separate the two. On the $1{,}500$ multi-entity
-cases, every compressor that beats us on F1 leaks on $84$--$100\%$ of those same cases: Quito-X
+cases, every compressor that beats us on F1 leaks on $89.5$--$100\%$ of those same cases: Quito-X
 gains $+0.1314$ over us and forwards a protected value in all $1{,}500$, and the uncompressed
 prompt gains $+0.2212$. Among the arms that leak nothing we are
 the only one that answers at all, at $0.3273$ against $0.0007$ for the next leak-free arm, a gap of
@@ -181,8 +181,9 @@ separates those three from the fourth.}
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/fig1_main.pdf}
-\caption{Behaviour across the budget sweep (112 cases). (a) F1 at five ratios with bootstrap
-$95\%$ intervals over cases; the dotted line is the uncompressed reference. (b) Fraction of
+\caption{Behaviour across the budget sweep on the 112-case benchmark; the same property at full
+scale, with the published compressors on it, is Figure~\ref{fig:budgetall}. (a) F1 at five ratios
+with bootstrap $95\%$ intervals over cases; the dotted line is the uncompressed reference. (b) Fraction of
 cases in which a protected value is recoverable from the prompt. \textsc{DARK}, the
 delete variant and the global-alias arm stay at zero for the whole range, while the arm that
 compresses raw text leaks in $35.7\%$ of cases at tight budgets and $50.0\%$ at $r=0.75$, so
@@ -196,19 +197,7 @@ unchanged.}
 \label{fig:budget}
 \end{figure*}
 
-\subsection{Budgets, readers and phrasing}
-
-Across five ratios \textsc{DARK} is the strongest budget arm at every point: $+0.205$ at
-$r=0.10$, $+0.263$ at $r=0.25$, $+0.215$ at $r=0.50$, and $+0.065$ at $r=0.75$, all at zero
-leakage. The margin narrows at the loose end, and the reason is the regime rather than the rule. At
-$r=0.75$ the budget stops binding: the arms that protect only the anchor line recover from
-$24.1\%$ retention at $r=0.10$ to $77.7\%$ here, so they approach the score the routing rule
-already reaches, and the gap closes. \textsc{DARK}'s own score also falls slightly ($0.6366$
-to $0.6158$), because the additional refill text admitted at a loose budget is repetitive
-context that competes with the relevant block for the reader's attention. The setting where
-the constraint binds is $r=0.50$, and that is where the mechanism separates most clearly from
-the alternatives.
-
+\subsection{Other readers, other phrasings}
 
 On Mistral-7B-Instruct-v0.3 at $r=0.50$, \textsc{DARK} scores $0.6946$ against $0.6366$
 on Qwen2.5-7B. Every other arm loses ground when the reader changes: \arm{full} $-0.0258$,
