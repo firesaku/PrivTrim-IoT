@@ -5,7 +5,7 @@ We studied what happens to a privacy-preserving inference pipeline when the enti
 question asks about is also the entity that must be protected. Both standard remedies fail
 there, for opposite reasons: redaction removes the referent the reader needs, and redundancy
 ordering removes the record that carries the answer at close to chance, because the score
-ranks units by self-similarity and knows nothing about which record the question is about.
+ranks units by self-similarity and is blind to which record the question is about.
 \textsc{DARK} resolves the conflict by deciding the two axes per unit and giving the
 sensitive-and-relevant cell the one operation neither remedy provides: the unit stays, its
 values are aliased, and the same map is written into the question. Relevance is read from the
@@ -16,11 +16,11 @@ Across a 112-case benchmark over six public datasets, \textsc{DARK} keeps $48.6\
 tokens at zero prompt-level leakage. On the $2{,}728$-case extension the privacy result is the
 stronger one: $0\%$ of protected values remain recoverable where the strongest query-aware
 compressor leaves $98.1\%$, and a model asked to extract them recovers $36.4\%$ from the
-uncompressed prompt and none from ours. The utility result depends on which question is asked, and
-the split is the finding rather than a qualification: on the $1{,}228$ questions that name a record
+uncompressed prompt and none from ours. The utility result depends on which question is asked, and that
+split is the finding rather than a qualification. On the $1{,}228$ questions that name a record
 identifier, \textsc{DARK} leads every compressor by $0.12$ to $0.42$ and matches the uncompressed
-prompt at half its length; on the $1{,}500$ that name a protected account it scores below the
-compressors, every one of which leaks on $89.5$--$100\%$ of those same cases. Aliasing makes a
+prompt at half its length. On the $1{,}500$ that name a protected account it scores below the
+compressors, every one of which leaks on $89.5$--$100\%$ of those cases. Aliasing makes a
 compressor safe and does not make it adequate: Quito-X on the aliased passage costs $0.0371$ F1
 rather than gaining any. The 2026 rule-based compressor we re-run needs no model at all, yet costs
 more tokens than we spend and still leaks in every case, because its rules delete the record syntax

@@ -11,7 +11,7 @@ routing on the record block reaches $100\%$. The question has to be asked in its
 because aggregate F1 hides it: every arm here produces an answer, and the score does not say
 whether the record that grounds it is still in the prompt.
 
-The two failure rates say different things. Multi-entity survival sits either side of the
+The two failure rates say different things. Multi-entity survival falls either side of the
 budget cut, which is what an uninformative ordering produces: the score does not know which
 record the question is about, so it keeps the right one about half the time. Needle survival
 is \emph{below} the cut, and there the ordering is worse than uninformative. The answer in a
@@ -49,7 +49,7 @@ reader.
 
 Both claims hold, and the split between the two case kinds is sharper than the aggregate
 suggested. On the $1{,}500$ multi-entity cases the anchor and the answer always land in the
-same block---$1{,}500$ of $1{,}500$---and never on the same line: the anchor sits on the
+same block---$1{,}500$ of $1{,}500$---and never on the same line: the anchor is on the
 private-contact lines and the answer inside the record line beneath it, two or five lines
 away in $87\%$ of cases. On the $1{,}228$ needle cases the answer is again inside the
 anchor's block in every case by annotation---an independent text-based re-derivation recovers
@@ -69,10 +69,10 @@ either way.
 \centering
 \includegraphics[width=\textwidth]{figures/fig_structure.pdf}
 \caption{The structure the rule depends on, measured from the case text without a model.
-(a)~Inside one record block the anchor sits on the private-contact line and the answer inside
+(a)~Inside one record block the anchor is on the private-contact line and the answer inside
 the record line, five lines below it. (b)~The anchor-answer line distance per case kind: the
 multi-entity cases are never closer than two lines, the needle cases usually share the line.
-(c)~Five retention strategies scored on the only three things that can break---the answer
+(c)~Five retention strategies scored on the only three conditions that can break---the answer
 span, exposure of the raw protected value, and collision of distinct entities onto one
 surface token. Reading left to right, each step of the design changes exactly one of the
 three columns. (d)~DARK's F1 against the size of the block it has to keep; numbers above the
@@ -131,7 +131,7 @@ significant.
 unchanged, on five settings. (a) The difference concentrates exactly where the anchor is a
 protected value and vanishes where it is not; labels give the paired difference of the two
 bars and a star marks an interval that excludes zero. (b) Distribution of the paired per-case
-difference for the three settings where the operation matters. The mass sits at both ends
+difference for the three settings where the operation matters. The mass concentrates at both ends
 because a case is either answered or not, and the mean gain is largest on the single-hop
 variant. (c) In the two-hop variant the answer is still in the prompt after $96.3\%$ of the
 deletions, and F1 is zero.}
@@ -242,7 +242,7 @@ two-hop ($300$)       & 0.6733 & 0.0167 & $-0.6567$ & $[-0.712,-0.599]$ \\
 
 For four of the five rows the interval includes zero: away from the boundary the order of
 refill units does not decide whether the answer survives. The two-hop benchmark \emph{is} the
-boundary. There the answer sits six sentences from the anchor, outside the fallback window,
+boundary. There the answer lies six sentences from the anchor, outside the fallback window,
 so whether it is present at all is decided by which units refill admits, and keeping the
 repetitive ones retrieves it ($0.6733$ against $0.0167$). We read this as a property of this
 data---the anti-correlation between redundancy and answer-bearing measured at the start of
@@ -286,8 +286,8 @@ identifier surface form rather than to the routing rule.
 \label{sec:failuremap}
 
 Figure~\ref{fig:failure} maps the two structural conditions that decide whether the rule helps, on
-the cases we have. Distance is the one the referential claim depends on, and it is not a slope but
-a cliff. On single-entity cases F1 falls from $0.896$ when the answer shares the anchor's line to
+the cases we have. Distance is the one the referential claim depends on, and it degrades as a step rather
+than a gradient. On single-entity cases F1 falls from $0.896$ when the answer shares the anchor's line to
 $0.325$ beyond thirty lines, staying inside the usable band until eleven. On multi-entity cases it
 reaches \emph{exactly} $0.000$ past thirty lines over $192$ cases: the block is still in the prompt
 and the answer is still in the block, but nothing in the surviving text tells the reader which of

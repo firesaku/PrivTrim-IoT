@@ -62,7 +62,7 @@ operation applied inside it. Table~\ref{tab:ri} makes that second distinction.}
 
 Figure~\ref{fig:frontier} puts the same numbers on both axes at once, and attaches an interval
 to each of them, because a point estimate in the corner of a plot invites the reading that the
-axes were chosen after the fact. Panel~(a) is the frontier: \textsc{DARK} sits alone in the
+axes were chosen after the fact. Panel~(a) is the frontier: \textsc{DARK} alone occupies the
 upper-left, and the interval on its leakage is $[0,0.14]\%$ rather than a bare zero. Panel~(b) is
 the part that keeps the figure honest. Paired against each comparator on the same cases,
 \textsc{DARK} is ahead of every arm that leaks nothing by at least $0.14$ F1, and ahead of
@@ -115,13 +115,13 @@ One mechanism produces both halves. The F1 cost is what it takes to make the ref
 so it is paid exactly where the referent is the secret and nowhere else. The aggregate tie is
 therefore not a compromise between two mediocre outcomes: it is a large loss in one regime and a
 large win in the other, and only one of those regimes involves a choice. Where the anchor is not
-sensitive, leaking buys nothing, and the compressors pay it anyway.
+sensitive, leaking gains nothing, and the compressors pay for it anyway.
 
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_frontier.pdf}
-\caption{Where each arm sits, and which of the differences the experiment resolves. (a)~Every
+\caption{Where each arm falls, and which of the differences the experiment resolves. (a)~Every
 arm run at $2{,}728$ cases, with a $95\%$ interval on both coordinates. F1 uses a percentile
 bootstrap over cases. Leakage is a proportion and several arms sit at exactly $0\%$ or $100\%$,
 where the bootstrap is degenerate, so it uses a Wilson score interval instead; an arm that leaks
@@ -149,7 +149,7 @@ Figure~\ref{fig:persource} qualifies the aggregate: the $0.4937$ is not uniform 
 sources. Deleting the anchor unit instead of aliasing it costs almost nothing on
 \texttt{privacylens} ($0.467$ against $0.437$) and collapses \texttt{simuhome} ($0.619$
 against $0.029$) and \texttt{pec\_home} ($0.676$ against $0.274$). A mean over six sources
-is what makes that look like one effect. \textsc{DARK} sits below the uncompressed arm
+is what makes that look like one effect. \textsc{DARK} lies below the uncompressed arm
 everywhere but is the arm closest to it on four of six sources; on \texttt{smartbench\_tdcs}
 the anchor-protecting arm is closer, and on \texttt{toolmem} all four arms fall within
 $0.04$ of each other. On \texttt{toolmem\_raw} every arm is below $0.45$, so the source
@@ -163,7 +163,7 @@ six because protecting the block keeps the neighbouring units that carry the val
 \includegraphics[width=\textwidth]{figures/fig_persource.pdf}
 \caption{Per-source behaviour on the $2{,}728$-case extension at $r=0.50$, one panel per
 source and one row per metric; $n$ under each column is the number of cases.
-(a)~\textsc{DARK} sits below the uncompressed arm everywhere and is the closest arm to it on
+(a)~\textsc{DARK} lies below the uncompressed arm everywhere and is the closest arm to it on
 four of six sources, but the two effects that matter are local: on \texttt{simuhome} the
 delete variant falls to $0.029$ against \textsc{DARK}'s $0.619$, and on \texttt{toolmem\_raw}
 all arms are below $0.45$ because the answers themselves are hard. (b)~Leakage does not vary
@@ -187,7 +187,7 @@ with bootstrap $95\%$ intervals over cases; the dotted line is the uncompressed 
 cases in which a protected value is recoverable from the prompt. \textsc{DARK}, the
 delete variant and the global-alias arm stay at zero for the whole range, while the arm that
 compresses raw text leaks in $35.7\%$ of cases at tight budgets and $50.0\%$ at $r=0.75$, so
-its apparent parity at loose budgets is bought with exposure. (c) Composition of case
+its apparent parity at loose budgets is paid for with exposure. (c) Composition of case
 outcomes at $r=0.50$: solid is an exact answer, the pale band is a partial match, hatched is
 a wrong or \textsc{unknown} answer. (d) The same four arms at $r=0.50$ under the original
 reader, a second reader, and two mechanical rewritings of the question. \textsc{DARK} is the
@@ -236,7 +236,7 @@ varies. \textsc{DARK} and the delete variant coincide almost exactly: the
 alias-instead-of-delete rule does not change \emph{which} units survive. (b) Survival against
 F1 on the $2{,}728$-case extension; circles are multi-entity cases and squares are needle
 cases, and the four arms are the redundancy-only rule, the same rule with the anchor line
-protected, \textsc{DARK}, and the delete variant. The delete variant sits at $100\%$ survival
+protected, \textsc{DARK}, and the delete variant. The delete variant lies at $100\%$ survival
 and $0.0000$ F1 on multi-entity cases: the information is in the prompt and cannot be
 located. (c) Retention within each source at
 $r=0.50$. (d) Per-source F1, \textsc{DARK} against the anchor-protected arm, with the
@@ -274,7 +274,7 @@ variant, and panel~(b) is what it pays.
 
 That crossing is the price of the property this paper measures, written as a number rather than as a
 caveat, and it is why the operation is treated as the contribution and the region as its
-precondition. Above $r=0.10$ the rule buys $0.15$ to $0.16$ F1 over pruning alone at no measured
+precondition. Above $r=0.10$ the rule gains $0.15$ to $0.16$ F1 over pruning alone at no measured
 leakage; below it, a deployment that must keep both properties accepts a lower F1 rather than a
 forwarded identifier, and the figure states exactly how much lower.
 
@@ -295,7 +295,7 @@ native). Every composed arm leaks nothing, because the passage never carried the
 entire difference is task accuracy, and it runs against the compressor.
 
 The reason is the one Section~\ref{sec:regimes} established. A content compressor ranks units by
-what the question is about and drops the rest; on these records the answer rides in the block that
+what the question is about and drops the rest; on these records the answer is carried in the block that
 carries the identifier, and the ranking has no way to know that. The routing rule does know, because
 the region is decided by the entity rather than by similarity. Aliasing makes a compressor
 \emph{safe}; it does not make it \emph{adequate}, and the two are worth $0.04$ to $0.10$ F1 apart.

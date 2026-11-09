@@ -22,7 +22,7 @@ questions that name a record identifier, \textsc{DARK} leads every compressor by
 $+0.4198$ and matches the uncompressed prompt at half its length; on the $1{,}500$ that name a
 protected account, every compressor above it leaks on $89.5$--$100\%$ of those cases.
 The zero is not an artifact of the pattern set: a model asked to recover the values returns
-$36.4\%$ of them from the uncompressed prompt and none from \textsc{DARK}. Aliasing buys that, and
+$36.4\%$ of them from the uncompressed prompt and none from \textsc{DARK}. Aliasing is what achieves that, and
 aliasing alone does not make a compressor competitive---Quito-X on the aliased passage costs
 $0.0371$ F1---which is why the routing decision, not the compressor, is the contribution.
 Across budgets it is the only arm that improves as the budget grows without ever leaking; below
