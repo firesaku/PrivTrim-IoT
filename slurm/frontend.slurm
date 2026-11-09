@@ -6,7 +6,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
 #SBATCH --time=02:00:00
-#SBATCH --array=0-7%2
+#SBATCH --array=0-1
 #SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
 #SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/frontend-%A_%a.out
 #SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/frontend-%A_%a.err

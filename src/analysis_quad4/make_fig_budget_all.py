@@ -62,6 +62,16 @@ SERIES = [
      "budget_cluster_link",  RED, "--", "s"),
     ("redundancy only",         ["xbud_s*_percase.gz", "quadfull_s*_percase.gz"],
      "budget_cluster",       G_M, ":",  "^"),
+    # published compressors at the low budgets. Loaded from the budgetext job when it exists, and
+    # from the archived 0.5 run so the curve closes: quito_x and cpc are the two strongest
+    # published baselines, and whether they also cross DARK is the question that job exists to
+    # answer. Absent files are skipped rather than fatal, so this figure builds before and after.
+    ("Quito-X",                 ["budgetext_s*_percase.jsonl", "extevfull_s*_percase.gz",
+                                 "extnew2_s*_percase.gz"],
+     "ext_quito_x",          "#B5645C", "-.", "D"),
+    ("CPC",                     ["budgetext_s*_percase.jsonl", "extevfull_s*_percase.gz",
+                                 "extnew2_s*_percase.gz"],
+     "ext_cpc",              "#C98F86", "-.", "v"),
 ]
 RATIOS = [0.05, 0.10, 0.15, 0.50]
 

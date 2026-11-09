@@ -6,7 +6,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
 #SBATCH --time=02:00:00
-#SBATCH --array=0-15%2
+#SBATCH --array=0-1
 #SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
 #SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/budgetext-%A_%a.out
 #SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/budgetext-%A_%a.err
@@ -46,8 +46,9 @@ PY=$RD/env/bin/python
 
 RATIOS=(0.05 0.15)
 T=${SLURM_ARRAY_TASK_ID:-0}
-RI=$((T / 8))
-S=$((T % 8))
+RI=$T
+S=0            # one shard (341 cases) per ratio: enough for a paired comparison, and small
+               # enough to actually get a GPU slot on a contended partition
 RATIO=${RATIOS[$RI]}
 TAG=$(echo $RATIO | tr '.' 'p')
 
