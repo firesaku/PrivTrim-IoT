@@ -1,0 +1,220 @@
+{
+ "cases": 2,
+ "arms": [
+  "full"
+ ],
+ "budgets": [
+  0.5
+ ],
+ "selector": "lex",
+ "dry_run": false,
+ "stub_preds": null,
+ "selector_used": "lex",
+ "emb": null,
+ "model": "/path/to/project/hf_cache/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28",
+ "scorer": "/path/to/project/external/squad_v11/evaluate-v2.0.py",
+ "seed": 20261015,
+ "max_new": 64,
+ "maxlen": 24576,
+ "n_prompts": 6,
+ "budget_accounting": {
+  "full|None": {
+   "n": 2,
+   "tgt": 12253.0,
+   "got": 12253.0,
+   "dev": 0.0,
+   "devmax": 0.0,
+   "devmax_signed": 0.0
+  },
+  "ext_full|0.5": {
+   "n": 2,
+   "tgt": 6127.0,
+   "got": 12253.0,
+   "dev": 6126.0,
+   "devmax": 3657,
+   "devmax_signed": 3657
+  },
+  "ext_ner_redact|0.5": {
+   "n": 2,
+   "tgt": 6127.0,
+   "got": 11628.0,
+   "dev": 5501.0,
+   "devmax": 3381,
+   "devmax_signed": 3381
+  }
+ },
+ "cells": {
+  "privacylens|full|None": {
+   "n": 1,
+   "em": 1.0,
+   "f1": 1.0,
+   "tok": 4939,
+   "ans": 1,
+   "cv": 12,
+   "cf": 12,
+   "cn": 12,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "toolmem|full|None": {
+   "n": 1,
+   "em": 1.0,
+   "f1": 1.0,
+   "tok": 7314,
+   "ans": 1,
+   "cv": 12,
+   "cf": 12,
+   "cn": 12,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "privacylens|ext_full|0.5": {
+   "n": 1,
+   "em": 1.0,
+   "f1": 1.0,
+   "tok": 4939,
+   "ans": 1,
+   "cv": 12,
+   "cf": 12,
+   "cn": 12,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "privacylens|ext_ner_redact|0.5": {
+   "n": 1,
+   "em": 1.0,
+   "f1": 1.0,
+   "tok": 4590,
+   "ans": 0,
+   "cv": 4,
+   "cf": 4,
+   "cn": 12,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "toolmem|ext_full|0.5": {
+   "n": 1,
+   "em": 1.0,
+   "f1": 1.0,
+   "tok": 7314,
+   "ans": 1,
+   "cv": 12,
+   "cf": 12,
+   "cn": 12,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "toolmem|ext_ner_redact|0.5": {
+   "n": 1,
+   "em": 0.0,
+   "f1": 0.0,
+   "tok": 7038,
+   "ans": 0,
+   "cv": 4,
+   "cf": 4,
+   "cn": 12,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  }
+ },
+ "all": {
+  "full|None": {
+   "n": 2,
+   "em": 2.0,
+   "f1": 2.0,
+   "tok": 12253,
+   "ans": 2,
+   "cv": 24,
+   "cf": 24,
+   "cn": 24,
+   "ov": 0,
+   "coll": 0,
+   "tent": 2,
+   "tattr": 2
+  },
+  "ext_full|0.5": {
+   "n": 2,
+   "em": 2.0,
+   "f1": 2.0,
+   "tok": 12253,
+   "ans": 2,
+   "cv": 24,
+   "cf": 24,
+   "cn": 24,
+   "ov": 0,
+   "coll": 0,
+   "tent": 2,
+   "tattr": 2
+  },
+  "ext_ner_redact|0.5": {
+   "n": 2,
+   "em": 1.0,
+   "f1": 1.0,
+   "tok": 11628,
+   "ans": 0,
+   "cv": 8,
+   "cf": 8,
+   "cn": 24,
+   "ov": 0,
+   "coll": 0,
+   "tent": 2,
+   "tattr": 2
+  }
+ },
+ "by_case_kind": {
+  "needle|full|None": {
+   "n": 2,
+   "em": 2.0,
+   "f1": 2.0,
+   "tok": 12253,
+   "ans": 2,
+   "cv": 24,
+   "cf": 24,
+   "cn": 24,
+   "ov": 0,
+   "coll": 0,
+   "tent": 2,
+   "tattr": 2
+  },
+  "needle|ext_full|0.5": {
+   "n": 2,
+   "em": 2.0,
+   "f1": 2.0,
+   "tok": 12253,
+   "ans": 2,
+   "cv": 24,
+   "cf": 24,
+   "cn": 24,
+   "ov": 0,
+   "coll": 0,
+   "tent": 2,
+   "tattr": 2
+  },
+  "needle|ext_ner_redact|0.5": {
+   "n": 2,
+   "em": 1.0,
+   "f1": 1.0,
+   "tok": 11628,
+   "ans": 0,
+   "cv": 8,
+   "cf": 8,
+   "cn": 24,
+   "ov": 0,
+   "coll": 0,
+   "tent": 2,
+   "tattr": 2
+  }
+ }
+}

@@ -1,0 +1,7 @@
+{
+  "source_sha256": "8ee44bf11cbfa72912a50bebf6b36aea38a1b52967f99a53782b0cdf6533154f",
+  "converted_sha256": "73eb3fae8f62d7a4a959ba744aa07a640c263446a9bb37f964d2eb7e64cf8cc1",
+  "conversion": "BPE merges [left,right] -> left + ASCII space + right; vocabulary and all other fields identical",
+  "reference_tokenizer": "0.22.2",
+  "reference_tests": 836
+}

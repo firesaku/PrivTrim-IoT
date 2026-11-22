@@ -1,0 +1,53 @@
+E2E LONGCTX — 长上下文压缩基准（gold 由真实源结构化记录确定性导出）
+cases=2  arms=full  budgets=[0.5]  selector=lex  dtype=fp16  batch=2  max_new=64  maxlen=24576
+model=/path/to/project/hf_cache/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28
+scorer=/path/to/project/external/squad_v11/evaluate-v2.0.py
+per-case budget B = round(ratio * nt(full_context))，由 tokenizer 实测
+
+[1] 预算对账（BUDGET ACCOUNTING）—— 预算臂实测 token 必须 <= 目标 B（超了直接 raise）
+arm              budget      n   target_mean   achieved_mean    dev_mean   |dev|_max    dev_max%
+ext_full           0.50      2        3063.5          6126.5     3063.00      3657.0     119.37%
+ext_ner_redact     0.50      2        3063.5          5814.0     2750.50      3381.0     110.36%
+full                ref      2        6126.5          6126.5        0.00         0.0       0.00%
+READ: 同预算块（budget_cluster / budget_cluster_link / budget_random / delete_budget / alias_budget / alias_budget_link）在同一
+      ratio 下可直接互比；长度保持块（full / delete / alias）的 achieved≈full 长度，
+      它们的 token 数逐格打印在上表，绝不含混。
+NOTE: ext_* 是**已发布方法**（batch1 原码）输出的上下文，按 ratio=0.50 记账；
+      其原生预算是 floor(0.5*n)，本项目是 round(0.5*n)，最多差 1 token。
+      它们是等预算对照，不含删除/别名语义（arm_style=none），故 collision 恒 0；
+      ctx_leak 反映的是这些方法原生能不能把机密压掉，不是我们加的语义。
+
+[2] 主表：per (source, arm, budget)
+--- 同预算块（同 ratio 可互比） ---
+source             arm             budget    n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+privacylens        ext_full          0.50    1  100.00%  100.00%      4939.0      100.0%  100.0%/100.0 %       0.0%       0.0%
+privacylens        ext_ner_redact    0.50    1  100.00%  100.00%      4590.0        0.0%   33.3%/33.3  %       0.0%       0.0%
+toolmem            ext_full          0.50    1  100.00%  100.00%      7314.0      100.0%  100.0%/100.0 %       0.0%       0.0%
+toolmem            ext_ner_redact    0.50    1    0.00%    0.00%      7038.0        0.0%   33.3%/33.3  %       0.0%       0.0%
+--- 长度保持块（参照） ---
+source             arm             budget    n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+privacylens        full               ref    1  100.00%  100.00%      4939.0      100.0%  100.0%/100.0 %       0.0%       0.0%
+toolmem            full               ref    1  100.00%  100.00%      7314.0      100.0%  100.0%/100.0 %       0.0%       0.0%
+
+=== ALL（跨源汇总） ===
+--- 同预算块 ---
+arm             budget     n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+ext_full          0.50     2  100.00%  100.00%      6126.5      100.0%  100.0%/100.0 %       0.0%       0.0%
+ext_ner_redact    0.50     2   50.00%   50.00%      5814.0        0.0%   33.3%/33.3  %       0.0%       0.0%
+--- 长度保持块 ---
+arm             budget     n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+full               ref     2  100.00%  100.00%      6126.5      100.0%  100.0%/100.0 %       0.0%       0.0%
+
+=== 按 case_kind 汇总（needle = 单点取证；multi_entity = 多实体消歧） ===
+kind          arm             budget     n       EM       F1  ctx_tokens gold_in_ctx     leak_v  tgt_ent_ok  collision
+needle        ext_full          0.50     2  100.00%  100.00%      6126.5      100.0%     100.0%      100.0%       0.0%
+needle        ext_ner_redact    0.50     2   50.00%   50.00%      5814.0        0.0%      33.3%      100.0%       0.0%
+needle        full               ref     2  100.00%  100.00%      6126.5      100.0%     100.0%      100.0%       0.0%
+
+注：
+  - gold_in_ctx = gold 串是否还在该臂上下文里（model-free 上界；=0 则模型不可能答对）
+  - ctx_leak = privcheck.exposure_basic 的 value/fragment 泄漏率（分母是 canary 数）
+  - out_leak = privcheck.exposure_hit 对**模型输出**的命中率
+  - collision = 多实体案例里多个不同实体落到同一表面 token 的比例（删除式脱敏必然 100%，此时链接不可解）
+  - tgt_ent_ok = 目标实体的表面 token 是否还在上下文里（预算臂丢错区域时掉到 0）
+  - SQuAD 官方评分只做 normalize + EM/F1；UNKNOWN 不作为合法答案

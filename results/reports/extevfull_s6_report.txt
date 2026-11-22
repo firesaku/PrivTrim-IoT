@@ -1,0 +1,172 @@
+E2E LONGCTX — 长上下文压缩基准（gold 由真实源结构化记录确定性导出）
+cases=114  arms=full  budgets=[0.5]  selector=lex  dtype=fp16  batch=2  max_new=64  maxlen=24576
+model=/path/to/project/hf_cache/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28
+scorer=/path/to/project/external/squad_v11/evaluate-v2.0.py
+per-case budget B = round(ratio * nt(full_context))，由 tokenizer 实测
+
+[1] 预算对账（BUDGET ACCOUNTING）—— 预算臂实测 token 必须 <= 目标 B（超了直接 raise）
+arm              budget      n   target_mean   achieved_mean    dev_mean   |dev|_max    dev_max%
+ext_cpc            0.50    114        4146.6          4148.9        2.37       434.0      10.47%
+ext_cpc_native     0.50    114        4146.6          3787.5     -359.07      2633.0       9.16%
+ext_dac            0.50      9        2088.6          2136.4       47.89       434.0      20.78%
+ext_dac_native     0.50      9        2088.6          2133.8       45.22       433.0      20.73%
+ext_full           0.50    114        4146.6          8293.2     4146.60      9304.0     224.38%
+ext_llmlingua2     0.50    114        4146.6          4148.9        2.37       434.0      10.47%
+ext_llmlingua2_native    0.50    114        4146.6          4093.8      -52.74       404.0       9.74%
+ext_mask_llmlingua2    0.50    114        4146.6          4148.9        2.36       434.0      10.47%
+ext_mask_llmlingua2_native    0.50    114        4146.6          4099.8      -46.79       419.0      10.10%
+ext_provence       0.50    114        4146.6          4148.9        2.37       434.0      10.47%
+ext_provence_native    0.50    114        4146.6          3904.3     -242.25      1688.0       6.75%
+ext_quito_x        0.50    114        4146.6          4148.9        2.37       434.0      10.47%
+ext_quito_x_native    0.50    114        4146.6          4145.5       -1.10       433.0      10.44%
+full                ref    114        8293.2          8293.2        0.00         0.0       0.00%
+READ: 同预算块（budget_cluster / budget_cluster_link / budget_random / delete_budget / alias_budget / alias_budget_link）在同一
+      ratio 下可直接互比；长度保持块（full / delete / alias）的 achieved≈full 长度，
+      它们的 token 数逐格打印在上表，绝不含混。
+NOTE: ext_* 是**已发布方法**（batch1 原码）输出的上下文，按 ratio=0.50 记账；
+      其原生预算是 floor(0.5*n)，本项目是 round(0.5*n)，最多差 1 token。
+      它们是等预算对照，不含删除/别名语义（arm_style=none），故 collision 恒 0；
+      ctx_leak 反映的是这些方法原生能不能把机密压掉，不是我们加的语义。
+
+[2] 主表：per (source, arm, budget)
+--- 同预算块（同 ratio 可互比） ---
+source             arm             budget    n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+pec_home           ext_cpc           0.50   18   27.78%   38.33%      1066.1       88.9%   59.3%/66.3  %       0.0%       0.0%
+pec_home           ext_cpc_native    0.50   18   33.33%   43.89%       971.8       88.9%   68.9%/74.1  %       0.0%       0.0%
+pec_home           ext_dac           0.50    4    0.00%   12.50%      1065.5       50.0%    0.0%/3.3   %       0.0%       0.0%
+pec_home           ext_dac_native    0.50    4    0.00%    0.00%      1064.0       50.0%    0.0%/3.3   %       0.0%       0.0%
+pec_home           ext_full          0.50   18   66.67%   77.22%      2132.6      100.0%  100.0%/100.0 %       0.0%       0.0%
+pec_home           ext_llmlingua2    0.50   18   27.78%   37.78%      1066.1       50.0%   68.1%/98.1  %       0.0%       0.0%
+pec_home           ext_llmlingua2_native   0.50   18   33.33%   43.33%      1056.3       50.0%   71.1%/100.0 %       0.0%       0.0%
+pec_home           ext_mask_llmlingua2   0.50   18    5.56%   16.11%      1066.1       77.8%    0.0%/0.0   %       0.0%       0.0%
+pec_home           ext_mask_llmlingua2_native   0.50   18    5.56%   16.11%      1057.0       77.8%    0.0%/0.0   %       0.0%       0.0%
+pec_home           ext_provence      0.50   18   22.22%   30.56%      1066.1       94.4%   41.9%/61.5  %       0.0%       0.0%
+pec_home           ext_provence_native   0.50   18   22.22%   32.78%       998.1      100.0%   34.4%/54.4  %       0.0%       0.0%
+pec_home           ext_quito_x       0.50   18   66.67%   77.22%      1066.1       77.8%   71.1%/72.6  %       0.0%       0.0%
+pec_home           ext_quito_x_native   0.50   18   72.22%   82.78%      1064.1       77.8%   72.2%/72.6  %       0.0%       0.0%
+privacylens        ext_cpc           0.50   25   52.00%   52.00%      2687.2       92.0%   61.9%/67.9  %       0.0%       0.0%
+privacylens        ext_cpc_native    0.50   25   48.00%   48.00%      2598.2       92.0%   73.5%/82.7  %       0.0%       0.0%
+privacylens        ext_dac           0.50    4    0.00%    0.00%      2980.2       50.0%    0.0%/0.0   %       0.0%       0.0%
+privacylens        ext_dac_native    0.50    4    0.00%    0.00%      2977.0       50.0%    0.0%/0.0   %       0.0%       0.0%
+privacylens        ext_full          0.50   25   40.00%   40.00%      5340.4      100.0%  100.0%/100.0 %       0.0%       0.0%
+privacylens        ext_llmlingua2    0.50   25   12.00%   19.87%      2687.2       20.0%   65.2%/91.1  %       0.6%       0.0%
+privacylens        ext_llmlingua2_native   0.50   25    8.00%   13.87%      2653.8       20.0%   72.3%/96.4  %       1.8%       0.0%
+privacylens        ext_mask_llmlingua2   0.50   25    4.00%    7.20%      2687.2       28.0%    0.0%/0.0   %       0.0%       0.0%
+privacylens        ext_mask_llmlingua2_native   0.50   25    8.00%   11.20%      2661.8       28.0%    0.0%/0.0   %       0.0%       0.0%
+privacylens        ext_provence      0.50   25   48.00%   48.00%      2687.2       92.0%   55.1%/68.8  %       0.0%       0.0%
+privacylens        ext_provence_native   0.50   25   40.00%   40.00%      2571.4       88.0%   54.5%/67.3  %       0.0%       0.0%
+privacylens        ext_quito_x       0.50   25    4.00%    7.43%      2687.2        8.0%   64.3%/72.6  %       0.6%       0.0%
+privacylens        ext_quito_x_native   0.50   25    4.00%    7.43%      2685.0        8.0%   67.6%/73.5  %       0.9%       0.0%
+simuhome           ext_cpc           0.50   13   61.54%   61.54%      3131.5       69.2%   58.3%/67.5  %       0.0%       0.0%
+simuhome           ext_cpc_native    0.50   13   15.38%   15.38%      2201.8       46.2%   85.0%/86.7  %       0.0%       0.0%
+simuhome           ext_dac           0.50    1    0.00%    0.00%      3045.0      100.0%   11.1%/11.1  %       0.0%       0.0%
+simuhome           ext_dac_native    0.50    1    0.00%    0.00%      3040.0      100.0%   11.1%/11.1  %       0.0%       0.0%
+simuhome           ext_full          0.50   13   92.31%   92.31%      6272.5      100.0%  100.0%/100.0 %       0.0%       0.0%
+simuhome           ext_llmlingua2    0.50   13   15.38%   15.38%      3131.5       53.8%   65.8%/98.3  %       0.0%       0.0%
+simuhome           ext_llmlingua2_native   0.50   13    7.69%    7.69%      3089.8       38.5%   65.8%/98.3  %       0.0%       0.0%
+simuhome           ext_mask_llmlingua2   0.50   13    7.69%    7.69%      3131.5       46.2%    0.0%/0.0   %       0.0%       0.0%
+simuhome           ext_mask_llmlingua2_native   0.50   13    7.69%    7.69%      3092.8       46.2%    0.0%/0.0   %       0.0%       0.0%
+simuhome           ext_provence      0.50   13   15.38%   15.38%      3131.5       92.3%   17.5%/30.0  %       0.0%       0.0%
+simuhome           ext_provence_native   0.50   13   30.77%   30.77%      2897.7      100.0%   17.5%/30.0  %       0.0%       0.0%
+simuhome           ext_quito_x       0.50   13   61.54%   61.54%      3131.5      100.0%   96.7%/97.5  %       0.0%       0.0%
+simuhome           ext_quito_x_native   0.50   13   53.85%   53.85%      3128.5      100.0%   96.7%/97.5  %       0.0%       0.0%
+smartbench_tdcs    ext_cpc           0.50   20   35.00%   35.00%      8505.5       75.0%   67.0%/77.9  %       0.0%       0.0%
+smartbench_tdcs    ext_cpc_native    0.50   20   60.00%   60.00%      7300.0      100.0%   95.3%/96.7  %       0.0%       0.0%
+smartbench_tdcs    ext_full          0.50   20   70.00%   70.00%     17005.4      100.0%  100.0%/100.0 %       0.0%       0.0%
+smartbench_tdcs    ext_llmlingua2    0.50   20   20.00%   20.00%      8505.5       80.0%   58.7%/90.9  %       0.0%       0.0%
+smartbench_tdcs    ext_llmlingua2_native   0.50   20   20.00%   20.00%      8370.5       80.0%   63.8%/94.2  %       0.0%       0.0%
+smartbench_tdcs    ext_mask_llmlingua2   0.50   20   15.00%   15.00%      8505.5       85.0%    0.0%/0.0   %       0.0%       0.0%
+smartbench_tdcs    ext_mask_llmlingua2_native   0.50   20   15.00%   15.00%      8389.8       80.0%    0.0%/0.0   %       0.0%       0.0%
+smartbench_tdcs    ext_provence      0.50   20   50.00%   50.00%      8505.5       95.0%   66.7%/77.2  %       0.0%       0.0%
+smartbench_tdcs    ext_provence_native   0.50   20   50.00%   50.00%      7911.4      100.0%   66.3%/76.8  %       0.0%       0.0%
+smartbench_tdcs    ext_quito_x       0.50   20   55.00%   55.00%      8505.5      100.0%   93.5%/96.0  %       0.0%       0.0%
+smartbench_tdcs    ext_quito_x_native   0.50   20   60.00%   60.00%      8496.1      100.0%   95.7%/97.1  %       0.0%       0.0%
+toolmem            ext_cpc           0.50   13   53.85%   58.97%      3494.2       76.9%   30.1%/35.9  %       0.0%       0.0%
+toolmem            ext_cpc_native    0.50   13   53.85%   53.85%      3452.4       76.9%   27.6%/33.3  %       0.0%       0.0%
+toolmem            ext_full          0.50   13   46.15%   56.88%      7009.8      100.0%  100.0%/100.0 %       0.0%       0.0%
+toolmem            ext_llmlingua2    0.50   13    7.69%    7.69%      3494.2       61.5%   67.9%/94.9  %       3.8%       0.0%
+toolmem            ext_llmlingua2_native   0.50   13   15.38%   15.38%      3452.6       61.5%   67.9%/93.6  %       0.0%       0.0%
+toolmem            ext_mask_llmlingua2   0.50   13   15.38%   15.38%      3494.2       61.5%    0.0%/0.0   %       0.0%       0.0%
+toolmem            ext_mask_llmlingua2_native   0.50   13    7.69%   12.82%      3464.9       61.5%    0.0%/0.0   %       0.0%       0.0%
+toolmem            ext_provence      0.50   13   61.54%   65.73%      3494.2       76.9%   59.6%/73.1  %       0.0%       0.0%
+toolmem            ext_provence_native   0.50   13   46.15%   46.15%      3318.0       84.6%   57.7%/69.2  %       0.0%       0.0%
+toolmem            ext_quito_x       0.50   13   46.15%   58.08%      3494.2       61.5%   69.2%/70.5  %       0.0%       0.0%
+toolmem            ext_quito_x_native   0.50   13   46.15%   58.08%      3492.0       61.5%   69.2%/70.5  %       0.0%       0.0%
+toolmem_raw        ext_cpc           0.50   25   24.00%   25.14%      5214.6       96.0%   81.1%/82.2  %       0.0%       0.0%
+toolmem_raw        ext_cpc_native    0.50   25   24.00%   25.14%      5192.8       96.0%   85.5%/85.5  %       0.0%       0.0%
+toolmem_raw        ext_full          0.50   25   32.00%   32.20%     10429.8      100.0%  100.0%/100.0 %       1.0%       0.0%
+toolmem_raw        ext_llmlingua2    0.50   25   36.00%   36.73%      5214.6       76.0%   69.7%/92.3  %       0.0%       0.0%
+toolmem_raw        ext_llmlingua2_native   0.50   25   32.00%   32.80%      5155.0       76.0%   73.7%/97.0  %       0.0%       0.0%
+toolmem_raw        ext_mask_llmlingua2   0.50   25   12.00%   12.73%      5214.6       80.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem_raw        ext_mask_llmlingua2_native   0.50   25   12.00%   12.80%      5150.3       80.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem_raw        ext_provence      0.50   25   36.00%   36.00%      5214.6       96.0%   62.3%/62.3  %       0.0%       0.0%
+toolmem_raw        ext_provence_native   0.50   25   36.00%   36.00%      4952.3       96.0%   63.6%/63.6  %       0.0%       0.0%
+toolmem_raw        ext_quito_x       0.50   25   40.00%   41.85%      5214.6       84.0%   82.5%/83.5  %       0.0%       0.0%
+toolmem_raw        ext_quito_x_native   0.50   25   40.00%   40.00%      5212.7       84.0%   83.8%/83.8  %       0.0%       0.0%
+--- 长度保持块（参照） ---
+source             arm             budget    n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+pec_home           full               ref   18   66.67%   77.22%      2132.6      100.0%  100.0%/100.0 %       0.0%       0.0%
+privacylens        full               ref   25   40.00%   40.00%      5340.4      100.0%  100.0%/100.0 %       0.0%       0.0%
+simuhome           full               ref   13   92.31%   92.31%      6272.5      100.0%  100.0%/100.0 %       0.0%       0.0%
+smartbench_tdcs    full               ref   20   70.00%   70.00%     17005.4      100.0%  100.0%/100.0 %       0.0%       0.0%
+toolmem            full               ref   13   46.15%   56.88%      7009.8      100.0%  100.0%/100.0 %       0.0%       0.0%
+toolmem_raw        full               ref   25   28.00%   28.20%     10429.8      100.0%  100.0%/100.0 %       1.0%       0.0%
+
+=== ALL（跨源汇总） ===
+--- 同预算块 ---
+arm             budget     n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+ext_cpc           0.50   114   40.35%   42.85%      4148.9       85.1%   62.6%/68.9  %       0.0%       0.0%
+ext_cpc_native    0.50   114   39.47%   41.39%      3787.5       86.8%   75.3%/79.4  %       0.0%       0.0%
+ext_dac           0.50     9    0.00%    5.56%      2136.4       55.6%    0.8%/2.4   %       0.0%       0.0%
+ext_dac_native    0.50     9    0.00%    0.00%      2133.8       55.6%    0.8%/2.4   %       0.0%       0.0%
+ext_full          0.50   114   54.39%   57.32%      8293.2      100.0%  100.0%/100.0 %       0.2%       0.0%
+ext_llmlingua2    0.50   114   21.05%   24.52%      4148.9       56.1%   65.8%/93.6  %       0.5%       0.0%
+ext_llmlingua2_native   0.50   114   20.18%   23.22%      4093.8       54.4%   69.8%/96.6  %       0.4%       0.0%
+ext_mask_llmlingua2   0.50   114    9.65%   12.18%      4148.9       63.2%    0.0%/0.0   %       0.0%       0.0%
+ext_mask_llmlingua2_native   0.50   114    9.65%   12.78%      4099.8       62.3%    0.0%/0.0   %       0.0%       0.0%
+ext_provence      0.50   114   39.47%   41.27%      4148.9       92.1%   53.7%/64.9  %       0.0%       0.0%
+ext_provence_native   0.50   114   37.72%   39.39%      3904.3       94.7%   52.2%/63.1  %       0.0%       0.0%
+ext_quito_x       0.50   114   42.11%   46.29%      4148.9       68.4%   78.0%/81.1  %       0.1%       0.0%
+ext_quito_x_native   0.50   114   42.98%   46.76%      4145.5       68.4%   79.7%/81.6  %       0.2%       0.0%
+--- 长度保持块 ---
+arm             budget     n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+full               ref   114   53.51%   56.44%      8293.2      100.0%  100.0%/100.0 %       0.2%       0.0%
+
+=== 按 case_kind 汇总（needle = 单点取证；multi_entity = 多实体消歧） ===
+kind          arm             budget     n       EM       F1  ctx_tokens gold_in_ctx     leak_v  tgt_ent_ok  collision
+multi_entity  ext_cpc           0.50    61   39.34%   39.34%      4324.7       86.9%      82.6%       83.6%       0.0%
+multi_entity  ext_cpc_native    0.50    61   31.15%   31.15%      3891.1       83.6%      98.0%      100.0%       0.0%
+multi_entity  ext_dac           0.50     5    0.00%    0.00%      2387.8       40.0%       1.4%        0.0%       0.0%
+multi_entity  ext_dac_native    0.50     5    0.00%    0.00%      2383.6       40.0%       1.4%        0.0%       0.0%
+multi_entity  ext_full          0.50    61   57.38%   57.38%      8649.9      100.0%     100.0%      100.0%       0.0%
+multi_entity  ext_llmlingua2    0.50    61   24.59%   24.59%      4324.7       63.9%      67.3%       88.5%       0.0%
+multi_entity  ext_llmlingua2_native   0.50    61   26.23%   26.23%      4272.6       60.7%      70.9%      100.0%       0.0%
+multi_entity  ext_mask_llmlingua2   0.50    61    0.00%    0.00%      4324.7       68.9%       0.0%        0.0%       0.0%
+multi_entity  ext_mask_llmlingua2_native   0.50    61    0.00%    0.00%      4276.8       68.9%       0.0%        0.0%       0.0%
+multi_entity  ext_provence      0.50    61   29.51%   29.51%      4324.7       95.1%      56.2%       62.3%       0.0%
+multi_entity  ext_provence_native   0.50    61   31.15%   31.15%      4109.2       96.7%      54.9%       67.2%       0.0%
+multi_entity  ext_quito_x       0.50    61   47.54%   47.54%      4324.7       78.7%      83.5%       90.2%       0.0%
+multi_entity  ext_quito_x_native   0.50    61   49.18%   49.18%      4320.9       78.7%      85.2%      100.0%       0.0%
+multi_entity  full               ref    61   55.74%   55.74%      8649.9      100.0%     100.0%      100.0%       0.0%
+needle        ext_cpc           0.50    53   41.51%   46.89%      3946.6       83.0%      35.1%      100.0%       0.0%
+needle        ext_cpc_native    0.50    53   49.06%   53.18%      3668.3       90.6%      44.0%      100.0%       0.0%
+needle        ext_dac           0.50     4    0.00%   12.50%      1822.2       75.0%       0.0%      100.0%       0.0%
+needle        ext_dac_native    0.50     4    0.00%    0.00%      1821.5       75.0%       0.0%      100.0%       0.0%
+needle        ext_full          0.50    53   50.94%   57.25%      7882.6      100.0%     100.0%      100.0%       0.0%
+needle        ext_llmlingua2    0.50    53   16.98%   24.43%      3946.6       47.2%      63.7%      100.0%       0.0%
+needle        ext_llmlingua2_native   0.50    53   13.21%   19.75%      3888.1       47.2%      68.1%      100.0%       0.0%
+needle        ext_mask_llmlingua2   0.50    53   20.75%   26.19%      3946.6       56.6%       0.0%      100.0%       0.0%
+needle        ext_mask_llmlingua2_native   0.50    53   20.75%   27.48%      3896.0       54.7%       0.0%      100.0%       0.0%
+needle        ext_provence      0.50    53   50.94%   54.80%      3946.6       88.7%      50.2%      100.0%       0.0%
+needle        ext_provence_native   0.50    53   45.28%   48.87%      3668.4       92.5%      48.4%      100.0%       0.0%
+needle        ext_quito_x       0.50    53   35.85%   44.85%      3946.6       56.6%      70.4%      100.0%       0.0%
+needle        ext_quito_x_native   0.50    53   35.85%   43.98%      3943.5       56.6%      72.1%      100.0%       0.0%
+needle        full               ref    53   50.94%   57.25%      7882.6      100.0%     100.0%      100.0%       0.0%
+
+注：
+  - gold_in_ctx = gold 串是否还在该臂上下文里（model-free 上界；=0 则模型不可能答对）
+  - ctx_leak = privcheck.exposure_basic 的 value/fragment 泄漏率（分母是 canary 数）
+  - out_leak = privcheck.exposure_hit 对**模型输出**的命中率
+  - collision = 多实体案例里多个不同实体落到同一表面 token 的比例（删除式脱敏必然 100%，此时链接不可解）
+  - tgt_ent_ok = 目标实体的表面 token 是否还在上下文里（预算臂丢错区域时掉到 0）
+  - SQuAD 官方评分只做 normalize + EM/F1；UNKNOWN 不作为合法答案

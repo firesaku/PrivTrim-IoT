@@ -1,13 +1,13 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<ACCOUNT>
 #SBATCH --partition=prod
 #SBATCH --job-name=pt-dl32b
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=16G
 #SBATCH --time=03:00:00
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/dl32b-%j.out
-#SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/dl32b-%j.err
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/dl32b-%j.out
+#SBATCH --error=/path/to/project/logs/dl32b-%j.err
 #
 # Download Qwen2.5-32B-Instruct into the project cache.
 #
@@ -22,7 +22,7 @@
 # ($RD/hf_cache/models--Qwen--Qwen2.5-32B-Instruct/snapshots/<sha>), and NOT in $HOME.
 set -uo pipefail
 
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 export HF_HOME=$RD/hf_cache
 export PYTHONNOUSERSITE=1
 export PYTHONIOENCODING=utf-8

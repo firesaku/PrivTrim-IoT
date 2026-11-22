@@ -1,0 +1,262 @@
+{
+ "cases": 3,
+ "arms": [
+  "full"
+ ],
+ "budgets": [
+  0.5
+ ],
+ "selector": "lex",
+ "dry_run": false,
+ "stub_preds": null,
+ "selector_used": "lex",
+ "emb": null,
+ "model": "/path/to/project/hf_cache/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28",
+ "scorer": "/path/to/project/external/squad_v11/evaluate-v2.0.py",
+ "seed": 20261015,
+ "max_new": 64,
+ "maxlen": 24576,
+ "n_prompts": 9,
+ "budget_accounting": {
+  "full|None": {
+   "n": 3,
+   "tgt": 26664.0,
+   "got": 26664.0,
+   "dev": 0.0,
+   "devmax": 0.0,
+   "devmax_signed": 0.0
+  },
+  "ext_full|0.5": {
+   "n": 3,
+   "tgt": 13332.0,
+   "got": 26664.0,
+   "dev": 13332.0,
+   "devmax": 7487,
+   "devmax_signed": 7487
+  },
+  "ext_ner_redact|0.5": {
+   "n": 3,
+   "tgt": 13332.0,
+   "got": 22872.0,
+   "dev": 9540.0,
+   "devmax": 4354,
+   "devmax_signed": 4354
+  }
+ },
+ "cells": {
+  "privacylens|full|None": {
+   "n": 1,
+   "em": 1.0,
+   "f1": 1.0,
+   "tok": 5388,
+   "ans": 1,
+   "cv": 12,
+   "cf": 12,
+   "cn": 12,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "smartbench_tdcs|full|None": {
+   "n": 1,
+   "em": 1.0,
+   "f1": 1.0,
+   "tok": 14975,
+   "ans": 1,
+   "cv": 12,
+   "cf": 12,
+   "cn": 12,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "toolmem_raw|full|None": {
+   "n": 1,
+   "em": 0.0,
+   "f1": 0.0,
+   "tok": 6301,
+   "ans": 1,
+   "cv": 9,
+   "cf": 9,
+   "cn": 9,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "privacylens|ext_full|0.5": {
+   "n": 1,
+   "em": 1.0,
+   "f1": 1.0,
+   "tok": 5388,
+   "ans": 1,
+   "cv": 12,
+   "cf": 12,
+   "cn": 12,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "privacylens|ext_ner_redact|0.5": {
+   "n": 1,
+   "em": 0.0,
+   "f1": 0.0,
+   "tok": 4926,
+   "ans": 0,
+   "cv": 3,
+   "cf": 3,
+   "cn": 12,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "smartbench_tdcs|ext_full|0.5": {
+   "n": 1,
+   "em": 1.0,
+   "f1": 1.0,
+   "tok": 14975,
+   "ans": 1,
+   "cv": 12,
+   "cf": 12,
+   "cn": 12,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "smartbench_tdcs|ext_ner_redact|0.5": {
+   "n": 1,
+   "em": 1.0,
+   "f1": 1.0,
+   "tok": 11842,
+   "ans": 1,
+   "cv": 3,
+   "cf": 3,
+   "cn": 12,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "toolmem_raw|ext_full|0.5": {
+   "n": 1,
+   "em": 0.0,
+   "f1": 0.0,
+   "tok": 6301,
+   "ans": 1,
+   "cv": 9,
+   "cf": 9,
+   "cn": 9,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "toolmem_raw|ext_ner_redact|0.5": {
+   "n": 1,
+   "em": 1.0,
+   "f1": 1.0,
+   "tok": 6104,
+   "ans": 1,
+   "cv": 3,
+   "cf": 3,
+   "cn": 9,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  }
+ },
+ "all": {
+  "full|None": {
+   "n": 3,
+   "em": 2.0,
+   "f1": 2.0,
+   "tok": 26664,
+   "ans": 3,
+   "cv": 33,
+   "cf": 33,
+   "cn": 33,
+   "ov": 0,
+   "coll": 0,
+   "tent": 3,
+   "tattr": 3
+  },
+  "ext_full|0.5": {
+   "n": 3,
+   "em": 2.0,
+   "f1": 2.0,
+   "tok": 26664,
+   "ans": 3,
+   "cv": 33,
+   "cf": 33,
+   "cn": 33,
+   "ov": 0,
+   "coll": 0,
+   "tent": 3,
+   "tattr": 3
+  },
+  "ext_ner_redact|0.5": {
+   "n": 3,
+   "em": 2.0,
+   "f1": 2.0,
+   "tok": 22872,
+   "ans": 2,
+   "cv": 9,
+   "cf": 9,
+   "cn": 33,
+   "ov": 0,
+   "coll": 0,
+   "tent": 3,
+   "tattr": 3
+  }
+ },
+ "by_case_kind": {
+  "needle|full|None": {
+   "n": 3,
+   "em": 2.0,
+   "f1": 2.0,
+   "tok": 26664,
+   "ans": 3,
+   "cv": 33,
+   "cf": 33,
+   "cn": 33,
+   "ov": 0,
+   "coll": 0,
+   "tent": 3,
+   "tattr": 3
+  },
+  "needle|ext_full|0.5": {
+   "n": 3,
+   "em": 2.0,
+   "f1": 2.0,
+   "tok": 26664,
+   "ans": 3,
+   "cv": 33,
+   "cf": 33,
+   "cn": 33,
+   "ov": 0,
+   "coll": 0,
+   "tent": 3,
+   "tattr": 3
+  },
+  "needle|ext_ner_redact|0.5": {
+   "n": 3,
+   "em": 2.0,
+   "f1": 2.0,
+   "tok": 22872,
+   "ans": 2,
+   "cv": 9,
+   "cf": 9,
+   "cn": 33,
+   "ov": 0,
+   "coll": 0,
+   "tent": 3,
+   "tattr": 3
+  }
+ }
+}

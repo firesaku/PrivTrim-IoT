@@ -1,0 +1,178 @@
+{
+ "cases": 1,
+ "arms": [
+  "full"
+ ],
+ "budgets": [
+  0.5
+ ],
+ "selector": "lex",
+ "dry_run": false,
+ "stub_preds": null,
+ "selector_used": "lex",
+ "emb": null,
+ "model": "/path/to/project/hf_cache/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28",
+ "scorer": "/path/to/project/external/squad_v11/evaluate-v2.0.py",
+ "seed": 20261015,
+ "max_new": 64,
+ "maxlen": 24576,
+ "n_prompts": 3,
+ "budget_accounting": {
+  "full|None": {
+   "n": 1,
+   "tgt": 14351.0,
+   "got": 14351.0,
+   "dev": 0.0,
+   "devmax": 0.0,
+   "devmax_signed": 0.0
+  },
+  "ext_full|0.5": {
+   "n": 1,
+   "tgt": 7176.0,
+   "got": 14351.0,
+   "dev": 7175.0,
+   "devmax": 7175,
+   "devmax_signed": 7175
+  },
+  "ext_ner_redact|0.5": {
+   "n": 1,
+   "tgt": 7176.0,
+   "got": 12939.0,
+   "dev": 5763.0,
+   "devmax": 5763,
+   "devmax_signed": 5763
+  }
+ },
+ "cells": {
+  "toolmem_raw|full|None": {
+   "n": 1,
+   "em": 0.0,
+   "f1": 0.0,
+   "tok": 14351,
+   "ans": 1,
+   "cv": 15,
+   "cf": 15,
+   "cn": 15,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "toolmem_raw|ext_full|0.5": {
+   "n": 1,
+   "em": 0.0,
+   "f1": 0.0,
+   "tok": 14351,
+   "ans": 1,
+   "cv": 15,
+   "cf": 15,
+   "cn": 15,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "toolmem_raw|ext_ner_redact|0.5": {
+   "n": 1,
+   "em": 0.0,
+   "f1": 0.0,
+   "tok": 12939,
+   "ans": 1,
+   "cv": 5,
+   "cf": 5,
+   "cn": 15,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  }
+ },
+ "all": {
+  "full|None": {
+   "n": 1,
+   "em": 0.0,
+   "f1": 0.0,
+   "tok": 14351,
+   "ans": 1,
+   "cv": 15,
+   "cf": 15,
+   "cn": 15,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "ext_full|0.5": {
+   "n": 1,
+   "em": 0.0,
+   "f1": 0.0,
+   "tok": 14351,
+   "ans": 1,
+   "cv": 15,
+   "cf": 15,
+   "cn": 15,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "ext_ner_redact|0.5": {
+   "n": 1,
+   "em": 0.0,
+   "f1": 0.0,
+   "tok": 12939,
+   "ans": 1,
+   "cv": 5,
+   "cf": 5,
+   "cn": 15,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  }
+ },
+ "by_case_kind": {
+  "multi_entity|full|None": {
+   "n": 1,
+   "em": 0.0,
+   "f1": 0.0,
+   "tok": 14351,
+   "ans": 1,
+   "cv": 15,
+   "cf": 15,
+   "cn": 15,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "multi_entity|ext_full|0.5": {
+   "n": 1,
+   "em": 0.0,
+   "f1": 0.0,
+   "tok": 14351,
+   "ans": 1,
+   "cv": 15,
+   "cf": 15,
+   "cn": 15,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "multi_entity|ext_ner_redact|0.5": {
+   "n": 1,
+   "em": 0.0,
+   "f1": 0.0,
+   "tok": 12939,
+   "ans": 1,
+   "cv": 5,
+   "cf": 5,
+   "cn": 15,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  }
+ }
+}

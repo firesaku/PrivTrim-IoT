@@ -1,0 +1,244 @@
+E2E LONGCTX — 长上下文压缩基准（gold 由真实源结构化记录确定性导出）
+cases=86  arms=full,delete,alias,budget_cluster,budget_cluster_link,budget_random,delete_budget,alias_budget,alias_budget_link  budgets=[0.25, 0.5, 0.75]  selector=lex  dtype=fp16  batch=8  max_new=64  maxlen=24576
+model=/path/to/project/hf_cache/models--ibm-granite--granite-3.1-8b-instruct/snapshots/4009206d5fc95d2e65a7b7633e159d6e97e25d35
+scorer=/path/to/project/external/squad_v11/evaluate-v2.0.py
+per-case budget B = round(ratio * nt(full_context))，由 tokenizer 实测
+
+[1] 预算对账（BUDGET ACCOUNTING）—— 预算臂实测 token 必须 <= 目标 B（超了直接 raise）
+arm              budget      n   target_mean   achieved_mean    dev_mean   |dev|_max    dev_max%
+alias               ref     86        9149.9          9022.6     -127.30       158.0       0.00%
+alias_budget       0.25     86        2287.4          1904.5     -382.94      1687.0       0.00%
+alias_budget       0.50     86        4574.9          4291.1     -283.81      3276.0       0.00%
+alias_budget       0.75     86        6862.5          6306.2     -556.30      3288.0       0.00%
+alias_budget_link    0.25     86        2287.4          1906.5     -380.94      1687.0       0.00%
+alias_budget_link    0.50     86        4574.9          4291.9     -282.97      3268.0       0.00%
+alias_budget_link    0.75     86        6862.5          6305.4     -557.01      3288.0       0.00%
+budget_cluster     0.25     86        2287.4          1904.0     -383.41      1687.0       0.00%
+budget_cluster     0.50     86        4574.9          4283.4     -291.48      3276.0       0.00%
+budget_cluster     0.75     86        6862.5          6325.1     -537.37      3161.0       0.00%
+budget_cluster_link    0.25     86        2287.4          1908.6     -378.84      1687.0       0.00%
+budget_cluster_link    0.50     86        4574.9          4286.5     -288.37      3258.0       0.00%
+budget_cluster_link    0.75     86        6862.5          6330.1     -532.31      3143.0       0.00%
+budget_random      0.25     86        2287.4          1950.1     -337.35      2841.0       0.00%
+budget_random      0.50     86        4574.9          4238.6     -336.28      3294.0       0.00%
+budget_random      0.75     86        6862.5          6539.2     -323.23      2849.0       0.00%
+delete              ref     86        9149.9          9004.3     -145.55       341.0       0.00%
+delete_budget      0.25     86        2287.4          1906.4     -381.00      1687.0       0.00%
+delete_budget      0.50     86        4574.9          4280.3     -294.64      3276.0       0.00%
+delete_budget      0.75     86        6862.5          6323.3     -539.20      3161.0       0.00%
+full                ref     86        9149.9          9149.9        0.00         0.0       0.00%
+READ: 同预算块（budget_cluster / budget_cluster_link / budget_random / delete_budget / alias_budget / alias_budget_link）在同一
+      ratio 下可直接互比；长度保持块（full / delete / alias）的 achieved≈full 长度，
+      它们的 token 数逐格打印在上表，绝不含混。
+
+[2] 主表：per (source, arm, budget)
+--- 同预算块（同 ratio 可互比） ---
+source             arm             budget    n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+pec_home           alias_budget      0.25   14  100.00%  100.00%       598.0      100.0%    0.0%/0.0   %       0.0%       0.0%
+pec_home           alias_budget      0.50   14   78.57%   80.77%      1169.7      100.0%    0.0%/0.0   %       0.0%       0.0%
+pec_home           alias_budget      0.75   14   85.71%   85.71%      1751.1      100.0%    0.0%/0.0   %       0.0%       0.0%
+pec_home           alias_budget_link   0.25   14  100.00%  100.00%       596.3      100.0%    0.0%/0.0   %       0.0%       0.0%
+pec_home           alias_budget_link   0.50   14   85.71%   87.91%      1175.4      100.0%    0.0%/0.0   %       0.0%       0.0%
+pec_home           alias_budget_link   0.75   14   92.86%   92.86%      1752.8      100.0%    0.0%/0.0   %       0.0%       0.0%
+pec_home           budget_cluster    0.25   14  100.00%  100.00%       598.0      100.0%    0.0%/0.0   %       0.0%       0.0%
+pec_home           budget_cluster    0.50   14   78.57%   80.77%      1169.7      100.0%    0.0%/0.0   %       0.5%       0.0%
+pec_home           budget_cluster    0.75   14   50.00%   50.00%      1731.5      100.0%    0.0%/0.0   %       1.0%       0.0%
+pec_home           budget_cluster_link   0.25   14  100.00%  100.00%       598.6      100.0%    4.8%/4.8   %       0.0%       0.0%
+pec_home           budget_cluster_link   0.50   14   85.71%   87.91%      1178.2      100.0%    4.8%/4.8   %       0.0%       0.0%
+pec_home           budget_cluster_link   0.75   14  100.00%  100.00%      1743.5      100.0%    4.8%/4.8   %       0.0%       0.0%
+pec_home           budget_random     0.25   14   14.29%   14.29%       587.2       42.9%   27.6%/44.3  %       1.0%       0.0%
+pec_home           budget_random     0.50   14   35.71%   35.71%      1198.0       71.4%   52.4%/68.1  %       1.4%       0.0%
+pec_home           budget_random     0.75   14   57.14%   57.14%      1772.9       78.6%   74.8%/83.8  %       0.5%       0.0%
+pec_home           delete_budget     0.25   14  100.00%  100.00%       598.0      100.0%    0.0%/0.0   %       0.0%      71.4%
+pec_home           delete_budget     0.50   14   78.57%   80.77%      1169.7      100.0%    0.0%/0.0   %       0.5%      71.4%
+pec_home           delete_budget     0.75   14   50.00%   50.00%      1731.5      100.0%    0.0%/0.0   %       1.0%      71.4%
+privacylens        alias_budget      0.25   18    5.56%   16.64%      1406.5      100.0%    0.0%/0.0   %       0.0%       0.0%
+privacylens        alias_budget      0.50   18    0.00%   13.37%      2922.8      100.0%    0.0%/0.0   %       0.0%       0.0%
+privacylens        alias_budget      0.75   18    5.56%   16.18%      4400.3      100.0%    0.0%/0.0   %       0.0%       0.0%
+privacylens        alias_budget_link   0.25   18   44.44%   59.05%      1407.5      100.0%    0.0%/0.0   %       0.0%       0.0%
+privacylens        alias_budget_link   0.50   18   16.67%   37.86%      2917.4      100.0%    0.0%/0.0   %       0.0%       0.0%
+privacylens        alias_budget_link   0.75   18   16.67%   38.05%      4396.7      100.0%    0.0%/0.0   %       0.0%       0.0%
+privacylens        budget_cluster    0.25   18    5.56%   17.33%      1406.5      100.0%    0.0%/0.0   %       2.9%       0.0%
+privacylens        budget_cluster    0.50   18    0.00%   13.34%      2922.8      100.0%    0.0%/0.0   %       3.7%       0.0%
+privacylens        budget_cluster    0.75   18    5.56%   16.76%      4400.3      100.0%    0.0%/0.0   %       3.7%       0.0%
+privacylens        budget_cluster_link   0.25   18   50.00%   61.43%      1411.7      100.0%    3.7%/3.7   %       0.4%       0.0%
+privacylens        budget_cluster_link   0.50   18   22.22%   43.41%      2917.0      100.0%    3.7%/3.7   %       0.8%       0.0%
+privacylens        budget_cluster_link   0.75   18   22.22%   38.23%      4400.9      100.0%    3.7%/3.7   %       0.8%       0.0%
+privacylens        budget_random     0.25   18   11.11%   13.68%      1456.9       33.3%   25.1%/42.8  %       3.3%       0.0%
+privacylens        budget_random     0.50   18   11.11%   17.04%      2953.4       44.4%   50.2%/62.1  %       3.3%       0.0%
+privacylens        budget_random     0.75   18   16.67%   25.27%      4411.2       72.2%   74.1%/81.5  %       2.5%       0.0%
+privacylens        delete_budget     0.25   18    5.56%   17.33%      1419.7      100.0%    0.0%/0.0   %       2.5%      50.0%
+privacylens        delete_budget     0.50   18    5.56%   17.04%      2912.9      100.0%    0.0%/0.0   %       3.7%      50.0%
+privacylens        delete_budget     0.75   18    5.56%   19.20%      4415.3      100.0%    0.0%/0.0   %       3.7%      50.0%
+simuhome           alias_budget      0.25   10    0.00%    2.22%       217.2       20.0%    0.0%/0.0   %       0.0%       0.0%
+simuhome           alias_budget      0.50   10   60.00%   60.00%      3111.4      100.0%    0.0%/0.0   %       0.0%       0.0%
+simuhome           alias_budget      0.75   10   80.00%   80.00%      3892.3      100.0%    0.0%/0.0   %       0.0%       0.0%
+simuhome           alias_budget_link   0.25   10   10.00%   12.22%       220.4       20.0%    0.0%/0.0   %       0.0%       0.0%
+simuhome           alias_budget_link   0.50   10   80.00%   80.00%      3113.0      100.0%    0.0%/0.0   %       0.0%       0.0%
+simuhome           alias_budget_link   0.75   10   80.00%   80.00%      3892.3      100.0%    0.0%/0.0   %       0.0%       0.0%
+simuhome           budget_cluster    0.25   10    0.00%    0.00%       217.2       20.0%    0.0%/0.0   %       0.0%       0.0%
+simuhome           budget_cluster    0.50   10    0.00%    0.00%      3053.8      100.0%    0.0%/0.0   %       8.9%       0.0%
+simuhome           budget_cluster    0.75   10    0.00%    0.00%      3820.3      100.0%    0.0%/0.0   %       8.9%       0.0%
+simuhome           budget_cluster_link   0.25   10    0.00%    4.44%       220.6       20.0%    2.2%/2.2   %       2.2%       0.0%
+simuhome           budget_cluster_link   0.50   10   80.00%   80.00%      3070.8      100.0%   11.1%/11.1  %       2.2%       0.0%
+simuhome           budget_cluster_link   0.75   10   80.00%   80.00%      3837.3      100.0%   11.1%/11.1  %       2.2%       0.0%
+simuhome           budget_random     0.25   10    0.00%    0.00%       742.2        0.0%   48.9%/57.8  %       7.8%       0.0%
+simuhome           budget_random     0.50   10   10.00%   10.00%      2409.0       30.0%   64.4%/72.2  %       5.6%       0.0%
+simuhome           budget_random     0.75   10   50.00%   50.00%      4307.5       80.0%   90.0%/94.4  %       4.4%       0.0%
+simuhome           delete_budget     0.25   10    0.00%    0.00%       217.2       20.0%    0.0%/0.0   %       0.0%     100.0%
+simuhome           delete_budget     0.50   10    0.00%    0.00%      3053.8      100.0%    0.0%/0.0   %       8.9%     100.0%
+simuhome           delete_budget     0.75   10    0.00%    0.00%      3820.3      100.0%    0.0%/0.0   %       8.9%     100.0%
+smartbench_tdcs    alias_budget      0.25   15   33.33%   35.77%      3499.4      100.0%    0.0%/0.0   %       0.0%       0.0%
+smartbench_tdcs    alias_budget      0.50   15   13.33%   14.81%      7823.8      100.0%    0.0%/0.0   %       0.0%       0.0%
+smartbench_tdcs    alias_budget      0.75   15   33.33%   33.33%     11405.3      100.0%    0.0%/0.0   %       0.0%       0.0%
+smartbench_tdcs    alias_budget_link   0.25   15   80.00%   80.00%      3504.7      100.0%    0.0%/0.0   %       0.0%       0.0%
+smartbench_tdcs    alias_budget_link   0.50   15   53.33%   54.81%      7828.6      100.0%    0.0%/0.0   %       0.0%       0.0%
+smartbench_tdcs    alias_budget_link   0.75   15   40.00%   40.00%     11407.4      100.0%    0.0%/0.0   %       0.0%       0.0%
+smartbench_tdcs    budget_cluster    0.25   15   60.00%   62.96%      3499.4      100.0%    0.0%/0.0   %       1.4%       0.0%
+smartbench_tdcs    budget_cluster    0.50   15   20.00%   21.48%      7814.1      100.0%    1.9%/1.9   %       4.3%       0.0%
+smartbench_tdcs    budget_cluster    0.75   15   26.67%   29.81%     11576.8      100.0%    9.0%/9.0   %       3.3%       0.0%
+smartbench_tdcs    budget_cluster_link   0.25   15   80.00%   80.00%      3510.9      100.0%    4.8%/4.8   %       0.0%       0.0%
+smartbench_tdcs    budget_cluster_link   0.50   15   53.33%   53.33%      7825.5      100.0%    6.7%/6.7   %       1.0%       0.0%
+smartbench_tdcs    budget_cluster_link   0.75   15   46.67%   48.15%     11584.7      100.0%   12.4%/12.4  %       0.5%       0.0%
+smartbench_tdcs    budget_random     0.25   15    6.67%    6.67%      3345.4       33.3%   24.3%/44.8  %       2.4%       0.0%
+smartbench_tdcs    budget_random     0.50   15   13.33%   13.33%      7875.0       60.0%   42.4%/58.6  %       2.9%       0.0%
+smartbench_tdcs    budget_random     0.75   15   20.00%   20.00%     12434.6       93.3%   69.5%/80.5  %       2.4%       0.0%
+smartbench_tdcs    delete_budget     0.25   15   60.00%   62.96%      3499.4      100.0%    0.0%/0.0   %       1.4%      66.7%
+smartbench_tdcs    delete_budget     0.50   15   20.00%   21.48%      7809.4      100.0%    0.0%/0.0   %       4.3%      66.7%
+smartbench_tdcs    delete_budget     0.75   15   13.33%   16.48%     11555.7      100.0%    0.0%/0.0   %       4.8%      66.7%
+toolmem            alias_budget      0.25   10   60.00%   62.00%      1913.4      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem            alias_budget      0.50   10   60.00%   62.00%      3853.8      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem            alias_budget      0.75   10   50.00%   58.54%      5873.9      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem            alias_budget_link   0.25   10   70.00%   74.22%      1915.1      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem            alias_budget_link   0.50   10   80.00%   83.25%      3852.9      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem            alias_budget_link   0.75   10   60.00%   66.32%      5871.7      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem            budget_cluster    0.25   10   60.00%   62.00%      1911.5      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem            budget_cluster    0.50   10   60.00%   62.00%      3860.1      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem            budget_cluster    0.75   10   50.00%   58.54%      5873.9      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem            budget_cluster_link   0.25   10   80.00%   84.22%      1916.0      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem            budget_cluster_link   0.50   10   80.00%   83.25%      3859.2      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem            budget_cluster_link   0.75   10   60.00%   66.32%      5871.7      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem            budget_random     0.25   10    0.00%    2.00%      1934.4       10.0%   26.7%/47.5  %       0.0%       0.0%
+toolmem            budget_random     0.50   10   10.00%   12.00%      3915.1       50.0%   46.7%/63.3  %       0.8%       0.0%
+toolmem            budget_random     0.75   10   20.00%   24.22%      5862.6       70.0%   70.8%/80.8  %       0.8%       0.0%
+toolmem            delete_budget     0.25   10   50.00%   52.00%      1914.6       90.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem            delete_budget     0.50   10   50.00%   52.00%      3855.8       90.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem            delete_budget     0.75   10   40.00%   48.54%      5868.2       90.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem_raw        alias_budget      0.25   19   73.68%   82.96%      2963.2      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem_raw        alias_budget      0.50   19   47.37%   58.29%      5949.4      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem_raw        alias_budget      0.75   19   36.84%   46.95%      8940.4      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem_raw        alias_budget_link   0.25   19   78.95%   85.93%      2965.8      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem_raw        alias_budget_link   0.50   19   63.16%   71.45%      5950.0      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem_raw        alias_budget_link   0.75   19   36.84%   46.39%      8938.8      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem_raw        budget_cluster    0.25   19   73.68%   86.28%      2962.1      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem_raw        budget_cluster    0.50   19   42.11%   54.15%      5949.4      100.0%    0.0%/0.0   %       1.8%       0.0%
+toolmem_raw        budget_cluster    0.75   19   21.05%   33.60%      8942.9      100.0%   26.2%/26.2  %       2.2%       0.0%
+toolmem_raw        budget_cluster_link   0.25   19   78.95%   85.93%      2964.3      100.0%    4.0%/4.0   %       0.0%       0.0%
+toolmem_raw        budget_cluster_link   0.50   19   57.89%   66.18%      5945.2      100.0%    4.0%/4.0   %       0.4%       0.0%
+toolmem_raw        budget_cluster_link   0.75   19   36.84%   46.31%      8942.4      100.0%   29.8%/29.8  %       0.9%       0.0%
+toolmem_raw        budget_random     0.25   19   10.53%   16.69%      2963.9       31.6%   25.3%/25.3  %       1.8%       0.0%
+toolmem_raw        budget_random     0.50   19   26.32%   27.27%      5959.1       68.4%   46.7%/46.7  %       0.0%       0.0%
+toolmem_raw        budget_random     0.75   19   31.58%   38.92%      8943.7       89.5%   79.1%/79.1  %       0.0%       0.0%
+toolmem_raw        delete_budget     0.25   19   68.42%   81.02%      2958.9      100.0%    0.0%/0.0   %       0.4%      47.4%
+toolmem_raw        delete_budget     0.50   19   47.37%   58.10%      5950.4      100.0%    0.0%/0.0   %       1.3%      47.4%
+toolmem_raw        delete_budget     0.75   19   21.05%   33.73%      8940.2      100.0%    0.0%/0.0   %       2.2%      47.4%
+--- 长度保持块（参照） ---
+source             arm             budget    n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+pec_home           alias              ref   14   64.29%   66.48%      2296.8      100.0%    0.0%/0.0   %       0.0%       0.0%
+pec_home           delete             ref   14   42.86%   45.05%      2296.8      100.0%    0.0%/0.0   %       0.5%      71.4%
+pec_home           full               ref   14   78.57%   80.77%      2446.1      100.0%  100.0%/100.0 %       0.0%       0.0%
+privacylens        alias              ref   18   16.67%   33.97%      5838.7      100.0%    0.0%/0.0   %       0.0%       0.0%
+privacylens        delete             ref   18    5.56%   19.63%      5770.9      100.0%    0.0%/0.0   %       3.7%      50.0%
+privacylens        full               ref   18   38.89%   52.31%      5973.2      100.0%  100.0%/100.0 %       1.2%       0.0%
+simuhome           alias              ref   10   70.00%   70.00%      6662.0      100.0%    0.0%/0.0   %       0.0%       0.0%
+simuhome           delete             ref   10    0.00%    0.00%      6662.0      100.0%    0.0%/0.0   %       6.7%     100.0%
+simuhome           full               ref   10   90.00%   90.00%      6749.0      100.0%  100.0%/100.0 %       1.1%       0.0%
+smartbench_tdcs    alias              ref   15   33.33%   34.81%     17974.3      100.0%    0.0%/0.0   %       0.0%       0.0%
+smartbench_tdcs    delete             ref   15   20.00%   21.48%     17974.3      100.0%    0.0%/0.0   %       4.8%      66.7%
+smartbench_tdcs    full               ref   15   53.33%   55.00%     18114.3      100.0%  100.0%/100.0 %       1.0%       0.0%
+toolmem            alias              ref   10   40.00%   44.22%      7775.7      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem            delete             ref   10   30.00%   34.22%      7769.1       90.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem            full               ref   10   40.00%   42.22%      7892.4      100.0%  100.0%/100.0 %       0.0%       0.0%
+toolmem_raw        alias              ref   19   15.79%   26.75%     11826.4      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem_raw        delete             ref   19    5.26%   17.54%     11811.4      100.0%    0.0%/0.0   %       0.9%      47.4%
+toolmem_raw        full               ref   19   15.79%   26.44%     11947.4      100.0%  100.0%/100.0 %       0.0%       0.0%
+
+=== ALL（跨源汇总） ===
+--- 同预算块 ---
+arm             budget     n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+alias_budget      0.25    86   46.51%   51.80%      1904.5       90.7%    0.0%/0.0   %       0.0%       0.0%
+alias_budget      0.50    86   39.53%   45.59%      4291.1      100.0%    0.0%/0.0   %       0.0%       0.0%
+alias_budget      0.75    86   44.19%   49.63%      6306.2      100.0%    0.0%/0.0   %       0.0%       0.0%
+alias_budget_link   0.25    86   66.28%   71.63%      1906.5       90.7%    0.0%/0.0   %       0.0%       0.0%
+alias_budget_link   0.50    86   59.30%   66.56%      4291.9      100.0%    0.0%/0.0   %       0.0%       0.0%
+alias_budget_link   0.75    86   50.00%   57.32%      6305.4      100.0%    0.0%/0.0   %       0.0%       0.0%
+budget_cluster    0.25    86   51.16%   57.16%      1904.0       90.7%    0.0%/0.0   %       0.9%       0.0%
+budget_cluster    0.50    86   32.56%   38.86%      4283.4      100.0%    0.4%/0.4   %       2.8%       0.0%
+budget_cluster    0.75    86   24.42%   31.08%      6325.1      100.0%    7.1%/7.1   %       2.8%       0.0%
+budget_cluster_link   0.25    86   67.44%   72.38%      1908.6       90.7%    3.6%/3.6   %       0.3%       0.0%
+budget_cluster_link   0.50    86   59.30%   66.30%      4286.5      100.0%    4.7%/4.7   %       0.6%       0.0%
+budget_cluster_link   0.75    86   53.49%   59.92%      6330.1      100.0%   11.1%/11.1  %       0.6%       0.0%
+budget_random     0.25    86    8.14%   10.27%      1950.1       27.9%   27.6%/41.6  %       2.4%       0.0%
+budget_random     0.50    86   18.60%   20.29%      4238.6       55.8%   49.2%/60.4  %       2.1%       0.0%
+budget_random     0.75    86   31.40%   35.31%      6539.2       81.4%   75.3%/82.2  %       1.5%       0.0%
+delete_budget     0.25    86   48.84%   54.84%      1906.4       89.5%    0.0%/0.0   %       0.9%      55.8%
+delete_budget     0.50    86   33.72%   39.34%      4280.3       98.8%    0.0%/0.0   %       2.7%      55.8%
+delete_budget     0.75    86   20.93%   28.13%      6323.3       98.8%    0.0%/0.0   %       3.1%      55.8%
+--- 长度保持块 ---
+arm             budget     n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+alias              ref    86   36.05%   43.20%      9022.6      100.0%    0.0%/0.0   %       0.0%       0.0%
+delete             ref    86   16.28%   23.04%      9004.3       98.8%    0.0%/0.0   %       2.6%      55.8%
+full               ref    86   48.84%   54.90%      9149.9      100.0%  100.0%/100.0 %       0.5%       0.0%
+
+=== 按 case_kind 汇总（needle = 单点取证；multi_entity = 多实体消歧） ===
+kind          arm             budget     n       EM       F1  ctx_tokens gold_in_ctx     leak_v  tgt_ent_ok  collision
+multi_entity  alias              ref    48   41.67%   43.59%      9401.6      100.0%       0.0%      100.0%       0.0%
+multi_entity  alias_budget      0.25    48   45.83%   47.06%      1839.0       83.3%       0.0%        0.0%       0.0%
+multi_entity  alias_budget      0.50    48   41.67%   44.00%      4392.2      100.0%       0.0%       18.8%       0.0%
+multi_entity  alias_budget      0.75    48   54.17%   55.28%      6382.7      100.0%       0.0%       60.4%       0.0%
+multi_entity  alias_budget_link   0.25    48   70.83%   72.49%      1841.1       83.3%       0.0%       87.5%       0.0%
+multi_entity  alias_budget_link   0.50    48   70.83%   73.08%      4395.7      100.0%       0.0%      100.0%       0.0%
+multi_entity  alias_budget_link   0.75    48   62.50%   66.14%      6385.6      100.0%       0.0%      100.0%       0.0%
+multi_entity  budget_cluster    0.25    48   54.17%   55.35%      1839.0       83.3%       0.0%        0.0%       0.0%
+multi_entity  budget_cluster    0.50    48   29.17%   31.93%      4377.7      100.0%       0.0%        0.0%       0.0%
+multi_entity  budget_cluster    0.75    48   18.75%   22.04%      6356.6      100.0%       7.6%        8.3%       0.0%
+multi_entity  budget_cluster_link   0.25    48   70.83%   71.76%      1846.3       83.3%       6.1%       83.3%       0.0%
+multi_entity  budget_cluster_link   0.50    48   70.83%   72.62%      4385.2      100.0%       7.3%      100.0%       0.0%
+multi_entity  budget_cluster_link   0.75    48   68.75%   70.90%      6368.1      100.0%      14.2%      100.0%       0.0%
+multi_entity  budget_random     0.25    48    6.25%    6.25%      1905.4       27.1%      27.6%       22.9%       0.0%
+multi_entity  budget_random     0.50    48   14.58%   14.80%      4283.2       56.2%      50.3%       41.7%       0.0%
+multi_entity  budget_random     0.75    48   33.33%   34.03%      6685.9       83.3%      76.4%       64.6%       0.0%
+multi_entity  delete             ref    48    8.33%    9.56%      9384.8      100.0%       0.0%      100.0%     100.0%
+multi_entity  delete_budget     0.25    48   52.08%   53.27%      1843.1       83.3%       0.0%       14.6%     100.0%
+multi_entity  delete_budget     0.50    48   31.25%   33.49%      4374.8      100.0%       0.0%       27.1%     100.0%
+multi_entity  delete_budget     0.75    48   14.58%   17.87%      6357.5      100.0%       0.0%       31.2%     100.0%
+multi_entity  full               ref    48   58.33%   60.31%      9538.6      100.0%     100.0%      100.0%       0.0%
+needle        alias              ref    38   28.95%   42.71%      8543.9      100.0%       0.0%      100.0%       0.0%
+needle        alias_budget      0.25    38   47.37%   57.78%      1987.2      100.0%       0.0%      100.0%       0.0%
+needle        alias_budget      0.50    38   36.84%   47.61%      4163.3      100.0%       0.0%      100.0%       0.0%
+needle        alias_budget      0.75    38   31.58%   42.50%      6209.4      100.0%       0.0%      100.0%       0.0%
+needle        alias_budget_link   0.25    38   60.53%   70.54%      1989.1      100.0%       0.0%      100.0%       0.0%
+needle        alias_budget_link   0.50    38   44.74%   58.33%      4160.9      100.0%       0.0%      100.0%       0.0%
+needle        alias_budget_link   0.75    38   34.21%   46.18%      6204.2      100.0%       0.0%      100.0%       0.0%
+needle        budget_cluster    0.25    38   47.37%   59.45%      1986.2      100.0%       0.0%      100.0%       0.0%
+needle        budget_cluster    0.50    38   36.84%   47.61%      4164.3      100.0%       0.9%      100.0%       0.0%
+needle        budget_cluster    0.75    38   31.58%   42.50%      6285.2      100.0%       6.4%      100.0%       0.0%
+needle        budget_cluster_link   0.25    38   63.16%   73.17%      1987.3      100.0%       0.0%      100.0%       0.0%
+needle        budget_cluster_link   0.50    38   44.74%   58.33%      4161.8      100.0%       0.9%      100.0%       0.0%
+needle        budget_cluster_link   0.75    38   34.21%   46.06%      6282.2      100.0%       6.4%      100.0%       0.0%
+needle        budget_random     0.25    38   10.53%   15.35%      2006.5       28.9%      27.6%      100.0%       0.0%
+needle        budget_random     0.50    38   23.68%   27.22%      4182.3       55.3%      47.5%      100.0%       0.0%
+needle        budget_random     0.75    38   28.95%   36.93%      6354.0       78.9%      73.7%      100.0%       0.0%
+needle        delete             ref    38   26.32%   40.07%      8523.8       97.4%       0.0%      100.0%       0.0%
+needle        delete_budget     0.25    38   44.74%   56.81%      1986.4       97.4%       0.0%      100.0%       0.0%
+needle        delete_budget     0.50    38   36.84%   46.73%      4160.9       97.4%       0.0%      100.0%       0.0%
+needle        delete_budget     0.75    38   28.95%   41.08%      6280.0       97.4%       0.0%      100.0%       0.0%
+needle        full               ref    38   36.84%   48.07%      8658.9      100.0%     100.0%      100.0%       0.0%
+
+注：
+  - gold_in_ctx = gold 串是否还在该臂上下文里（model-free 上界；=0 则模型不可能答对）
+  - ctx_leak = privcheck.exposure_basic 的 value/fragment 泄漏率（分母是 canary 数）
+  - out_leak = privcheck.exposure_hit 对**模型输出**的命中率
+  - collision = 多实体案例里多个不同实体落到同一表面 token 的比例（删除式脱敏必然 100%，此时链接不可解）
+  - tgt_ent_ok = 目标实体的表面 token 是否还在上下文里（预算臂丢错区域时掉到 0）
+  - SQuAD 官方评分只做 normalize + EM/F1；UNKNOWN 不作为合法答案

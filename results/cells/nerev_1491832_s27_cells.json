@@ -1,0 +1,262 @@
+{
+ "cases": 3,
+ "arms": [
+  "full"
+ ],
+ "budgets": [
+  0.5
+ ],
+ "selector": "lex",
+ "dry_run": false,
+ "stub_preds": null,
+ "selector_used": "lex",
+ "emb": null,
+ "model": "/path/to/project/hf_cache/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28",
+ "scorer": "/path/to/project/external/squad_v11/evaluate-v2.0.py",
+ "seed": 20261015,
+ "max_new": 64,
+ "maxlen": 24576,
+ "n_prompts": 9,
+ "budget_accounting": {
+  "full|None": {
+   "n": 3,
+   "tgt": 29625.0,
+   "got": 29625.0,
+   "dev": 0.0,
+   "devmax": 0.0,
+   "devmax_signed": 0.0
+  },
+  "ext_full|0.5": {
+   "n": 3,
+   "tgt": 14812.0,
+   "got": 29625.0,
+   "dev": 14813.0,
+   "devmax": 7491,
+   "devmax_signed": 7491
+  },
+  "ext_ner_redact|0.5": {
+   "n": 3,
+   "tgt": 14812.0,
+   "got": 25537.0,
+   "dev": 10725.0,
+   "devmax": 4423,
+   "devmax_signed": 4423
+  }
+ },
+ "cells": {
+  "privacylens|full|None": {
+   "n": 1,
+   "em": 1.0,
+   "f1": 1.0,
+   "tok": 4258,
+   "ans": 1,
+   "cv": 12,
+   "cf": 12,
+   "cn": 12,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "smartbench_tdcs|full|None": {
+   "n": 1,
+   "em": 1.0,
+   "f1": 1.0,
+   "tok": 14982,
+   "ans": 1,
+   "cv": 12,
+   "cf": 12,
+   "cn": 12,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "toolmem_raw|full|None": {
+   "n": 1,
+   "em": 0.0,
+   "f1": 0.0,
+   "tok": 10385,
+   "ans": 1,
+   "cv": 9,
+   "cf": 9,
+   "cn": 9,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "privacylens|ext_full|0.5": {
+   "n": 1,
+   "em": 1.0,
+   "f1": 1.0,
+   "tok": 4258,
+   "ans": 1,
+   "cv": 12,
+   "cf": 12,
+   "cn": 12,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "privacylens|ext_ner_redact|0.5": {
+   "n": 1,
+   "em": 0.0,
+   "f1": 0.7272727272727272,
+   "tok": 4094,
+   "ans": 0,
+   "cv": 4,
+   "cf": 4,
+   "cn": 12,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "smartbench_tdcs|ext_full|0.5": {
+   "n": 1,
+   "em": 1.0,
+   "f1": 1.0,
+   "tok": 14982,
+   "ans": 1,
+   "cv": 12,
+   "cf": 12,
+   "cn": 12,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "smartbench_tdcs|ext_ner_redact|0.5": {
+   "n": 1,
+   "em": 1.0,
+   "f1": 1.0,
+   "tok": 11828,
+   "ans": 1,
+   "cv": 3,
+   "cf": 3,
+   "cn": 12,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "toolmem_raw|ext_full|0.5": {
+   "n": 1,
+   "em": 0.0,
+   "f1": 0.0,
+   "tok": 10385,
+   "ans": 1,
+   "cv": 9,
+   "cf": 9,
+   "cn": 9,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  },
+  "toolmem_raw|ext_ner_redact|0.5": {
+   "n": 1,
+   "em": 0.0,
+   "f1": 0.0,
+   "tok": 9615,
+   "ans": 1,
+   "cv": 3,
+   "cf": 3,
+   "cn": 9,
+   "ov": 0,
+   "coll": 0,
+   "tent": 1,
+   "tattr": 1
+  }
+ },
+ "all": {
+  "full|None": {
+   "n": 3,
+   "em": 2.0,
+   "f1": 2.0,
+   "tok": 29625,
+   "ans": 3,
+   "cv": 33,
+   "cf": 33,
+   "cn": 33,
+   "ov": 0,
+   "coll": 0,
+   "tent": 3,
+   "tattr": 3
+  },
+  "ext_full|0.5": {
+   "n": 3,
+   "em": 2.0,
+   "f1": 2.0,
+   "tok": 29625,
+   "ans": 3,
+   "cv": 33,
+   "cf": 33,
+   "cn": 33,
+   "ov": 0,
+   "coll": 0,
+   "tent": 3,
+   "tattr": 3
+  },
+  "ext_ner_redact|0.5": {
+   "n": 3,
+   "em": 1.0,
+   "f1": 1.727272727272727,
+   "tok": 25537,
+   "ans": 2,
+   "cv": 10,
+   "cf": 10,
+   "cn": 33,
+   "ov": 0,
+   "coll": 0,
+   "tent": 3,
+   "tattr": 3
+  }
+ },
+ "by_case_kind": {
+  "needle|full|None": {
+   "n": 3,
+   "em": 2.0,
+   "f1": 2.0,
+   "tok": 29625,
+   "ans": 3,
+   "cv": 33,
+   "cf": 33,
+   "cn": 33,
+   "ov": 0,
+   "coll": 0,
+   "tent": 3,
+   "tattr": 3
+  },
+  "needle|ext_full|0.5": {
+   "n": 3,
+   "em": 2.0,
+   "f1": 2.0,
+   "tok": 29625,
+   "ans": 3,
+   "cv": 33,
+   "cf": 33,
+   "cn": 33,
+   "ov": 0,
+   "coll": 0,
+   "tent": 3,
+   "tattr": 3
+  },
+  "needle|ext_ner_redact|0.5": {
+   "n": 3,
+   "em": 1.0,
+   "f1": 1.727272727272727,
+   "tok": 25537,
+   "ans": 2,
+   "cv": 10,
+   "cf": 10,
+   "cn": 33,
+   "ov": 0,
+   "coll": 0,
+   "tent": 3,
+   "tattr": 3
+  }
+ }
+}

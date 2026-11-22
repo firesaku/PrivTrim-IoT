@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-probe32b
 #SBATCH --gres=gpu:nvidia_h200:1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=96G
 #SBATCH --time=02:00:00
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/probe32b-%j.out
-#SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/probe32b-%j.err
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/probe32b-%j.out
+#SBATCH --error=/path/to/project/logs/probe32b-%j.err
 #
 # 32B reader probe -- the go/no-go for experiment 5.
 #
@@ -30,7 +30,7 @@
 set -uo pipefail
 module load intel_h200_gpu 2>/dev/null || true
 
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 export PYTHONNOUSERSITE=1
 export PYTHONPATH=$RD/code:$RD/code/longctx
 export HF_HOME=$RD/hf_cache

@@ -1,0 +1,54 @@
+E2E LONGCTX — 长上下文压缩基准（gold 由真实源结构化记录确定性导出）
+cases=341  arms=full,quad4  budgets=[0.5]  selector=lex  dtype=fp16  batch=2  max_new=64  maxlen=24576
+model=/path/to/project/hf_cache/models--Qwen--Qwen2.5-14B-Instruct/snapshots/cf98f3b3bbb457ad9e2bb7baf9a0125b6b88caa8
+scorer=/path/to/project/external/squad_v11/evaluate-v2.0.py
+per-case budget B = round(ratio * nt(full_context))，由 tokenizer 实测
+
+[1] 预算对账（BUDGET ACCOUNTING）—— 预算臂实测 token 必须 <= 目标 B（超了直接 raise）
+arm              budget      n   target_mean   achieved_mean    dev_mean   |dev|_max    dev_max%
+full                ref    341        8549.0          8549.0        0.00         0.0       0.00%
+quad4              0.50    341        4274.4          4178.9      -95.59      1040.0       0.00%
+READ: 同预算块（budget_cluster / budget_cluster_link / budget_random / delete_budget / alias_budget / alias_budget_link）在同一
+      ratio 下可直接互比；长度保持块（full / delete / alias）的 achieved≈full 长度，
+      它们的 token 数逐格打印在上表，绝不含混。
+
+[2] 主表：per (source, arm, budget)
+--- 同预算块（同 ratio 可互比） ---
+source             arm             budget    n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+pec_home           quad4             0.50   53   26.42%   29.25%      1068.6      100.0%    0.0%/0.0   %       0.0%       0.0%
+privacylens        quad4             0.50   75   40.00%   40.89%      2742.8      100.0%    0.0%/0.0   %       0.0%       0.0%
+simuhome           quad4             0.50   39   12.82%   12.82%      2737.5      100.0%    0.0%/0.0   %       0.0%       0.0%
+smartbench_tdcs    quad4             0.50   62   41.94%   41.94%      8239.0      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem            quad4             0.50   37   29.73%   31.61%      3506.5      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem_raw        quad4             0.50   75   21.33%   23.52%      5537.5      100.0%    0.0%/0.0   %       0.0%       0.0%
+--- 长度保持块（参照） ---
+source             arm             budget    n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+pec_home           full               ref   53   71.70%   74.53%      2141.2      100.0%  100.0%/100.0 %       0.0%       0.0%
+privacylens        full               ref   75   42.67%   45.24%      5503.5      100.0%  100.0%/100.0 %       0.0%       0.0%
+simuhome           full               ref   39   97.44%   97.44%      6147.7      100.0%  100.0%/100.0 %       0.0%       0.0%
+smartbench_tdcs    full               ref   62   85.48%   85.48%     17043.6      100.0%  100.0%/100.0 %       0.0%       0.0%
+toolmem            full               ref   37   56.76%   60.38%      7033.1      100.0%  100.0%/100.0 %       0.0%       0.0%
+toolmem_raw        full               ref   75   48.00%   49.84%     11096.8      100.0%  100.0%/100.0 %       0.0%       0.0%
+
+=== ALL（跨源汇总） ===
+--- 同预算块 ---
+arm             budget     n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+quad4             0.50   341   29.91%   31.23%      4178.9      100.0%    0.0%/0.0   %       0.0%       0.0%
+--- 长度保持块 ---
+arm             budget     n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+full               ref   341   63.93%   65.74%      8549.0      100.0%  100.0%/100.0 %       0.0%       0.0%
+
+=== 按 case_kind 汇总（needle = 单点取证；multi_entity = 多实体消歧） ===
+kind          arm             budget     n       EM       F1  ctx_tokens gold_in_ctx     leak_v  tgt_ent_ok  collision
+multi_entity  full               ref   190   61.05%   61.40%      8845.9      100.0%     100.0%      100.0%       0.0%
+multi_entity  quad4             0.50   190    4.74%    4.74%      4291.7      100.0%       0.0%       17.9%       0.0%
+needle        full               ref   151   67.55%   71.19%      8175.4      100.0%     100.0%      100.0%       0.0%
+needle        quad4             0.50   151   61.59%   64.57%      4036.9      100.0%       0.0%      100.0%       0.0%
+
+注：
+  - gold_in_ctx = gold 串是否还在该臂上下文里（model-free 上界；=0 则模型不可能答对）
+  - ctx_leak = privcheck.exposure_basic 的 value/fragment 泄漏率（分母是 canary 数）
+  - out_leak = privcheck.exposure_hit 对**模型输出**的命中率
+  - collision = 多实体案例里多个不同实体落到同一表面 token 的比例（删除式脱敏必然 100%，此时链接不可解）
+  - tgt_ent_ok = 目标实体的表面 token 是否还在上下文里（预算臂丢错区域时掉到 0）
+  - SQuAD 官方评分只做 normalize + EM/F1；UNKNOWN 不作为合法答案

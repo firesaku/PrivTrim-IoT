@@ -1,0 +1,157 @@
+{
+ "cases": 300,
+ "arms": [
+  "full",
+  "quad4"
+ ],
+ "budgets": [
+  0.5
+ ],
+ "selector": "lex",
+ "dry_run": false,
+ "stub_preds": null,
+ "selector_used": "lex",
+ "emb": null,
+ "model": "/path/to/project/hf_cache/models--microsoft--phi-4/snapshots/2db69c1c3e91a05d2c64a3185acfbaf36f744e25",
+ "scorer": "/path/to/project/external/squad_v11/evaluate-v2.0.py",
+ "seed": 20261015,
+ "max_new": 64,
+ "maxlen": 24576,
+ "n_prompts": 600,
+ "budget_accounting": {
+  "full|None": {
+   "n": 300,
+   "tgt": 602935.0,
+   "got": 602935.0,
+   "dev": 0.0,
+   "devmax": 0.0,
+   "devmax_signed": 0.0
+  },
+  "quad4|0.5": {
+   "n": 300,
+   "tgt": 301471.0,
+   "got": 300854.0,
+   "dev": -617.0,
+   "devmax": 11,
+   "devmax_signed": 0.0
+  }
+ },
+ "cells": {
+  "pec_home|full|None": {
+   "n": 300,
+   "em": 267.0,
+   "f1": 273.55,
+   "tok": 602935,
+   "ans": 300,
+   "cv": 4509,
+   "cf": 4509,
+   "cn": 4509,
+   "ov": 7,
+   "coll": 0,
+   "tent": 300,
+   "tattr": 300
+  },
+  "pec_home|quad4|0.5": {
+   "n": 300,
+   "em": 219.0,
+   "f1": 225.8,
+   "tok": 300854,
+   "ans": 300,
+   "cv": 0,
+   "cf": 0,
+   "cn": 4509,
+   "ov": 0,
+   "coll": 0,
+   "tent": 133,
+   "tattr": 300
+  }
+ },
+ "all": {
+  "full|None": {
+   "n": 300,
+   "em": 267.0,
+   "f1": 273.55,
+   "tok": 602935,
+   "ans": 300,
+   "cv": 4509,
+   "cf": 4509,
+   "cn": 4509,
+   "ov": 7,
+   "coll": 0,
+   "tent": 300,
+   "tattr": 300
+  },
+  "quad4|0.5": {
+   "n": 300,
+   "em": 219.0,
+   "f1": 225.8,
+   "tok": 300854,
+   "ans": 300,
+   "cv": 0,
+   "cf": 0,
+   "cn": 4509,
+   "ov": 0,
+   "coll": 0,
+   "tent": 133,
+   "tattr": 300
+  }
+ },
+ "by_case_kind": {
+  "multi_entity|full|None": {
+   "n": 200,
+   "em": 180.0,
+   "f1": 180.25,
+   "tok": 402718,
+   "ans": 200,
+   "cv": 3009,
+   "cf": 3009,
+   "cn": 3009,
+   "ov": 7,
+   "coll": 0,
+   "tent": 200,
+   "tattr": 200
+  },
+  "multi_entity|quad4|0.5": {
+   "n": 200,
+   "em": 133.0,
+   "f1": 133.5,
+   "tok": 200929,
+   "ans": 200,
+   "cv": 0,
+   "cf": 0,
+   "cn": 3009,
+   "ov": 0,
+   "coll": 0,
+   "tent": 33,
+   "tattr": 200
+  },
+  "needle|full|None": {
+   "n": 100,
+   "em": 87.0,
+   "f1": 93.3,
+   "tok": 200217,
+   "ans": 100,
+   "cv": 1500,
+   "cf": 1500,
+   "cn": 1500,
+   "ov": 0,
+   "coll": 0,
+   "tent": 100,
+   "tattr": 100
+  },
+  "needle|quad4|0.5": {
+   "n": 100,
+   "em": 86.0,
+   "f1": 92.3,
+   "tok": 99925,
+   "ans": 100,
+   "cv": 0,
+   "cf": 0,
+   "cn": 1500,
+   "ov": 0,
+   "coll": 0,
+   "tent": 100,
+   "tattr": 100
+  }
+ }
+}

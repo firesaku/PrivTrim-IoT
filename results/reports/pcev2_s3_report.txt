@@ -1,0 +1,62 @@
+E2E LONGCTX — 长上下文压缩基准（gold 由真实源结构化记录确定性导出）
+cases=74  arms=full  budgets=[0.5]  selector=lex  dtype=fp16  batch=2  max_new=64  maxlen=24576
+model=/path/to/project/hf_cache/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28
+scorer=/path/to/project/external/squad_v11/evaluate-v2.0.py
+per-case budget B = round(ratio * nt(full_context))，由 tokenizer 实测
+
+[1] 预算对账（BUDGET ACCOUNTING）—— 预算臂实测 token 必须 <= 目标 B（超了直接 raise）
+arm              budget      n   target_mean   achieved_mean    dev_mean   |dev|_max    dev_max%
+ext_full           0.50     74        4516.0          9032.1     4516.04      9057.0     200.55%
+ext_perception     0.50     74        4516.0          4240.8     -275.22       817.0       6.84%
+ext_perception_native    0.50     74        4516.0          4240.8     -275.22       817.0       6.84%
+full                ref     74        9032.1          9032.1        0.00         0.0       0.00%
+READ: 同预算块（budget_cluster / budget_cluster_link / budget_random / delete_budget / alias_budget / alias_budget_link）在同一
+      ratio 下可直接互比；长度保持块（full / delete / alias）的 achieved≈full 长度，
+      它们的 token 数逐格打印在上表，绝不含混。
+NOTE: ext_* 是**已发布方法**（batch1 原码）输出的上下文，按 ratio=0.50 记账；
+      其原生预算是 floor(0.5*n)，本项目是 round(0.5*n)，最多差 1 token。
+      它们是等预算对照，不含删除/别名语义（arm_style=none），故 collision 恒 0；
+      ctx_leak 反映的是这些方法原生能不能把机密压掉，不是我们加的语义。
+
+[2] 主表：per (source, arm, budget)
+--- 同预算块（同 ratio 可互比） ---
+source             arm             budget    n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+hotpotqa           ext_full          0.50   24   29.17%   34.52%     13735.8       83.3%  100.0%/100.0 %       0.0%       0.0%
+hotpotqa           ext_perception    0.50   24   29.17%   37.17%      6478.0       79.2%   69.4%/76.1  %       0.0%       0.0%
+hotpotqa           ext_perception_native   0.50   24   29.17%   37.17%      6478.0       79.2%   69.4%/76.1  %       0.0%       0.0%
+multifieldqa_en    ext_full          0.50   25   24.00%   51.06%      7650.9       16.0%  100.0%/100.0 %       0.0%       0.0%
+multifieldqa_en    ext_perception    0.50   25   28.00%   48.77%      3590.9       12.0%   76.5%/82.7  %       0.0%       0.0%
+multifieldqa_en    ext_perception_native   0.50   25   32.00%   52.04%      3590.9       12.0%   76.5%/82.7  %       0.0%       0.0%
+qasper             ext_full          0.50   25   24.00%   42.55%      5897.6       36.0%  100.0%/100.0 %       0.0%       0.0%
+qasper             ext_perception    0.50   25   20.00%   33.66%      2743.0       16.0%   76.3%/85.9  %       0.0%       0.0%
+qasper             ext_perception_native   0.50   25   20.00%   33.66%      2743.0       16.0%   76.3%/85.9  %       0.0%       0.0%
+--- 长度保持块（参照） ---
+source             arm             budget    n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+hotpotqa           full               ref   24   29.17%   34.52%     13735.8       83.3%  100.0%/100.0 %       0.0%       0.0%
+multifieldqa_en    full               ref   25   24.00%   51.06%      7650.9       16.0%  100.0%/100.0 %       0.0%       0.0%
+qasper             full               ref   25   24.00%   42.55%      5897.6       36.0%  100.0%/100.0 %       0.0%       0.0%
+
+=== ALL（跨源汇总） ===
+--- 同预算块 ---
+arm             budget     n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+ext_full          0.50    74   25.68%   42.82%      9032.1       44.6%  100.0%/100.0 %       0.0%       0.0%
+ext_perception    0.50    74   25.68%   39.90%      4240.8       35.1%   74.1%/81.6  %       0.0%       0.0%
+ext_perception_native   0.50    74   27.03%   41.01%      4240.8       35.1%   74.1%/81.6  %       0.0%       0.0%
+--- 长度保持块 ---
+arm             budget     n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+full               ref    74   25.68%   42.82%      9032.1       44.6%  100.0%/100.0 %       0.0%       0.0%
+
+=== 按 case_kind 汇总（needle = 单点取证；multi_entity = 多实体消歧） ===
+kind          arm             budget     n       EM       F1  ctx_tokens gold_in_ctx     leak_v  tgt_ent_ok  collision
+single        ext_full          0.50    74   25.68%   42.82%      9032.1       44.6%     100.0%      100.0%       0.0%
+single        ext_perception    0.50    74   25.68%   39.90%      4240.8       35.1%      74.1%      100.0%       0.0%
+single        ext_perception_native   0.50    74   27.03%   41.01%      4240.8       35.1%      74.1%      100.0%       0.0%
+single        full               ref    74   25.68%   42.82%      9032.1       44.6%     100.0%      100.0%       0.0%
+
+注：
+  - gold_in_ctx = gold 串是否还在该臂上下文里（model-free 上界；=0 则模型不可能答对）
+  - ctx_leak = privcheck.exposure_basic 的 value/fragment 泄漏率（分母是 canary 数）
+  - out_leak = privcheck.exposure_hit 对**模型输出**的命中率
+  - collision = 多实体案例里多个不同实体落到同一表面 token 的比例（删除式脱敏必然 100%，此时链接不可解）
+  - tgt_ent_ok = 目标实体的表面 token 是否还在上下文里（预算臂丢错区域时掉到 0）
+  - SQuAD 官方评分只做 normalize + EM/F1；UNKNOWN 不作为合法答案

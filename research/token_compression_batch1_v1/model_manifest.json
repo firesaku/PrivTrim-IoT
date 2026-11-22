@@ -1,0 +1,100 @@
+{
+  "google/flan-t5-small": {
+    "status": "ok",
+    "revision": "0fc9ddf78a1e988dac52e2dac162b0ede4fd74ab",
+    "path": "/path/to/project/hf_cache/models--google--flan-t5-small/snapshots/0fc9ddf78a1e988dac52e2dac162b0ede4fd74ab",
+    "seconds": 1.238012699992396,
+    "files": [
+      ".gitattributes",
+      "README.md",
+      "config.json",
+      "flax_model.msgpack",
+      "generation_config.json",
+      "model.safetensors",
+      "pytorch_model.bin",
+      "special_tokens_map.json",
+      "spiece.model",
+      "tf_model.h5",
+      "tokenizer.json",
+      "tokenizer_config.json"
+    ]
+  },
+  "Qwen/Qwen2-0.5B-Instruct": {
+    "status": "ok",
+    "revision": "c540970f9e29518b1d8f06ab8b24cba66ad77b6d",
+    "path": "/path/to/project/hf_cache/models--Qwen--Qwen2-0.5B-Instruct/snapshots/c540970f9e29518b1d8f06ab8b24cba66ad77b6d",
+    "seconds": 17.826926399953663,
+    "files": [
+      ".gitattributes",
+      "LICENSE",
+      "README.md",
+      "config.json",
+      "generation_config.json",
+      "merges.txt",
+      "model.safetensors",
+      "tokenizer.json",
+      "tokenizer_config.json",
+      "vocab.json"
+    ]
+  },
+  "naver/provence-reranker-debertav3-v1": {
+    "status": "ok",
+    "revision": "ef49e233e3c6e50efc476c68f1390f8a63add4d4",
+    "path": "/path/to/project/hf_cache/models--naver--provence-reranker-debertav3-v1/snapshots/ef49e233e3c6e50efc476c68f1390f8a63add4d4",
+    "seconds": 175.69978030002676,
+    "files": [
+      ".gitattributes",
+      "Provence_LICENSE.txt",
+      "README.md",
+      "added_tokens.json",
+      "config.json",
+      "model.safetensors",
+      "modeling_provence.py",
+      "special_tokens_map.json",
+      "tokenizer.json",
+      "tokenizer_config.json"
+    ]
+  },
+  "unsloth/Llama-3.2-1B-Instruct": {
+    "status": "ok",
+    "revision": "5a8abab4a5d6f164389b1079fb721cfab8d7126c",
+    "path": "/path/to/project/hf_cache/models--unsloth--Llama-3.2-1B-Instruct/snapshots/5a8abab4a5d6f164389b1079fb721cfab8d7126c",
+    "seconds": 233.92232460004743,
+    "files": [
+      ".gitattributes",
+      "README.md",
+      "chat_template.jinja",
+      "config.json",
+      "generation_config.json",
+      "model.safetensors",
+      "special_tokens_map.json",
+      "tokenizer.json",
+      "tokenizer_config.json"
+    ]
+  },
+  "deadcode99/cpc-1.0-llama-1b-tokenizer": {
+    "status": "ok",
+    "revision": "8e07999ee9807970627c45904bbcca1926d04a0c",
+    "path": "/path/to/project/hf_cache/models--deadcode99--cpc-1.0-llama-1b-tokenizer/snapshots/8e07999ee9807970627c45904bbcca1926d04a0c",
+    "seconds": 0.520713199977763,
+    "files": [
+      ".gitattributes",
+      "README.md",
+      "special_tokens_map.json",
+      "tokenizer.json",
+      "tokenizer_config.json"
+    ]
+  },
+  "deadcode99/cpc-1.0-llama-1b-ds-v5-iter66-lora-bidirectional-attn": {
+    "status": "ok",
+    "revision": "44efd946186536e444dd1ac1e953f743e549d191",
+    "path": "/path/to/project/hf_cache/models--deadcode99--cpc-1.0-llama-1b-ds-v5-iter66-lora-bidirectional-attn/snapshots/44efd946186536e444dd1ac1e953f743e549d191",
+    "seconds": 62.62213409994729,
+    "files": [
+      ".gitattributes",
+      "README.md",
+      "adapter_config.json",
+      "adapter_model.safetensors"
+    ]
+  }
+}

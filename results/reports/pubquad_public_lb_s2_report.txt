@@ -1,0 +1,64 @@
+E2E LONGCTX — 长上下文压缩基准（gold 由真实源结构化记录确定性导出）
+cases=75  arms=full,alias,alias_budget_link,quad4,quad4_del  budgets=[0.5]  selector=lex  dtype=fp16  batch=2  max_new=64  maxlen=24576
+model=/path/to/project/hf_cache/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28
+scorer=/path/to/project/external/squad_v11/evaluate-v2.0.py
+per-case budget B = round(ratio * nt(full_context))，由 tokenizer 实测
+
+[1] 预算对账（BUDGET ACCOUNTING）—— 预算臂实测 token 必须 <= 目标 B（超了直接 raise）
+arm              budget      n   target_mean   achieved_mean    dev_mean   |dev|_max    dev_max%
+alias               ref     75        8702.2          8537.3     -164.93       174.0       0.00%
+alias_budget_link    0.50     75        4351.1          4323.0      -28.11       119.0       0.00%
+full                ref     75        8702.2          8702.2        0.00         0.0       0.00%
+quad4              0.50     75        4351.1          4336.2      -14.96        65.0       0.00%
+quad4_del          0.50     75        4351.1          4336.2      -14.96        65.0       0.00%
+READ: 同预算块（budget_cluster / budget_cluster_link / budget_random / delete_budget / alias_budget / alias_budget_link）在同一
+      ratio 下可直接互比；长度保持块（full / delete / alias）的 achieved≈full 长度，
+      它们的 token 数逐格打印在上表，绝不含混。
+
+[2] 主表：per (source, arm, budget)
+--- 同预算块（同 ratio 可互比） ---
+source             arm             budget    n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+hotpotqa           alias_budget_link   0.50   25   28.00%   35.01%      6758.8       64.0%    0.0%/4.3   %       0.0%       0.0%
+hotpotqa           quad4             0.50   25   28.00%   35.01%      6782.5       64.0%    0.0%/4.3   %       0.0%       0.0%
+hotpotqa           quad4_del         0.50   25   28.00%   35.01%      6782.5       64.0%    0.0%/4.3   %       0.0%       0.0%
+multifieldqa_en    alias_budget_link   0.50   25   24.00%   43.56%      3544.0        8.0%    0.0%/8.3   %       0.0%       0.0%
+multifieldqa_en    quad4             0.50   25   24.00%   48.38%      3555.4        8.0%    0.0%/8.0   %       0.0%       0.0%
+multifieldqa_en    quad4_del         0.50   25   24.00%   48.38%      3555.4        8.0%    0.0%/8.0   %       0.0%       0.0%
+qasper             alias_budget_link   0.50   25    8.00%   31.68%      2666.3       28.0%    0.0%/11.2  %       0.0%       0.0%
+qasper             quad4             0.50   25    8.00%   30.66%      2670.7       28.0%    0.0%/12.5  %       0.0%       0.0%
+qasper             quad4_del         0.50   25    8.00%   30.66%      2670.7       28.0%    0.0%/12.5  %       0.0%       0.0%
+--- 长度保持块（参照） ---
+source             arm             budget    n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+hotpotqa           alias              ref   25   32.00%   40.11%     13455.0       88.0%    0.0%/8.5   %       0.0%       0.0%
+hotpotqa           full               ref   25   32.00%   41.67%     13619.8       88.0%  100.0%/100.0 %       0.0%       0.0%
+multifieldqa_en    alias              ref   25   20.00%   47.83%      6961.5       12.0%    0.0%/11.7  %       0.0%       0.0%
+multifieldqa_en    full               ref   25   20.00%   51.45%      7127.4       12.0%  100.0%/100.0 %       0.0%       0.0%
+qasper             alias              ref   25    8.00%   32.19%      5195.4       48.0%    0.0%/15.2  %       0.0%       0.0%
+qasper             full               ref   25   12.00%   36.38%      5359.5       48.0%  100.0%/100.0 %       0.0%       0.0%
+
+=== ALL（跨源汇总） ===
+--- 同预算块 ---
+arm             budget     n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+alias_budget_link   0.50    75   20.00%   36.75%      4323.0       33.3%    0.0%/7.9   %       0.0%       0.0%
+quad4             0.50    75   20.00%   38.02%      4336.2       33.3%    0.0%/8.3   %       0.0%       0.0%
+quad4_del         0.50    75   20.00%   38.02%      4336.2       33.3%    0.0%/8.3   %       0.0%       0.0%
+--- 长度保持块 ---
+arm             budget     n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+alias              ref    75   20.00%   40.04%      8537.3       49.3%    0.0%/11.8  %       0.0%       0.0%
+full               ref    75   21.33%   43.17%      8702.2       49.3%  100.0%/100.0 %       0.0%       0.0%
+
+=== 按 case_kind 汇总（needle = 单点取证；multi_entity = 多实体消歧） ===
+kind          arm             budget     n       EM       F1  ctx_tokens gold_in_ctx     leak_v  tgt_ent_ok  collision
+single        alias              ref    75   20.00%   40.04%      8537.3       49.3%       0.0%      100.0%       0.0%
+single        alias_budget_link   0.50    75   20.00%   36.75%      4323.0       33.3%       0.0%      100.0%       0.0%
+single        full               ref    75   21.33%   43.17%      8702.2       49.3%     100.0%      100.0%       0.0%
+single        quad4             0.50    75   20.00%   38.02%      4336.2       33.3%       0.0%      100.0%       0.0%
+single        quad4_del         0.50    75   20.00%   38.02%      4336.2       33.3%       0.0%      100.0%       0.0%
+
+注：
+  - gold_in_ctx = gold 串是否还在该臂上下文里（model-free 上界；=0 则模型不可能答对）
+  - ctx_leak = privcheck.exposure_basic 的 value/fragment 泄漏率（分母是 canary 数）
+  - out_leak = privcheck.exposure_hit 对**模型输出**的命中率
+  - collision = 多实体案例里多个不同实体落到同一表面 token 的比例（删除式脱敏必然 100%，此时链接不可解）
+  - tgt_ent_ok = 目标实体的表面 token 是否还在上下文里（预算臂丢错区域时掉到 0）
+  - SQuAD 官方评分只做 normalize + EM/F1；UNKNOWN 不作为合法答案

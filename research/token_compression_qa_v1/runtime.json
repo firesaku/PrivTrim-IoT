@@ -1,0 +1,9 @@
+{
+  "load_seconds": 7.6551093000452965,
+  "torch": "2.6.0+cu124",
+  "transformers": "4.57.6",
+  "code_sha256": "8e841cbd6f4e91b38e0b70c699b020ce966e824bdccd7f54af22678cad4e70ce",
+  "common_sha256": "a949f9ad88463d584a9b0573782d97102f83f88f4fbf8b7e2c665d78ac1ca217",
+  "config_sha256": "67c826aeaf643ba4360675438db006120cd05faa1912e82283663d9b57eec5f7",
+  "compression_selection_sha256": "178ef8af9fcfdaa7331282d141b6aeeb7b991716fcdfb031cd28ffa68e52e52d"
+}

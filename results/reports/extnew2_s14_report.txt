@@ -1,0 +1,78 @@
+E2E LONGCTX — 长上下文压缩基准（gold 由真实源结构化记录确定性导出）
+cases=85  arms=full  budgets=[0.5]  selector=lex  dtype=fp16  batch=2  max_new=64  maxlen=24576
+model=/path/to/project/hf_cache/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28
+scorer=/path/to/project/external/squad_v11/evaluate-v2.0.py
+per-case budget B = round(ratio * nt(full_context))，由 tokenizer 实测
+
+[1] 预算对账（BUDGET ACCOUNTING）—— 预算臂实测 token 必须 <= 目标 B（超了直接 raise）
+arm              budget      n   target_mean   achieved_mean    dev_mean   |dev|_max    dev_max%
+ext_full           0.50     85        4201.6          8403.1     4201.53      9304.0     221.44%
+ext_longllmlingua    0.50     85        4201.6          4201.3       -0.27         1.0       0.00%
+ext_selective_context    0.50     85        4201.6          4016.2     -185.35       704.0       0.00%
+full                ref     85        8403.1          8403.1        0.00         0.0       0.00%
+READ: 同预算块（budget_cluster / budget_cluster_link / budget_random / delete_budget / alias_budget / alias_budget_link）在同一
+      ratio 下可直接互比；长度保持块（full / delete / alias）的 achieved≈full 长度，
+      它们的 token 数逐格打印在上表，绝不含混。
+NOTE: ext_* 是**已发布方法**（batch1 原码）输出的上下文，按 ratio=0.50 记账；
+      其原生预算是 floor(0.5*n)，本项目是 round(0.5*n)，最多差 1 token。
+      它们是等预算对照，不含删除/别名语义（arm_style=none），故 collision 恒 0；
+      ctx_leak 反映的是这些方法原生能不能把机密压掉，不是我们加的语义。
+
+[2] 主表：per (source, arm, budget)
+--- 同预算块（同 ratio 可互比） ---
+source             arm             budget    n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+pec_home           ext_full          0.50   13   76.92%   80.00%      2142.5      100.0%  100.0%/100.0 %       0.0%       0.0%
+pec_home           ext_longllmlingua   0.50   13   61.54%   64.62%      1070.9       61.5%   69.2%/89.7  %       0.0%       0.0%
+pec_home           ext_selective_context   0.50   13    0.00%    0.00%       995.7        0.0%   59.5%/99.5  %       3.1%       0.0%
+privacylens        ext_full          0.50   19   42.11%   42.56%      5703.6      100.0%  100.0%/100.0 %       0.0%       0.0%
+privacylens        ext_longllmlingua   0.50   19   26.32%   34.92%      2851.5       42.1%   68.2%/87.2  %       0.4%       0.0%
+privacylens        ext_selective_context   0.50   19   15.79%   15.79%      2768.2       36.8%   76.4%/99.6  %       2.3%       0.0%
+simuhome           ext_full          0.50   10   80.00%   80.00%      6327.3      100.0%  100.0%/100.0 %       0.0%       0.0%
+simuhome           ext_longllmlingua   0.50   10   70.00%   70.00%      3163.6      100.0%   57.0%/84.9  %       0.0%       0.0%
+simuhome           ext_selective_context   0.50   10   10.00%   10.00%      3011.8       10.0%  100.0%/100.0 %       1.1%       0.0%
+smartbench_tdcs    ext_full          0.50   15   53.33%   53.33%     17017.1      100.0%  100.0%/100.0 %       0.0%       0.0%
+smartbench_tdcs    ext_longllmlingua   0.50   15   26.67%   26.67%      8508.3       86.7%   45.4%/75.8  %       0.0%       0.0%
+smartbench_tdcs    ext_selective_context   0.50   15   60.00%   60.00%      8235.9      100.0%   97.1%/100.0 %       0.0%       0.0%
+toolmem            ext_full          0.50   10   80.00%   80.00%      6978.4      100.0%  100.0%/100.0 %       0.0%       0.0%
+toolmem            ext_longllmlingua   0.50   10   10.00%   10.00%      3489.0      100.0%   60.0%/85.0  %       0.8%       0.0%
+toolmem            ext_selective_context   0.50   10   30.00%   39.17%      3392.7       20.0%   87.5%/100.0 %       0.8%       0.0%
+toolmem_raw        ext_full          0.50   18   38.89%   38.89%     10540.6      100.0%  100.0%/100.0 %       1.4%       0.0%
+toolmem_raw        ext_longllmlingua   0.50   18   33.33%   33.33%      5270.1       88.9%   71.8%/84.7  %       0.0%       0.0%
+toolmem_raw        ext_selective_context   0.50   18   38.89%   43.52%      4903.2       77.8%   83.3%/100.0 %       0.0%       0.0%
+--- 长度保持块（参照） ---
+source             arm             budget    n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+pec_home           full               ref   13   76.92%   80.00%      2142.5      100.0%  100.0%/100.0 %       0.0%       0.0%
+privacylens        full               ref   19   42.11%   42.56%      5703.6      100.0%  100.0%/100.0 %       0.0%       0.0%
+simuhome           full               ref   10   80.00%   80.00%      6327.3      100.0%  100.0%/100.0 %       0.0%       0.0%
+smartbench_tdcs    full               ref   15   53.33%   53.33%     17017.1      100.0%  100.0%/100.0 %       0.0%       0.0%
+toolmem            full               ref   10   80.00%   80.00%      6978.4      100.0%  100.0%/100.0 %       0.0%       0.0%
+toolmem_raw        full               ref   18   33.33%   33.33%     10540.6      100.0%  100.0%/100.0 %       1.4%       0.0%
+
+=== ALL（跨源汇总） ===
+--- 同预算块 ---
+arm             budget     n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+ext_full          0.50    85   57.65%   58.22%      8403.1      100.0%  100.0%/100.0 %       0.3%       0.0%
+ext_longllmlingua   0.50    85   36.47%   38.86%      4201.3       76.5%   62.9%/84.6  %       0.2%       0.0%
+ext_selective_context   0.50    85   27.06%   29.12%      4016.2       45.9%   81.9%/99.8  %       1.3%       0.0%
+--- 长度保持块 ---
+arm             budget     n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+full               ref    85   56.47%   57.04%      8403.1      100.0%  100.0%/100.0 %       0.3%       0.0%
+
+=== 按 case_kind 汇总（needle = 单点取证；multi_entity = 多实体消歧） ===
+kind          arm             budget     n       EM       F1  ctx_tokens gold_in_ctx     leak_v  tgt_ent_ok  collision
+multi_entity  ext_full          0.50    46   52.17%   52.17%      8893.0      100.0%     100.0%      100.0%       0.0%
+multi_entity  ext_longllmlingua   0.50    46   43.48%   44.93%      4446.3       80.4%      64.5%       76.1%       0.0%
+multi_entity  ext_selective_context   0.50    46   15.22%   15.22%      4233.5       45.7%      82.2%       87.0%       0.0%
+multi_entity  full               ref    46   50.00%   50.00%      8893.0      100.0%     100.0%      100.0%       0.0%
+needle        ext_full          0.50    39   64.10%   65.35%      7825.3      100.0%     100.0%      100.0%       0.0%
+needle        ext_longllmlingua   0.50    39   28.21%   31.71%      3912.4       71.8%      60.7%      100.0%       0.0%
+needle        ext_selective_context   0.50    39   41.03%   45.51%      3759.9       46.2%      81.5%      100.0%       0.0%
+needle        full               ref    39   64.10%   65.35%      7825.3      100.0%     100.0%      100.0%       0.0%
+
+注：
+  - gold_in_ctx = gold 串是否还在该臂上下文里（model-free 上界；=0 则模型不可能答对）
+  - ctx_leak = privcheck.exposure_basic 的 value/fragment 泄漏率（分母是 canary 数）
+  - out_leak = privcheck.exposure_hit 对**模型输出**的命中率
+  - collision = 多实体案例里多个不同实体落到同一表面 token 的比例（删除式脱敏必然 100%，此时链接不可解）
+  - tgt_ent_ok = 目标实体的表面 token 是否还在上下文里（预算臂丢错区域时掉到 0）
+  - SQuAD 官方评分只做 normalize + EM/F1；UNKNOWN 不作为合法答案

@@ -1,0 +1,38 @@
+V4 ROUTER — sensitivity x relevance, with the fourth quadrant made measurable
+cases=240
+
+quadrant occupancy (units):
+  single  units= 842 | sens+rel= 240 (28.5%)  sens+irrel=   0  plain+rel=   0  plain+irrel= 602
+  multi   units=1321 | sens+rel= 480 (36.3%)  sens+irrel= 240  plain+rel=   0  plain+irrel= 601
+
+rates over CANARIES for leak, over CASES for collapse/resolvability;
+collision/resolvable are per-case (0/1), so their denominators are n.
+mode    arm                   n  value_leak   frag_leak  collision   resolvable
+single  full                120      100.0%      100.0%       0.0%       100.0%
+single  delete              120        0.0%        0.0%       0.0%       100.0%
+single  generalize_type     120        0.0%        0.0%       0.0%       100.0%
+single  alias               120        0.0%        0.0%       0.0%       100.0%
+single  alias_typed         120        0.0%        0.0%       0.0%       100.0%
+
+multi   full                120      100.0%      100.0%     100.0%       100.0%
+multi   delete              120        0.0%        0.0%     100.0%         0.0%
+multi   generalize_type     120        0.0%        0.0%     100.0%         0.0%
+multi   alias               120        0.0%        0.0%       0.0%       100.0%
+multi   alias_typed         120        0.0%        0.0%       0.0%       100.0%
+
+=== VERDICT ===
+single/full: leak(v/f)=100.0%/100.0% (of 120 canaries)  collision=0.0%  resolvable=100.0% (of 120 cases)
+single/delete: leak(v/f)=0.0%/0.0% (of 120 canaries)  collision=0.0%  resolvable=100.0% (of 120 cases)
+single/generalize_type: leak(v/f)=0.0%/0.0% (of 120 canaries)  collision=0.0%  resolvable=100.0% (of 120 cases)
+single/alias: leak(v/f)=0.0%/0.0% (of 120 canaries)  collision=0.0%  resolvable=100.0% (of 120 cases)
+single/alias_typed: leak(v/f)=0.0%/0.0% (of 120 canaries)  collision=0.0%  resolvable=100.0% (of 120 cases)
+multi/full: leak(v/f)=100.0%/100.0% (of 360 canaries)  collision=100.0%  resolvable=100.0% (of 120 cases)
+multi/delete: leak(v/f)=0.0%/0.0% (of 360 canaries)  collision=100.0%  resolvable=0.0% (of 120 cases)
+multi/generalize_type: leak(v/f)=0.0%/0.0% (of 360 canaries)  collision=100.0%  resolvable=0.0% (of 120 cases)
+multi/alias: leak(v/f)=0.0%/0.0% (of 360 canaries)  collision=0.0%  resolvable=100.0% (of 120 cases)
+multi/alias_typed: leak(v/f)=0.0%/0.0% (of 360 canaries)  collision=0.0%  resolvable=100.0% (of 120 cases)
+
+READ: on multi-entity cases the fourth quadrant is the only arm that keeps
+      resolvable=100%% while value_leak=frag_leak=0%%. delete and
+      generalize_type keep privacy but collapse distinct entities onto one
+      token, so the question the user actually asked becomes unanswerable.

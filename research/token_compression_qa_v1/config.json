@@ -1,0 +1,71 @@
+{
+  "dataset": "SQuAD 1.1 dev, controlled synthetic identifier extension v1; NOT a native privacy dataset",
+  "data_sha256": "95aa6a52d5d6a735563366753ca50492a658031da74f301ac5238b03966972c9",
+  "data_source": "https://rajpurkar.github.io/SQuAD-explorer/dataset/dev-v1.1.json",
+  "data_license": "CC BY-SA 4.0",
+  "scorer_sha256": "710840ce2c2c61716334c056777032f24660b83eb9869a451036e6a24d8103c4",
+  "scorer": "official SQuAD v2 exact/F1 routines on answerable v1.1 examples; all selected gold answers normalize to nonempty strings",
+  "selection": "24 questions sorted by SHA256(qa-canary-v1:+id), unique article titles; original context 128-640 Qwen tokens, all answer spans <=32 Qwen tokens",
+  "ids": [
+    "56bf4e1b3aeaaa14008c95c1",
+    "5725bdbe38643c19005acc3a",
+    "57272ff2708984140094dabf",
+    "57267640f1498d1400e8e076",
+    "57096b66200fba1400367fab",
+    "57283f014b864d19001647e8",
+    "5726bc505951b619008f7c7a",
+    "570d391fb3d812140066d577",
+    "5728d5793acd2414000dffb7",
+    "56e7667e37bdd419002c3f49",
+    "572817802ca10214002d9db4",
+    "57107932a58dae1900cd69ca",
+    "571a49de4faf5e1900b8a94a",
+    "57266fa1f1498d1400e8dfa8",
+    "572926086aef051400154ac5",
+    "5726ed12708984140094d647",
+    "5729506d6aef051400154cac",
+    "5705ec1675f01819005e776e",
+    "5730eb5b497a881900248a42",
+    "5725be0fec44d21400f3d4a6",
+    "572995d46aef051400154fe9",
+    "57287d4a2ca10214002da3e5",
+    "5725b81b271a42140099d09b",
+    "57265bdfdd62a815002e82a0"
+  ],
+  "methods": [
+    "full",
+    "llmlingua2",
+    "longllmlingua_gpt2",
+    "selective_context_token",
+    "mask_llmlingua2"
+  ],
+  "downstream_model": "D:\\Shijie Zeng\\CodeX\\cybersec_IoT\\models\\models--Qwen--Qwen2.5-7B-Instruct\\snapshots\\a09a35458c702b33eeacc393d103063234e8bc28",
+  "target_retention": 0.5,
+  "tolerance": [
+    0.48,
+    0.5
+  ],
+  "budget_search": "12 native retention bisection candidates; closest-under original augmented budget, no post trimming; all candidates saved",
+  "comparison": "primary paired intersection of cases meeting common budget for ALL compressors; also report all 24, failures and budget deviations; no outcome-based exclusions",
+  "mask_baseline": "generic email, formatted +1 phone and ACCT identifier regexes, followed by same LLMLingua2; same budget based on original unredacted augmented text; no gold canary list passed to compressor",
+  "privacy_primary": "1 - fraction of complete synthetic values recoverable by lowercasing and removing non-alphanumerics; report as FULL-VALUE removal proxy, not semantic privacy",
+  "privacy_secondary": "residual distinctive fragments: any 6-character substring of email/account random marker, any 8-digit substring of phone; conservative diagnostic, not a privacy guarantee",
+  "privacy_units": "three synthetic identifiers per example; only added identifiers scored, not natural entities in SQuAD",
+  "joint": "per-example harmonic mean(F1,full-value removal), mean across same cases; also report fragment-sensitive joint",
+  "decode": {
+    "do_sample": false,
+    "max_new_tokens": 64,
+    "batch_size": 4
+  },
+  "compression_device": "CPU, float32, 4 threads; shared-GPU latencies not compared",
+  "limitations": [
+    "24-case development check",
+    "public QA may overlap pretraining",
+    "artificial identifiers are task-irrelevant; no privacy/utility conflict tested",
+    "simple regex baseline matches this structured canary scenario and is NOT a novel method",
+    "cannot compare these privacy proxy numbers directly to PrivacyLens semantic privacy",
+    "no independent human validity claim"
+  ],
+  "reason_for_separate_check": "PrivacyLens utility judge failed 6 of 12 controls; do not expand that dataset using unreliable scores. This separate second dataset uses objective task scoring.",
+  "code_sha256": "a949f9ad88463d584a9b0573782d97102f83f88f4fbf8b7e2c665d78ac1ca217"
+}

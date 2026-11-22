@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-window
 #SBATCH --gres=gpu:nvidia_h200:1
@@ -7,9 +7,9 @@
 #SBATCH --mem=32G
 #SBATCH --time=01:00:00
 #SBATCH --array=0-7%3
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/window-%A_%a.out
-#SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/window-%A_%a.err
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/window-%A_%a.out
+#SBATCH --error=/path/to/project/logs/window-%A_%a.err
 #
 # Protection granularity: line / window / block, at fixed operation.
 #
@@ -22,7 +22,7 @@
 #
 set -uo pipefail
 module load intel_h200_gpu 2>/dev/null || true
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 export PYTHONNOUSERSITE=1
 export PYTHONPATH=$RD/code:$RD/code/longctx
 export HF_HOME=$RD/hf_cache

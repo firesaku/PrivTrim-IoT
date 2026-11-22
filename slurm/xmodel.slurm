@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-xmodel
 #SBATCH --gres=gpu:nvidia_h200:1
@@ -7,9 +7,9 @@
 #SBATCH --mem=32G
 #SBATCH --time=01:00:00
 #SBATCH --array=0-23%3
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/xmodel-%A_%a.out
-#SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/xmodel-%A_%a.err
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/xmodel-%A_%a.out
+#SBATCH --error=/path/to/project/logs/xmodel-%A_%a.err
 #
 # Cross-model generalisation. Three readers from different families/scales, two arms each
 # (full and DARK), same 2,728 cases and the same deterministic sharding as every other run,
@@ -23,7 +23,7 @@
 #
 set -uo pipefail
 module load intel_h200_gpu 2>/dev/null || true
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 export PYTHONNOUSERSITE=1
 export PYTHONPATH=$RD/code:$RD/code/longctx
 export HF_HOME=$RD/hf_cache

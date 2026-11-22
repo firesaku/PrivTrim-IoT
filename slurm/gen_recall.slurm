@@ -1,13 +1,13 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<ACCOUNT>
 #SBATCH --partition=prod
 #SBATCH --job-name=pt-genrecall
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=8G
 #SBATCH --time=00:20:00
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/genrecall-%j.out
-#SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/genrecall-%j.err
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/genrecall-%j.out
+#SBATCH --error=/path/to/project/logs/genrecall-%j.err
 #
 # Generate the degraded-detector case files ON THE CLUSTER from data that is already there.
 #
@@ -18,7 +18,7 @@
 # The recall array depends on this job finishing: sbatch --dependency=afterok:<this job> slurm/recall.slurm
 set -uo pipefail
 
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 export PYTHONNOUSERSITE=1
 export PYTHONIOENCODING=utf-8
 export PYTHONPATH=$RD/code:$RD/code/longctx

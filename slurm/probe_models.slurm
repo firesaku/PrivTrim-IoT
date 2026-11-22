@@ -1,17 +1,17 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<ACCOUNT>
 #SBATCH --partition=prod
 #SBATCH --job-name=pt-probe
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=2G
 #SBATCH --time=00:02:00
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/probe-%j.out
-#SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/probe-%j.err
+#SBATCH --output=/path/to/project/logs/probe-%j.out
+#SBATCH --error=/path/to/project/logs/probe-%j.err
 #
 # Inventory the model cache from a compute node (the login node is not for this).
 #
 set -uo pipefail
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 OUT=$RD/hf_cache_inventory.txt
 {
   echo "host=$(hostname)  date=$(date -Is)"

@@ -1,0 +1,157 @@
+{
+ "cases": 300,
+ "arms": [
+  "full",
+  "quad4"
+ ],
+ "budgets": [
+  0.5
+ ],
+ "selector": "lex",
+ "dry_run": false,
+ "stub_preds": null,
+ "selector_used": "lex",
+ "emb": null,
+ "model": "/path/to/project/hf_cache/models--Qwen--Qwen2.5-14B-Instruct/snapshots/cf98f3b3bbb457ad9e2bb7baf9a0125b6b88caa8",
+ "scorer": "/path/to/project/external/squad_v11/evaluate-v2.0.py",
+ "seed": 20261015,
+ "max_new": 64,
+ "maxlen": 24576,
+ "n_prompts": 600,
+ "budget_accounting": {
+  "full|None": {
+   "n": 300,
+   "tgt": 645080.0,
+   "got": 645080.0,
+   "dev": 0.0,
+   "devmax": 0.0,
+   "devmax_signed": 0.0
+  },
+  "quad4|0.5": {
+   "n": 300,
+   "tgt": 322542.0,
+   "got": 321870.0,
+   "dev": -672.0,
+   "devmax": 25,
+   "devmax_signed": 0.0
+  }
+ },
+ "cells": {
+  "pec_home|full|None": {
+   "n": 300,
+   "em": 223.0,
+   "f1": 229.48219461697724,
+   "tok": 645080,
+   "ans": 300,
+   "cv": 4509,
+   "cf": 4509,
+   "cn": 4509,
+   "ov": 2,
+   "coll": 0,
+   "tent": 300,
+   "tattr": 300
+  },
+  "pec_home|quad4|0.5": {
+   "n": 300,
+   "em": 92.0,
+   "f1": 98.30000000000001,
+   "tok": 321870,
+   "ans": 300,
+   "cv": 0,
+   "cf": 0,
+   "cn": 4509,
+   "ov": 0,
+   "coll": 0,
+   "tent": 133,
+   "tattr": 300
+  }
+ },
+ "all": {
+  "full|None": {
+   "n": 300,
+   "em": 223.0,
+   "f1": 229.48219461697724,
+   "tok": 645080,
+   "ans": 300,
+   "cv": 4509,
+   "cf": 4509,
+   "cn": 4509,
+   "ov": 2,
+   "coll": 0,
+   "tent": 300,
+   "tattr": 300
+  },
+  "quad4|0.5": {
+   "n": 300,
+   "em": 92.0,
+   "f1": 98.30000000000001,
+   "tok": 321870,
+   "ans": 300,
+   "cv": 0,
+   "cf": 0,
+   "cn": 4509,
+   "ov": 0,
+   "coll": 0,
+   "tent": 133,
+   "tattr": 300
+  }
+ },
+ "by_case_kind": {
+  "multi_entity|full|None": {
+   "n": 200,
+   "em": 138.0,
+   "f1": 138.18219461697723,
+   "tok": 430231,
+   "ans": 200,
+   "cv": 3009,
+   "cf": 3009,
+   "cn": 3009,
+   "ov": 2,
+   "coll": 0,
+   "tent": 200,
+   "tattr": 200
+  },
+  "multi_entity|quad4|0.5": {
+   "n": 200,
+   "em": 6.0,
+   "f1": 6.0,
+   "tok": 214609,
+   "ans": 200,
+   "cv": 0,
+   "cf": 0,
+   "cn": 3009,
+   "ov": 0,
+   "coll": 0,
+   "tent": 33,
+   "tattr": 200
+  },
+  "needle|full|None": {
+   "n": 100,
+   "em": 85.0,
+   "f1": 91.3,
+   "tok": 214849,
+   "ans": 100,
+   "cv": 1500,
+   "cf": 1500,
+   "cn": 1500,
+   "ov": 0,
+   "coll": 0,
+   "tent": 100,
+   "tattr": 100
+  },
+  "needle|quad4|0.5": {
+   "n": 100,
+   "em": 86.0,
+   "f1": 92.3,
+   "tok": 107261,
+   "ans": 100,
+   "cv": 0,
+   "cf": 0,
+   "cn": 1500,
+   "ov": 0,
+   "coll": 0,
+   "tent": 100,
+   "tattr": 100
+  }
+ }
+}

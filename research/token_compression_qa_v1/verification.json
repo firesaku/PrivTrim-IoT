@@ -1,0 +1,55 @@
+{
+  "cases": 24,
+  "distinct_articles": 24,
+  "selected_compression_records": 120,
+  "task_calls": 120,
+  "paired_common_budget_cases": 20,
+  "actual_token_counts_verified": true,
+  "task_messages_and_tokens_verified": true,
+  "answers_preserved": true,
+  "truncated_task_outputs": 0,
+  "budget_or_compression_issues": [
+    {
+      "case": "5725bdbe38643c19005acc3a",
+      "method": "mask_llmlingua2",
+      "type": "budget_underfill",
+      "retention": 0.47808764940239046
+    },
+    {
+      "case": "5729506d6aef051400154cac",
+      "method": "llmlingua2",
+      "type": "budget_underfill",
+      "retention": 0.453781512605042
+    },
+    {
+      "case": "5729506d6aef051400154cac",
+      "method": "mask_llmlingua2",
+      "type": "budget_underfill",
+      "retention": 0.4789915966386555
+    },
+    {
+      "case": "572995d46aef051400154fe9",
+      "method": "longllmlingua_gpt2",
+      "type": "budget_underfill",
+      "retention": 0.47706422018348627
+    },
+    {
+      "case": "5725b81b271a42140099d09b",
+      "method": "llmlingua2",
+      "type": "budget_underfill",
+      "retention": 0.47604790419161674
+    }
+  ],
+  "initial_long200_errors_preserved": 5,
+  "source_config_and_dataset_unchanged": true,
+  "code_hashes": {
+    "analyze.py": "83a4a0de94b56c019ec9e91c91cb36fa468513e8d828cc13a98bfda86ed6bed0",
+    "common.py": "a949f9ad88463d584a9b0573782d97102f83f88f4fbf8b7e2c665d78ac1ca217",
+    "compress.py": "b9ef01b843b032f2308cec29052a2856ae8aac9a08d0a895809943497c4c16fc",
+    "infer.py": "8e841cbd6f4e91b38e0b70c699b020ce966e824bdccd7f54af22678cad4e70ce",
+    "long50.py": "cb01d3f5f64a06ddc723e463f79e23d1d12eada08d1424f145f716ada6f9f062",
+    "selection.py": "5d91c64d57d2831f1e911325d09eae3193dfc48fbf840d9297e7c9f9dbf35bf5",
+    "verify.py": "2ffa3e01ef0ebe2f2ef167544d560164ec486de60476ca7084996d99cf61614e"
+  },
+  "generation_seconds": 25.648853499908
+}

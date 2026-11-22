@@ -1,0 +1,104 @@
+E2E LONGCTX — 长上下文压缩基准（gold 由真实源结构化记录确定性导出）
+cases=171  arms=full,delete,alias,alias_budget,alias_budget_link  budgets=[0.2, 0.5]  selector=lex  dtype=fp16  batch=2  max_new=64  maxlen=24576
+model=/path/to/project/hf_cache/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28
+scorer=/path/to/project/external/squad_v11/evaluate-v2.0.py
+per-case budget B = round(ratio * nt(full_context))，由 tokenizer 实测
+
+[1] 预算对账（BUDGET ACCOUNTING）—— 预算臂实测 token 必须 <= 目标 B（超了直接 raise）
+arm              budget      n   target_mean   achieved_mean    dev_mean   |dev|_max    dev_max%
+alias               ref    171        8399.4          8257.2     -142.15       178.0       0.00%
+alias_budget       0.20    171        1679.9          1430.3     -249.62      2834.0       0.00%
+alias_budget       0.50    171        4199.7          3919.1     -280.58      2976.0       0.00%
+alias_budget_link    0.20    171        1679.9          1430.0     -249.91      2834.0       0.00%
+alias_budget_link    0.50    171        4199.7          3915.9     -283.78      2969.0       0.00%
+delete              ref    171        8399.4          8276.9     -122.47       180.0       0.00%
+full                ref    171        8399.4          8399.4        0.00         0.0       0.00%
+READ: 同预算块（budget_cluster / budget_cluster_link / budget_random / delete_budget / alias_budget / alias_budget_link）在同一
+      ratio 下可直接互比；长度保持块（full / delete / alias）的 achieved≈full 长度，
+      它们的 token 数逐格打印在上表，绝不含混。
+
+[2] 主表：per (source, arm, budget)
+--- 同预算块（同 ratio 可互比） ---
+source             arm             budget    n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+pec_home           alias_budget      0.20   27   29.63%   31.48%       415.1      100.0%    0.0%/0.0   %       0.0%       0.0%
+pec_home           alias_budget      0.50   27   29.63%   33.33%      1022.0      100.0%    0.0%/0.0   %       0.0%       0.0%
+pec_home           alias_budget_link   0.20   27   74.07%   77.78%       415.9      100.0%    0.0%/0.0   %       0.0%       0.0%
+pec_home           alias_budget_link   0.50   27   85.19%   88.89%      1024.4      100.0%    0.0%/0.0   %       0.0%       0.0%
+privacylens        alias_budget      0.20   37   32.43%   32.43%      1040.1      100.0%    0.0%/0.0   %       0.0%       0.0%
+privacylens        alias_budget      0.50   37   21.62%   21.62%      2696.9      100.0%    0.0%/0.0   %       0.0%       0.0%
+privacylens        alias_budget_link   0.20   37   67.57%   74.19%      1032.2      100.0%    0.0%/0.0   %       0.0%       0.0%
+privacylens        alias_budget_link   0.50   37   54.05%   55.14%      2675.9      100.0%    0.0%/0.0   %       0.0%       0.0%
+simuhome           alias_budget      0.20   20    0.00%    0.00%       194.6       20.0%    0.0%/0.0   %       0.0%       0.0%
+simuhome           alias_budget      0.50   20   30.00%   30.00%      2594.8      100.0%    0.0%/0.0   %       0.0%       0.0%
+simuhome           alias_budget_link   0.20   20   15.00%   15.00%       198.7       20.0%    0.0%/0.0   %       0.0%       0.0%
+simuhome           alias_budget_link   0.50   20   65.00%   65.00%      2597.2      100.0%    0.0%/0.0   %       0.0%       0.0%
+smartbench_tdcs    alias_budget      0.20   30   76.67%   78.89%      2808.6      100.0%    0.0%/0.0   %       0.0%       0.0%
+smartbench_tdcs    alias_budget      0.50   30   40.00%   40.00%      7363.9      100.0%    0.0%/0.0   %       0.0%       0.0%
+smartbench_tdcs    alias_budget_link   0.20   30   80.00%   82.22%      2812.8      100.0%    0.0%/0.0   %       0.0%       0.0%
+smartbench_tdcs    alias_budget_link   0.50   30   63.33%   63.33%      7367.4      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem            alias_budget      0.20   19   52.63%   53.33%      1344.9      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem            alias_budget      0.50   19   36.84%   37.54%      3476.4      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem            alias_budget_link   0.20   19   63.16%   63.86%      1344.5      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem            alias_budget_link   0.50   19   42.11%   42.99%      3479.6      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem_raw        alias_budget      0.20   38   23.68%   23.68%      2136.4      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem_raw        alias_budget      0.50   38   26.32%   26.32%      5366.5      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem_raw        alias_budget_link   0.20   38   76.32%   76.49%      2137.0      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem_raw        alias_budget_link   0.50   38   60.53%   61.58%      5365.2      100.0%    0.0%/0.0   %       0.0%       0.0%
+--- 长度保持块（参照） ---
+source             arm             budget    n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+pec_home           alias              ref   27   81.48%   85.19%      1969.1      100.0%    0.0%/0.0   %       0.0%       0.0%
+pec_home           delete             ref   27   22.22%   25.93%      1999.1      100.0%    0.0%/0.0   %       0.0%      70.4%
+pec_home           full               ref   27   66.67%   70.37%      2135.0      100.0%  100.0%/100.0 %       0.0%       0.0%
+privacylens        alias              ref   37   45.95%   51.37%      5349.8      100.0%    0.0%/0.0   %       0.0%       0.0%
+privacylens        delete             ref   37   37.84%   42.92%      5351.6       97.3%    0.0%/0.0   %       0.0%      48.6%
+privacylens        full               ref   37   48.65%   55.15%      5500.2      100.0%  100.0%/100.0 %       0.0%       0.0%
+simuhome           alias              ref   20   80.00%   80.00%      6001.6      100.0%    0.0%/0.0   %       0.0%       0.0%
+simuhome           delete             ref   20    5.00%    5.00%      6019.6      100.0%    0.0%/0.0   %       0.0%      95.0%
+simuhome           full               ref   20   90.00%   90.00%      6097.9      100.0%  100.0%/100.0 %       0.0%       0.0%
+smartbench_tdcs    alias              ref   30   46.67%   46.67%     16841.0      100.0%    0.0%/0.0   %       0.0%       0.0%
+smartbench_tdcs    delete             ref   30   40.00%   40.00%     16868.6      100.0%    0.0%/0.0   %       0.0%      60.0%
+smartbench_tdcs    full               ref   30   66.67%   66.67%     16996.2      100.0%  100.0%/100.0 %       0.0%       0.0%
+toolmem            alias              ref   19   52.63%   56.51%      6929.6      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem            delete             ref   19   47.37%   51.25%      6952.6       89.5%    0.0%/0.0   %       0.0%       0.0%
+toolmem            full               ref   19   42.11%   45.98%      7062.9      100.0%  100.0%/100.0 %       0.0%       0.0%
+toolmem_raw        alias              ref   38   36.84%   37.93%     10630.5      100.0%    0.0%/0.0   %       0.0%       0.0%
+toolmem_raw        delete             ref   38   15.79%   16.42%     10653.1       97.4%    0.0%/0.0   %       0.0%      50.0%
+toolmem_raw        full               ref   38   36.84%   38.45%     10766.0      100.0%  100.0%/100.0 %       0.7%       0.0%
+
+=== ALL（跨源汇总） ===
+--- 同预算块 ---
+arm             budget     n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+alias_budget      0.20   171   36.26%   37.02%      1430.3       90.6%    0.0%/0.0   %       0.0%       0.0%
+alias_budget      0.50   171   29.82%   30.49%      3919.1      100.0%    0.0%/0.0   %       0.0%       0.0%
+alias_budget_link   0.20   171   66.08%   68.61%      1430.0       90.6%    0.0%/0.0   %       0.0%       0.0%
+alias_budget_link   0.50   171   61.99%   63.14%      3915.9      100.0%    0.0%/0.0   %       0.0%       0.0%
+--- 长度保持块 ---
+arm             budget     n       EM       F1  ctx_tokens gold_in_ctx   ctx_leak_v/f out_leak_v  collision
+alias              ref   171   54.39%   56.82%      8257.2      100.0%    0.0%/0.0   %       0.0%       0.0%
+delete             ref   171   28.07%   30.33%      8276.9       97.7%    0.0%/0.0   %       0.0%      54.4%
+full               ref   171   56.14%   58.92%      8399.4      100.0%  100.0%/100.0 %       0.1%       0.0%
+
+=== 按 case_kind 汇总（needle = 单点取证；multi_entity = 多实体消歧） ===
+kind          arm             budget     n       EM       F1  ctx_tokens gold_in_ctx     leak_v  tgt_ent_ok  collision
+multi_entity  alias              ref    93   45.16%   45.16%      8592.7      100.0%       0.0%      100.0%       0.0%
+multi_entity  alias_budget      0.20    93   21.51%   21.51%      1469.8       83.9%       0.0%        0.0%       0.0%
+multi_entity  alias_budget      0.50    93    9.68%    9.68%      4005.2      100.0%       0.0%       17.2%       0.0%
+multi_entity  alias_budget_link   0.20    93   61.29%   61.90%      1472.6       83.9%       0.0%       12.9%       0.0%
+multi_entity  alias_budget_link   0.50    93   55.91%   55.91%      4006.7      100.0%       0.0%       30.1%       0.0%
+multi_entity  delete             ref    93    0.00%    0.00%      8616.1      100.0%       0.0%      100.0%     100.0%
+multi_entity  full               ref    93   52.69%   52.69%      8745.3      100.0%     100.0%      100.0%       0.0%
+needle        alias              ref    78   65.38%   70.71%      7857.3      100.0%       0.0%      100.0%       0.0%
+needle        alias_budget      0.20    78   53.85%   55.51%      1383.3       98.7%       0.0%      100.0%       0.0%
+needle        alias_budget      0.50    78   53.85%   55.30%      3816.6      100.0%       0.0%      100.0%       0.0%
+needle        alias_budget_link   0.20    78   71.79%   76.60%      1379.3       98.7%       0.0%      100.0%       0.0%
+needle        alias_budget_link   0.50    78   69.23%   71.75%      3807.7      100.0%       0.0%      100.0%       0.0%
+needle        delete             ref    78   61.54%   66.48%      7872.5       94.9%       0.0%      100.0%       0.0%
+needle        full               ref    78   60.26%   66.35%      7986.9      100.0%     100.0%      100.0%       0.0%
+
+注：
+  - gold_in_ctx = gold 串是否还在该臂上下文里（model-free 上界；=0 则模型不可能答对）
+  - ctx_leak = privcheck.exposure_basic 的 value/fragment 泄漏率（分母是 canary 数）
+  - out_leak = privcheck.exposure_hit 对**模型输出**的命中率
+  - collision = 多实体案例里多个不同实体落到同一表面 token 的比例（删除式脱敏必然 100%，此时链接不可解）
+  - tgt_ent_ok = 目标实体的表面 token 是否还在上下文里（预算臂丢错区域时掉到 0）
+  - SQuAD 官方评分只做 normalize + EM/F1；UNKNOWN 不作为合法答案

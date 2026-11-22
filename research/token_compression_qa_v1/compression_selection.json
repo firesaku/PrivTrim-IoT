@@ -1,0 +1,23 @@
+{
+  "folders": {
+    "full": "compressed",
+    "llmlingua2": "compressed",
+    "longllmlingua_gpt2": "compressed_long50",
+    "selective_context_token": "compressed",
+    "mask_llmlingua2": "compressed"
+  },
+  "reason": "default iterative_size=200 left five short inputs completely uncompressed; frozen all-case adaptation before any task generation",
+  "longllmlingua_iterative_size": 50,
+  "old_iterative_size": 200,
+  "preflight_errors": [
+    "570d391fb3d812140066d577",
+    "5725be0fec44d21400f3d4a6",
+    "57283f014b864d19001647e8",
+    "5728d5793acd2414000dffb7",
+    "5730eb5b497a881900248a42"
+  ],
+  "unchanged": "all 24 cases, GPT2 weights, common tokenizer, target/tolerance, other compressors, question conditioning and 12 candidate search",
+  "base_config_sha256": "67c826aeaf643ba4360675438db006120cd05faa1912e82283663d9b57eec5f7",
+  "code_sha256": "cb01d3f5f64a06ddc723e463f79e23d1d12eada08d1424f145f716ada6f9f062",
+  "no_task_outcomes_existed_at_selection": true
+}

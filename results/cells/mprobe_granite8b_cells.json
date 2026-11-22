@@ -1,0 +1,157 @@
+{
+ "cases": 300,
+ "arms": [
+  "full",
+  "quad4"
+ ],
+ "budgets": [
+  0.5
+ ],
+ "selector": "lex",
+ "dry_run": false,
+ "stub_preds": null,
+ "selector_used": "lex",
+ "emb": null,
+ "model": "/path/to/project/hf_cache/models--ibm-granite--granite-3.1-8b-instruct/snapshots/4009206d5fc95d2e65a7b7633e159d6e97e25d35",
+ "scorer": "/path/to/project/external/squad_v11/evaluate-v2.0.py",
+ "seed": 20261015,
+ "max_new": 64,
+ "maxlen": 24576,
+ "n_prompts": 600,
+ "budget_accounting": {
+  "full|None": {
+   "n": 300,
+   "tgt": 723931.0,
+   "got": 723931.0,
+   "dev": 0.0,
+   "devmax": 0.0,
+   "devmax_signed": 0.0
+  },
+  "quad4|0.5": {
+   "n": 300,
+   "tgt": 361960.0,
+   "got": 361198.0,
+   "dev": -762.0,
+   "devmax": 34,
+   "devmax_signed": 0.0
+  }
+ },
+ "cells": {
+  "pec_home|full|None": {
+   "n": 300,
+   "em": 259.0,
+   "f1": 264.1967032967034,
+   "tok": 723931,
+   "ans": 300,
+   "cv": 4509,
+   "cf": 4509,
+   "cn": 4509,
+   "ov": 0,
+   "coll": 0,
+   "tent": 300,
+   "tattr": 300
+  },
+  "pec_home|quad4|0.5": {
+   "n": 300,
+   "em": 236.0,
+   "f1": 241.28383283383292,
+   "tok": 361198,
+   "ans": 300,
+   "cv": 0,
+   "cf": 0,
+   "cn": 4509,
+   "ov": 0,
+   "coll": 0,
+   "tent": 133,
+   "tattr": 300
+  }
+ },
+ "all": {
+  "full|None": {
+   "n": 300,
+   "em": 259.0,
+   "f1": 264.1967032967034,
+   "tok": 723931,
+   "ans": 300,
+   "cv": 4509,
+   "cf": 4509,
+   "cn": 4509,
+   "ov": 0,
+   "coll": 0,
+   "tent": 300,
+   "tattr": 300
+  },
+  "quad4|0.5": {
+   "n": 300,
+   "em": 236.0,
+   "f1": 241.28383283383292,
+   "tok": 361198,
+   "ans": 300,
+   "cv": 0,
+   "cf": 0,
+   "cn": 4509,
+   "ov": 0,
+   "coll": 0,
+   "tent": 133,
+   "tattr": 300
+  }
+ },
+ "by_case_kind": {
+  "multi_entity|full|None": {
+   "n": 200,
+   "em": 176.0,
+   "f1": 176.0,
+   "tok": 483793,
+   "ans": 200,
+   "cv": 3009,
+   "cf": 3009,
+   "cn": 3009,
+   "ov": 0,
+   "coll": 0,
+   "tent": 200,
+   "tattr": 200
+  },
+  "multi_entity|quad4|0.5": {
+   "n": 200,
+   "em": 157.0,
+   "f1": 157.25,
+   "tok": 241302,
+   "ans": 200,
+   "cv": 0,
+   "cf": 0,
+   "cn": 3009,
+   "ov": 0,
+   "coll": 0,
+   "tent": 33,
+   "tattr": 200
+  },
+  "needle|full|None": {
+   "n": 100,
+   "em": 83.0,
+   "f1": 88.1967032967033,
+   "tok": 240138,
+   "ans": 100,
+   "cv": 1500,
+   "cf": 1500,
+   "cn": 1500,
+   "ov": 0,
+   "coll": 0,
+   "tent": 100,
+   "tattr": 100
+  },
+  "needle|quad4|0.5": {
+   "n": 100,
+   "em": 79.0,
+   "f1": 84.03383283383283,
+   "tok": 119896,
+   "ans": 100,
+   "cv": 0,
+   "cf": 0,
+   "cn": 1500,
+   "ov": 0,
+   "coll": 0,
+   "tent": 100,
+   "tattr": 100
+  }
+ }
+}

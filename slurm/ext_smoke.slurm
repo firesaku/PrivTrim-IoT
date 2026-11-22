@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<ACCOUNT>
 #SBATCH --partition=gpu
 #SBATCH --job-name=pt-extsmoke
 #SBATCH --gres=gpu:nvidia_h200:1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=48G
 #SBATCH --time=00:35:00
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/extsmoke-%j.out
-#SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/extsmoke-%j.err
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/extsmoke-%j.out
+#SBATCH --error=/path/to/project/logs/extsmoke-%j.err
 #
 # Smoke test for the ratio-parameterised copy of the published compressors.
 #
@@ -27,7 +27,7 @@
 set -uo pipefail
 module load intel_h200_gpu 2>/dev/null || true
 
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 B1=$RD/code/batch1_ratio
 export PYTHONNOUSERSITE=1
 export PYTHONPATH=$RD/code:$RD/code/longctx
@@ -49,7 +49,7 @@ $PYX -c "import torch,sys; print('python',sys.version.split()[0]); print('torch'
 # four cases only: fastest thing that can still catch a broken loader
 $PYX - <<'PY'
 import json, io
-RD='/dpc/kuex0095/100069961_ku/privtrim'
+RD='/path/to/project'
 allc=[json.loads(l) for l in io.open(RD+'/data/longctx_max.jsonl',encoding='utf-8') if l.strip()]
 allc.sort(key=lambda c:c['key'])
 pick=allc[::700][:4]

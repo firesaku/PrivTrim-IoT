@@ -1,13 +1,13 @@
 #!/bin/bash
-#SBATCH --account=kuex0095
+#SBATCH --account=<ACCOUNT>
 #SBATCH --partition=prod
 #SBATCH --job-name=pt-preflight
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=4G
 #SBATCH --time=00:10:00
-#SBATCH --chdir=/dpc/kuex0095/100069961_ku/privtrim
-#SBATCH --output=/dpc/kuex0095/100069961_ku/privtrim/logs/preflight-%j.out
-#SBATCH --error=/dpc/kuex0095/100069961_ku/privtrim/logs/preflight-%j.err
+#SBATCH --chdir=/path/to/project
+#SBATCH --output=/path/to/project/logs/preflight-%j.out
+#SBATCH --error=/path/to/project/logs/preflight-%j.err
 #
 # Preflight for the 32B download, run as a job rather than on the login node.
 #
@@ -16,11 +16,11 @@
 # are collected here on a CPU node and written to one small file that can then be read.
 set -uo pipefail
 
-RD=/dpc/kuex0095/100069961_ku/privtrim
+RD=/path/to/project
 echo "preflight host=$(hostname) start=$(date -Is)"
 
 echo "--- quota / free space on the project filesystem ---"
-df -h /dpc/kuex0095 2>&1 | head -4
+df -h /path/to/<ACCOUNT> 2>&1 | head -4
 echo
 echo "--- project usage (top level, one level only) ---"
 du -sh $RD/hf_cache $RD/out $RD/data 2>&1 | head -5
