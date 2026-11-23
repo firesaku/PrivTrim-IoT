@@ -64,13 +64,75 @@ Figure~\ref{fig:frontier} puts the same numbers on both axes at once, and attach
 to each of them, because a point estimate in the corner of a plot invites the reading that the
 axes were chosen after the fact. Panel~(a) is the frontier: \textsc{DARK} alone occupies the
 upper-left, and the interval on its leakage is $[0,0.14]\%$ rather than a bare zero. Panel~(b) is
-the part that keeps the figure honest. Paired against each comparator on the same cases,
+the paired comparison. Against each comparator on the same cases,
 \textsc{DARK} is ahead of every arm that leaks nothing by at least $0.14$ F1, and ahead of
 Provence and LongLLMLingua by $0.086$ and $0.071$---all intervals clearing zero. Against
 Quito-X ($+0.0107$, $[-0.0091,+0.0304]$) and CPC ($+0.0198$, $[-0.0008,+0.0397]$) the interval
-contains zero, and we report those two rows as unresolved rather than as a win. That is the
-whole claim: on F1 this experiment does not separate us from the best compressor, and on leakage
-it separates us from every one of them.
+contains zero, and we report those two rows as unresolved rather than as a win. That is the claim at this operating point: on F1 the
+experiment does not separate us from the best compressor, and on leakage it separates us from every
+one of them. The next question is whether the separation survives when the budget moves.
+
+\subsection{What protection costs, measured against budget}
+\label{sec:budgetall}
+
+The comparison above is one operating point. A budget sweep asks the harder question---whether the
+separation survives as the constraint tightens---and it is the easiest place to check the claim of
+this paper. Figure~\ref{fig:budgetall} runs it at four ratios: on all $2{,}728$ cases for the routing
+arms, on $682$ paired cases for two redundancy brackets (one prunes and protects nothing, the other
+keeps the anchor line verbatim), and on $341$ paired cases for the published compressors.
+
+At every ratio we measured, no arm scores higher than \textsc{DARK}, and no other arm is leak-free at
+any ratio. It scores $0.3297$ at $5\%$, $0.3635$ at $10\%$, $0.4168$ at $15\%$ and $0.4937$ at
+$50\%$, at $0\%$ measured leakage at every point. The nearest arm at the tight end is CPC at
+$0.2181$, which forwards a protected value in $55.7\%$ of its cases; at $r=0.50$ the nearest is
+Quito-X at $0.4831$, which forwards one in $98.1\%$. Against pruning alone the rule leads by $+0.346$,
+$+0.379$ and $+0.426$ across the three tight ratios on the paired subset, and by $+0.396$ at
+$r=0.50$ on the full set.
+
+The two redundancy arms show what happens without the record block, and they lose the answer. Under
+the same protocol as every other arm here---no access to the reference answer---the arm that protects
+the anchor line retains the answer in $16.6\%$ of cases at $r=0.05$ and $20.4\%$ at $r=0.15$ and
+scores $0.1525$ to $0.1547$, flat across the range; the arm that prunes on redundancy alone retains
+$1.2\%$ to $5.3\%$ and scores $0.0059$ to $0.0165$. \textsc{DARK} leads the anchor-kept arm by
+$+0.1993$ $[+0.1682,+0.2311]$ at $r=0.05$ and $+0.2875$ $[+0.2519,+0.3240]$ at $r=0.15$, and the
+prune-only arm by $+0.3460$ and $+0.4257$ over the same $682$ paired cases.
+
+The anchor-kept arm also forwards a protected value in $54.8\%$ of cases at every budget, so it pays
+the privacy price without keeping the answer. Protecting the line that carries the identifier keeps
+the identifier and drops the record beneath it; that is the region argument of
+Section~\ref{sec:regimes} stated as a measurement.
+
+The cost has two parts, and separating them says where it is paid. Replacing every protected value
+with an alias and compressing nothing costs $0.0931$ $[-0.1085,-0.0780]$ against the uncompressed
+prompt, which is the price of the property itself. Compressing that aliased passage to half its
+length costs a further $0.0213$ $[-0.0394,-0.0031]$. The two add to the $0.1144$
+$[-0.1319,-0.0971]$ deficit we report against the uncompressed arm. Hiding the value is expensive;
+the compression built on top of it is close to free, which is why the routing step rather than the
+budget is where the design effort belongs.
+
+The price of the property is paid in the routing, not in the compression. Over pruning alone the
+rule gains $0.35$ to $0.43$ F1 across the three tight ratios at no measured leakage, and the margin
+grows as the budget loosens, because more text lets an honest pruning arm recover the answer only
+slowly---retention rises from $1.2\%$ at $r=0.05$ to $5.3\%$ at $r=0.15$ while the routing rule
+holds it at every point.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_budget_all.pdf}
+\caption{The price of the property, and who pays it. (a)~F1 against the budget ratio;
+(b)~the share of cases in which a protected value is recoverable from the prompt, on the same arms
+and the same ratios. \textsc{DARK} is measured on all $2{,}728$ cases, the two redundancy controls on
+$682$ paired cases at the three tight ratios and on all $2{,}728$ at $r=0.50$, and the two published
+compressors on $341$ paired cases at the two tight ratios and on all $2{,}728$ at $r=0.50$.
+\textsc{DARK} rises with the budget, stays at $0\%$ throughout, and is the highest arm at every ratio
+below $0.50$. The anchor-kept redundancy arm is flat at $0.15$ and forwards a protected value in
+$55\%$ of cases, so it pays the privacy price without keeping the answer. The published compressors
+fall away at the tight end, to $0.0679$ and $0.2181$, while leaking on $73\%$ and $56\%$ of the
+cases in which they do it; the anchor-kept redundancy arm reaches $55\%$ leakage by $r=0.50$.
+Reading (a) without (b) would make protection look optional at tight budgets; reading (b) without
+(a) would make it look free.}
+\label{fig:budgetall}
+\end{figure*}
 
 \subsection{Which half the aggregate hides}
 \label{sec:regimes}
@@ -244,59 +306,11 @@ paired difference printed at each row.}
 \label{fig:survival}
 \end{figure*}
 
-\subsection{What protection costs, measured against budget}
-\label{sec:budgetall}
-
-A budget sweep holds the corpus and the reader fixed and varies only how much of the prompt
-survives, so it is the one experiment that can price referential integrity. Figure~\ref{fig:budgetall}
-runs it at four ratios, on all $2{,}728$ cases for the routing arms and on $682$ paired cases for two
-redundancy brackets: one prunes and protects nothing, the other adds exactly one thing---it keeps the
-anchor line verbatim.
-
-\textsc{DARK} is the only arm that improves as the budget grows without ever leaking. It scores
-$0.3297$ at $5\%$, $0.3635$ at $10\%$, $0.4168$ at $15\%$ and $0.4937$ at $50\%$, at $0\%$ measured
-leakage at every point. Against pruning alone it leads by $+0.346$, $+0.379$ and $+0.426$ across the
-three tight ratios on the paired subset, and by $+0.396$ at $r=0.50$ on the full set, which is what
-the routing rule is worth when nothing is forwarded.
-
-The two redundancy arms show what happens without the record block, and they lose the answer. Under
-the same protocol as every other arm here---no access to the reference answer---the arm that protects
-the anchor line retains the answer in $16.6\%$ of cases at $r=0.05$ and $20.4\%$ at $r=0.15$ and
-scores $0.1525$ to $0.1547$, flat across the range; the arm that prunes on redundancy alone retains
-$1.2\%$ to $5.3\%$ and scores $0.0059$ to $0.0165$. \textsc{DARK} leads the anchor-kept arm by
-$+0.1993$ $[+0.1682,+0.2311]$ at $r=0.05$ and $+0.2875$ $[+0.2519,+0.3240]$ at $r=0.15$, and the
-prune-only arm by $+0.3460$ and $+0.4257$ over the same $682$ paired cases.
-
-The anchor-kept arm also forwards a protected value in $54.8\%$ of cases at every budget, so it pays
-the privacy price without keeping the answer. Protecting the line that carries the identifier keeps
-the identifier and drops the record beneath it; that is the region argument of
-Section~\ref{sec:regimes} stated as a measurement.
-
-The cost has two parts, and separating them says where it is paid. Replacing every protected value
-with an alias and compressing nothing costs $0.0931$ $[-0.1085,-0.0780]$ against the uncompressed
-prompt, which is the price of the property itself. Compressing that aliased passage to half its
-length costs a further $0.0213$ $[-0.0394,-0.0031]$. The two add to the $0.1144$
-$[-0.1319,-0.0971]$ deficit we report against the uncompressed arm. Hiding the value is expensive;
-the compression built on top of it is close to free, which is why the routing step rather than the
-budget is where the design effort belongs.
-
-The published compressors give the tight end its clearest reading. On the $341$ paired cases they
-were run on, \textsc{DARK} scores $0.3410$ at $r=0.05$ against CPC's $0.2181$ and Quito-X's
-$0.0679$, and $0.4194$ at $r=0.15$ against $0.3032$ and $0.2035$. They do not fall slightly behind
-as the budget tightens; they fall away from the task, while leaking on $56\%$ to $98\%$ of the
-cases in which they do it (b).
-
-The price of the property is paid in the routing, not in the compression. Over pruning alone the
-rule gains $0.35$ to $0.43$ F1 across the three tight ratios at no measured leakage, and the margin
-grows as the budget loosens, because more text lets an honest pruning arm recover the answer only
-slowly---retention rises from $1.2\%$ at $r=0.05$ to $5.3\%$ at $r=0.15$ while the routing rule
-holds it at every point.
-
 \subsection{Why a strong compressor is not a substitute for the operation}
 \label{sec:frontend}
 
-The design choice can be stated as a comparison a reviewer will want: if the identifier is aliased
-anyway, does the strongest compressor match the routing rule? The composed arm is built by taking
+The design choice has an obvious alternative worth testing: if the identifier is aliased anyway,
+does the strongest compressor match the routing rule? The composed arm is built by taking
 the passage \textsc{DARK} would send, running a published compressor over it at the same budget, and
 evaluating on the same cases, so the only thing that varies is what happens after the alias map is
 written.
@@ -314,20 +328,4 @@ carries the identifier, and the ranking has no way to know that. The routing rul
 the region is decided by the entity rather than by similarity. Aliasing makes a compressor
 \emph{safe}; it does not make it \emph{adequate}, and the two are worth $0.04$ to $0.10$ F1 apart.
 
-\begin{figure*}[t]
-\centering
-\includegraphics[width=\textwidth]{figures/fig_budget_all.pdf}
-\caption{The price of the property, and who pays it. (a)~F1 against the budget ratio;
-(b)~the share of cases in which a protected value is recoverable from the prompt, on the same arms
-and the same ratios. \textsc{DARK} is measured on all $2{,}728$ cases, the two redundancy controls on
-$682$ paired cases at the three tight ratios and on all $2{,}728$ at $r=0.50$, and the two published
-compressors on $341$ paired cases at the two tight ratios and on all $2{,}728$ at $r=0.50$.
-\textsc{DARK} rises with the budget, stays at $0\%$ throughout, and is the highest arm at every ratio
-below $0.50$. The anchor-kept redundancy arm is flat at $0.15$ and forwards a protected value in
-$55\%$ of cases, so it pays the privacy price without keeping the answer. The published compressors
-fall away at the tight end, to $0.0679$ and $0.2181$, while leaking on $73\%$ and $56\%$ of the
-cases in which they do it; the anchor-kept redundancy arm reaches $55\%$ leakage by $r=0.50$.
-Reading (a) without (b) would make protection look optional at tight budgets; reading (b) without
-(a) would make it look free.}
-\label{fig:budgetall}
-\end{figure*}
+
