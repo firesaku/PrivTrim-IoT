@@ -187,7 +187,7 @@ def main(argv=None):
 
     axes[0].set_ylim(-0.03, max(0.72, (full_f1 or 0.6) + 0.06))
     axes[1].set_ylim(-4, 104)
-    axes[0].legend(frameon=False, loc="lower right")
+    axes[0].legend(frameon=False, loc="upper left", bbox_to_anchor=(0.0, 0.87))
 
     fig.tight_layout(pad=0.3, w_pad=1.4)
     fig.savefig(args.out, bbox_inches="tight", pad_inches=0.02)
