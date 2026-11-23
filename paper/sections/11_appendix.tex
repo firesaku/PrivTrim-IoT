@@ -73,8 +73,9 @@ none (entity field) & \emph{for account} \texttt{ACCT-\ldots} & 1500 \\
 \subsection{Leakage counting}
 
 A case counts as leaking when any protected value, or a fragment of it, is recoverable from
-the concatenation of the rewritten question and the compressed context. Fragments are the
-pattern set of the published protocol. The count is per case, not per value, so the reported
+the concatenation of the rewritten question and the compressed context. A fragment is any
+$6$-character substring of the value's marker ($8$ for an email address), so the test catches a
+partially preserved value as well as a verbatim one. The count is per case, not per value, so the reported
 rate is the fraction of cases with at least one exposure; the per-value count is retained in
 the artifacts.
 

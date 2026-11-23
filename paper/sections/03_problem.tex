@@ -14,7 +14,10 @@ The prompt is the object of study. It travels from the device to the model proce
 be logged, cached, or inspected. A policy is \emph{leak-free} on a case when no value in $V$
 is recoverable from the exact text handed to the model, that is, from the rewritten question
 $q'$ concatenated with the compressed context, not from the context alone. Recoverability is
-measured with the pattern set of the published protocol (full value plus fragments). We
+measured by substring containment: a value counts as exposed if its whole normalised form appears in
+the prompt, or if any $6$-character substring of its marker does ($8$ for an email address). That test is deliberately
+strict---it flags a value that appears in an innocuous context---so a zero under it is a conservative
+zero. We
 assume no adversarial manipulation of the model and no side channel beyond the prompt text,
 and we do not model an adversary who holds the alias map; Section~\ref{sec:discussion}
 states what that leaves out.

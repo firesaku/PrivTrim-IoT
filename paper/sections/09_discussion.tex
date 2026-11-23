@@ -39,8 +39,8 @@ recovers every value. And nothing here prevents the reader from \emph{inferring}
 attribute that the context still implies, because answering such questions is the task.
 
 \paragraph{What the privacy claim covers.}
-Leakage is measured as recoverability of the protected values from the exact prompt text,
-using the pattern set of the published protocol (full value plus fragments). That is the
+Leakage is measured as recoverability of the protected values from the exact prompt text by
+substring containment, as defined in Section~\ref{sec:problem}. That is the
 relevant quantity for a pipeline whose adversary is the model provider and whose prompts may
 be retained.
 

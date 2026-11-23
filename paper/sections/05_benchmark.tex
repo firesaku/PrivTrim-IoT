@@ -3,10 +3,12 @@
 
 \subsection{Sources and excerpts}
 
-We build the benchmark from six public corpora drawn from the retrieval, long-context and
-privacy literature, all redistributed for research use: \arm{pec\_home},
-\arm{privacylens}, \arm{simuhome}, \arm{smartbench\_tdcs}, \arm{toolmem} and
-\arm{toolmem\_raw}. For each source we assemble excerpts in which records for several
+We build the benchmark from five public corpora, split into six sources, all redistributed for
+research use: {\sc PEC-Home}~\cite{shan-pechome-2026}, {\sc PrivacyLens}~\cite{shao-privacylens-2024},
+{\sc SimuHome}~\cite{seo-simuhome-2026}, {\sc SmartBench}~\cite{zou-smartbench-2026} and
+{\sc ToolMem}~\cite{xiao-toolmem-2025}. \arm{smartbench\_tdcs} is one \textsc{SmartBench} split, and
+\arm{toolmem} and the longer \arm{toolmem\_raw} are two variants of the same \textsc{ToolMem}
+records. For each source we assemble excerpts in which records for several
 entities of the same type are interleaved, and we inject synthetic protected values into the
 records that already exist, rather than into separate carrier documents. Table~\ref{tab:dataset}
 reports what each source contributes: the $2{,}728$ cases run from a median of $2{,}151$
