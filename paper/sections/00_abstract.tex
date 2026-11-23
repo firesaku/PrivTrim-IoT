@@ -23,9 +23,9 @@ protected account, every compressor above it leaks on $89.5$--$100\%$ of those c
 The zero is not an artifact of the pattern set: a model asked to recover the values returns
 $36.4\%$ of them from the uncompressed prompt and none from \textsc{DARK}. Aliasing is what achieves that, and
 aliasing alone does not make a compressor competitive---Quito-X on the aliased passage costs
-$0.0371$ F1---which is why the routing decision, not the compressor, is the contribution.
-Across four budgets it is the only arm that improves as the budget grows while remaining at
-$0\%$ leakage, and the arm that keeps a detected value verbatim leaks on $55\%$ of cases while
+$0.0371$ F1---which is why the operation, not the compression, is the contribution.
+Across four budgets no arm scores higher at any ratio, and among those that leak nothing it leads by
+$+0.145$ to $+0.180$. The arm that keeps a detected value verbatim leaks on $55\%$ of cases while
 scoring less than half of \textsc{DARK}.
 Crossing the two design choices shows the operation is worth two to three times the region: it is the
 contribution, and the region is its precondition. Code, prompts and

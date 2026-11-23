@@ -82,8 +82,9 @@ The design is judged against pipelines that keep the same privacy guarantee, bec
 the only comparison in which the privacy operation is held fixed. On a 112-case benchmark
 spanning six public datasets, \textsc{DARK} uses $48.6\%$ of the original tokens, leaves no
 protected value recoverable from the prompt, and scores F1 $0.6366$. Aliasing the whole
-context without compressing it scores $0.6475$ on the same cases, a difference that is not
-significant, so on this benchmark halving the prompt costs no measurable task quality. The
+context without compressing it scores $0.6475$ on the same cases, a difference $112$ cases do not
+resolve. The cost is small and it is resolved at scale: on the extension set, halving the aliased
+prompt is worth $-0.0213$ $[-0.0394,-0.0031]$. The
 strongest leak-free competitor reaches $0.4308$, and in the multi-entity subset it still
 exposes protected values. On a $2{,}728$-case extension, \textsc{DARK} is level with the best
 query-aware compressor ($0.4937$ vs.\ $0.4831$) at $0\%$ leakage against $98.1\%$: the

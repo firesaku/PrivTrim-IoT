@@ -3,10 +3,11 @@
 
 \input{tables/tab_main}
 
-\subsection{Compression costs little}
+\subsection{Compression costs $0.02$ F1}
 
-Halving the prompt costs no measurable task quality. At an equal $50\%$ budget, aliasing the
-whole context without compressing scores $0.6475$ and \textsc{DARK} scores $0.6366$ at
+Halving the prompt costs little, and the amount is measurable rather than absent. At an equal $50\%$
+budget, aliasing the whole context without compressing scores $0.6475$ and \textsc{DARK} scores
+$0.6366$ at
 $48.6\%$ of the tokens. The paired difference is $-0.0109$ with a $95\%$ interval of
 $[-0.0824,+0.0612]$, which does not exclude zero. Against not compressing and not sanitizing,
 the deficit is $-0.0823$ $[-0.1610,-0.0041]$. That gap is the price of the privacy
@@ -21,7 +22,7 @@ which region survives: one line, or the block containing it.
 
 \input{tables/tab_external}
 
-\subsection{At scale, privacy is the only separation}
+\subsection{At scale, F1 is level and privacy is not}
 
 Table~\ref{tab:external} reports the $2{,}728$-case extension. \textsc{DARK} scores
 $0.4937$, level with the strongest query-aware compressor (Quito-X, $0.4831$; difference
@@ -33,7 +34,7 @@ masking wrapper at $0.1712$, which \textsc{DARK} exceeds by $+0.3226$
 $[+0.3050,+0.3413]$. The nearest arm of any kind that also leaks nothing is our own
 global-alias ablation at $0.3482$, which \textsc{DARK} exceeds by $+0.1456$
 $[+0.1253,+0.1662]$; those two arms differ only in which region survives, one line or the
-block that contains it, so that margin is the routing rule and nothing else.
+block that contains it, so that margin is the operation and nothing else.
 
 The GIC column of Table~\ref{tab:external} is worth a figure of its own, because it varies with
 the source in a way the aggregate hides. Figure~\ref{fig:gic} breaks it out. The two arms that keep
@@ -60,9 +61,8 @@ operation applied inside it. Table~\ref{tab:ri} makes that second distinction.}
 \label{fig:gic}
 \end{figure*}
 
-Figure~\ref{fig:frontier} puts the same numbers on both axes at once, and attaches an interval
-to each of them, because a point estimate in the corner of a plot invites the reading that the
-axes were chosen after the fact. Panel~(a) is the frontier: \textsc{DARK} alone occupies the
+Figure~\ref{fig:frontier} puts the same numbers on both axes at once and attaches an interval to
+each. Panel~(a) is the frontier: \textsc{DARK} alone occupies the
 upper-left, and the interval on its leakage is $[0,0.14]\%$ rather than a bare zero. Panel~(b) is
 the paired comparison. Against each comparator on the same cases,
 \textsc{DARK} is ahead of every arm that leaks nothing by at least $0.14$ F1, and ahead of
@@ -81,8 +81,8 @@ this paper. Figure~\ref{fig:budgetall} runs it at four ratios: on all $2{,}728$ 
 arms, on $682$ paired cases for two redundancy brackets (one prunes and protects nothing, the other
 keeps the anchor line verbatim), and on $341$ paired cases for the published compressors.
 
-At every ratio we measured, no arm scores higher than \textsc{DARK}, and no other arm is leak-free at
-any ratio. It scores $0.3297$ at $5\%$, $0.3635$ at $10\%$, $0.4168$ at $15\%$ and $0.4937$ at
+At every ratio we measured, no arm scores higher than \textsc{DARK}, and among the arms that leak
+nothing it is the highest by $+0.145$ to $+0.180$. It scores $0.3297$ at $5\%$, $0.3635$ at $10\%$, $0.4168$ at $15\%$ and $0.4937$ at
 $50\%$, at $0\%$ measured leakage at every point. The nearest arm at the tight end is CPC at
 $0.2181$, which forwards a protected value in $55.7\%$ of its cases; at $r=0.50$ the nearest is
 Quito-X at $0.4831$, which forwards one in $98.1\%$. Against pruning alone the rule leads by $+0.346$,
@@ -110,11 +110,11 @@ $[-0.1319,-0.0971]$ deficit we report against the uncompressed arm. Hiding the v
 the compression built on top of it is close to free, which is why the routing step rather than the
 budget is where the design effort belongs.
 
-The price of the property is paid in the routing, not in the compression. Over pruning alone the
-rule gains $0.35$ to $0.43$ F1 across the three tight ratios at no measured leakage, and the margin
-grows as the budget loosens, because more text lets an honest pruning arm recover the answer only
-slowly---retention rises from $1.2\%$ at $r=0.05$ to $5.3\%$ at $r=0.15$ while the routing rule
-holds it at every point.
+Routing is what recovers most of that price rather than what pays it. Over pruning alone the rule
+gains $0.35$ to $0.43$ F1 across the three tight ratios at no measured leakage, and the margin grows
+as the budget loosens, because more text lets a pruning arm recover the answer only slowly---its
+retention rises from $1.2\%$ at $r=0.05$ to $5.3\%$ at $r=0.15$ while the routing rule holds it at
+every point.
 
 \begin{figure*}[t]
 \centering
@@ -149,7 +149,7 @@ recoverable from the prompt. (a)~When the question names a sensitive account, th
 F1 are exactly the arms that leak on $89.5$--$100\%$ of these cases, and the only leak-free arms that
 answer at all are ours. (b)~When the question names a record identifier that carries no protected
 value, aliasing is unnecessary, the cost disappears, and \textsc{DARK} leads every compressor.
-Panel~(a) is the honest cost of the design and panel~(b) is where it is free; both come from the
+Panel~(a) is the cost of the design and panel~(b) is where it is not paid; both come from the
 same rule, applied without a flag that says which regime it is in.}
 \label{fig:regimes}
 \end{figure}
@@ -230,7 +230,7 @@ four of six sources, but the two effects that matter are local: on \texttt{simuh
 delete variant falls to $0.029$ against \textsc{DARK}'s $0.619$, and on \texttt{toolmem\_raw}
 all arms are below $0.45$ because the answers themselves are hard. (b)~Leakage does not vary
 by source: the uncompressed arm exposes a protected value in every case, while \textsc{DARK}
-and the delete variant expose none on any source---a bar of zero height is a zero, not
+and the delete variant expose none on any source---an absent bar is a zero, not
 missing data---and the anchor-protecting arm leaks in five of six. (c)~The answer-bearing record survives in $100\%$ of cases for
 the uncompressed arm, \textsc{DARK} and the delete variant, and in $29$--$83\%$ for the
 anchor-protecting arm; the whole-vs-line distinction of Figure~\ref{fig:pipeline}(c) is what
