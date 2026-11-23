@@ -143,8 +143,9 @@ the same per-case format, so every analysis script reads them without changes.
 | --- | --- | --- |
 | `recall_{1,0p995,0p99,0p98,0p95,0p9}_percase.jsonl` | 1561909 | the detection-recall curve in Section IX |
 | `budgetdark_s*_percase.jsonl` | 1561910 | `quad4` at r = 0.05/0.10/0.15, the missing half of the budget sweep |
+| `budgetctrl_s*_percase.jsonl` | 1671294 | the two redundancy controls at the same ratios, re-run with `--no-oracle` after the oracle defect was found |
 | `budgetext_{0p05,0p15}_s0_percase.jsonl` | 1562592 | published compressors at the two tight budgets |
-| `frontend_s*_percase.jsonl` | 1562593 | DARK as a front end, Section VII |
+| `frontend_s*_percase.jsonl` | 1562593 (shards 0-1), 1672240 (shards 2-7) | DARK as a front end, Section VII |
 | `reid_s*_percase.jsonl` | 1561924 | the extraction attack, Section IX |
 
 Two of these need a note on how the code they call was prepared, because the published compressors

@@ -6,7 +6,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
 #SBATCH --time=02:00:00
-#SBATCH --array=0-1
+#SBATCH --array=2-7%3
 #SBATCH --chdir=/path/to/project
 #SBATCH --output=/path/to/project/logs/frontend-%A_%a.out
 #SBATCH --error=/path/to/project/logs/frontend-%A_%a.err
