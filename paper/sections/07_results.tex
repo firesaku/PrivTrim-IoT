@@ -81,21 +81,26 @@ this paper. Figure~\ref{fig:budgetall} runs it at four ratios: on all $2{,}728$ 
 arms, on $682$ paired cases for two redundancy brackets (one prunes and protects nothing, the other
 keeps the anchor line verbatim), and on $341$ paired cases for the published compressors.
 
-At every ratio we measured, no arm scores higher than \textsc{DARK}, and among the arms that leak
-nothing it is the highest by $+0.145$ to $+0.180$. It scores $0.3297$ at $5\%$, $0.3635$ at $10\%$, $0.4168$ at $15\%$ and $0.4937$ at
-$50\%$, at $0\%$ measured leakage at every point. The nearest arm at the tight end is CPC at
-$0.2181$, which forwards a protected value in $55.7\%$ of its cases; at $r=0.50$ the nearest is
-Quito-X at $0.4831$, which forwards one in $98.1\%$. Against pruning alone the rule leads by $+0.346$,
-$+0.379$ and $+0.426$ across the three tight ratios on the paired subset, and by $+0.396$ at
-$r=0.50$ on the full set.
+At every ratio we measured, no arm scores higher than \textsc{DARK}. Every marker in the figure is
+computed on the same cases as the arm it is compared with, so the gaps are paired rather than read
+off different samples. It scores $0.3410$ at $5\%$, $0.3882$ at $10\%$, $0.4194$ at $15\%$ and
+$0.4937$ at $50\%$, at $0\%$ measured leakage at every point.
+
+The comparison with the strongest published compressor resolves at the tight end and only there.
+Against CPC the margin is $+0.1229$ $[+0.0720,+0.1741]$ at $r=0.05$ and $+0.1162$
+$[+0.0597,+0.1732]$ at $r=0.15$; at $r=0.50$ the same comparison is $+0.0198$
+$[-0.0001,+0.0400]$, an interval that reaches zero. Tightening the budget does not erode the
+separation from the state of the art; it produces it.
 
 The two redundancy arms show what happens without the record block, and they lose the answer. Under
 the same protocol as every other arm here---no access to the reference answer---the arm that protects
 the anchor line retains the answer in $16.6\%$ of cases at $r=0.05$ and $20.4\%$ at $r=0.15$ and
-scores $0.1525$ to $0.1547$, flat across the range; the arm that prunes on redundancy alone retains
-$1.2\%$ to $5.3\%$ and scores $0.0059$ to $0.0165$. \textsc{DARK} leads the anchor-kept arm by
-$+0.1993$ $[+0.1682,+0.2311]$ at $r=0.05$ and $+0.2875$ $[+0.2519,+0.3240]$ at $r=0.15$, and the
-prune-only arm by $+0.3460$ and $+0.4257$ over the same $682$ paired cases.
+scores $0.1569$ to $0.1671$, flat across the range; the arm that prunes on redundancy alone retains
+$1.2\%$ to $5.3\%$ and scores $0.0029$ to $0.0124$. \textsc{DARK} leads the anchor-kept arm by
+$+0.1842$ $[+0.1418,+0.2295]$ at $r=0.05$ and $+0.2524$ $[+0.2022,+0.3018]$ at $r=0.15$, and the
+prune-only arm by $+0.3381$ and $+0.4071$. Among the arms that leak nothing, the nearest at
+$r=0.50$ is alias-budget-link at $0.3482$, which \textsc{DARK} leads by $0.1455$; at the tight
+ratios the only other leak-free arm is pruning alone, at $0.0029$ to $0.0124$.
 
 The anchor-kept arm also forwards a protected value in $54.8\%$ of cases at every budget, so it pays
 the privacy price without keeping the answer. Protecting the line that carries the identifier keeps
@@ -121,11 +126,10 @@ every point.
 \includegraphics[width=\textwidth]{figures/fig_budget_all.pdf}
 \caption{The price of the property, and who pays it. (a)~F1 against the budget ratio;
 (b)~the share of cases in which a protected value is recoverable from the prompt, on the same arms
-and the same ratios. \textsc{DARK} is measured on all $2{,}728$ cases, the two redundancy controls on
-$682$ paired cases at the three tight ratios and on all $2{,}728$ at $r=0.50$, and the two published
-compressors on $341$ paired cases at the two tight ratios and on all $2{,}728$ at $r=0.50$.
-\textsc{DARK} rises with the budget, stays at $0\%$ throughout, and is the highest arm at every ratio
-below $0.50$. The anchor-kept redundancy arm is flat at $0.15$ and forwards a protected value in
+and the same ratios. Every marker at a given ratio is computed on the same cases for all arms shown: $341$ at $r=0.05$
+and $r=0.15$, $682$ at $r=0.10$ (where the compressors were not run), and all $2{,}728$ at $r=0.50$.
+\textsc{DARK} rises with the budget, stays at $0\%$ throughout, and is the highest arm at every
+ratio. The anchor-kept redundancy arm is flat at $0.15$ and forwards a protected value in
 $55\%$ of cases, so it pays the privacy price without keeping the answer. The published compressors
 fall away at the tight end, to $0.0679$ and $0.2181$, while leaking on $73\%$ and $56\%$ of the
 cases in which they do it; the anchor-kept redundancy arm reaches $55\%$ leakage by $r=0.50$.

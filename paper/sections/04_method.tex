@@ -32,7 +32,7 @@ answer key and no model call enters either.
 (3)~The pair selects one operation; only the alias cell keeps the value out and the referent
 in.
 (4)~A keyed map $\kappa$ aliases the protected values and is applied to the question as well;
-the entity block is never dropped, and the rest is fitted to $B=\lfloor r\,n_C\rfloor$ in the
+the entity block is never dropped, and the rest is fitted to $B=\mathrm{round}(r\,n_C)$ in the
 stated drop order, refill admitted by decreasing redundancy.
 (5)~A real 112-case run: $3{,}869$ tokens against $7{,}964$, no protected value in any
 prompt, F1 $0.6366$.
@@ -105,10 +105,14 @@ operation that lets the reader resolve the question while the value stays out of
 \paragraph{Sensitive and relevant: alias (\textbf{A}).}
 The unit remains in the context, and each of its protected values is replaced by a stable
 alias from a per-run mapping, so that repeated mentions of one entity receive one token.
-This cell is where we depart from prior practice. Redaction, the standard primitive, gives
-the same concealment but removes the referent. Keeping the unit and renaming its values
-preserves the association between the entity and its attributes while satisfying the
-constraint on $V$. Section~\ref{sec:analysis} reports the cost of replacing this operation by
+Consistent placeholders with restoration are an established primitive: Presidio and LLM~Guard
+ship anonymise/deanonymise pipelines~\cite{presidio,llmguard}, and {\sc HaS} does the same for
+prompts~\cite{chen-has-2023}. What this cell adds is not the substitution but where it is applied:
+the alias replaces values only in the sensitive-and-relevant cell, the record block that carries the
+answer is protected as a unit, and the same map is written into the question. Redaction, the
+standard primitive, gives the same concealment but removes the referent; keeping the unit and
+renaming its values preserves the association between the entity and its attributes while
+satisfying the constraint on $V$. Section~\ref{sec:analysis} reports the cost of replacing this operation by
 deletion: $0.1795$ F1 points overall and $0.3273$ on multi-entity cases.
 
 \paragraph{Sensitive and irrelevant: delete (\textbf{D}).}
@@ -142,7 +146,7 @@ numbers use the keyed assignment.
 \subsection{Budget accounting}
 \label{sec:method-budget}
 
-The budget is $B=\lceil r\cdot n_C\rceil$, and it is enforced rather than approximated. The
+The budget is $B=\mathrm{round}(r\cdot n_C)$, and it is enforced rather than approximated. The
 surviving set is assembled greedily and then trimmed against the \emph{actual} concatenated
 text, because the separator between units costs tokens: a sum of per-unit token counts is a
 lower bound on the length of the joined prompt. When the trimmed set still exceeds $B$,
@@ -152,12 +156,12 @@ this paper has zero overshoot.
 
 Refill ordering uses a model-free redundancy score: for unit $u_i$, the maximum Jaccard
 similarity between its token set and that of any other unit. Candidates are visited in
-\emph{increasing} redundancy, which keeps the repetitive records.
+\emph{decreasing} redundancy, so the most repetitive records are admitted first.
 
-That direction deserves comment, because it inverts the usual reading of the score. Visiting
-units in decreasing redundancy and excluding them is the principled interpretation of a
-redundancy measure, and it is what a standard budget-fitting routine does. Here it is the
-wrong choice: the answer-bearing record is frequently the most redundant unit, because the
-answer value repeats across distractors. Section~\ref{sec:analysis} reports both variants
-and the $0.6567$-point difference they produce on the two-hop benchmark. We state the choice
-as an empirical regularity with a stated mechanism, not as a consequence of the definition.
+That direction is the opposite of what the same score does on the other side of the budget, and
+the asymmetry is what the paper turns on. A standard budget-fitting routine also visits units in
+decreasing redundancy, but it \emph{excludes} as it goes: it drops the most redundant unit first.
+Here the same order is used to admit. The answer-bearing record is frequently the most redundant
+unit, because the answer value repeats across distractors, so the exclusion direction deletes it
+while the admission direction recovers it. Section~\ref{sec:analysis} reports both variants and
+the $0.6567$-point difference they produce on the two-hop benchmark.

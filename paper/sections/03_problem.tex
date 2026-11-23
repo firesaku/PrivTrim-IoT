@@ -54,7 +54,7 @@ knowing which entity a value belongs to.
 
 \paragraph{Budget.}
 A budget arm receives a ratio $r$ and must realise a compressed context of at most
-$B=\lceil r\cdot n_C\rceil$ tokens, where $n_C$ is the token length of the uncompressed
+$B=\mathrm{round}(r\cdot n_C)$ tokens, where $n_C$ is the token length of the uncompressed
 excerpt under the tokenizer used to build the prompt. Exceeding $B$ is a hard error rather
 than a silent truncation, because in this domain the answer region is often at the end of the
 excerpt and truncation would remove it without notice.

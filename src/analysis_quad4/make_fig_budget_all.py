@@ -114,16 +114,39 @@ def main(argv=None):
     ap.add_argument("--json-out", default="results/diag/budget_all.json")
     args = ap.parse_args(argv)
 
-    table = {}
+    raw = {}
     for label, patterns, arm, *_ in SERIES:
         idx = load_index(patterns)
-        pts = []
+        per = {}
         for ratio in RATIOS:
             rows = idx.get((arm, ratio))
             if not rows:
                 print("  missing %s @ r=%.2f" % (label, ratio))
                 continue
-            vals = list(rows.values())
+            per[ratio] = dict(rows)
+        raw[label] = per
+
+    # Every point at a given ratio is computed on the same cases, so two arms are comparable
+    # marker to marker. The intersection is taken across the arms present at that ratio, which
+    # leaves it wide where a compressor was not run rather than shrinking the whole panel to the
+    # narrowest arm. Without this, DARK at r = 0.05 would be read off 2,728 cases against controls
+    # read off 682, and the two markers would differ by a sample effect as well as by the arm.
+    common = {}
+    for ratio in RATIOS:
+        sets = [set(per[ratio]) for per in raw.values() if ratio in per]
+        if sets:
+            common[ratio] = set.intersection(*sets)
+
+    table = {}
+    for label, per in raw.items():
+        pts = []
+        for ratio in RATIOS:
+            if ratio not in per:
+                continue
+            keys = set(per[ratio]) & common.get(ratio, set(per[ratio]))
+            vals = [per[ratio][k] for k in keys]
+            if not vals:
+                continue
             pts.append({"ratio": ratio, "n": len(vals),
                         "f1": statistics.mean(r["f1"] for r in vals),
                         "leak": 100.0 * sum(1 for r in vals if leaks(r)) / len(vals),
@@ -187,7 +210,9 @@ def main(argv=None):
 
     axes[0].set_ylim(-0.03, max(0.72, (full_f1 or 0.6) + 0.06))
     axes[1].set_ylim(-4, 104)
-    axes[0].legend(frameon=False, loc="upper left", bbox_to_anchor=(0.0, 0.87))
+    # Panel (b) has an empty band between the leak-free arms at 0% and the anchor-kept arm at 55%,
+    # so the legend sits there rather than on top of the curves in (a).
+    axes[1].legend(frameon=False, loc="center left", bbox_to_anchor=(0.02, 0.28))
 
     fig.tight_layout(pad=0.3, w_pad=1.4)
     fig.savefig(args.out, bbox_inches="tight", pad_inches=0.02)
