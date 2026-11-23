@@ -257,24 +257,18 @@ $0.3297$ at $5\%$, $0.3635$ at $10\%$, $0.4168$ at $15\%$ and $0.4937$ at $50\%$
 leakage at every point. Against pruning alone it leads by $+0.092$, $+0.089$, $+0.145$ and $+0.158$
 across the same four ratios, which is what the routing rule is worth when nothing is forwarded.
 
-The arm that keeps the anchor verbatim scores higher only where it can afford to forward the value.
-It peaks at $0.6241$ at $r=0.15$, ahead of \textsc{DARK}, and its leakage at that point is $39\%$;
-at $r=0.05$ it forwards a protected value in $21\%$ of cases and at $r=0.50$ in $55\%$. Below
-$r\approx0.10$ there is no longer enough budget to restructure the prompt and keep the reader
-oriented, so the two properties stop being additive: the arms that hold their F1 are the arms that
-leave the identifier in place.
+At every budget the only arm that forwards nothing is \textsc{DARK}, and the arms that keep a
+detected value verbatim are the ones whose leakage rises with the budget: the anchor-kept
+redundancy arm forwards a protected value in $55\%$ of cases at $r=0.50$ against our $0\%$.
 
-The published compressors add a third reading, and it is the one that settles what the crossing
-means. Neither of them crosses \textsc{DARK}: on the $341$ paired cases they were run on, \textsc{DARK}
-scores $0.3410$ at $r=0.05$ against CPC's $0.2181$ and Quito-X's $0.0679$, and $0.4194$ at $r=0.15$
-against $0.3032$ and $0.2035$. They do not fall slightly behind at tight budgets; they fall away
-from the task, while leaking on $56\%$ to $98\%$ of the cases where they do it
-(b). The only arm that ever scores above \textsc{DARK} below $r=0.10$ is our own anchor-kept
-variant, and panel~(b) is what it pays.
+The published compressors give the tight end its clearest reading. On the $341$ paired cases they
+were run on, \textsc{DARK} scores $0.3410$ at $r=0.05$ against CPC's $0.2181$ and Quito-X's
+$0.0679$, and $0.4194$ at $r=0.15$ against $0.3032$ and $0.2035$. They do not fall slightly behind
+as the budget tightens; they fall away from the task, while leaking on $56\%$ to $98\%$ of the
+cases in which they do it (b).
 
-That crossing is the price of the property this paper measures, written as a number rather than as a
-caveat, and it is why the operation is treated as the contribution and the region as its
-precondition. Above $r=0.10$ the rule gains $0.15$ to $0.16$ F1 over pruning alone at no measured
+The price of the property is paid in the routing, not in the compression: the routing step is what
+keeps the record while removing the value, and the region is its precondition. Above $r=0.10$ the rule gains $0.15$ to $0.16$ F1 over pruning alone at no measured
 leakage; below it, a deployment that must keep both properties accepts a lower F1 rather than a
 forwarded identifier, and the figure states exactly how much lower.
 
@@ -307,10 +301,10 @@ the region is decided by the entity rather than by similarity. Aliasing makes a 
 (b)~the share of cases in which a protected value is recoverable from the prompt, on the same arms
 and the same ratios. The internal arms are measured on all $2{,}728$ cases; the two published
 compressors on $341$ paired cases at the two tight ratios and on all $2{,}728$ at $r=0.50$.
-\textsc{DARK} rises with the budget and stays at $0\%$ throughout. The anchor-kept redundancy arm
-overtakes it below $r\approx0.10$ and pays for that with leakage that grows from $21\%$ to $55\%$;
-the published compressors do not overtake it at all below $r=0.10$, falling to $0.0679$ and
-$0.2181$ while leaking on $73\%$ and $56\%$ of cases. Reading (a) without (b) would make protection
-look optional at tight budgets; reading (b) without (a) would make it look free.}
+\textsc{DARK} rises with the budget and stays at $0\%$ throughout. The published compressors fall
+away from it at the tight end, to $0.0679$ and $0.2181$, while leaking on $73\%$ and $56\%$ of the
+cases in which they do it; the anchor-kept redundancy arm reaches $55\%$ leakage by $r=0.50$.
+Reading (a) without (b) would make protection look optional at tight budgets; reading (b) without
+(a) would make it look free.}
 \label{fig:budgetall}
 \end{figure*}

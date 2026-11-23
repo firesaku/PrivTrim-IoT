@@ -58,9 +58,15 @@ plt.rcParams.update({
 SERIES = [
     ("DARK",                    ["budgetdark_s*_percase.jsonl", "quadfull_s*_percase.gz"],
      "quad4",                INK, "-",  "o"),
-    ("redundancy, anchor kept", ["xbud_s*_percase.gz", "quadfull_s*_percase.gz"],
+    # The low-budget control points come from `budgetctrl` (job 1671280, --no-oracle) and NOT from
+    # `xbud`. The xbud family was produced by an older runner that ranked the answer-bearing unit
+    # LAST for dropping, i.e. it had the answer oracle. At r = 0.15 those arms retain the answer in
+    # 100% of cases; an honest run retains it in about 5%, which was verified by rebuilding 300
+    # cases with and without --no-oracle. Mixing the two produced an apparent cross-over that does
+    # not exist, so xbud is deliberately not a source here at any ratio.
+    ("redundancy, anchor kept", ["budgetctrl_s*_percase.jsonl", "quadfull_s*_percase.gz"],
      "budget_cluster_link",  RED, "--", "s"),
-    ("redundancy only",         ["xbud_s*_percase.gz", "quadfull_s*_percase.gz"],
+    ("redundancy only",         ["budgetctrl_s*_percase.jsonl", "quadfull_s*_percase.gz"],
      "budget_cluster",       G_M, ":",  "^"),
     # published compressors at the low budgets. Loaded from the budgetext job when it exists, and
     # from the archived 0.5 run so the curve closes: quito_x and cpc are the two strongest
@@ -145,7 +151,9 @@ def main(argv=None):
 
     for label, patterns, arm, colour, ls, mk in SERIES:
         pts = table.get(label, [])
-        if not pts:
+        if len(pts) < 2:
+            # A single point is not a curve. This also keeps a partially measured arm out of the
+            # figure rather than drawing it as one stray marker.
             continue
         xs = [p["ratio"] for p in pts]
         axes[0].plot(xs, [p["f1"] for p in pts], color=colour, linestyle=ls, marker=mk,
