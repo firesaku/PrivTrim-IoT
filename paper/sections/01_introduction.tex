@@ -125,9 +125,10 @@ interaction is $+0.0217$ $[+0.0106,+0.0325]$. The operation is worth two to thre
 and the two are close to additive rather than substitutable.
 \item \textbf{The obvious alternative, tested and ruled out.} If the identifier is aliased anyway,
 does the strongest compressor catch up? Taking the passage \textsc{DARK} would send, running
-Quito-X and CPC over it at the same budget, and evaluating on $682$ paired cases: aliasing alone
-reproduces \textsc{DARK} exactly ($0.4963$), and every composed arm is worse---$-0.0371$ with
-Quito-X, $-0.0961$ with CPC---at zero leakage by construction. Aliasing makes a compressor safe
+Quito-X and CPC over it at the same budget, and evaluating on all $2{,}728$ extension cases:
+aliasing alone reproduces \textsc{DARK} ($0.4923$ against $0.4937$), and every composed arm is
+worse---$-0.0402$ with Quito-X, $-0.0659$ with CPC---at zero leakage by construction. Aliasing
+makes a compressor safe
 without making it adequate, because a content compressor ranks units by what the question is about
 and the answer is carried in the block that holds the identifier.
 \end{itemize}

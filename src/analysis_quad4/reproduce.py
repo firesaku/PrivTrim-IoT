@@ -229,6 +229,31 @@ for tag, pat, expect in (
     for arm, want in expect.items():
         check('    %s' % arm, (stats(d, arm) or {}).get('f1'), want)
 
+# ---------------------------------------------------------------- 8) 前端组合
+section('8) the composed arms: DARK as a front end (2,728 cases @0.50)')
+fe = collect([(PC, ['frontend_s*_percase.jsonl'])])
+check('full (the routed, aliased passage)', (stats(fe, 'full') or {}).get('f1'), 0.4923)
+check('ext_quito_x',         (stats(fe, 'ext_quito_x') or {}).get('f1'), 0.4522)
+check('ext_quito_x_native',  (stats(fe, 'ext_quito_x_native') or {}).get('f1'), 0.4542)
+check('ext_cpc',             (stats(fe, 'ext_cpc') or {}).get('f1'), 0.4255)
+check('ext_cpc_native',      (stats(fe, 'ext_cpc_native') or {}).get('f1'), 0.3950)
+for arm in ('full', 'ext_quito_x', 'ext_quito_x_native', 'ext_cpc', 'ext_cpc_native'):
+    lk = (stats(fe, arm) or {}).get('leak', -1)
+    print('  ---- %s leakage %.3f (must be 0)' % (arm, lk))
+    if abs(lk) > 1e-9:
+        FAILS.append('front-end %s leak' % arm)
+
+# the routed passage is the one DARK sends: identical per case but for seven
+dk = collect([(PC, ['quadfull_s*_percase.gz'])])
+fa = (fe.get('full') or {})
+dq = (dk.get('quad4') or {})
+if dq:
+    same = sum(1 for k in dq if k in fa and f1(fa[k]) == f1(dq[k]))
+    print('  ---- front-end full arm identical to DARK case by case: %d / %d'
+          % (same, len(dq)))
+    if same != 2721:
+        FAILS.append('front-end identity with DARK')
+
 # ---------------------------------------------------------------- summary
 print()
 print('=' * 78)
